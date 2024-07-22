@@ -1,20 +1,9 @@
-import LoginComponent from "../Page/Auth/LoginComponent.vue";
-import DashboardComponent from "../Page/DashboardComponent.vue";
-
+import authRoutes from "../Page/Auth/routes";
+import DashboardRoutes from "../Page/Dashboard/routes";
 
 export let routes = [
-    {
-        path: '/login',
-        name: 'login',
-        component: LoginComponent,
-        meta: {title: 'Login'}
-    },
-    {
-        path: '/',
-        name: 'dashboard',
-        component: DashboardComponent,
-        meta: {requiresAuth: true, title: 'Dashboard'}
-    }    
+    ...authRoutes,
+    ...DashboardRoutes,       
 ]
 
  
