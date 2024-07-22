@@ -87,7 +87,7 @@ export default {
                     password: this.password
                 };
                 await AuthService.loginUser(credentials);
-                this.$router.push({name: 'admin.dashboard'});
+                this.$router.push({name: 'dashboard'});
             } catch (error) {
                 this.handleLoginError(error);
             }

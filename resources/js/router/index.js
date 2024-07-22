@@ -22,10 +22,10 @@ router.beforeEach((to, from, next) => {
     }
 
     // Redirect logic based on authentication state
-    if (to.name === 'admin.login' && isAuthenticated) {
-        next({ name: 'admin.dashboard' });
+    if (to.name === 'login' && isAuthenticated) {
+        next({ name: 'dashboard' });
     } else if (to.meta.requiresAuth && !isAuthenticated) {
-        next({ name: 'admin.login' });
+        next({ name: 'login' });
     } else {
         next();  // Continue navigation
     }

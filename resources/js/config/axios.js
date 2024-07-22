@@ -25,7 +25,7 @@ axiosRequest.interceptors.response.use(
             store.commit('setAuth', false);
             store.commit('setToken', null);
             store.commit('setUser', null);
-            await router.push({ name: 'admin.login' });
+            await router.push({ name: 'login' });
         }
         return Promise.reject(error);
     }
