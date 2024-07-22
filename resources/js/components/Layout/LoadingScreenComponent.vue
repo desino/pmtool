@@ -1,6 +1,6 @@
 <template>
     <div id="loading_screen" v-if="loading">
-        <img src="../../assets/images/loading.svg" alt="Loading"/>
+        <img src="../../Assets/images/loading.svg" alt="Loading"/>
     </div>
 </template>
 

@@ -1,5 +1,5 @@
-import LoginComponent from "../components/LoginComponent.vue";
-import DashboardComponent from "../components/DashboardComponent.vue";
+import LoginComponent from "../Page/Auth/LoginComponent.vue";
+import DashboardComponent from "../Page/DashboardComponent.vue";
 
 
 export let routes = [

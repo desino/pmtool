@@ -1,7 +1,7 @@
 <template>    
     <div class="card card-outline card-desino">
         <div class="card-header text-center">
-            <a class="h1" href="javascript;"><b>PM Tool</b></a>
+            <a class="h1" href="javascript;"><b>{{ appVariables.APP_NAME }}</b></a>
         </div>
         <div class="card-body">
             <p class="login-box-msg">Sign in to start your session</p>
@@ -63,10 +63,12 @@
 
 <script>
 
-import AuthService from "../services/AuthService.js";
+import AuthService from "../../Services/AuthService.js";
+import globalMixin from '@/globalMixin';
 
 export default {
     name: 'LoginComponent',
+    mixins: [globalMixin],
     data() {
         return {
             email: '',
@@ -77,7 +79,7 @@ export default {
                 type: ''
             }
         };
-    },
+    },    
     methods: {
         async loginUser() {
             this.clearMessages();
@@ -106,8 +108,9 @@ export default {
             this.systemMsg.type = '';
         },
     },
-    mounted() {
-        
+    mounted() {        
+        // console.log('asdasd123:: ', this.appVariables);
+        // console.log('import.meta.env.VITE_APP_NAME:: ', import.meta.env.VITE_APP_NAME);
     }
 }
 </script>

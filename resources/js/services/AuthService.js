@@ -1,9 +1,9 @@
 import axios from 'axios';
 import {endpoints} from '../api/endpoints.js';
 import {handleServerError, handleValidationErrors} from './ErrorService.js';
-import store from "../store/index.js";
-import router from "../router/index.js";
-import axiosRequest from "../config/axios.js";
+import store from "../Store/index.js";
+import router from "../Router/index.js";
+import axiosRequest from "../Config/axios.js";
 
 const AuthService = {
     /**

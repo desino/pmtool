@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import store from "../store/index.js";
-import {routes} from "../router/routes.js";
-import NotFoundComponent from "../components/Errors/NotFoundComponent.vue";
+import store from "../Store/index.js";
+import {routes} from "../Router/routes.js";
+import NotFoundComponent from "../Components/Errors/NotFoundComponent.vue";
+import { APP_VARIABLES } from './../constants.js';
 
 const router = createRouter({
     history: createWebHistory(),
@@ -16,9 +17,9 @@ router.beforeEach((to, from, next) => {
 
     // Update document title based on route meta
     if (to.meta && to.meta.title && (to.meta.requiresAuth && isAuthenticated)) {
-        document.title = 'PM Tool | ' + to.meta.title;
+        document.title = APP_VARIABLES.APP_NAME+' | ' + to.meta.title;
     } else {
-        document.title = 'PM Tool';
+        document.title = APP_VARIABLES.APP_NAME;
     }
 
     // Redirect logic based on authentication state

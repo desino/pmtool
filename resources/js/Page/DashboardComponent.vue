@@ -4,7 +4,7 @@ You are logged in!
 </template>
 
 <script>
-import AuthService from '../services/AuthService';
+import AuthService from '../Services/AuthService';
 
 export default {
     methods: {

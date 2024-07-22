@@ -23,17 +23,19 @@
 // import SidebarComponent from "./SidebarComponent.vue";
 import FooterComponent from "./FooterComponent.vue";
 import {mapGetters} from "vuex";
-import AuthService from "../../services/AuthService.js";
+import AuthService from "../../Services/AuthService.js";
 import LoadingScreenComponent from "./LoadingScreenComponent.vue";
 import HeaderComponent from "./HeaderComponent.vue";
+import globalMixin from '@/globalMixin';
 export default {
-name: 'MainComponent',
-components: {LoadingScreenComponent, HeaderComponent,FooterComponent},
-beforeMount() {
-    AuthService.refreshUser();
-},
-computed: {
-    ...mapGetters(['isAuthenticated']),
-},
+    name: 'MainComponent',
+    mixins: [globalMixin],
+    components: {LoadingScreenComponent, HeaderComponent,FooterComponent},
+    beforeMount() {
+        AuthService.refreshUser();
+    },
+    computed: {    
+        ...mapGetters(['isAuthenticated']),
+    },
 };
 </script>
