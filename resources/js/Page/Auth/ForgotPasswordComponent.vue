@@ -7,7 +7,7 @@
                     <h5 class="card-title text-center">{{ $t('auth.forgot_password.title') }}</h5>
                     <form @submit.prevent="forgotPassword">
                         <div class="input-group mb-3">
-                            <input v-model="email" :class="{'is-invalid': errors.email}" class="form-control" :placeholder="$t('auth.login.email')" type="email">
+                            <input v-model="email" :class="{'is-invalid': errors.email}" class="form-control" :placeholder="$t('auth.forgot_password.email')" type="email">
                             <div class="input-group-text">
                                 <span class="bi bi-envelope-at-fill"></span>
                             </div>

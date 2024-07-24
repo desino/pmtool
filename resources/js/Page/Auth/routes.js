@@ -17,8 +17,7 @@ export default [
         meta: {title: 'Forgot Password'}
     },
     {
-        // path: '/reset-password/:token/:email',
-        path: '/reset-password',
+        path: '/reset-password/:token/:email',        
         name: 'reset-password',
         component: ResetPasswordComponent,
         meta: {title: 'Reset Password'}

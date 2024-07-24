@@ -10,6 +10,7 @@ const endpoints = {
     me: `${APP_VARIABLES.DEFAULT_API_PATH}/user`,
     login: `${APP_VARIABLES.DEFAULT_API_PATH}/login`,
     forgotPassword: `${APP_VARIABLES.DEFAULT_API_PATH}/forgot-password`,
+    resetPassword: `${APP_VARIABLES.DEFAULT_API_PATH}/reset-password`,
     logout: `${APP_VARIABLES.DEFAULT_API_PATH}/logout`,
 };
 
@@ -48,6 +49,18 @@ const AuthService = {
         try {
             const response = await axiosRequest.post(
                 endpoints.forgotPassword,
+                credentials,
+            );
+            return response;            
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+
+    async resetPassword(credentials) {
+        try {
+            const response = await axiosRequest.post(
+                endpoints.resetPassword,
                 credentials,
             );
             return response;            

@@ -15,6 +15,14 @@
             "submit": "Send Password Reset Link",
             "login_link": "Back to login"
         },
+        "reset_password": {
+            "title": "Reset Password",
+            "email": "Email",
+            "password": "Password",
+            "password_confirmation": "Confirm Password",
+            "submit": "Reset Password",
+            "login_link": "Back to login"
+        },
         "logout": "Logout",
         "register": "Register"
     }
