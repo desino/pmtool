@@ -16,20 +16,15 @@ router.beforeEach((to, from, next) => {
     let isAuthenticated = store.getters.isAuthenticated ;
 
     // Update document title based on route meta
-    document.title = APP_VARIABLES.APP_NAME+' | ' + to.meta.title;
-    
-    // if (to.meta && to.meta.title && (to.meta.requiresAuth && isAuthenticated)) {
-    //     document.title = APP_VARIABLES.APP_NAME+' | ' + to.meta.title;
-    // } else {
-    //     document.title = APP_VARIABLES.APP_NAME;
-    // }
-
+    document.title = APP_VARIABLES.APP_NAME+' | ' + to.meta.title;    
+    // console.log(to);
+    // debugger;
     // Redirect logic based on authentication state
-    if (to.name === 'login' && isAuthenticated) {
+    if ((to.name === 'login' || to.name === 'forgot-password') && isAuthenticated) {        
         next({ name: 'dashboard' });
-    } else if (to.meta.requiresAuth && !isAuthenticated) {
+    } else if (!isAuthenticated && to.meta.requiresAuth) {        
         next({ name: 'login' });
-    } else {
+    } else {        
         next();  // Continue navigation
     }
 });

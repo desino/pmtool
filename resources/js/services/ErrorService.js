@@ -21,7 +21,7 @@ export function handleValidationErrors(error) {
  * @return {Object} An object with the type and message.
  */
 export function handleServerError(error) {
-    if (error.response && [500, 404, 403, 401].includes(error.response.status)) {
+    if (error.response && [500, 404, 403, 401, 400].includes(error.response.status)) {
         return {
             type: 'server',
             message: error.response.data.message

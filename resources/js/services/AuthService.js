@@ -1,9 +1,17 @@
-import axios from 'axios';
-import {endpoints} from '../api/endpoints.js';
-import {handleServerError, handleValidationErrors} from './ErrorService.js';
+import axios from "axios";
+// import { endpoints } from "../api/endpoints.js";
+import { handleServerError, handleValidationErrors } from "./ErrorService.js";
 import store from "../Store/index.js";
 import router from "../Router/index.js";
 import axiosRequest from "../Config/axios.js";
+import { APP_VARIABLES } from "../constants.js";
+
+const endpoints = {
+    me: `${APP_VARIABLES.DEFAULT_API_PATH}/user`,
+    login: `${APP_VARIABLES.DEFAULT_API_PATH}/login`,
+    forgotPassword: `${APP_VARIABLES.DEFAULT_API_PATH}/forgot-password`,
+    logout: `${APP_VARIABLES.DEFAULT_API_PATH}/logout`,
+};
 
 const AuthService = {
     /**
@@ -17,10 +25,32 @@ const AuthService = {
      */
     async loginUser(credentials) {
         try {
-            const response = await axiosRequest.post(endpoints.auth.login, credentials);
-            store.commit('setAuth', true);
-            store.commit('setToken', response.data.content.token);
-            store.commit('setUser', response.data.content);
+            const response = await axiosRequest.post(
+                endpoints.login,
+                credentials,
+            );
+            store.commit("setAuth", true);
+            store.commit("setToken", response.data.content.token);
+            store.commit("setUser", response.data.content);
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+
+     /**
+     * Asynchronously logs in a user with the provided credentials.
+     *
+     * @param {Object} credentials - An object containing the user's forgot password credentials.
+     * @return {Promise<void>} A Promise that resolves when the user is successfully forgot password in.
+     * @throws {Error} If there is an error during the forgot password process.
+     */
+    async forgotPassword(credentials) {
+        try {
+            const response = await axiosRequest.post(
+                endpoints.forgotPassword,
+                credentials,
+            );
+            return response;            
         } catch (error) {
             throw handleError(error);
         }
@@ -37,13 +67,13 @@ const AuthService = {
      */
     async refreshUser() {
         try {
-            const response = await axiosRequest.get(endpoints.auth.me);
-            store.commit('setUser', response.data.content);
+            const response = await axiosRequest.get(endpoints.me);
+            store.commit("setUser", response.data.content);
         } catch (error) {
-             store.commit('setAuth', false);
-             store.commit('setToken', null);
-             store.commit('setUser', null);
-            await router.push({name: 'login'});
+            store.commit("setAuth", false);
+            store.commit("setToken", null);
+            store.commit("setUser", null);
+            // await router.push({ name: "login" });
         }
     },
 
@@ -57,14 +87,14 @@ const AuthService = {
      */
     async logout() {
         try {
-            await axios.get(endpoints.auth.logout);
+            await axios.get(endpoints.logout);
         } catch (error) {
-            console.error('Logout error:', error);
+            console.error("Logout error:", error);
         }
-        store.commit('setAuth', false);
-        store.commit('setToken', null);
-        store.commit('setUser', null);
-        await router.push({name: 'login'});
+        store.commit("setAuth", false);
+        store.commit("setToken", null);
+        store.commit("setUser", null);
+        await router.push({ name: "login" });
     },
 
     /**
@@ -80,7 +110,6 @@ const AuthService = {
             throw handleError(error);
         }
     },
-
 };
 
 function handleError(error) {
@@ -93,4 +122,3 @@ function handleError(error) {
 }
 
 export default AuthService;
- 

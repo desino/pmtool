@@ -1,0 +1,22 @@
+{
+    "home": "Home",
+    "auth": {
+        "login": {
+            "title": "Login",
+            "email": "Email",
+            "password": "Password",
+            "remember": "Remember Me",
+            "forgot_password_link": "I forgot my password",
+            "submit": "Login"
+        },
+        "forgot_password": {
+            "title": "Forgot Password",
+            "email": "Email",
+            "submit": "Send Password Reset Link",
+            "login_link": "Back to login"
+        },
+        "logout": "Logout",
+        "register": "Register"
+    }
+}
+ 

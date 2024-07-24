@@ -1,11 +1,11 @@
-<template>              
+<template>
     <div class="vh-100 d-flex align-items-center justify-content-center">
-        <div class="login-container col-12 col-md-8 col-lg-4">  
+        <div class="login-container col-12 col-md-8 col-lg-4">
             <GlobalMessage v-if="showMessage" />
             <div class="card w-100">
                 <div class="card-body">
-                    <h5 class="card-title text-center">{{ $t('auth.login.title') }}</h5>
-                    <form @submit.prevent="loginUser">
+                    <h5 class="card-title text-center">{{ $t('auth.forgot_password.title') }}</h5>
+                    <form @submit.prevent="forgotPassword">
                         <div class="input-group mb-3">
                             <input v-model="email" :class="{'is-invalid': errors.email}" class="form-control" :placeholder="$t('auth.login.email')" type="email">
                             <div class="input-group-text">
@@ -15,26 +15,17 @@
                                 <span v-for="(error, index) in errors.email" :key="index">{{ error }}</span>
                             </div>
                         </div>
-                        <div class="input-group mb-3">
-                            <input v-model="password" :class="{'is-invalid': errors.password}" class="form-control" :placeholder="$t('auth.login.password')" type="password">
-                            <div class="input-group-text">
-                                <span class="bi bi-person-fill-lock"></span>
-                            </div>
-                            <div v-if="errors.password" class="invalid-feedback">
-                                <span v-for="(error, index) in errors.password" :key="index">{{ error }}</span>
-                            </div>
-                        </div>                        
-                        <button type="submit" class="btn btn-primary w-100">{{ $t('auth.login.submit') }}</button>                        
+                        <button type="submit" class="btn btn-primary w-100">{{ $t('auth.forgot_password.submit') }}</button>
                         <p class="mb-1">
-                            <router-link class="text-decoration-none" :to="{ name: 'forgot-password' }">
-                                {{ $t('auth.login.forgot_password_link') }}
-                            </router-link>                            
+                            <router-link class="text-decoration-none" :to="{ name: 'login' }">
+                                {{ $t('auth.forgot_password.login_link') }}
+                            </router-link>
                         </p>
                     </form>
                 </div>
             </div>
         </div>
-    </div>       
+    </div>
 </template>
 
 <script>
@@ -53,29 +44,31 @@ export default {
     data() {
         return {
             email: '',
-            password: '',
             errors: {},
             showMessage: true
         };
-    },    
+    },
     methods: {
-        async loginUser() {
+        async forgotPassword() {
             this.clearMessages();
             try {
                 const credentials = {
                     email: this.email,
-                    password: this.password
                 };
-                await AuthService.loginUser(credentials);                
-                this.$router.push({name: 'dashboard'});
+                let response = await AuthService.forgotPassword(credentials);
+                if(response.data.status){                    
+                    messageService.setMessage(response.data.message, 'success');
+                } else {                    
+                    messageService.setMessage(response.data.message, 'danger');
+                }
             } catch (error) {
                 this.handleLoginError(error);
             }
         },
-        handleLoginError(error) {            
-            if (error.type === 'validation') {                
+        handleLoginError(error) {
+            if (error.type === 'validation') {
                 this.errors = error.errors;
-            } else {                
+            } else {
                 messageService.setMessage(error.message, 'danger');
             }
         },
@@ -84,7 +77,7 @@ export default {
             messageService.clearMessage();
         },
     },
-    mounted() {        
+    mounted() {
         // console.log('asdasd123:: ', this.appVariables);
         // console.log('import.meta.env.VITE_APP_NAME:: ', import.meta.env.VITE_APP_NAME);
     },
@@ -94,4 +87,3 @@ export default {
     }
 }
 </script>
- 

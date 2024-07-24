@@ -1,18 +1,20 @@
 <template>
-    <div v-if="isAuthenticated" class="app-wrapper">
+    <div v-if="isAuthenticated">
         <header-component></header-component>
         <!-- <sidebar-component></sidebar-component> -->
 
         <!-- Global Loading Screen -->
         <loading-screen-component></loading-screen-component>
 
-        <main class="app-main">
-            <router-view></router-view>
+        <main class="app-main"> 
+            <div class="container">
+                <router-view></router-view>            
+            </div>           
         </main>
         <footer-component></footer-component>
     </div>
     <div v-else class="login-page" style="min-height: 466px;">
-        <div class="login-box">
+        <div class="container">
             <router-view></router-view>
         </div>
     </div>
