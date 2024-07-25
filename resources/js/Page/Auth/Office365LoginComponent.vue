@@ -1,15 +1,15 @@
 <template>
-    <div class="vh-100 d-flex align-items-center justify-content-center">
+    <!-- <div class="vh-100 d-flex align-items-center justify-content-center">
         <div class="login-container col-12 col-md-8 col-lg-4">
             <GlobalMessage v-if="showMessage" />
             <div class="card w-100">
-                <div class="card-body">
-                    <h5 class="card-title text-center">{{ $t('auth.office365_login.title') }}</h5>
-                    <button type="button" @click="loginWithOffice365" class="btn btn-primary w-100">{{ $t('auth.office365_login.redirect_link_button') }}</button>
-                </div>
+                <div class="card-body"> -->
+                    <!-- <h5 class="card-title text-center">{{ $t('auth.office365_login.title') }}</h5> -->
+                    <button type="button" @click="loginWithOffice365" class="btn btn-primary w-100 mb-3">{{ $t('auth.office365_login.redirect_link_button') }}</button>
+                <!-- </div>
             </div>
         </div>
-    </div>
+    </div> -->
 </template>
 
 <script>

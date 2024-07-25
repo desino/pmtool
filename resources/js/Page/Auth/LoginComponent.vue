@@ -4,8 +4,10 @@
             <GlobalMessage v-if="showMessage" />
             <div class="card w-100">
                 <div class="card-body">
-                    <h5 class="card-title text-center">{{ $t('auth.login.title') }}</h5>
-                    <form @submit.prevent="loginUser">
+                    <h5 class="card-title text-center">{{ $t('auth.login.title') }}</h5>                    
+                    <Office365LoginComponent v-if="appVariables.ENABLE_OFFICE_365_LOGIN" />
+
+                    <form @submit.prevent="loginUser" class="mt-10" v-if="appVariables.ENABLE_MANUAL_LOGIN">
                         <div class="input-group mb-3">
                             <input v-model="email" :class="{'is-invalid': errors.email}" class="form-control" :placeholder="$t('auth.login.email')" type="email">
                             <div class="input-group-text">
@@ -43,12 +45,14 @@ import AuthService from "../../Services/AuthService.js";
 import globalMixin from '@/globalMixin';
 import messageService from './../../Services/messageService.js';
 import GlobalMessage from './../../Components/GlobalMessage.vue';
+import Office365LoginComponent from "./Office365LoginComponent.vue";
 
 export default {
     name: 'LoginComponent',
     mixins: [globalMixin],
     components: {
-        GlobalMessage
+        GlobalMessage,
+        Office365LoginComponent
     },
     data() {
         return {
@@ -85,7 +89,7 @@ export default {
         },
     },
     mounted() {
-        // console.log('asdasd123:: ', this.appVariables);
+        console.log('asdasd123:: ', this.appVariables);
         // console.log('import.meta.env.VITE_APP_NAME:: ', import.meta.env.VITE_APP_NAME);
     },
     beforeUnmount() {

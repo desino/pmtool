@@ -9,8 +9,8 @@ export default [
     {
         path: '/login',
         name: 'login',
-        // component: LoginComponent,
-        component: Office365LoginComponent,
+        component: LoginComponent,
+        // component: Office365LoginComponent,
         meta: {title: 'Login'}
     },
     {
