@@ -16,4 +16,7 @@ return [
         'office365_login_domains_not_match' => "This user's login is not allowed because we are not permitted to use this domain!",
         'provider_callback_session_text' => "Provider callback seesion data get successfully",
     ],
+    'error' => [
+        
+    ]
 ];

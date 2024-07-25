@@ -30,6 +30,9 @@
         },
         "logout": "Logout",
         "register": "Register"
+    },
+    "error": {
+        "not_found_page_link_text": "Go Back Home"
     }
 }
  
