@@ -1,6 +1,5 @@
 import ForgotPasswordComponent from "./ForgotPasswordComponent.vue";
 import LoginComponent from "./LoginComponent.vue";
-import Office365LoginCallbackComponent from "./Office365LoginCallbackComponent.vue";
 import Office365LoginComponent from "./Office365LoginComponent.vue";
 import ResetPasswordComponent from "./ResetPasswordComponent.vue";
 
