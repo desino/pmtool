@@ -12,5 +12,8 @@ return [
         'password_reset_link_send_fail' => 'Password reset link could not be sent to your email.',
         'password_reset_fail' => 'Password reset failed.',
         'looged_in_user_data_fatching_success' => 'Logged in user data fetched successfully.',
+        'office365_login_success' => 'Logged In Successfully.',
+        'office365_login_credentials_does_not_match' => 'Invalid Credentials.',
+        'office365_login_domains_not_match' => "This user's login is not allowed because we are not permitted to use this domain!",
     ],
 ];

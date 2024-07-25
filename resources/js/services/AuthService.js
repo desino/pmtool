@@ -6,12 +6,15 @@ import router from "../Router/index.js";
 import axiosRequest from "../Config/axios.js";
 import { APP_VARIABLES } from "../constants.js";
 
+const defultPath = APP_VARIABLES.DEFAULT_API_PATH;
 const endpoints = {
-    me: `${APP_VARIABLES.DEFAULT_API_PATH}/user`,
-    login: `${APP_VARIABLES.DEFAULT_API_PATH}/login`,
-    forgotPassword: `${APP_VARIABLES.DEFAULT_API_PATH}/forgot-password`,
-    resetPassword: `${APP_VARIABLES.DEFAULT_API_PATH}/reset-password`,
-    logout: `${APP_VARIABLES.DEFAULT_API_PATH}/logout`,
+    me: `${defultPath}/user`,
+    login: `${defultPath}/login`,
+    office_365_login: `/office-365-login/`,
+    office_365_login_callback: `${defultPath}/office-365-login/graph/callback`,
+    forgotPassword: `${defultPath}/forgot-password`,
+    resetPassword: `${defultPath}/reset-password`,
+    logout: `${defultPath}/logout`,
 };
 
 const AuthService = {
@@ -38,6 +41,40 @@ const AuthService = {
         }
     },
 
+    /**
+     * Asynchronously logs in a user with the provided credentials.
+     *
+     * @param {Object} credentials - An object containing the user's login credentials.
+     * @param {string} credentials.email - The user's email address.
+     * @param {string} credentials.password - The user's password.
+     * @return {Promise<void>} A Promise that resolves when the user is successfully logged in.
+     * @throws {Error} If there is an error during the login process.
+     */
+    async loginWithOffice365(credentials) {
+        try {            
+            window.location.href = endpoints.office_365_login+credentials.provider;
+            // const response = await axiosRequest.get(endpoints.office_365_login, {
+            //     params: credentials
+            // });
+            // const response = await axiosRequest.get(endpoints.office_365_login+credentials.provider);
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+
+    async handleProviderCallback(credentials) {
+        try {
+            // console.log('endpoints.office_365_login_callback:: ',endpoints.office_365_login_callback);
+            const response = await axiosRequest.get(
+                endpoints.office_365_login_callback,
+                {   params: credentials },
+            );
+            return response;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+
      /**
      * Asynchronously logs in a user with the provided credentials.
      *
@@ -51,7 +88,7 @@ const AuthService = {
                 endpoints.forgotPassword,
                 credentials,
             );
-            return response;            
+            return response;
         } catch (error) {
             throw handleError(error);
         }
@@ -63,7 +100,7 @@ const AuthService = {
                 endpoints.resetPassword,
                 credentials,
             );
-            return response;            
+            return response;
         } catch (error) {
             throw handleError(error);
         }

@@ -23,6 +23,10 @@
             "submit": "Reset Password",
             "login_link": "Back to login"
         },
+        "office365_login": {
+            "title": "Office 365 Login",
+            "redirect_link_button": "Login with Office 365"
+        },
         "logout": "Logout",
         "register": "Register"
     }

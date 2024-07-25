@@ -1,6 +1,6 @@
-<template>              
+<template>
     <div class="vh-100 d-flex align-items-center justify-content-center">
-        <div class="login-container col-12 col-md-8 col-lg-4">  
+        <div class="login-container col-12 col-md-8 col-lg-4">
             <GlobalMessage v-if="showMessage" />
             <div class="card w-100">
                 <div class="card-body">
@@ -23,18 +23,18 @@
                             <div v-if="errors.password" class="invalid-feedback">
                                 <span v-for="(error, index) in errors.password" :key="index">{{ error }}</span>
                             </div>
-                        </div>                        
-                        <button type="submit" class="btn btn-primary w-100">{{ $t('auth.login.submit') }}</button>                        
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">{{ $t('auth.login.submit') }}</button>
                         <p class="mb-1">
                             <router-link class="text-decoration-none" :to="{ name: 'forgot-password' }">
                                 {{ $t('auth.login.forgot_password_link') }}
-                            </router-link>                            
+                            </router-link>
                         </p>
                     </form>
                 </div>
             </div>
         </div>
-    </div>       
+    </div>
 </template>
 
 <script>
@@ -57,7 +57,7 @@ export default {
             errors: {},
             showMessage: true
         };
-    },    
+    },
     methods: {
         async loginUser() {
             this.clearMessages();
@@ -66,16 +66,16 @@ export default {
                     email: this.email,
                     password: this.password
                 };
-                await AuthService.loginUser(credentials);                
+                await AuthService.loginUser(credentials);
                 this.$router.push({name: 'dashboard'});
             } catch (error) {
                 this.handleLoginError(error);
             }
         },
-        handleLoginError(error) {            
-            if (error.type === 'validation') {                
+        handleLoginError(error) {
+            if (error.type === 'validation') {
                 this.errors = error.errors;
-            } else {                
+            } else {
                 messageService.setMessage(error.message, 'danger');
             }
         },
@@ -84,7 +84,7 @@ export default {
             messageService.clearMessage();
         },
     },
-    mounted() {        
+    mounted() {
         // console.log('asdasd123:: ', this.appVariables);
         // console.log('import.meta.env.VITE_APP_NAME:: ', import.meta.env.VITE_APP_NAME);
     },
@@ -94,4 +94,3 @@ export default {
     }
 }
 </script>
- 
