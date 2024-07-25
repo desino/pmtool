@@ -18,9 +18,8 @@ export default {
             AuthService.logout();
         }
     },
-    computed: {
-        ...mapState(['user']), 
-        ...mapGetters(['isAuthenticated'])       
+    computed: {        
+        ...mapGetters(['user'])       
     },
 }
 </script>

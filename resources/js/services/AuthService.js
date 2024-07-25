@@ -10,8 +10,8 @@ const defultPath = APP_VARIABLES.DEFAULT_API_PATH;
 const endpoints = {
     me: `${defultPath}/user`,
     login: `${defultPath}/login`,
-    office_365_login: `/office-365-login/`,
-    office_365_login_callback: `${defultPath}/office-365-login/graph/callback`,
+    office365Login: `/office-365-login/`,
+    getProviderCallbackSessionData: `/provider-callback-session-data`,
     forgotPassword: `${defultPath}/forgot-password`,
     resetPassword: `${defultPath}/reset-password`,
     logout: `${defultPath}/logout`,
@@ -51,24 +51,22 @@ const AuthService = {
      * @throws {Error} If there is an error during the login process.
      */
     async loginWithOffice365(credentials) {
-        try {            
-            window.location.href = endpoints.office_365_login+credentials.provider;
-            // const response = await axiosRequest.get(endpoints.office_365_login, {
-            //     params: credentials
-            // });
-            // const response = await axiosRequest.get(endpoints.office_365_login+credentials.provider);
+        try {
+            window.location.href = endpoints.office365Login+credentials.provider;
         } catch (error) {
             throw handleError(error);
         }
     },
 
-    async handleProviderCallback(credentials) {
+    async getProviderCallbackSessionData() {
         try {
-            // console.log('endpoints.office_365_login_callback:: ',endpoints.office_365_login_callback);
-            const response = await axiosRequest.get(
-                endpoints.office_365_login_callback,
-                {   params: credentials },
-            );
+            const response = await axiosRequest.get(endpoints.getProviderCallbackSessionData);
+            const resData = response.data.content;            
+            if(resData.token != null && resData.token != true){                
+                store.commit("setAuth", true);
+                store.commit("setToken", resData.token);
+                this.refreshUser();
+            }
             return response;
         } catch (error) {
             throw handleError(error);

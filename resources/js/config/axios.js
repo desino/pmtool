@@ -3,6 +3,7 @@ import router from "../Router/index.js";
 
 const axiosRequest = axios.create({
     'Content-Type': 'application/json',
+    timeout: 10000,
 });
 
 axiosRequest.interceptors.request.use(

@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Facades\Socialite;
 
 class SocialiteController extends Controller
@@ -16,47 +18,23 @@ class SocialiteController extends Controller
         return Socialite::driver($provider)->scopes(config("services.".$provider.".scopes"))->redirect();
     }
 
-    public function handleProviderCallback(Request $request, $provider)
+    public function handleProviderCallback($provider)
     {
-        print '<pre>';
-        print_r("sdfsdfsdf");
-        print '</pre>';
-        exit;
-        // $response = Http::asForm()->post('https://login.microsoftonline.com/common/oauth2/v2.0/token', [
-        //     'client_id' => env('GRAPH_CLIENT_ID'),
-        //     'client_secret' => env('GRAPH_CLIENT_SECRET'),
-        //     'redirect_uri' => env('GRAPH_REDIRECT_URI'),
-        //     'code' => $request->code,
-        //     'grant_type' => 'authorization_code',
-        // ]);
-        // print '<pre>';
-        // print_r($response->json());
-        // print '</pre>';
-        // exit;
-
-        // $accessToken = $response->json()['access_token'];
-        // $user = Http::withToken($accessToken)->get('https://graph.microsoft.com/v1.0/me')->json();
-        // print '<pre>';
-        // print_r($user);
-        // print '</pre>';
-        // exit;
-
         $provider = self::convertProviderSlugToServiceName($provider);
         $remoteUser = Socialite::driver($provider)
         ->scopes(config("services.{$provider}.scopes"))
-        ->user(); 
-        
-        abort_unless($remoteUser, 404, __('auth.failed_login'));        
+        ->user();
 
         $domainArray = explode('@', $remoteUser->getEmail());
 
         $allowedDomainsArray = array_map('trim',explode(',', config('app.allowed_domains_for_office365_login')));
-        if (!in_array($domainArray[1], $allowedDomainsArray)) {  
-            echo "domains not match";exit;          
-            return ApiHelper::response(false, __('messages.office365_login_domains_not_match'), '', 400);
-            // return redirect()->to('/login');
+        if (!in_array($domainArray[1], $allowedDomainsArray)) {            
+            //return redirect('/office-365-login-callback?message_class=danger&message='.urlencode(__('messages.auth.office365_login_domains_not_match')).'');
+            Session::put('message_class', 'danger');
+            Session::put('callback_message', __('messages.auth.office365_login_domains_not_match'));
+            return redirect('/login');
         }
-        echo "Sdfsdf";exit;
+
         $user = User::firstOrCreate([
             'email' => $remoteUser->getEmail(),
         ], [
@@ -64,13 +42,31 @@ class SocialiteController extends Controller
             'password' => 'admin@123'
         ]);
 
-        Auth::login($user, true);
+        // Auth::login($user, true);
+        $token = $user->createToken('token')->plainTextToken;
+        Session::put('message_class', 'success');
+        Session::put('callback_message', __('messages.auth.office365_login_success'));
+        Session::put('token', $token);
+        return redirect('/login');
+        // return redirect('/office-365-login-callback?message_class=success&message='.urlencode(__('messages.auth.office365_login_success')).'&token='.urlencode($token).'');
+    }
 
-        return redirect()->intended('/');
+    public function getProviderCallbackSessionData(){
+        $retData = array(
+            'message_class' => Session::get('message_class') ?? null,
+            'message' => Session::get('callback_message') ?? null,
+            'token' => Session::get('token') ?? null,
+            'user' => Auth::user() ?? null
+        ); 
+        Session::flash('message_class');
+        Session::flash('callback_message');
+        Session::flash('token');
+        return ApiHelper::response(true,__('messages.auth.provider_callback_session_text'),$retData,200);
     }
 
     public static function convertProviderSlugToServiceName($providerSlug)
     {
         return str_replace('-', '_', $providerSlug);
     }
+
 }

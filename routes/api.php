@@ -11,16 +11,13 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::get('/user', 'user');
         // Route::get('/logout', 'logout');
     });
+
 });
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('/login', 'login');
+    Route::post('/logout', 'logout');
     Route::post('/forgot-password', 'sendResetLink');
     Route::post('/reset-password', 'resetPassword');
-});
-
-Route::controller(SocialiteController::class)->group(function(){
-    Route::get('office-365-login/{provider}','redirectToProvider');
-    Route::get('office-365-login/{provider}/callback', 'handleProviderCallback');
 });
 

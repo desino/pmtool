@@ -123,4 +123,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'allowed_domains_for_office365_login' => env('ALLOWED_DOMAINS_FOR_OFFICE365_LOGIN'),
+
 ];

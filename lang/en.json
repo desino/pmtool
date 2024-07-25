@@ -25,7 +25,8 @@
         },
         "office365_login": {
             "title": "Office 365 Login",
-            "redirect_link_button": "Login with Office 365"
+            "redirect_link_button": "Login with Office 365",
+            "login_link": "Back to login"
         },
         "logout": "Logout",
         "register": "Register"

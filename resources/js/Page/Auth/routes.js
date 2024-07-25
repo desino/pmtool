@@ -24,11 +24,5 @@ export default [
         name: 'reset-password',
         component: ResetPasswordComponent,
         meta: {title: 'Reset Password'}
-    },
-    {
-        path: '/office-365-login/graph/callback',
-        name: 'office-365-login-callback',
-        component: Office365LoginCallbackComponent,
-        meta: {title: 'Office 365 login callback'}
-    },
+    },   
 ];

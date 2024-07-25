@@ -4,7 +4,7 @@
             <GlobalMessage v-if="showMessage" />
             <div class="card w-100">
                 <div class="card-body">
-                    <h5 class="card-title text-center">{{ $t('auth.login.title') }}</h5>                    
+                    <h5 class="card-title text-center">{{ $t('auth.login.title') }}</h5>
                     <Office365LoginComponent v-if="appVariables.ENABLE_OFFICE_365_LOGIN" />
 
                     <form @submit.prevent="loginUser" class="mt-10" v-if="appVariables.ENABLE_MANUAL_LOGIN">
@@ -76,6 +76,20 @@ export default {
                 this.handleLoginError(error);
             }
         },
+        async getProviderCallbackSessionData(){
+            this.clearMessages();
+            try {
+                const response = await AuthService.getProviderCallbackSessionData();
+                const data = response.data.content;                
+                if(data.token != null){
+                    this.$router.push({name: 'dashboard'});
+                } else {
+                    messageService.setMessage(data.message, data.message_class);
+                }
+            } catch (error) {
+                this.handleLoginError(error);
+            }
+        },
         handleLoginError(error) {
             if (error.type === 'validation') {
                 this.errors = error.errors;
@@ -89,7 +103,9 @@ export default {
         },
     },
     mounted() {
-        console.log('asdasd123:: ', this.appVariables);
+        this.clearMessages();
+        this.getProviderCallbackSessionData();
+        // console.log('asdasd123:: ', this.appVariables);
         // console.log('import.meta.env.VITE_APP_NAME:: ', import.meta.env.VITE_APP_NAME);
     },
     beforeUnmount() {

@@ -25,8 +25,8 @@ class AuthController extends Controller
     {                
         if (Auth::attempt($request->only('email', 'password'))) {
             $user = Auth::user();
-            $token = $user->createToken('token')->plainTextToken;
-            return ApiHelper::response(true, __('messages.auth.login_success'), ['token' => $token], 200);
+            $user['token'] = $user->createToken('token')->plainTextToken;            
+            return ApiHelper::response(true, __('messages.auth.login_success'), $user, 200);
         }
         return ApiHelper::response(false, __('messages.auth.login_credentials_does_not_match'), [], 401);
     }
