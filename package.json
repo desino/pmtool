@@ -14,7 +14,7 @@
     },
     "dependencies": {
         "@vitejs/plugin-vue": "^5.0.5",
-        "bootstrap": "^5.3.2",
+        "bootstrap": "^5.3.3",
         "bootstrap-icons": "^1.11.0",
         "toastify-js": "^1.12.0",
         "vue": "^3.4.30",

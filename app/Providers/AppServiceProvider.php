@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Client;
+use App\Models\Initiative;
+use App\Observers\ClientObserver;
+use App\Observers\InitiativeObserver;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -24,6 +28,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Schema::defaultStringLength(191);
+        Client::observe(ClientObserver::class);
+        Initiative::observe(InitiativeObserver::class);
         Event::listen(
             SocialiteWasCalled::class,
             GraphExtendSocialite::class.'@handle',

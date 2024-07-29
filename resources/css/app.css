@@ -1,0 +1,12 @@
+.navbar-custom {
+    background-color: #1e6abf;
+}
+
+.navbar-custom .navbar-brand,
+.navbar-custom .navbar-nav .nav-link {
+    color: white;
+}
+
+.navbar-custom .dropdown-toggle::after {
+    color: white;
+}

@@ -56,22 +56,7 @@ const AuthService = {
         } catch (error) {
             throw handleError(error);
         }
-    },
-
-    async getProviderCallbackSessionData() {
-        try {
-            const response = await axiosRequest.get(endpoints.getProviderCallbackSessionData);
-            const resData = response.data.content;            
-            if(resData.token != null && resData.token != true){                
-                store.commit("setAuth", true);
-                store.commit("setToken", resData.token);
-                this.refreshUser();
-            }
-            return response;
-        } catch (error) {
-            throw handleError(error);
-        }
-    },
+    },    
 
      /**
      * Asynchronously logs in a user with the provided credentials.
@@ -122,6 +107,21 @@ const AuthService = {
             store.commit("setToken", null);
             store.commit("setUser", null);
             // await router.push({ name: "login" });
+        }
+    },
+
+    async getProviderCallbackSessionData() {
+        try {
+            const response = await axiosRequest.get(endpoints.getProviderCallbackSessionData);
+            const resData = response.data.content;
+            if(resData.token != null && resData.token != true){
+                store.commit("setAuth", true);
+                store.commit("setToken", resData.token);
+                this.refreshUser();
+            }
+            return response;
+        } catch (error) {
+            throw handleError(error);
         }
     },
 

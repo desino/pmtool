@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\SocialiteController;
+use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -12,6 +13,9 @@ Route::middleware('auth:sanctum')->group(function(){
         // Route::get('/logout', 'logout');
     });
 
+    Route::controller(ClientController::class)->prefix('client')->group(function () {
+        Route::post('/store', 'store');
+    });
 });
 
 Route::controller(AuthController::class)->group(function () {
@@ -20,4 +24,5 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/forgot-password', 'sendResetLink');
     Route::post('/reset-password', 'resetPassword');
 });
+
 

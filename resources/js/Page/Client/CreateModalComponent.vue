@@ -1,0 +1,116 @@
+<template>
+    <div class="modal-dialog modal-lg">
+        <form @submit.prevent="storeClient">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createClientModalLabel">{{ $t('client.create_client_modal.title') }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <GlobalMessage v-if="showMessage" />
+                    <div class="mb-3">
+                        <label for="name" class="form-label">{{ $t('client.create_client_modal.form_inputs.name') }}</label>
+                        <input type="text" v-model="formData.name" :class="{'is-invalid': errors.name}" id="name" class="form-control">
+                        <div v-if="errors.name" class="invalid-feedback">
+                            <span v-for="(error, index) in errors.name" :key="index">{{ error }}</span>
+                        </div>
+                    </div>                    
+                    <div class="mb-3">
+                        <label for="initiative_name" class="form-label">{{ $t('client.create_client_modal.form_inputs.initiative_name') }}</label>
+                        <input type="text" v-model="formData.initiative_name" :class="{'is-invalid': errors.initiative_name}" id="initiative_name" class="form-control">
+                        <div v-if="errors.initiative_name" class="invalid-feedback">
+                            <span v-for="(error, index) in errors.initiative_name" :key="index">{{ error }}</span>
+                        </div>
+                    </div>                    
+                    <div class="mb-3">
+                        <label for="ballpark_development_hours" class="form-label">{{ $t('client.create_client_modal.form_inputs.ballpark_development_hours') }}</label>
+                        <input type="text" v-model="formData.ballpark_development_hours" :class="{'is-invalid': errors.ballpark_development_hours}" id="ballpark_development_hours" class="form-control">
+                        <div v-if="errors.ballpark_development_hours" class="invalid-feedback">
+                            <span v-for="(error, index) in errors.ballpark_development_hours" :key="index">{{ error }}</span>
+                        </div>
+                    </div>                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" v-model="formData.is_sold" :class="{'is-invalid': errors.is_sold}" type="checkbox" id="is_sold">
+                            <label class="form-check-label" for="is_sold">
+                                {{ $t('client.create_client_modal.form_inputs.is_sold') }}
+                            </label>
+                        </div>                        
+                        <div v-if="errors.ballpark_development_hours" class="invalid-feedback">
+                            <span v-for="(error, index) in errors.ballpark_development_hours" :key="index">{{ error }}</span>
+                        </div>
+                    </div>                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">{{ $t('client.create_client_modal.submit') }}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</template>
+
+<script>
+    import GlobalMessage from './../../Components/GlobalMessage.vue';
+    import ClientService from '../../Services/ClientService';
+    import messageService from '../../Services/messageService';
+    import { Modal } from 'bootstrap';
+import showToast from '../../Utils/toasts';
+    export default {
+        name: 'CreateModalComponent',
+        components: {
+            GlobalMessage,
+        },
+        data() {
+            return {
+                formData: {
+                    name: '',
+                    initiative_name: '',
+                    ballpark_development_hours: '',
+                    is_sold: false,
+                },
+                errors: {},
+                showMessage: true
+            };
+        },
+        methods: {
+            async storeClient() {
+                this.clearMessages();
+                try {                    
+                    const response = await ClientService.storeClient(this.formData);                    
+                    // messageService.setMessage(response.data.message, 'success');
+                    showToast(response.data.message, 'success');
+                    this.hideModal();
+                } catch (error) {
+                    this.handleLoginError(error);
+                }
+            },
+            handleLoginError(error) {
+                if (error.type === 'validation') {
+                    this.errors = error.errors;
+                } else {
+                    messageService.setMessage(error.message, 'danger');
+                }
+            },
+            clearMessages() {
+                this.errors = {};
+                messageService.clearMessage();
+            },
+            hideModal() {
+                const modalElement = document.getElementById('createClientModal');
+                if (modalElement) {
+                    const modal = Modal.getInstance(modalElement);
+                    if (modal) {
+                        modal.hide();
+                    }
+                }
+            }
+        },
+        mounted() {
+            this.clearMessages();                        
+        },
+        beforeUnmount() {        
+            this.showMessage = false;
+        }
+    };
+</script>

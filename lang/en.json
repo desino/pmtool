@@ -33,6 +33,18 @@
     },
     "error": {
         "not_found_page_link_text": "Go Back Home"
+    },
+    "client": {
+        "create_client_modal": {
+            "title": "Create Client",
+            "form_inputs": {
+                "name": "Client name",
+                "initiative_name": "Initiative Name",
+                "ballpark_development_hours": "Ballpark Development Hours",
+                "is_sold": "Sold"
+            },
+            "submit": "Create Client"
+        }
     }
 }
  

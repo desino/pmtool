@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Auth;
+namespace App\Http\Controllers;
 
 use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
