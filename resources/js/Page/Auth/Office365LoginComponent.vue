@@ -4,8 +4,8 @@
             <GlobalMessage v-if="showMessage" />
             <div class="card w-100">
                 <div class="card-body"> -->
-                    <!-- <h5 class="card-title text-center">{{ $t('auth.office365_login.title') }}</h5> -->
-                    <button type="button" @click="loginWithOffice365" class="btn btn-primary w-100 mb-3">{{ $t('auth.office365_login.redirect_link_button') }}</button>
+                    <!-- <h5 class="card-title text-center">{{ $t('office365_login_page_title') }}</h5> -->
+                    <button type="button" @click="loginWithOffice365" class="btn btn-primary w-100 mb-3">{{ $t('office365_login_redirect_link_button_text') }}</button>
                 <!-- </div>
             </div>
         </div>

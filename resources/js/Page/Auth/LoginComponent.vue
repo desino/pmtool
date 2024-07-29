@@ -4,12 +4,12 @@
             <GlobalMessage v-if="showMessage" />
             <div class="card w-100">
                 <div class="card-body">
-                    <h5 class="card-title text-center">{{ $t('auth.login.title') }}</h5>
+                    <h5 class="card-title text-center">{{ $t('login_page_title') }}</h5>
                     <Office365LoginComponent v-if="appVariables.ENABLE_OFFICE_365_LOGIN" />
 
                     <form @submit.prevent="loginUser" class="mt-10" v-if="appVariables.ENABLE_MANUAL_LOGIN">
                         <div class="input-group mb-3">
-                            <input v-model="email" :class="{'is-invalid': errors.email}" class="form-control" :placeholder="$t('auth.login.email')" type="email">
+                            <input v-model="email" :class="{'is-invalid': errors.email}" class="form-control" :placeholder="$t('login_input_email')" type="email">
                             <div class="input-group-text">
                                 <span class="bi bi-envelope-at-fill"></span>
                             </div>
@@ -18,7 +18,7 @@
                             </div>
                         </div>
                         <div class="input-group mb-3">
-                            <input v-model="password" :class="{'is-invalid': errors.password}" class="form-control" :placeholder="$t('auth.login.password')" type="password">
+                            <input v-model="password" :class="{'is-invalid': errors.password}" class="form-control" :placeholder="$t('login_input_password')" type="password">
                             <div class="input-group-text">
                                 <span class="bi bi-person-fill-lock"></span>
                             </div>
@@ -26,10 +26,10 @@
                                 <span v-for="(error, index) in errors.password" :key="index">{{ error }}</span>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">{{ $t('auth.login.submit') }}</button>
+                        <button type="submit" class="btn btn-primary w-100">{{ $t('login_submit_but_text') }}</button>
                         <p class="mb-1">
                             <router-link class="text-decoration-none" :to="{ name: 'forgot-password' }">
-                                {{ $t('auth.login.forgot_password_link') }}
+                                {{ $t('login_forgot_password_link') }}
                             </router-link>
                         </p>
                     </form>

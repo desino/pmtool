@@ -10,7 +10,8 @@ class InitiativeObserver
     public function creating(Initiative $initiative)
     {
         $initiative->created_by = Auth::id();
-        $initiative->updated_by = Auth::id();
+        // $initiative->updated_by = Auth::id();
+        $initiative->updated_at = null;
     }
     /**
      * Handle the Initiative "created" event.

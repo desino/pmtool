@@ -10,7 +10,8 @@ class ClientObserver
     public function creating(Client $client)
     {
         $client->created_by = Auth::id();
-        $client->updated_by = Auth::id();
+        // $client->updated_by = Auth::id();
+        $client->updated_at = null;
     }
     /**
      * Handle the Client "created" event.

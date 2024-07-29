@@ -29,7 +29,7 @@
                     </select>
                 </div>
                 <button class="btn btn-warning btn-sm me-2" type="button"><i class="bi bi-plus-circle"></i> Create new task</button>
-                <button class="btn btn-danger btn-sm" type="button" @click="logout"><i class="bi bi-box-arrow-right"></i> {{ $t('auth.logout') }}</button>
+                <button class="btn btn-danger btn-sm" type="button" @click="logout"><i class="bi bi-box-arrow-right"></i> {{ $t('logout_but_text') }}</button>
             </div>
         </div>
     </nav>

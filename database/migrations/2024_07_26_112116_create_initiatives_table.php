@@ -16,9 +16,9 @@ return new class extends Migration
             $table->integer('client_id');
             $table->string('name');
             $table->bigInteger('ballpark_development_hours');
-            $table->string('status');
+            $table->integer('status')->default(0);
             $table->integer('created_by');
-            $table->integer('updated_by');
+            $table->integer('updated_by')->default(0);
             $table->timestamps();
         });
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api;
 
+use App\Models\Initiative;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -35,7 +36,7 @@ class ClientRequest extends FormRequest
     {
         $data = parent::all($keys);
 
-        $data['status'] = $data['is_sold'] ? 'Ongoing' : 'Opportunity';
+        $data['status'] = $data['is_sold'] ? Initiative::getOngoing() : Initiative::getOpportunity();
         return $data;
     }
 }

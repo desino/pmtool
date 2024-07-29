@@ -48,9 +48,9 @@ class AuthController extends Controller
         $response = Password::sendResetLink($request->only('email'));
 
         if ($response === Password::RESET_LINK_SENT) {
-            return ApiHelper::response(true, Lang::get($response), '', 200);
+            return ApiHelper::response(true, __($response), '', 200);
         } else {
-            return ApiHelper::response(false, Lang::get($response), '', 400);
+            return ApiHelper::response(false, __($response), '', 400);
         }    
     }
 
@@ -68,9 +68,9 @@ class AuthController extends Controller
             }
         );
         if ($response === Password::PASSWORD_RESET) {
-            return ApiHelper::response(true, Lang::get($response), '', 200);
+            return ApiHelper::response(true, __($response), '', 200);
         } else {
-            return ApiHelper::response(false, Lang::get($response), '', 400);
+            return ApiHelper::response(false, __($response), '', 400);
         }
     }
 

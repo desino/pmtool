@@ -4,10 +4,10 @@
             <GlobalMessage v-if="showMessage" />
             <div class="card w-100">
                 <div class="card-body">
-                    <h5 class="card-title text-center">{{ $t('auth.forgot_password.title') }}</h5>
+                    <h5 class="card-title text-center">{{ $t('forgot_password_page_title') }}</h5>
                     <form @submit.prevent="forgotPassword">
                         <div class="input-group mb-3">
-                            <input v-model="email" :class="{'is-invalid': errors.email}" class="form-control" :placeholder="$t('auth.forgot_password.email')" type="email">
+                            <input v-model="email" :class="{'is-invalid': errors.email}" class="form-control" :placeholder="$t('forgot_password_input_email')" type="email">
                             <div class="input-group-text">
                                 <span class="bi bi-envelope-at-fill"></span>
                             </div>
@@ -15,10 +15,10 @@
                                 <span v-for="(error, index) in errors.email" :key="index">{{ error }}</span>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">{{ $t('auth.forgot_password.submit') }}</button>
+                        <button type="submit" class="btn btn-primary w-100">{{ $t('forgot_password_submit_but_text') }}</button>
                         <p class="mb-1">
                             <router-link class="text-decoration-none" :to="{ name: 'login' }">
-                                {{ $t('auth.forgot_password.login_link') }}
+                                {{ $t('forgot_password_back_to_login_but_text') }}
                             </router-link>
                         </p>
                     </form>

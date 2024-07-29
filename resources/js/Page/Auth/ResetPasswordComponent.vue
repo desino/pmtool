@@ -4,26 +4,26 @@
             <GlobalMessage v-if="showMessage" />
             <div class="card w-100">
                 <div class="card-body">
-                    <h5 class="card-title text-center">{{ $t('auth.reset_password.title') }}</h5>
+                    <h5 class="card-title text-center">{{ $t('reset_password_page_title') }}</h5>
                     <form @submit.prevent="resetPassword">
                         <input type="hidden" v-model="token" />
                         <input type="hidden" v-model="email" />
                         <div class="mb-3">
-                            <input v-model="password" :class="{'is-invalid': errors.password}" class="form-control" :placeholder="$t('auth.reset_password.password')" type="password">
+                            <input v-model="password" :class="{'is-invalid': errors.password}" class="form-control" :placeholder="$t('reset_password_input_password')" type="password">
                             <div v-if="errors.password" class="invalid-feedback">
                                 <span v-for="(error, index) in errors.password" :key="index">{{ error }}</span>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <input v-model="password_confirmation" :class="{'is-invalid': errors.password_confirmation}" class="form-control" :placeholder="$t('auth.reset_password.password_confirmation')" type="password">
+                            <input v-model="password_confirmation" :class="{'is-invalid': errors.password_confirmation}" class="form-control" :placeholder="$t('reset_password_input_password_confirmation')" type="password">
                             <div v-if="errors.password_confirmation" class="invalid-feedback">
                                 <span v-for="(error, index) in errors.password_confirmation" :key="index">{{ error }}</span>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">{{ $t('auth.reset_password.submit') }}</button>
+                        <button type="submit" class="btn btn-primary w-100">{{ $t('reset_password_submit_but_text') }}</button>
                         <p class="mb-1">
                             <router-link class="text-decoration-none" :to="{ name: 'login' }">
-                                {{ $t('auth.reset_password.login_link') }}
+                                {{ $t('reset_password_back_to_login_but_text') }}
                             </router-link>
                         </p>
                     </form>
