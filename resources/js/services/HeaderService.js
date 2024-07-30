@@ -5,20 +5,21 @@ import router from "../Router/index.js";
 import axiosRequest from "../Config/axios.js";
 import { APP_VARIABLES } from "../constants.js";
 
-const defaultPath = `${APP_VARIABLES.DEFAULT_API_PATH}/client`;
+const defaultPath = `${APP_VARIABLES.DEFAULT_API_PATH}/header`;
 const endpoints = {
-    store: `${defaultPath}/store`,
-};
+    getInitiatives: `${defaultPath}/get-initiatives`,    
 
-const ClientService = {
-    async storeClient(data) {
-        try {   
-            const response = await axiosRequest.post(endpoints.store, data);  
-            return response;          
-        } catch (error) {    
-            throw handleError(error);
+};
+const HeaderService = {    
+    async getInitiatives(status = null) {
+        try {               
+            // const response = await axiosRequest.get(endpoints.getInitiatives);
+            const response = await axiosRequest.get('/api/header/get-initiatives');
+            // return response;
+        } catch (error) {
+            return handleError(error);
         }
-    }
+    },
 }
 
 function handleError(error) {
@@ -30,4 +31,4 @@ function handleError(error) {
     }
 }
 
-export default ClientService;
+export default HeaderService;

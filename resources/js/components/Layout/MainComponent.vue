@@ -7,14 +7,14 @@
         <loading-screen-component></loading-screen-component>
 
         <main class="app-main"> 
-            <div class="container">
+            <div class="container mt-4">
                 <router-view></router-view>            
             </div>           
         </main>
         <footer-component></footer-component>
     </div>
     <div v-else class="login-page" style="min-height: 466px;">
-        <div class="container">
+        <div class="container mt-4">
             <router-view></router-view>
         </div>
     </div>

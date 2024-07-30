@@ -6,15 +6,15 @@ import router from "../Router/index.js";
 import axiosRequest from "../Config/axios.js";
 import { APP_VARIABLES } from "../constants.js";
 
-const defultPath = APP_VARIABLES.DEFAULT_API_PATH;
+const defaultPath = APP_VARIABLES.DEFAULT_API_PATH;
 const endpoints = {
-    me: `${defultPath}/user`,
-    login: `${defultPath}/login`,
+    me: `${defaultPath}/user`,
+    login: `${defaultPath}/login`,
     office365Login: `/office-365-login/`,
     getProviderCallbackSessionData: `/provider-callback-session-data`,
-    forgotPassword: `${defultPath}/forgot-password`,
-    resetPassword: `${defultPath}/reset-password`,
-    logout: `${defultPath}/logout`,
+    forgotPassword: `${defaultPath}/forgot-password`,
+    resetPassword: `${defaultPath}/reset-password`,
+    logout: `${defaultPath}/logout`,
 };
 
 const AuthService = {

@@ -29,5 +29,5 @@ class InitiativeController extends Controller
             $statusCode = 500;
         }
         return ApiHelper::response($status, $meesage, '', $statusCode);
-    }
+    }    
 }

@@ -36,7 +36,7 @@ class ClientRequest extends FormRequest
     {
         $data = parent::all($keys);
 
-        $data['status'] = $data['is_sold'] ? Initiative::getOngoing() : Initiative::getOpportunity();
+        $data['status'] = $data['is_sold'] ? Initiative::getStatusOngoing() : Initiative::getStatusOpportunity();
         return $data;
     }
 }

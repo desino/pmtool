@@ -5,10 +5,10 @@ import router from "../Router/index.js";
 import axiosRequest from "../Config/axios.js";
 import { APP_VARIABLES } from "../constants.js";
 
-const defultPath = `${APP_VARIABLES.DEFAULT_API_PATH}/initiative`;
+const defaultPath = `${APP_VARIABLES.DEFAULT_API_PATH}/initiative`;
 const endpoints = {
-    store: `${defultPath}/store`,
-    getClients: `${defultPath}/get-clients`,
+    store: `${defaultPath}/store`,
+    getClients: `${defaultPath}/get-clients`,
 };
 
 const InitiativeService = {

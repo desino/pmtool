@@ -10,3 +10,7 @@
 .navbar-custom .dropdown-toggle::after {
     color: white;
 }
+
+.primary {
+    color: #1e6abf;
+}

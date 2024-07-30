@@ -19,6 +19,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="javascript:" @click="showCreateInitiativeModal"><i class="bi bi-gear"></i> Create Initiative</a>
                     </li>
+                    <li class="nav-item">
+                        <router-link class="nav-link" :to="{ name: 'opportunities' }" ><i class="bi bi-list"></i> Opportunites</router-link>                        
+                    </li>
                 </ul>
                 <div class="me-2">
                     <select class="form-select form-select-sm" aria-label="Default select example">
@@ -36,10 +39,10 @@
 
     <div class="modal fade" id="createClientModal" tabindex="-1" aria-labelledby="createClientModalLabel" aria-hidden="true">
         <CreateClientModalComponent ref="createClientModalComponent"/>
-    </div>    
+    </div>
     <div class="modal fade" id="createInitiativeModal" tabindex="-1" aria-labelledby="createInitiativeModalLabel" aria-hidden="true">
         <CreateInitiativeModalComponent ref="createInitiativeModalComponent"/>
-    </div>    
+    </div>
 </template>
 
 <script>
@@ -48,11 +51,17 @@
     import { mapState, mapGetters } from 'vuex';
     import { Modal } from 'bootstrap';
     import CreateInitiativeModalComponent from '../../Page/Initiative/CreateInitiativeModalComponent.vue';
+    import HeaderService from '../../Services/HeaderService.js';
 
     export default {
         components: {
             CreateClientModalComponent,
             CreateInitiativeModalComponent
+        },
+        data() {
+            return {
+                initiatives: []
+            }
         },
         methods: {
             logout() {
@@ -75,9 +84,17 @@
                     modal.show();
                 }
             },
+            // async getInitiatives() {
+            //     const response = await HeaderService.getInitiatives();
+            //     // this.initiatives = response.data.content;
+            //     // console.log(this.initiatives);
+            // },
         },
         computed: {
             ...mapGetters(['user'])
         },
+        mounted() {
+            // this.getInitiatives();
+        }
     }
 </script>

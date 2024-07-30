@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
 {
     public function user(Request $request)
-    {ApiHelper
+    {
         if (Auth::check()) {
             return ApiHelper::response(true, 'Logged In User', $request->user(), 200);
         }
