@@ -144,6 +144,9 @@
     "validation.url": "The :attribute field must be a valid URL.",
     "validation.ulid": "The :attribute field must be a valid ULID.",
     "validation.uuid": "The :attribute field must be a valid UUID.",
+    
+    "validation.initiative.client_id": "The client name is required.",
+    "validation.initiative.name": "The initiative name is required.",
 
     "auth.failed": "These credentials do not match our records.",
     "auth.password": "The provided password is incorrect.",
@@ -172,6 +175,8 @@
     "messages.auth.provider_callback_session_text": "Provider callback seesion data get successfully",
 
     "messages.client.store_success": "Client created successfully.",
+
+    "messages.initiative.store_success": "Initiative created successfully.",
 
     "home": "Home",
     "login_title": "Login",
@@ -206,6 +211,14 @@
     "create_client_modal_input_ballpark_development_hours": "Ballpark Development Hours",
     "create_client_modal_input_is_sold": "Sold",
     "create_client_modal_submit_but_text": "Create Client",
+
+    "create_initiative_modal_title": "Create Initiative",
+    "create_initiative_modal_select_client_name": "Client name",
+    "create_initiative_modal_input_name": "Initiative Name",
+    "create_initiative_modal_input_ballpark_development_hours": "Ballpark Development Hours",
+    "create_initiative_modal_input_is_sold": "Sold",
+    "create_initiative_modal_submit_but_text": "Create Initiative",
+    "create_initiative_modal_select_client_name_placeholder": "Select Client",
 
     "initiative.status.opportunity": "Opportunity",
     "initiative.status.ongoing": "Ongoing",

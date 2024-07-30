@@ -14,10 +14,10 @@
                     </li>
                     <li class="nav-item">
                         <!-- <a class="nav-link" href="javascript:" data-bs-toggle="modal" data-bs-target="#creatteClientModal"><i class="bi bi-people"></i> Create Client</a> -->
-                        <a class="nav-link" href="javascript:" @click="showCreateModal"><i class="bi bi-people"></i> Create Client</a>
+                        <a class="nav-link" href="javascript:" @click="showCreateClientModal"><i class="bi bi-people"></i> Create Client</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="bi bi-gear"></i> Create Initiative</a>
+                        <a class="nav-link" href="javascript:" @click="showCreateInitiativeModal"><i class="bi bi-gear"></i> Create Initiative</a>
                     </li>
                 </ul>
                 <div class="me-2">
@@ -33,28 +33,43 @@
             </div>
         </div>
     </nav>
-     
-    <div class="modal fade" id="createClientModal" tabindex="-1" aria-labelledby="createClientModalLabel" aria-hidden="true">    
-        <CreateModalComponent/>
+
+    <div class="modal fade" id="createClientModal" tabindex="-1" aria-labelledby="createClientModalLabel" aria-hidden="true">
+        <CreateClientModalComponent ref="createClientModalComponent"/>
+    </div>    
+    <div class="modal fade" id="createInitiativeModal" tabindex="-1" aria-labelledby="createInitiativeModalLabel" aria-hidden="true">
+        <CreateInitiativeModalComponent ref="createInitiativeModalComponent"/>
     </div>    
 </template>
 
-<script>    
-    import CreateModalComponent from '../../Page/Client/CreateModalComponent.vue';
+<script>
+    import CreateClientModalComponent from '../../Page/Client/CreateClientModalComponent.vue';
     import AuthService from './../../Services/AuthService.js';
-    import { mapState, mapGetters } from 'vuex';  
+    import { mapState, mapGetters } from 'vuex';
     import { Modal } from 'bootstrap';
+    import CreateInitiativeModalComponent from '../../Page/Initiative/CreateInitiativeModalComponent.vue';
 
-    export default {        
+    export default {
         components: {
-            CreateModalComponent
+            CreateClientModalComponent,
+            CreateInitiativeModalComponent
         },
         methods: {
             logout() {
                 AuthService.logout();
             },
-            showCreateModal() {                
+            showCreateClientModal() {
+                this.$refs.createClientModalComponent.resetForm();
                 const modalElement = document.getElementById('createClientModal');
+                if (modalElement) {
+                    const modal = new Modal(modalElement);
+                    modal.show();
+                }
+            },
+            showCreateInitiativeModal() {
+                this.$refs.createInitiativeModalComponent.resetForm();
+                this.$refs.createInitiativeModalComponent.fetchClients();
+                const modalElement = document.getElementById('createInitiativeModal');
                 if (modalElement) {
                     const modal = new Modal(modalElement);
                     modal.show();

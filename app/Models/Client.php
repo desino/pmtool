@@ -15,4 +15,8 @@ class Client extends Model
     {
         return $this->hasMany(Initiative::class);
     }
+
+    public static function getAllClients(){
+        return self::all();
+    }
 }
