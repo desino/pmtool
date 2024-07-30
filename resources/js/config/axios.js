@@ -1,5 +1,5 @@
-import store from "../Store/index.js";
-import router from "../Router/index.js";
+import store from "../store/index.js";
+import router from "../router/index.js";
 
 const axiosRequest = axios.create({
     'Content-Type': 'application/json',    

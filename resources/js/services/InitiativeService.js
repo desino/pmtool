@@ -1,8 +1,8 @@
 import axios from "axios";
 import { handleServerError, handleValidationErrors } from "./ErrorService.js";
-import store from "../Store/index.js";
-import router from "../Router/index.js";
-import axiosRequest from "../Config/axios.js";
+import store from "../store/index.js";
+import router from "../router/index.js";
+import axiosRequest from "../config/axios.js";
 import { APP_VARIABLES } from "../constants.js";
 
 const defaultPath = `${APP_VARIABLES.DEFAULT_API_PATH}/initiative`;

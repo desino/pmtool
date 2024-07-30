@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import AuthService from './../../Services/AuthService.js';
+import AuthService from './../../services/AuthService.js';
 import { mapState, mapGetters } from 'vuex';
 
 export default {

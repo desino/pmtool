@@ -9,9 +9,9 @@
 
 <script>
     import globalMixin from '@/globalMixin';
-    import PaginationComponent from '../../Components/PaginationComponent.vue';
-    import messageService from '../../Services/messageService';
-    import OpportunityService from '../../Services/OpportunityService';
+    import PaginationComponent from '../../components/PaginationComponent.vue';
+    import messageService from '../../services/messageService';
+    import OpportunityService from '../../services/OpportunityService';
     import { mapState } from 'vuex/dist/vuex.cjs.js';
     export default {
         name: 'OpportunityListComponjent',

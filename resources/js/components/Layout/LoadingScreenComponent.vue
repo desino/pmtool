@@ -1,6 +1,6 @@
 <template>
     <div id="loading_screen" v-if="loading">
-        <img src="../../Assets/images/loading.svg" alt="Loading"/>
+        <img src="../../assets/images/loading.svg" alt="Loading"/>
     </div>
 </template>
 
@@ -30,4 +30,3 @@ export default {
     left: calc(50% - 100px);
 }
 </style>
- 

@@ -41,10 +41,10 @@
 
 <script>
 
-import AuthService from "../../Services/AuthService.js";
+import AuthService from "../../services/AuthService.js";
 import globalMixin from '@/globalMixin';
-import messageService from './../../Services/messageService.js';
-import GlobalMessage from './../../Components/GlobalMessage.vue';
+import messageService from './../../services/messageService.js';
+import GlobalMessage from './../../components/GlobalMessage.vue';
 import Office365LoginComponent from "./Office365LoginComponent.vue";
 
 export default {

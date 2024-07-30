@@ -20,7 +20,7 @@
                         <a class="nav-link" href="javascript:" @click="showCreateInitiativeModal"><i class="bi bi-gear"></i> Create Initiative</a>
                     </li>
                     <li class="nav-item">
-                        <router-link class="nav-link" :to="{ name: 'opportunities' }" ><i class="bi bi-list"></i> Opportunites</router-link>                        
+                        <router-link class="nav-link" :to="{ name: 'opportunities' }" ><i class="bi bi-list"></i> Opportunites</router-link>
                     </li>
                 </ul>
                 <div class="me-2">
@@ -47,11 +47,11 @@
 
 <script>
     import CreateClientModalComponent from '../../Page/Client/CreateClientModalComponent.vue';
-    import AuthService from './../../Services/AuthService.js';
+    import AuthService from './../../services/AuthService.js';
     import { mapState, mapGetters } from 'vuex';
     import { Modal } from 'bootstrap';
     import CreateInitiativeModalComponent from '../../Page/Initiative/CreateInitiativeModalComponent.vue';
-    import HeaderService from '../../Services/HeaderService.js';
+    import HeaderService from '../../services/HeaderService.js';
 
     export default {
         components: {

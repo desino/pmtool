@@ -51,11 +51,11 @@
 </template>
 
 <script>
-    import GlobalMessage from './../../Components/GlobalMessage.vue';
-    import ClientService from '../../Services/ClientService';
-    import messageService from '../../Services/messageService';
+    import GlobalMessage from './../../components/GlobalMessage.vue';
+    import ClientService from '../../services/ClientService';
+    import messageService from '../../services/messageService';
     import { Modal } from 'bootstrap';
-    import showToast from '../../Utils/toasts';
+    import showToast from '../../utils/toasts';
     export default {
         name: 'CreateClientModalComponent',
         components: {

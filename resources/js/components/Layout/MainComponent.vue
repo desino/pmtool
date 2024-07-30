@@ -6,10 +6,10 @@
         <!-- Global Loading Screen -->
         <loading-screen-component></loading-screen-component>
 
-        <main class="app-main"> 
+        <main class="app-main">
             <div class="container mt-4">
-                <router-view></router-view>            
-            </div>           
+                <router-view></router-view>
+            </div>
         </main>
         <footer-component></footer-component>
     </div>
@@ -25,7 +25,7 @@
 // import SidebarComponent from "./SidebarComponent.vue";
 import FooterComponent from "./FooterComponent.vue";
 import {mapGetters} from "vuex";
-import AuthService from "../../Services/AuthService.js";
+import AuthService from "../../services/AuthService.js";
 import LoadingScreenComponent from "./LoadingScreenComponent.vue";
 import HeaderComponent from "./HeaderComponent.vue";
 import globalMixin from '@/globalMixin';
@@ -36,7 +36,7 @@ export default {
     beforeMount() {
         AuthService.refreshUser();
     },
-    computed: {    
+    computed: {
         ...mapGetters(['isAuthenticated']),
     },
 };

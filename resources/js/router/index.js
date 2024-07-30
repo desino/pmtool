@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import store from "../Store/index.js";
-import {routes} from "../Router/routes.js";
-import NotFoundComponent from "../Components/Errors/NotFoundComponent.vue";
+import store from "../store/index.js";
+import {routes} from "../router/routes.js";
+import NotFoundComponent from "../components/Errors/NotFoundComponent.vue";
 import { APP_VARIABLES } from './../constants.js';
 
 const router = createRouter({

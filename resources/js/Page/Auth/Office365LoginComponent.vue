@@ -13,10 +13,10 @@
 </template>
 
 <script>
-    import GlobalMessage from './../../Components/GlobalMessage.vue';
-    import AuthService from './../../Services/AuthService.js';
+    import GlobalMessage from './../../components/GlobalMessage.vue';
+    import AuthService from './../../services/AuthService.js';
     import globalMixin from '@/globalMixin';
-    import messageService from './../../Services/messageService.js';
+    import messageService from './../../services/messageService.js';
     
     export default {
         name: 'Office365LoginComponent',

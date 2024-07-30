@@ -8,7 +8,7 @@
   
 <script>
 	import { computed } from 'vue';
-	import messageService from './../Services/messageService';
+	import messageService from './../services/messageService';
   
 	export default {
 		name: 'GlobalMessage',

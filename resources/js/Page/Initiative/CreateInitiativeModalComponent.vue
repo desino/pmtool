@@ -54,11 +54,11 @@
 </template>
 
 <script>
-    import GlobalMessage from './../../Components/GlobalMessage.vue';
-    import InitiativeService from '../../Services/InitiativeService';
-    import messageService from '../../Services/messageService';
+    import GlobalMessage from './../../components/GlobalMessage.vue';
+    import InitiativeService from '../../services/InitiativeService';
+    import messageService from '../../services/messageService';
     import { Modal } from 'bootstrap';
-    import showToast from '../../Utils/toasts';
+    import showToast from '../../utils/toasts';
     export default {
         name: 'CreateInitiativeModalComponent',
         components: {
