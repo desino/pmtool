@@ -144,7 +144,7 @@
     "validation.url": "The :attribute field must be a valid URL.",
     "validation.ulid": "The :attribute field must be a valid ULID.",
     "validation.uuid": "The :attribute field must be a valid UUID.",
-    
+
     "validation.initiative.client_id": "The client name is required.",
     "validation.initiative.name": "The initiative name is required.",
 
@@ -177,6 +177,11 @@
     "messages.client.store_success": "Client created successfully.",
 
     "messages.initiative.store_success": "Initiative created successfully.",
+
+    "messages.opportunity.get_list_success": "Opportunities fetched successfully.",
+    "messages.opportunity.not_found": "Opportunity not found.",
+    "messages.opportunity.update_success": "Opportunity updated successfully.",
+    "messages.opportunity.update_status_lost_success": "Opportunity status updated successfully.",
 
     "home": "Home",
     "login_title": "Login",
@@ -223,5 +228,29 @@
     "initiative.status.opportunity": "Opportunity",
     "initiative.status.ongoing": "Ongoing",
     "initiative.status.closed": "Closed",
-    "initiative.status.lost": "Lost"
+    "initiative.status.lost": "Lost",
+
+    "opportunity.page_title": "Opportunities",
+    "opportunity_list_table.client_th_text": "Client",
+    "opportunity_list_table.initiative_name_th_text": "Initiative Name",
+    "opportunity_list_table.ballpark_development_hours_th_text": "Ballpark Development Hours",
+    "opportunity_list_table.actions_th_text": "Actions",
+    "opportunity_list_table.actions_edit_tooltip": "Edit record",
+    "opportunity_list_table.actions_lost_status_tooltip": "Update lost status",
+    "opportunity_list_table.opportunities_not_found_text": "Opportunities not found.",
+    "opportunity_list_table.actions_lost_status_modal_title": "Change Status",
+    "opportunity_list_table.actions_lost_status_modal_text": "Are you sure you want to change status?",
+    "opportunity_list_table.actions_lost_status_modal_confirm_button_text": "Confirm",
+    "opportunity_list_table.search_placeholder_initiative_name": "Search by Initiative Name",
+    "opportunity_list_table.search_placeholder_client_id": "Search by Client Name",
+    "opportunity_list_table.search_button_text": "Search",
+
+    "edit_opportunity_modal_title": "Edit Opportunity",
+    "edit_opportunity_modal_submit_but_text": "Update Opportunity",
+
+    "edit_opportunity_modal_select_client_name": "Client name",
+    "edit_opportunity_modal_input_name": "Initiative Name",
+    "edit_opportunity_modal_input_ballpark_development_hours": "Ballpark Development Hours",
+    "edit_opportunity_modal_input_is_sold": "Sold",
+    "edit_opportunity_modal_select_client_name_placeholder": "Select Client"
 }

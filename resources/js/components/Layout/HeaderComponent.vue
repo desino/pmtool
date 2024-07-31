@@ -10,7 +10,8 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#"><i class="bi bi-house"></i> Home</a>
+                        <!-- <a class="nav-link active" aria-current="page" href="#"><i class="bi bi-house"></i> Home</a> -->
+                        <router-link class="nav-link" :class="{ active: isActive('dashboard') }" :to="{ name: 'dashboard' }" ><i class="bi bi-list"></i> Home</router-link>
                     </li>
                     <li class="nav-item">
                         <!-- <a class="nav-link" href="javascript:" data-bs-toggle="modal" data-bs-target="#creatteClientModal"><i class="bi bi-people"></i> Create Client</a> -->
@@ -20,7 +21,7 @@
                         <a class="nav-link" href="javascript:" @click="showCreateInitiativeModal"><i class="bi bi-gear"></i> Create Initiative</a>
                     </li>
                     <li class="nav-item">
-                        <router-link class="nav-link" :to="{ name: 'opportunities' }" ><i class="bi bi-list"></i> Opportunites</router-link>
+                        <router-link class="nav-link" :class="{ active: isActive('opportunities') }" :to="{ name: 'opportunities' }" ><i class="bi bi-list"></i> Opportunites</router-link>
                     </li>
                 </ul>
                 <div class="me-2">
@@ -52,6 +53,7 @@
     import { Modal } from 'bootstrap';
     import CreateInitiativeModalComponent from '../../Page/Initiative/CreateInitiativeModalComponent.vue';
     import HeaderService from '../../services/HeaderService.js';
+    import { useRoute } from 'vue-router';
 
     export default {
         components: {
@@ -62,6 +64,17 @@
             return {
                 initiatives: []
             }
+        },
+        setup() {
+            const route = useRoute();
+
+            const isActive = (name) => {
+                return route.name === name;
+            };
+
+            return {
+                isActive,
+            };
         },
         methods: {
             logout() {

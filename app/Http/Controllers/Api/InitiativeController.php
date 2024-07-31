@@ -7,12 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\InitiativeRequest;
 use App\Models\Client;
 use App\Models\Initiative;
+use App\Services\ClientService;
 use Illuminate\Http\Request;
 
 class InitiativeController extends Controller
 {
     public function getClients(Request $request){
-        $clients = Client::getAllClients();
+        $clients = ClientService::getAllClients();
         return ApiHelper::response(true, '', $clients, 200);
     }
 

@@ -67,6 +67,10 @@ class Initiative extends Model
         }
         return $query->where('status', $status);
     }
+    public function scopeName($query, string $value)
+    {        
+        return $query->where('name', 'like', '%'.$value.'%');
+    }
 
     // change with scope and ass in servoce
     // public static function getInitiatives($status = null){

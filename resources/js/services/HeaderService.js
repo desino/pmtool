@@ -7,12 +7,12 @@ import { APP_VARIABLES } from "../constants.js";
 
 const defaultPath = `${APP_VARIABLES.DEFAULT_API_PATH}/header`;
 const endpoints = {
-    getInitiatives: `${defaultPath}/get-initiatives`,    
+    getInitiatives: `${defaultPath}/get-initiatives`,
 
 };
-const HeaderService = {    
+const HeaderService = {
     async getInitiatives(status = null) {
-        try {               
+        try {
             // const response = await axiosRequest.get(endpoints.getInitiatives);
             const response = await axiosRequest.get('/api/header/get-initiatives');
             // return response;

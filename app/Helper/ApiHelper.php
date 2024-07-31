@@ -20,10 +20,8 @@ class ApiHelper
     {
 
         $response['status'] = $status;
-
         $response['message'] = $message;
-
-        if ($content instanceof LengthAwarePaginator) {
+        /*if ($content instanceof LengthAwarePaginator) {
             $paginate = [
                 'total' => $content->total(),
                 'per_page' => $content->perPage(),
@@ -32,11 +30,33 @@ class ApiHelper
             ];
             $response['paginate'] = $paginate;
             $content = $content->items();
-        }
-
+        }*/
         $response['content'] = $content;
 
         return response()->json($response, $http_code);
+    }
+
+    public static function parsePagination($paginatedResult)
+    {
+        $parsedPagination = [
+            'records' => null,
+            'paginationInfo' => [
+                'total' => null,
+                'per_page' => null,
+                'current_page' => null,
+                'last_page' => null,
+            ],
+        ];
+
+        if ($paginatedResult instanceof LengthAwarePaginator) {
+            $parsedPagination['records'] = $paginatedResult->items();
+            $parsedPagination['paginationInfo']['total'] = $paginatedResult->total();
+            $parsedPagination['paginationInfo']['per_page'] = $paginatedResult->perPage();
+            $parsedPagination['paginationInfo']['current_page'] = $paginatedResult->currentPage();
+            $parsedPagination['paginationInfo']['last_page'] = $paginatedResult->lastPage();
+        };
+
+        return $parsedPagination;
     }
 }
  

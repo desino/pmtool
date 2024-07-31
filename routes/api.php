@@ -26,7 +26,10 @@ Route::middleware('auth:sanctum')->group(function(){
     });
     
     Route::controller(OpportunityController::class)->prefix('opportunity')->group(function () {        
-        route::post('/', 'index');
+        Route::post('/', 'index');
+        Route::post('/get-initial-data', 'getInitialData');
+        Route::post('/update', 'update');
+        Route::post('/update-status-lost', 'updateStatusLost');
     });
 
     Route::controller(HeaderController::class)->prefix('header')->group(function () {
