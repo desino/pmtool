@@ -33,6 +33,12 @@
                 <a href="javascript:" class="text-warning me-2" :title="$t('opportunity_list_table.actions_lost_status_tooltip')" @click="updateStatusLostConfirmed(opportunity.id)">
                     <i class="bi bi-hand-thumbs-down-fill"></i>
                 </a>
+                <router-link class="text-success me-2" :title="$t('opportunity_list_table.actions_redirct_to_solution_design_tooltip')" :to="{ name: 'solution-design', params: { id: opportunity.id } }">
+                    <i class="bi bi-box-arrow-right"></i>
+                </router-link>
+                <!-- <a href="javascript:" class="text-success me-2" :title="$t('opportunity_list_table.actions_redirct_to_solution_design_tooltip')" @click="solutionDesignOpenInNewTab(opportunity.id)">
+                    <i class="bi bi-box-arrow-right"></i>
+                </a> -->
             </span>
         </li>
         <li v-if="opportunities.length > 0" class="list-group-item d-flex justify-content-between align-items-center">
@@ -68,7 +74,7 @@
     import showToast from '../../utils/toasts';
 
     export default {
-        name: 'OpportunityListComponjent',
+        name: 'OpportunityListComponent',
         mixins: [globalMixin],
         components: {
             GlobalMessage,
@@ -92,6 +98,10 @@
         },
         methods: {
             ...mapState(['loading']),
+            solutionDesignOpenInNewTab(id) {
+                const routeData = this.$router.resolve({ name: 'solution-design', params: { id } });
+                window.open(routeData.href, '_blank');
+            },
             async getPageInitialData() {
                 try {
                     const response = await OpportunityService.getPageInitialData();
@@ -105,7 +115,7 @@
                 try {
                     const params = {
                         page: page,
-                        filter: this.filter
+                        filters: this.filter
                     }
                     // await this.setLoading(true);
                     const response = await OpportunityService.fetchAllOpportunites(params);

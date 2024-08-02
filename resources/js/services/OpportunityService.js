@@ -17,7 +17,7 @@ const endpoints = {
 const OpportunityService = {
     async getPageInitialData() {
         try {            
-            const response = await axiosRequest.post(endpoints.getInitialData);            
+            const response = await axiosRequest.get(endpoints.getInitialData);            
             return response.data;
         } catch (error) {
             throw handleError(error);

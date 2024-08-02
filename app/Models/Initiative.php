@@ -72,6 +72,14 @@ class Initiative extends Model
         return $query->where('name', 'like', '%'.$value.'%');
     }
 
+    public function scopeClient($query, int|array $value)
+    {    
+        if (is_array($value)) {
+            return $query->whereIn('client_id', $value);
+        }    
+        return $query->where('client_id', $value);
+    }
+
     // change with scope and ass in servoce
     // public static function getInitiatives($status = null){
     //     $self = self::select('*')

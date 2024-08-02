@@ -15,12 +15,12 @@ class OpportunityController extends Controller
     public function index(Request $request){
         $perPage = $request->input('per_page', 2);
         $oppertunities = InitiativeService::getOpportunityInitiative($request, $perPage, Initiative::getStatusOpportunity());
-        $parsedOppertunities = ApiHelper::parsePagination($oppertunities);        
+        $parsedOppertunities = ApiHelper::parsePagination($oppertunities);
         $responseData = [
             'oppertunities' => $parsedOppertunities,
-            'ballparkTotal' => $oppertunities->sum('ballpark_development_hours'),            
+            'ballparkTotal' => $oppertunities->sum('ballpark_development_hours'),
         ];
-        return ApiHelper::response(true, __('messages.opportunity.get_list_success'), $responseData, 200);        
+        return ApiHelper::response(true, __('messages.opportunity.get_list_success'), $responseData, 200);
     }
 
     public function getInitialData(Request $request){
@@ -35,7 +35,7 @@ class OpportunityController extends Controller
         $requestData = $request->all();
         $initiative = Initiative::find($requestData['id']);
         // $initiative = Initiative::find(15);
-        if(!$initiative) {            
+        if(!$initiative) {
             return ApiHelper::response(false, __('messages.opportunity.not_found'), null, 404);
         }
         $status = false;
@@ -44,16 +44,16 @@ class OpportunityController extends Controller
             $status = true;
             $meesage = __('messages.opportunity.update_success');
             $statusCode = 200;
-        } catch (\Exception $e) {            
+        } catch (\Exception $e) {
             $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
         }
         return ApiHelper::response($status, $meesage, '', $statusCode);
     }
 
-    public function updateStatusLost(Request $request){        
+    public function updateStatusLost(Request $request){
         $initiative = Initiative::find($request->post('id'));
-        if(!$initiative) {            
+        if(!$initiative) {
             return ApiHelper::response(false, __('messages.opportunity.not_found'), null, 404);
         }
         $status = false;
@@ -65,7 +65,7 @@ class OpportunityController extends Controller
             $status = true;
             $meesage = __('messages.opportunity.update_status_lost_success');
             $statusCode = 200;
-        } catch (\Exception $e) {            
+        } catch (\Exception $e) {
             $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
         }

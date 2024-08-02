@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\HeaderController;
 use App\Http\Controllers\Api\InitiativeController;
 use App\Http\Controllers\Api\OpportunityController;
+use App\Http\Controllers\Api\SolutionDesignController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -27,9 +28,15 @@ Route::middleware('auth:sanctum')->group(function(){
     
     Route::controller(OpportunityController::class)->prefix('opportunity')->group(function () {        
         Route::post('/', 'index');
-        Route::post('/get-initial-data', 'getInitialData');
+        Route::get('/get-initial-data', 'getInitialData');
         Route::post('/update', 'update');
         Route::post('/update-status-lost', 'updateStatusLost');
+    });
+
+    Route::controller(SolutionDesignController::class)->prefix('solution-design')->group(function () {
+        Route::post('/', 'index');
+        Route::post('/get-initiative', 'getInitiative');
+        Route::post('/store-section', 'storeSection');
     });
 
     Route::controller(HeaderController::class)->prefix('header')->group(function () {

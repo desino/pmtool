@@ -13,6 +13,11 @@ class ClientObserver
         // $client->updated_by = Auth::id();
         $client->updated_at = null;
     }
+
+    public function updating(Client $client)
+    {        
+        $client->updated_by = Auth::id();        
+    }
     /**
      * Handle the Client "created" event.
      */

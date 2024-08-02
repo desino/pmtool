@@ -23,6 +23,9 @@
                     <li class="nav-item">
                         <router-link class="nav-link" :class="{ active: isActive('opportunities') }" :to="{ name: 'opportunities' }" ><i class="bi bi-list"></i> Opportunites</router-link>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://pmtool.local/solution-design/1" ><i class="bi bi-gear"></i> Solution Design</a>
+                    </li>
                 </ul>
                 <div class="me-2">
                     <select class="form-select form-select-sm" aria-label="Default select example">

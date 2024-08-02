@@ -183,6 +183,8 @@
     "messages.opportunity.update_success": "Opportunity updated successfully.",
     "messages.opportunity.update_status_lost_success": "Opportunity status updated successfully.",
 
+    "messages.solution_design.sectino.store_success":"Solution design section created successfully.",
+
     "home": "Home",
     "login_title": "Login",
 
@@ -244,6 +246,7 @@
     "opportunity_list_table.search_placeholder_initiative_name": "Search by Initiative Name",
     "opportunity_list_table.search_placeholder_client_id": "Search by Client Name",
     "opportunity_list_table.search_button_text": "Search",
+    "opportunity_list_table.actions_redirct_to_solution_design_tooltip": "Redirect to Solution Design",
 
     "edit_opportunity_modal_title": "Edit Opportunity",
     "edit_opportunity_modal_submit_but_text": "Update Opportunity",
@@ -252,5 +255,9 @@
     "edit_opportunity_modal_input_name": "Initiative Name",
     "edit_opportunity_modal_input_ballpark_development_hours": "Ballpark Development Hours",
     "edit_opportunity_modal_input_is_sold": "Sold",
-    "edit_opportunity_modal_select_client_name_placeholder": "Select Client"
+    "edit_opportunity_modal_select_client_name_placeholder": "Select Client",
+
+    "solution_design.page_title": "Solution Design",
+    "solution_design.add_section_but_text": "Add section",
+    "solution_design.add_section_input_placeholder": "Enter section name"
 }

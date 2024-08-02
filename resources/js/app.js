@@ -21,7 +21,7 @@ const i18n = createI18n({
 
 const app = createApp({
     components: {
-        MainComponent: MainComponent,
+        MainComponent: MainComponent,        
     }
 });
 
