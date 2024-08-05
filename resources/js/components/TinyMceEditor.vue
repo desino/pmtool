@@ -1,3 +1,3 @@
 <template>
-  sdfsdfsd
+  Editor
 </template>
