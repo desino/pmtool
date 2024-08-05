@@ -233,6 +233,12 @@
     "initiative.status.closed": "Closed",
     "initiative.status.lost": "Lost",
 
+    "header.initiative_list.placeholder": "Please select",
+    "header.menu.home": "Home",
+    "header.menu.create_client": "Create Client",
+    "header.menu.create_initiative": "Create Initiative",
+    "header.menu.opportunites": "Opportunites",
+
     "opportunity.page_title": "Opportunities",
     "opportunity_list_table.client_th_text": "Client",
     "opportunity_list_table.initiative_name_th_text": "Initiative Name",

@@ -12,19 +12,26 @@ class ClientController extends Controller
 {
     public function store(ClientRequest $request){
         $validatData = $request->validated();
-        
+
         $status = false;
+        $retData = [
+            'initiative' => ""
+        ];
         try {
             $client = Client::create($validatData);
             $validatData['client_id'] = $client->id;
-            $client->initiatives()->create($validatData);
+            $validatData['name'] = $validatData['initiative_name'];
+            $initiative = $client->initiatives()->create($validatData);
             $status = true;
             $meesage = __('messages.client.store_success');
             $statusCode = 200;
+            $retData = [
+                'initiative' => $initiative->load('client'),
+            ];
         } catch (\Exception $e) {
             $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
         }
-        return ApiHelper::response($status, $meesage, '', $statusCode);
+        return ApiHelper::response($status, $meesage, $retData, $statusCode);
     }
 }

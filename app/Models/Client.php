@@ -14,5 +14,9 @@ class Client extends Model
     public function initiatives()
     {
         return $this->hasMany(Initiative::class);
-    }    
+    }
+    public function initiative()
+    {
+        return $this->hasOne(Initiative::class);
+    }
 }

@@ -25,7 +25,11 @@ Class InitiativeService
     }
 
     public static function getInitiative($request) {
-        $id = $request->post('initiative_id');
+        $id = $request->post('initiative_id', null);
         return Initiative::with('client')->find($id);
+    }
+
+    public static function getInitiativesForHeaderSelectBox($request) {
+        return Initiative::with('client')->orderBy('id','desc')->get();
     }
 }

@@ -101,6 +101,7 @@ export default {
                 showToast(response.data.message, 'success');
                 this.hideModal();
                 eventBus.$emit('reloadOpportunityList');
+                eventBus.$emit('appendHeaderInitiativeSelectBox', response.data.content);
             } catch (error) {
                 this.handleLoginError(error);
             }

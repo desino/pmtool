@@ -13,29 +13,29 @@
                     <li class="nav-item">
                         <!-- <a class="nav-link active" aria-current="page" href="#"><i class="bi bi-house"></i> Home</a> -->
                         <router-link class="nav-link" :class="{ active: isActive('dashboard') }"
-                            :to="{ name: 'dashboard' }"><i class="bi bi-list"></i> Home</router-link>
+                            :to="{ name: 'dashboard' }"><i class="bi bi-list"></i> {{ $t('header.menu.home')
+                            }}</router-link>
                     </li>
                     <li class="nav-item">
                         <!-- <a class="nav-link" href="javascript:" data-bs-toggle="modal" data-bs-target="#creatteClientModal"><i class="bi bi-people"></i> Create Client</a> -->
                         <a class="nav-link" href="javascript:" @click="showCreateClientModal"><i
-                                class="bi bi-people"></i> Create Client</a>
+                                class="bi bi-people"></i> {{ $t('header.menu.create_client')
+                            }}</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="javascript:" @click="showCreateInitiativeModal"><i
-                                class="bi bi-gear"></i> Create Initiative</a>
+                                class="bi bi-gear"></i> {{ $t('header.menu.create_initiative')
+                            }}</a>
                     </li>
                     <li class="nav-item">
                         <router-link class="nav-link" :class="{ active: isActive('opportunities') }"
-                            :to="{ name: 'opportunities' }"><i class="bi bi-list"></i> Opportunites</router-link>
+                            :to="{ name: 'opportunities' }"><i class="bi bi-list"></i> {{
+                                $t('header.menu.opportunites')
+                            }}</router-link>
                     </li>
                 </ul>
                 <div class="me-2">
-                    <select class="form-select form-select-sm" aria-label="Default select example">
-                        <option selected>Open this select menu</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                    </select>
+                    <HeaderInitiativeDropBoxComponent />
                 </div>
                 <button class="btn btn-warning btn-sm me-2" type="button"><i class="bi bi-plus-circle"></i> Create new
                     task</button>
@@ -63,15 +63,17 @@ import { Modal } from 'bootstrap';
 import CreateInitiativeModalComponent from '../../Page/Initiative/CreateInitiativeModalComponent.vue';
 import HeaderService from '../../services/HeaderService.js';
 import { useRoute } from 'vue-router';
+import HeaderInitiativeDropBoxComponent from '../../Page/Initiative/HeaderInitiativeDropBoxComponent.vue';
 
 export default {
     components: {
         CreateClientModalComponent,
-        CreateInitiativeModalComponent
+        CreateInitiativeModalComponent,
+        HeaderInitiativeDropBoxComponent
     },
     data() {
         return {
-            initiatives: []
+            // initiatives: []
         }
     },
     setup() {

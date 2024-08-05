@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 class OpportunityController extends Controller
 {
     public function index(Request $request){
-        $perPage = $request->input('per_page', 2);
+        $perPage = $request->input('per_page', 10);
         $oppertunities = InitiativeService::getOpportunityInitiative($request, $perPage, Initiative::getStatusOpportunity());
         $parsedOppertunities = ApiHelper::parsePagination($oppertunities);
         $responseData = [

@@ -18,17 +18,24 @@ class InitiativeController extends Controller
     }
 
     public function store(InitiativeRequest $request){
-        $validatData = $request->validated();        
+        $validatData = $request->validated();
         $status = false;
+        $retData = [
+            'initiative' => "",
+        ];
         try {
-            Initiative::create($validatData);
+            $initiative = Initiative::create($validatData);
             $status = true;
             $meesage = __('messages.initiative.store_success');
             $statusCode = 200;
-        } catch (\Exception $e) {            
+            $initiative->client;
+            $retData = [
+                'initiative' => $initiative,
+            ];
+        } catch (\Exception $e) {
             $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
         }
-        return ApiHelper::response($status, $meesage, '', $statusCode);
-    }    
+        return ApiHelper::response($status, $meesage, $retData, $statusCode);
+    }
 }

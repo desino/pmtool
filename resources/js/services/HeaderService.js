@@ -13,9 +13,8 @@ const endpoints = {
 const HeaderService = {
     async getInitiatives(status = null) {
         try {
-            // const response = await axiosRequest.get(endpoints.getInitiatives);
-            const response = await axiosRequest.get('/api/header/get-initiatives');
-            // return response;
+            const response = await axiosRequest.get(endpoints.getInitiatives);
+            return response.data;
         } catch (error) {
             return handleError(error);
         }
