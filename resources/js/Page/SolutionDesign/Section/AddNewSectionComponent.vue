@@ -1,7 +1,7 @@
 <template>
     <div class="row mt-3">
         <div class="col-md-4" v-if="!showInput">
-            <button class="button btn btn-primary" type="button" @click="showInput = true">
+            <button class="button btn btn-primary" type="button" @click="showHideInput">
                 <i class="bi bi-plus-lg"></i> {{ $t('solution_design.add_section_but_text') }}
             </button>
         </div>
@@ -42,6 +42,10 @@
             }
         },
         methods: {
+            showHideInput(){
+                this.showInput = true;
+                this.isSaving = false;
+            },
             handleBlur() {
                 if (this.isSaving) return; // Prevent duplicate calls
                 this.isSaving = true;
@@ -76,7 +80,7 @@
                 messageService.clearMessage();
             },
             resetForm() {
-                this.isSaving = false;
+                // this.isSaving = false;
                 this.showInput = false;
                 this.formData.name = "";
                 this.errors = {}

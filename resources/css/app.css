@@ -44,6 +44,15 @@
     background-color: #f8f9fa;
 }
 
-/* .mb-3 {
-    margin-bottom: 1rem !important;
-} */
+.custom-hover {
+    display: inline-block;
+    border-radius: 18%;
+    /* padding: 10px; */
+    /* Adjust as needed */
+    transition: background-color 0.3s ease;
+}
+
+.custom-hover:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+    /* Adjust the color and transparency as needed */
+}

@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use App\Models\Client;
+use App\Models\Functionality;
 use App\Models\Initiative;
 use App\Models\Section;
 use App\Observers\ClientObserver;
+use App\Observers\FunctionalityObserver;
 use App\Observers\InitiativeObserver;
 use App\Observers\SectionObserver;
 use Illuminate\Support\Facades\Event;
@@ -33,6 +35,7 @@ class AppServiceProvider extends ServiceProvider
         Client::observe(ClientObserver::class);
         Initiative::observe(InitiativeObserver::class);
         Section::observe(SectionObserver::class);
+        Functionality::observe(FunctionalityObserver::class);
         Event::listen(
             SocialiteWasCalled::class,
             GraphExtendSocialite::class.'@handle',

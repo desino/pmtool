@@ -184,6 +184,7 @@
     "messages.opportunity.update_status_lost_success": "Opportunity status updated successfully.",
 
     "messages.solution_design.sectino.store_success":"Solution design section created successfully.",
+    "meesage.solution_design.section.create_untitled_text":"Untitled",
 
     "home": "Home",
     "login_title": "Login",

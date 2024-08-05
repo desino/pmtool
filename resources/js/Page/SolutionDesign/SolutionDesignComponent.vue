@@ -5,8 +5,15 @@
     <div class="row mt-4">
         <div class="col-md-4">
             <div v-if="sectionsWithFunctionalities.length > 0" v-for="sectionsWithFunctionality in sectionsWithFunctionalities" :key="sectionsWithFunctionality.id" class="functionality-section">
-                <h5>{{ sectionsWithFunctionality.name }}</h5>
+                <h5>
+                    {{ sectionsWithFunctionality.name }}                     
+                    <a href="javascript:" class="fw-bold fs-4 custom-hover mr-5"><i class="bi bi-plus-circle"></i></a>                    
+                    <a href="javascript:" class=" fs-4 custom-hover ml-5"><i class="bi bi-three-dots"></i></a>                    
+                </h5>
                 <ul class="functionality-list list-group">
+                    <li class="list-group-item functionality-selected">
+                        <input type="text" class="form-control">
+                    </li>
                     <li class="list-group-item functionality-selected">
                         <span>Category Master data</span>
                         <span class="badge bg-secondary">2</span>
@@ -22,9 +29,10 @@
             </div>
             <div class="mb-3">
                 <label for="functionalityDescription" class="form-label">Functionality description</label>
-                <textarea class="form-control" id="functionalityDescription" rows="6"></textarea>
+                <!-- <textarea class="form-control" id="functionalityDescription" :init="editorSettings" rows="6"></textarea> -->
                 <!-- <TinyMceEditor v-model="form1Content" /> -->
-                <!-- <Editor :init="editorSettings" v-model="content"></Editor> -->
+                <!-- <Editor :init="editorSettings" v-model="content"></Editor> -->                
+                <TinyMceEditor/>
             </div>
             <div class="mb-3">
                 <button class="btn btn-primary w-100">Save</button>
@@ -40,35 +48,16 @@
     import GlobalMessage from './../../components/GlobalMessage.vue';
     import messageService from './../../services/messageService';
     import SolutionDesignService from './../../services/SolutionDesignService'; 
-    import AddNewSectionComponent from './Section/AddNewSectionComponent.vue'        
-    // import Editor from '@tinymce/tinymce-vue';    
-    // import { ref } from 'vue';   
+    import AddNewSectionComponent from './Section/AddNewSectionComponent.vue'   
+    import TinyMceEditor from './../../components/TinyMceEditor.vue';           
     export default {
         name: 'SolutionDesignComponent',
         mixins: [globalMixin],
         components: {
             GlobalMessage, 
-            AddNewSectionComponent
-            // Editor              
-        },
-        // setup() {
-        //     const editorSettings = {
-        //         height: 500,
-        //         menubar: false,
-        //         plugins: [
-        //             'advlist autolink lists link image charmap print preview anchor',
-        //             'searchreplace visualblocks code fullscreen',
-        //             'insertdatetime media table paste code help wordcount',
-        //         ],
-        //         toolbar:
-        //             'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
-        //     };
-        //     const content = ref('<p>Initial content</p>');
-        //     return {
-        //         content,
-        //         editorSettings,
-        //     };
-        // },
+            AddNewSectionComponent, 
+            TinyMceEditor                     
+        },        
         data() {                        
             return {                                 
                 initiativeId: this.$route.params.id,
@@ -79,8 +68,8 @@
             }
         },
         mounted() {
-            this.getInitiativeData();
             this.getSectionsWithFunctionalities();
+            this.getInitiativeData();
             this.clearMessages();
         },
         methods: {

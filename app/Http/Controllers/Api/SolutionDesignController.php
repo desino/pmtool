@@ -25,7 +25,7 @@ class SolutionDesignController extends Controller
         $section = collect([]);
         try {
             $postData = $request->post();
-            $postData['name'] = $request->post('name') ?? 'untitled';
+            $postData['name'] = $request->post('name') ?? __('meesage.solution_design.section.create_untitled_text');
             $section = Section::create($postData);
             $status = true;
             $meesage = __('messages.solution_design.sectino.store_success');
