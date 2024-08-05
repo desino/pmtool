@@ -1,11 +1,10 @@
 <template>
     <div class="d-flex vh-100">
         <div class="m-auto text-center">
-            <h1 class="mb-4"><span class="text-primary">{{ user?.name }}</span> is logged in! </h1>            
+            <h1 class="mb-4"><span class="text-primary">{{ user?.name }}</span> is logged in! </h1>
             <button class="btn btn-danger btn-block" @click="logout">{{ $t('logout_but_text') }}</button>
         </div>
     </div>
-    You are logged in!
 </template>
 
 <script>
@@ -18,8 +17,8 @@ export default {
             AuthService.logout();
         }
     },
-    computed: {        
-        ...mapGetters(['user'])       
+    computed: {
+        ...mapGetters(['user'])
     },
 }
 </script>
