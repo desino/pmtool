@@ -1,8 +1,9 @@
 <template>
-    <select class="form-select form-select-sm" aria-label="Default select example">
+    <select class="form-select form-select-sm" aria-label="Default select example" @change="navigate"
+        v-model="selected_initiative_id">
         <option value="">{{ $t('header.initiative_list.placeholder') }}</option>
         <option v-if="initiatives.length > 0" v-for="initiative in initiatives" :key="initiative.id"
-            value="{{ initiative.id }}">{{ initiative.client.name }} - {{ initiative.name }}</option>
+            :value="initiative.id">{{ initiative.client.name }} - {{ initiative.name }}</option>
     </select>
 </template>
 
@@ -14,24 +15,36 @@ export default {
     name: 'HeaderInitiativeDropBoxComponent',
     data() {
         return {
-            initiatives: []
+            initiatives: [],
+            selected_initiative_id: this.$route.params.id ?? '',
         }
     },
     methods: {
         async getInitiativeWithClienData() {
             const response = await HeaderService.getInitiatives();
             this.initiatives = response.content;
+            this.selected_initiative_id = this.$route.params.id ?? '';
         },
         handleAppendHeaderInitiativeSelectBox(data) {
             this.initiatives.push(data.initiative);
+            this.selected_initiative_id = data.initiative.id
+        },
+        handleUnselectHeaderInitiativeId() {
+            this.selected_initiative_id = "";
+        },
+        navigate(event) {
+            const initiativeId = event.target.value;
+            if (initiativeId) {
+                this.$router.push({ name: 'solution-design', params: { id: initiativeId } });
+            } else {
+                this.$router.push({ name: 'opportunities' });
+            }
         }
     },
     mounted() {
         this.getInitiativeWithClienData();
         eventBus.$on('appendHeaderInitiativeSelectBox', this.handleAppendHeaderInitiativeSelectBox);
+        eventBus.$on('unselectHeaderInitiativeId', this.handleUnselectHeaderInitiativeId);
     },
-    beforeUnmount() {
-        // eventBus.$off('appendHeaderInitiativeSelectBox', this.handleAppendHeaderInitiativeSelectBox);
-    }
 }
 </script>

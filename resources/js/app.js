@@ -1,5 +1,5 @@
 import './bootstrap.js';
-import {createApp} from "vue/dist/vue.esm-bundler.js";
+import { createApp } from "vue/dist/vue.esm-bundler.js";
 import { createI18n } from 'vue-i18n';
 // import en from './locale/en.json';
 // import nl from './locale/nl.json';
@@ -10,8 +10,9 @@ import store from "./store/index.js";
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import MainComponent from "./components/Layout/MainComponent.vue";
+import './../../public/tinymce/tinymce.min.js'
 
-const messages = {en};
+const messages = { en };
 
 const i18n = createI18n({
     locale: 'en',
@@ -21,7 +22,7 @@ const i18n = createI18n({
 
 const app = createApp({
     components: {
-        MainComponent: MainComponent,        
+        MainComponent: MainComponent,
     }
 });
 

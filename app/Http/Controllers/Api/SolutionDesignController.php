@@ -12,11 +12,14 @@ use Illuminate\Http\Request;
 class SolutionDesignController extends Controller
 {
     public function index(Request $request){
-        $getSectionsWithFunctionalities = SolutionDesignServicec::getSectionsWithFunctionalities($request);        
+        $getSectionsWithFunctionalities = SolutionDesignServicec::getSectionsWithFunctionalities($request);
         return ApiHelper::response(true, '', $getSectionsWithFunctionalities, 200);
     }
     public function getInitiative(Request $request){
         $initiative = InitiativeService::getInitiative($request);
+        if(!$initiative){
+            return ApiHelper::response(false, __('messages.solution_design.initial_data_not_found'), '', 200);
+        }
         return ApiHelper::response(true, '', $initiative, 200);
     }
 

@@ -9,7 +9,8 @@
 
                     <form @submit.prevent="loginUser" class="mt-10" v-if="appVariables.ENABLE_MANUAL_LOGIN">
                         <div class="input-group mb-3">
-                            <input v-model="email" :class="{'is-invalid': errors.email}" class="form-control" :placeholder="$t('login_input_email')" type="email">
+                            <input v-model="email" :class="{ 'is-invalid': errors.email }" class="form-control"
+                                :placeholder="$t('login_input_email')" type="email">
                             <div class="input-group-text">
                                 <span class="bi bi-envelope-at-fill"></span>
                             </div>
@@ -18,7 +19,8 @@
                             </div>
                         </div>
                         <div class="input-group mb-3">
-                            <input v-model="password" :class="{'is-invalid': errors.password}" class="form-control" :placeholder="$t('login_input_password')" type="password">
+                            <input v-model="password" :class="{ 'is-invalid': errors.password }" class="form-control"
+                                :placeholder="$t('login_input_password')" type="password">
                             <div class="input-group-text">
                                 <span class="bi bi-person-fill-lock"></span>
                             </div>
@@ -71,18 +73,18 @@ export default {
                     password: this.password
                 };
                 await AuthService.loginUser(credentials);
-                this.$router.push({name: 'dashboard'});
+                this.$router.push({ name: 'home' });
             } catch (error) {
                 this.handleLoginError(error);
             }
         },
-        async getProviderCallbackSessionData(){
+        async getProviderCallbackSessionData() {
             this.clearMessages();
             try {
                 const response = await AuthService.getProviderCallbackSessionData();
-                const data = response.data.content;                
-                if(data.token != null){
-                    this.$router.push({name: 'dashboard'});
+                const data = response.data.content;
+                if (data.token != null) {
+                    this.$router.push({ name: 'home' });
                 } else {
                     messageService.setMessage(data.message, data.message_class);
                 }

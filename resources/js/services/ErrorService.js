@@ -8,7 +8,8 @@ export function handleValidationErrors(error) {
     if (error.response && error.response.status === 422) {
         return {
             type: 'validation',
-            errors: error.response.data.content
+            errors: error.response.data.content,
+            status: error.response.status
         };
     }
     return null;
@@ -24,12 +25,13 @@ export function handleServerError(error) {
     if (error.response && [500, 404, 403, 401, 400].includes(error.response.status)) {
         return {
             type: 'server',
-            message: error.response.data.message
+            message: error.response.data.message,
+            status: error.response.status
         };
     }
     return {
         type: 'default',
-        message: 'An error occurred. Please try again.'
+        message: 'An error occurred. Please try again.',
+        status: error.response.status
     };
 }
- 

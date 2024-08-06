@@ -9,14 +9,14 @@ export default defineConfig({
             refresh: true,
         }),
         vue({
-            template:{
-                transformAssetUrls:{
-                    base:null,
-                    includeAbsolute:false,
+            template: {
+                transformAssetUrls: {
+                    base: null,
+                    includeAbsolute: false,
                 },
             },
         }),
-    ],    
+    ],
 });
 
 
@@ -47,4 +47,3 @@ export default defineConfig({
 //     },
 // });
 
- 

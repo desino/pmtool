@@ -12,8 +12,8 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <!-- <a class="nav-link active" aria-current="page" href="#"><i class="bi bi-house"></i> Home</a> -->
-                        <router-link class="nav-link" :class="{ active: isActive('dashboard') }"
-                            :to="{ name: 'dashboard' }"><i class="bi bi-list"></i> {{ $t('header.menu.home')
+                        <router-link class="nav-link" :class="{ active: isActive('home') }" :to="{ name: 'home' }"
+                            @click="unselectHeaderInitiative"><i class="bi bi-list"></i> {{ $t('header.menu.home')
                             }}</router-link>
                     </li>
                     <li class="nav-item">
@@ -29,7 +29,8 @@
                     </li>
                     <li class="nav-item">
                         <router-link class="nav-link" :class="{ active: isActive('opportunities') }"
-                            :to="{ name: 'opportunities' }"><i class="bi bi-list"></i> {{
+                            :to="{ name: 'opportunities' }" @click="unselectHeaderInitiative"><i class="bi bi-list"></i>
+                            {{
                                 $t('header.menu.opportunites')
                             }}</router-link>
                     </li>
@@ -64,6 +65,7 @@ import CreateInitiativeModalComponent from '../../Page/Initiative/CreateInitiati
 import HeaderService from '../../services/HeaderService.js';
 import { useRoute } from 'vue-router';
 import HeaderInitiativeDropBoxComponent from '../../Page/Initiative/HeaderInitiativeDropBoxComponent.vue';
+import eventBus from '../../eventBus.js';
 
 export default {
     components: {
@@ -73,7 +75,7 @@ export default {
     },
     data() {
         return {
-            // initiatives: []
+
         }
     },
     setup() {
@@ -108,17 +110,14 @@ export default {
                 modal.show();
             }
         },
-        // async getInitiatives() {
-        //     const response = await HeaderService.getInitiatives();
-        //     // this.initiatives = response.data.content;
-        //     // console.log(this.initiatives);
-        // },
+        unselectHeaderInitiative() {
+            eventBus.$emit('unselectHeaderInitiativeId');
+        }
     },
     computed: {
         ...mapGetters(['user'])
     },
     mounted() {
-        // this.getInitiatives();
     }
 }
 </script>

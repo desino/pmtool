@@ -184,6 +184,8 @@
     "messages.opportunity.update_status_lost_success": "Opportunity status updated successfully.",
 
     "messages.solution_design.sectino.store_success":"Solution design section created successfully.",
+    "messages.solution_design.initial_data_not_found":"Initial data not found",
+    "messages.solution_design.secttion_functionality_data_not_found":"Data not found",
     "meesage.solution_design.section.create_untitled_text":"Untitled",
 
     "home": "Home",

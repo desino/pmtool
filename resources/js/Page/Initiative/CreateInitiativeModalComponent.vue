@@ -102,6 +102,7 @@ export default {
                 this.hideModal();
                 eventBus.$emit('reloadOpportunityList');
                 eventBus.$emit('appendHeaderInitiativeSelectBox', response.data.content);
+                this.$router.push({ name: 'solution-design', params: { id: response.data.content.initiative.id } });
             } catch (error) {
                 this.handleLoginError(error);
             }
