@@ -20,13 +20,13 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::controller(ClientController::class)->prefix('client')->group(function () {
         Route::post('/store', 'store');
     });
-    
+
     Route::controller(InitiativeController::class)->prefix('initiative')->group(function () {
         Route::get('/get-clients', 'getClients');
         Route::post('/store', 'store');
     });
-    
-    Route::controller(OpportunityController::class)->prefix('opportunity')->group(function () {        
+
+    Route::controller(OpportunityController::class)->prefix('opportunity')->group(function () {
         Route::post('/', 'index');
         Route::get('/get-initial-data', 'getInitialData');
         Route::post('/update', 'update');
@@ -37,10 +37,12 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::post('/', 'index');
         Route::post('/get-initiative', 'getInitiative');
         Route::post('/store-section', 'storeSection');
+        Route::post('/store-update-functionality', 'storeUpdateFunctionality');
+        Route::post('/delete-functionality', 'deleteFunctionality');
     });
 
     Route::controller(HeaderController::class)->prefix('header')->group(function () {
-       Route::get('/get-initiatives', 'getInitiatives'); 
+       Route::get('/get-initiatives', 'getInitiatives');
     });
 });
 
@@ -50,5 +52,3 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/forgot-password', 'sendResetLink');
     Route::post('/reset-password', 'resetPassword');
 });
-
-

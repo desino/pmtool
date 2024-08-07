@@ -10,13 +10,14 @@ class FunctionalityObserver
     public function creating(Functionality $functionality)
     {
         $functionality->created_by = Auth::id();
+        $functionality->order_no = $functionality->max('order_no')+1;
         // $client->updated_by = Auth::id();
         $functionality->updated_at = null;
     }
 
     public function updating(Functionality $functionality)
-    {        
-        $functionality->updated_by = Auth::id();        
+    {
+        $functionality->updated_by = Auth::id();
     }
     /**
      * Handle the Functionality "created" event.

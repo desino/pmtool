@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\FunctionalityRequest;
+use App\Models\Functionality;
 use App\Models\Section;
 use App\Services\InitiativeService;
 use App\Services\SolutionDesignServicec;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SolutionDesignController extends Controller
 {
@@ -30,6 +33,7 @@ class SolutionDesignController extends Controller
             $postData = $request->post();
             $postData['name'] = $request->post('name') ?? __('meesage.solution_design.section.create_untitled_text');
             $section = Section::create($postData);
+            $section->functionalities;
             $status = true;
             $meesage = __('messages.solution_design.sectino.store_success');
             $statusCode = 200;
@@ -38,5 +42,55 @@ class SolutionDesignController extends Controller
             $statusCode = 500;
         }
         return ApiHelper::response($status, $meesage, $section, $statusCode);
+    }
+
+    public function storeUpdateFunctionality(FunctionalityRequest $request){
+        $validatData = $request->validated();
+
+        $status = false;
+        $retData = [
+            'functionality'=> ""
+        ];
+        DB::beginTransaction();
+        try {
+            $status = true;
+            $transactionType = "";
+            if(isset($validatData['functionality_id'])){
+                $functionality = SolutionDesignServicec::updateFunctionality($request,$validatData);
+                $meesage = __('messages.solution_design.functionality.update_success');
+                $transactionType = "updated";
+            } else {
+                $functionality = SolutionDesignServicec::storeFunctionality($request,$validatData);
+                $meesage = __('messages.solution_design.functionality.store_success');
+                $transactionType = "created";
+            }
+            $statusCode = 200;
+            $retData = [
+                'functionality'=> $functionality,
+                'transactionType' => $transactionType
+            ];
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $statusCode = 500;
+        }
+        return ApiHelper::response($status, $meesage, $retData, $statusCode);
+    }
+
+    public function deleteFunctionality(Request $request){
+        DB::beginTransaction();
+        $status = false;
+        try {
+            DB::commit();
+            SolutionDesignServicec::deleteFunctionality($request);
+            $statusCode = 200;
+            $meesage = __('messages.solution_design.functionality.delete_success');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $statusCode = 500;
+        }
+        return ApiHelper::response($status, $meesage, '', $statusCode);
     }
 }

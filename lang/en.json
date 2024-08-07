@@ -187,6 +187,10 @@
     "messages.solution_design.initial_data_not_found":"Initial data not found",
     "messages.solution_design.secttion_functionality_data_not_found":"Data not found",
     "meesage.solution_design.section.create_untitled_text":"Untitled",
+    "message.solution_design.functionality.section_id.required":"Please select a section",
+    "messages.solution_design.functionality.store_success":"Functionality created successfully",
+    "messages.solution_design.functionality.update_success":"Functionality updated successfully",
+    "messages.solution_design.functionality.delete_success":"Functionality deleted successfully",
 
     "home": "Home",
     "login_title": "Login",
@@ -268,5 +272,7 @@
 
     "solution_design.page_title": "Solution Design",
     "solution_design.add_section_but_text": "Add section",
-    "solution_design.add_section_input_placeholder": "Enter section name"
+    "solution_design.add_section_input_placeholder": "Enter section name",
+    "solution_design.functionality_form.name": "Functionality name",
+    "solution_design.functionality_form.description": "Functionality description"
 }

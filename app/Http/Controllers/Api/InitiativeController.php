@@ -9,6 +9,7 @@ use App\Models\Client;
 use App\Models\Initiative;
 use App\Services\ClientService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class InitiativeController extends Controller
 {
@@ -23,6 +24,7 @@ class InitiativeController extends Controller
         $retData = [
             'initiative' => "",
         ];
+        DB::beginTransaction();
         try {
             $initiative = Initiative::create($validatData);
             $status = true;
@@ -32,7 +34,9 @@ class InitiativeController extends Controller
             $retData = [
                 'initiative' => $initiative,
             ];
+            DB::commit();
         } catch (\Exception $e) {
+            DB::rollBack();
             $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
         }

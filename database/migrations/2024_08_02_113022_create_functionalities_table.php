@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('functionalities', function (Blueprint $table) {
             $table->id();
+            $table->integer('section_id')->unsigned();
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->unsignedBigInteger('order_no')->default(0);
+            $table->integer('created_by');
+            $table->integer('updated_by')->default(0);
             $table->timestamps();
         });
     }

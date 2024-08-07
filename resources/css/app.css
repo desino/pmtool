@@ -41,7 +41,11 @@
 }
 
 .functionality-selected {
-    background-color: #f8f9fa;
+    background-color: #e0f7fa !important;
+}
+
+.functionality-list li:hover {
+    background-color: #f1f1f1;
 }
 
 .custom-hover {

@@ -1,7 +1,4 @@
 <template>
-    Editor
-</template>
-<!-- <template>
     <editor ref="htmlEditorRef" v-model="content" :init="config" @change="update" @init="loaded" @keyup="update"
         @redo="update" @undo="update" />
 </template>
@@ -87,4 +84,4 @@ export default defineComponent({
         },
     },
 });
-</script> -->
+</script>

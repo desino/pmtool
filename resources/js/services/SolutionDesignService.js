@@ -11,13 +11,14 @@ const endpoints = {
     getSectionsWithFunctionalities: `${defaultPath}`,
     getInitiative: `${defaultPath}/get-initiative`,
     storeSection: `${defaultPath}/store-section`,
-
+    storeUpdateFunctionality: `${defaultPath}/store-update-functionality`,
+    deleteFunctionality: `${defaultPath}/delete-functionality`,
 }
 
 const SolutionDesignService = {
     async getInitiativeData(credentials) {
         try {
-            const response = await axiosRequest.post(endpoints.getInitiative,credentials);
+            const response = await axiosRequest.post(endpoints.getInitiative, credentials);
             return response.data;
         } catch (error) {
             throw handleError(error);
@@ -35,6 +36,22 @@ const SolutionDesignService = {
     async getSectionsWithFunctionalities(data) {
         try {
             const response = await axiosRequest.post(endpoints.getSectionsWithFunctionalities, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async storeUpdateFunctionality(data) {
+        try {
+            const response = await axiosRequest.post(endpoints.storeUpdateFunctionality, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async deleteFunctionality(data) {
+        try {
+            const response = await axiosRequest.post(endpoints.deleteFunctionality, data);
             return response.data;
         } catch (error) {
             throw handleError(error);

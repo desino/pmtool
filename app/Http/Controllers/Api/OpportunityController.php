@@ -9,6 +9,7 @@ use App\Models\Initiative;
 use App\Services\ClientService;
 use App\Services\InitiativeService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OpportunityController extends Controller
 {
@@ -39,12 +40,15 @@ class OpportunityController extends Controller
             return ApiHelper::response(false, __('messages.opportunity.not_found'), null, 404);
         }
         $status = false;
+        DB::beginTransaction();
         try {
             $initiative->update($requestData);
             $status = true;
             $meesage = __('messages.opportunity.update_success');
             $statusCode = 200;
+            DB::commit();
         } catch (\Exception $e) {
+            DB::rollBack();
             $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
         }
@@ -57,6 +61,7 @@ class OpportunityController extends Controller
             return ApiHelper::response(false, __('messages.opportunity.not_found'), null, 404);
         }
         $status = false;
+        DB::beginTransaction();
         try {
             $updateData = [
                 'status' => Initiative::getStatusLost()
@@ -65,7 +70,9 @@ class OpportunityController extends Controller
             $status = true;
             $meesage = __('messages.opportunity.update_status_lost_success');
             $statusCode = 200;
+            DB::commit();
         } catch (\Exception $e) {
+            DB::rollBack();
             $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
         }

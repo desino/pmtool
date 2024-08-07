@@ -2,51 +2,69 @@
     <GlobalMessage v-if="showMessage" />
     <div>
         <h1 class="primary">{{ $t('solution_design.page_title') }} - {{ initiativeData.name }}</h1>
-        <h5><span class="badge rounded-pill bg-primary text-light">Development Ballpark: {{
-            initiativeData.ballpark_development_hours }} hours</span></h5>
+        <h5>
+            <span class="badge rounded-pill bg-primary text-light">
+                Development Ballpark: {{ initiativeData.ballpark_development_hours }} hours
+            </span>
+        </h5>
         <div class="row mt-4">
             <div class="col-md-4">
-                <div v-if="sectionsWithFunctionalities.length > 0"
-                    v-for="(sectionsWithFunctionality, index) in sectionsWithFunctionalities"
-                    :key="sectionsWithFunctionality.id" class="functionality-section">
+                <div v-if="sectionsWithFunctionalities.length" v-for="section in sectionsWithFunctionalities"
+                    :key="section.id" class="functionality-section">
                     <h5>
-                        {{ sectionsWithFunctionality.name }}
-                        <a href="javascript:" class="fw-bold fs-4 custom-hover mr-5" @click="toggleVisibility(index)"><i
-                                :class="sectionsWithFunctionality.showInput ? 'bi bi-dash' : 'bi bi-plus'"></i></a>
-                        <a href="javascript:" class=" fs-4 custom-hover ml-5"><i class="bi bi-three-dots"></i></a>
+                        {{ section.name }}
+                        <a href="javascript:" class="fw-bold fs-4 custom-hover mr-5" @click="toggleSection(section.id)">
+                            <i :class="isSectionActive(section.id) ? 'bi bi-dash' : 'bi bi-plus'"></i>
+                        </a>
+                        <a href="javascript:" class="fs-4 custom-hover ml-5"><i class="bi bi-three-dots"></i></a>
                     </h5>
                     <ul class="functionality-list list-group">
-                        <li v-if="sectionsWithFunctionality.showInput" class="list-group-item functionality-selected">
-                            <input type="text" class="form-control">
+                        <li v-for="func in section.functionalities" :key="func.id"
+                            :class="['list-group-item', { 'functionality-selected': isSelected(func.id) }]"
+                            @click="selectFunctionality(func)">
+                            <span>{{ func.name }}</span>
+                            <span class="ms-auto d-flex align-items-center">
+                                <a href="javascript:" class="text-danger me-2" @click="deleteFunctionality(func)"><i
+                                        class="bi bi-trash3"></i></a>
+                                <span class="badge bg-secondary">0</span>
+                            </span>
                         </li>
-                        <li class="list-group-item functionality-selected">
-                            <span>Category Master data</span>
-                            <span class="badge bg-secondary">2</span>
-                        </li>
-                        <!-- Add more list items here as needed -->
                     </ul>
                 </div>
             </div>
             <div class="col-md-8">
-                <div class="mb-3">
-                    <label for="functionalityName" class="form-label">Functionality name</label>
-                    <input type="text" class="form-control" id="functionalityName" placeholder="Enter value">
-                </div>
-                <div class="mb-3">
-                    <label for="functionalityDescription" class="form-label">Functionality description</label>
-                    <!-- <textarea class="form-control" id="functionalityDescription" :init="editorSettings" rows="6"></textarea> -->
-                    <!-- <TinyMceEditor v-model="form1Content" /> -->
-                    <!-- <Editor :init="editorSettings" v-model="content"></Editor> -->
-                    <TinyMceEditor />
-                </div>
-                <div class="mb-3">
-                    <button class="btn btn-primary w-100">Save</button>
-                </div>
+                <form @submit.prevent="storeUpdateFunctionality">
+                    <div v-if="errors.section_id" class="alert alert-danger">
+                        <button type="button" class="btn-close" aria-label="Close" @click="clearMessages"></button>
+                        <span v-for="(error, index) in errors.section_id" :key="index">{{ error }}</span>
+                    </div>
+                    <input type="hidden" v-model="functionalityFormData.section_id">
+                    <input type="hidden" v-model="functionalityFormData.functionality_id">
+                    <div class="mb-3">
+                        <label for="functionalityName" class="form-label">{{
+                            $t('solution_design.functionality_form.name') }}</label>
+                        <input type="text" class="form-control" :class="{ 'is-invalid': errors.name }"
+                            id="functionalityName" v-model="functionalityFormData.name" placeholder="Enter value">
+                        <div v-if="errors.name" class="invalid-feedback">
+                            <span v-for="(error, index) in errors.name" :key="index">{{ error }}</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="functionalityDescription" class="form-label">{{
+                            $t('solution_design.functionality_form.description') }}</label>
+                        <TinyMceEditor v-model="functionalityFormData.description" />
+                    </div>
+                    <div class="mb-3">
+                        <button type="submit" :disabled="!functionalityFormData.section_id"
+                            class="btn btn-primary w-100">
+                            {{ functionalityFormData.functionality_id ? 'Update' : 'Save' }}
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
         <AddNewSectionComponent :initiativeData="initiativeData" @sectionAdded="handleSectionAdded" />
     </div>
-
 </template>
 
 <script>
@@ -54,8 +72,10 @@ import globalMixin from '@/globalMixin';
 import GlobalMessage from './../../components/GlobalMessage.vue';
 import messageService from './../../services/messageService';
 import SolutionDesignService from './../../services/SolutionDesignService';
-import AddNewSectionComponent from './Section/AddNewSectionComponent.vue'
+import AddNewSectionComponent from './Section/AddNewSectionComponent.vue';
 import TinyMceEditor from './../../components/TinyMceEditor.vue';
+import showToast from '../../utils/toasts';
+
 export default {
     name: 'SolutionDesignComponent',
     mixins: [globalMixin],
@@ -71,49 +91,74 @@ export default {
             sectionsWithFunctionalities: [],
             errors: {},
             showMessage: true,
-            notFoundData: true
-        }
+            functionalityFormData: {
+                section_id: "",
+                name: "",
+                description: "",
+                functionality_id: "",
+            },
+            activeSectionId: null,
+            selectedFunctionalityId: null
+        };
     },
     methods: {
+        async fetchData() {
+            try {
+                await Promise.all([
+                    this.getInitiativeData(),
+                    this.getSectionsWithFunctionalities()
+                ]);
+                this.clearMessages();
+            } catch (error) {
+                this.handleError(error);
+            }
+        },
+        async storeUpdateFunctionality() {
+            this.clearMessages();
+            try {
+                const { content: { functionality: updatedFunc, transactionType }, message } = await SolutionDesignService.storeUpdateFunctionality(this.functionalityFormData);
+                console.log('message :: ', message);
+                const section = this.findItem(updatedFunc.section_id);
+                if (transactionType === 'created') {
+                    section.functionalities.push(updatedFunc);
+                } else if (transactionType === 'updated') {
+                    const index = section.functionalities.findIndex(func => func.id === updatedFunc.id);
+                    if (index !== -1) section.functionalities.splice(index, 1, updatedFunc);
+                }
+
+                this.functionalityFormData.functionality_id = updatedFunc.id;
+                this.selectedFunctionalityId = updatedFunc.id;
+                this.activeSectionId = null;
+                // messageService.setMessage(message, 'success');
+                showToast(message, 'success');
+            } catch (error) {
+                this.handleError(error);
+            }
+        },
         async getInitiativeData() {
             try {
-                const credentials = {
-                    initiative_id: this.initiativeId,
-                };
-                const response = await SolutionDesignService.getInitiativeData(credentials);
-                if (!response.content) {
+                const { content } = await SolutionDesignService.getInitiativeData({ initiative_id: this.initiativeId });
+                if (!content) {
                     messageService.setMessage(response.message, 'danger');
                     this.$router.push({ name: 'home' });
-                    return;
+                } else {
+                    this.initiativeData = content;
                 }
-                this.initiativeData = response.content;
             } catch (error) {
                 this.handleError(error);
             }
         },
         async getSectionsWithFunctionalities() {
             try {
-                const credentials = {
-                    initiative_id: this.initiativeId,
-                };
-                const response = await SolutionDesignService.getSectionsWithFunctionalities(credentials);
-                // this.sectionsWithFunctionalities = response.content;
-                this.sectionsWithFunctionalities = response.content.map(section => ({
-                    ...section,
-                    showInput: false,
-                    inputValue: ''
-                }));
+                const { content } = await SolutionDesignService.getSectionsWithFunctionalities({ initiative_id: this.initiativeId });
+                this.sectionsWithFunctionalities = content;
             } catch (error) {
                 this.handleError(error);
             }
         },
-
         handleSectionAdded(newSection) {
-            console.log('newSection :: ', newSection);
             this.sectionsWithFunctionalities.push(newSection);
         },
-
-
         handleError(error) {
             if (error.type === 'validation') {
                 this.errors = error.errors;
@@ -125,27 +170,76 @@ export default {
             this.errors = {};
             messageService.clearMessage();
         },
-        async fetchData() {
-            await this.getInitiativeData();
-            await this.getSectionsWithFunctionalities();
-            this.clearMessages();
+        toggleSection(sectionId) {
+            this.resetForm();
+            this.activeSectionId = this.activeSectionId === sectionId ? null : sectionId;
+            this.functionalityFormData.section_id = this.activeSectionId || "";
+
+            this.selectedFunctionalityId = null;
+            this.functionalityFormData.section_id = this.activeSectionId || "";
         },
-        toggleVisibility(index) {
-            this.sectionsWithFunctionalities[index].showInput = !this.sectionsWithFunctionalities[index].showInput;
+        isSectionActive(sectionId) {
+            return this.activeSectionId === sectionId;
+        },
+        resetForm() {
+            this.functionalityFormData = { section_id: "", name: "", description: "", functionality_id: "" };
+            this.errors = {};
+            this.activeSectionId = null;
+        },
+        findItem(sectionId) {
+            return this.sectionsWithFunctionalities.find(section => section.id === sectionId);
+        },
+        selectFunctionality(functionality) {
+            this.functionalityFormData = {
+                section_id: functionality.section_id,
+                name: functionality.name,
+                description: functionality.description,
+                functionality_id: functionality.id,
+            };
+            this.activeSectionId = null;
+            this.selectedFunctionalityId = functionality.id;
+        },
+        isSelected(functionalityId) {
+            return this.selectedFunctionalityId === functionalityId;
+        },
+        async deleteFunctionality(functionality) {
+            this.clearMessages();
+            try {
+                const { content, message } = await SolutionDesignService.deleteFunctionality({ functionality_id: functionality.id });
+                const section = this.findItem(functionality.section_id);
+                const index = section.functionalities.findIndex(func => func.id === functionality.id);
+                if (index !== -1) section.functionalities.splice(index, 1);
+                console.log('this.selectedFunctionalityId :: ', this.selectedFunctionalityId);
+                console.log('this.functionality.id :: ', this.selectedFunctionalityId);
+                if (this.selectedFunctionalityId != functionality.id) {
+                    console.log('dfsf :: ');
+                    this.selectedFunctionalityId = functionality.id;
+                    // this.resetForm()
+                }
+                showToast(message, 'success');
+            } catch (error) {
+                this.handleError(error);
+            }
         }
     },
     mounted() {
-        this.getInitiativeData();
-        this.getSectionsWithFunctionalities();
-        this.clearMessages();
-    },
-    beforeUnmount() {
-        this.showMessage = false;
+        this.fetchData();
     },
     beforeRouteUpdate(to, from, next) {
-        this.initiativeId = to.params.id; // Update the initiativeId to the new route's ID
+        this.initiativeId = to.params.id;
         this.fetchData();
         next();
     }
 }
 </script>
+
+<style scoped>
+.alert {
+    margin-top: 1rem;
+}
+
+.btn-close {
+    position: absolute;
+    right: 1rem;
+}
+</style>
