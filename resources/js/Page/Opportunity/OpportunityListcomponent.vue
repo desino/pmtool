@@ -13,12 +13,9 @@
                 <option v-for="client in filterClients" :key="client.id" :value="client.id">{{ client.name }}</option>
             </select>
         </div>
-        <!-- <div class="col-12 col-md-2">
-            <button class="btn btn-desino w-100" type="button" @click="fetchAllOpportunities" @keydown="fetchAllOpportunities">{{ $t('opportunity_list_table.search_button_text') }}</button>
-        </div> -->
     </div>
-    <div class="list-group-item mb-3 mt-2">
-        <div class="row justify-content-between font-weight-bold bg-desino text-white">
+    <div class="list-group-item mx-2 mb-3 mt-2">
+        <div class="row justify-content-between font-weight-bold bg-desino text-white rounded-top">
             <div class="col-lg-4 col-md-6 col-6 fw-bold">{{ $t('opportunity_list_table.client_th_text') }}</div>
             <div class="col-lg-3 col-md-6 col-6 fw-bold">{{
                     $t('opportunity_list_table.initiative_name_th_text')
@@ -36,7 +33,7 @@
                 <div class="col-lg-4 col-md-6 col-6">{{ opportunity.client.name }}</div>
                 <div class="col-lg-3 col-md-6 col-6">{{ opportunity.name }}</div>
                 <div class="col-lg-3 col-md-6 col-8 text-center text-lg-start">
-                    <span class="d-block d-lg-none fw-bold bg-desino mt-2 p-0 text-white text-center"> {{
+                    <span class="d-block d-lg-none fw-bold bg-desino mt-2 p-0 text-white text-center rounded-top"> {{
                             $t('opportunity_list_table.ballpark_development_hours_th_text')
                         }} </span>
                     {{ opportunity.ballpark_development_hours }}
