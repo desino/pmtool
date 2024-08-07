@@ -1,62 +1,8 @@
-.navbar-custom {
-    background-color: #1e6abf;
-}
+@import "custom.scss";
 
-.navbar-custom .navbar-brand,
-.navbar-custom .navbar-nav .nav-link {
-    color: white;
-}
-
-.navbar-custom .dropdown-toggle::after {
-    color: white;
-}
-
-.primary {
-    color: #1e6abf;
-}
-
-.functionality-section {
-    margin-bottom: 1.5rem;
-}
-
-.functionality-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-.functionality-list li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-top: none;
-}
-
-.functionality-list li:first-child {
-    border-top: 1px solid #ddd;
-}
-
-.functionality-selected {
-    background-color: #e0f7fa !important;
-}
-
-.functionality-list li:hover {
-    background-color: #f1f1f1;
-}
-
-.custom-hover {
-    display: inline-block;
-    border-radius: 18%;
-    /* padding: 10px; */
-    /* Adjust as needed */
-    transition: background-color 0.3s ease;
-}
-
-.custom-hover:hover {
-    background-color: rgba(0, 123, 255, 0.1);
-    /* Adjust the color and transparency as needed */
+.brand-image{
+    float: left;
+    width: auto;
+    max-height: 33px;
+    line-height: .8;
 }

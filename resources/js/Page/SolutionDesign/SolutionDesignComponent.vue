@@ -3,7 +3,7 @@
     <div>
         <h1 class="primary">{{ $t('solution_design.page_title') }} - {{ initiativeData.name }}</h1>
         <h5>
-            <span class="badge rounded-pill bg-primary text-light">
+            <span class="badge rounded-pill bg-desino text-light">
                 Development Ballpark: {{ initiativeData.ballpark_development_hours }} hours
             </span>
         </h5>
@@ -56,7 +56,7 @@
                     </div>
                     <div class="mb-3">
                         <button type="submit" :disabled="!functionalityFormData.section_id"
-                            class="btn btn-primary w-100">
+                            class="btn btn-desino w-100">
                             {{ functionalityFormData.functionality_id ? 'Update' : 'Save' }}
                         </button>
                     </div>

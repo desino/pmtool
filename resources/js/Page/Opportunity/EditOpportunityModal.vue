@@ -10,7 +10,7 @@
                     <GlobalMessage v-if="showMessage" />
                     <div class="mb-3">
                         <label for="client_name" class="form-label">{{ $t('edit_opportunity_modal_select_client_name') }} <strong class="text-danger">*</strong></label>
-                        <input type="text" v-model="formData.client_name" disabled :class="{'is-invalid': errors.client_name}" id="name" class="form-control">                        
+                        <input type="text" v-model="formData.client_name" disabled :class="{'is-invalid': errors.client_name}" id="name" class="form-control">
                         <div v-if="errors.client_name" class="invalid-feedback">
                             <span v-for="(error, index) in errors.client_name" :key="index">{{ error }}</span>
                         </div>
@@ -43,17 +43,17 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">{{ $t('edit_opportunity_modal_submit_but_text') }}</button>
+                    <button type="submit" class="btn btn-desino">{{ $t('edit_opportunity_modal_submit_but_text') }}</button>
                 </div>
             </div>
-        </form>        
+        </form>
     </div>
 </template>
 
 <script>
     import GlobalMessage from './../../components/GlobalMessage.vue';
     import OpportunityService from '../../services/OpportunityService';
-    import messageService from '../../services/messageService';    
+    import messageService from '../../services/messageService';
     import { Modal } from 'bootstrap';
     import showToast from '../../utils/toasts';
     export default {
@@ -83,16 +83,16 @@
                 this.formData.name = opportunity.name;
                 this.formData.ballpark_development_hours = opportunity.ballpark_development_hours;
                 this.formData.is_sold = opportunity.status === 2 ?? false;
-                this.formData.client_name = opportunity.client.name;                
+                this.formData.client_name = opportunity.client.name;
             },
             async updateOpportunity() {
                 this.clearMessages();
-                try {                    
-                    const response = await OpportunityService.updateOpportunity(this.formData);                    
+                try {
+                    const response = await OpportunityService.updateOpportunity(this.formData);
                     showToast(response.data.message, 'success');
                     this.hideModal();
                     this.$emit('pageUpddated');
-                } catch (error) {                                        
+                } catch (error) {
                     this.handleError(error);
                 }
             },

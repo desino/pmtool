@@ -1,7 +1,7 @@
 <template>
-    <h1 class="primary">{{ $t('opportunity.page_title') }}</h1>
+    <h3 class="text-desino">{{ $t('opportunity.page_title') }}</h3>
     <GlobalMessage v-if="showMessage" />
-    <div class="row mb-3 mt-5 justify-content-end">
+    <div class="row mb-3 justify-content-end">
         <div class="col-12 col-md-3 mb-2 mb-md-0">
             <input type="text" @keyup="fetchAllOpportunities" class="form-control"
                 :placeholder="$t('opportunity_list_table.search_placeholder_initiative_name')"
@@ -14,7 +14,7 @@
             </select>
         </div>
         <!-- <div class="col-12 col-md-2">
-            <button class="btn btn-primary w-100" type="button" @click="fetchAllOpportunities" @keydown="fetchAllOpportunities">{{ $t('opportunity_list_table.search_button_text') }}</button>
+            <button class="btn btn-desino w-100" type="button" @click="fetchAllOpportunities" @keydown="fetchAllOpportunities">{{ $t('opportunity_list_table.search_button_text') }}</button>
         </div> -->
     </div>
     <ul class="list-group mb-3 mt-2">
@@ -31,7 +31,7 @@
             <span class="col">{{ opportunity.name }}</span>
             <span class="col text-center">{{ opportunity.ballpark_development_hours }}</span>
             <span class="col text-end">
-                <a href="javascript:" class="text-primary me-2"
+                <a href="javascript:" class="text-desino me-2"
                     :title="$t('opportunity_list_table.actions_edit_tooltip')" @click="editOpportunity(opportunity)">
                     <i class="bi bi-pencil-square"></i>
                 </a>

@@ -1,8 +1,8 @@
 <template>
-    <nav class="navbar navbar-expand-lg navbar-custom">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-desino">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
-                <i class="bi bi-house-door-fill"></i> desino.be
+                <img alt="Brand Image" class="brand-image px-3" src="https://www.desino.be/wp-content/uploads/2024/01/Logo_Finaloriginal-black-2.png">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -13,7 +13,7 @@
                     <li class="nav-item">
                         <!-- <a class="nav-link active" aria-current="page" href="#"><i class="bi bi-house"></i> Home</a> -->
                         <router-link class="nav-link" :class="{ active: isActive('home') }" :to="{ name: 'home' }"
-                            @click="unselectHeaderInitiative"><i class="bi bi-list"></i> {{ $t('header.menu.home')
+                            @click="unselectHeaderInitiative"><i class="bi bi-house"></i> {{ $t('header.menu.home')
                             }}</router-link>
                     </li>
                     <li class="nav-item">
