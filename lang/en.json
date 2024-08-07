@@ -192,6 +192,8 @@
     "messages.solution_design.functionality.update_success":"Functionality updated successfully",
     "messages.solution_design.functionality.delete_success":"Functionality deleted successfully",
 
+    "messages.solution_design.section.delete_success":"Section and it's functionality deleted successfully",
+
     "home": "Home",
     "login_title": "Login",
 
@@ -274,5 +276,9 @@
     "solution_design.add_section_but_text": "Add section",
     "solution_design.add_section_input_placeholder": "Enter section name",
     "solution_design.functionality_form.name": "Functionality name",
-    "solution_design.functionality_form.description": "Functionality description"
+    "solution_design.functionality_form.description": "Functionality description",
+    "solution_design.functionality_form.submit_save_but_text": "Save",
+    "solution_design.functionality_form.submit_update_but_text": "Update",
+    "solution_design.section.option_edit_but_text": "Edit",
+    "solution_design.section.option_delete_but_text": "Delete"
 }

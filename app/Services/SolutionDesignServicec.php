@@ -32,4 +32,11 @@ Class SolutionDesignServicec
         $functionality->delete();
         return $functionality;
     }
+
+    public static function deleteSection($request) {
+        $section = Section::find($request->post('section_id'));
+        $section->functionalities()->delete();
+        $section->delete();
+        return $section;
+    }
 }

@@ -39,6 +39,7 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::post('/store-section', 'storeSection');
         Route::post('/store-update-functionality', 'storeUpdateFunctionality');
         Route::post('/delete-functionality', 'deleteFunctionality');
+        Route::post('/delete-section', 'deleteSection');
     });
 
     Route::controller(HeaderController::class)->prefix('header')->group(function () {

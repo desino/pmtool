@@ -16,16 +16,34 @@
                         <a href="javascript:" class="fw-bold fs-4 custom-hover mr-5" @click="toggleSection(section.id)">
                             <i :class="isSectionActive(section.id) ? 'bi bi-dash' : 'bi bi-plus'"></i>
                         </a>
-                        <a href="javascript:" class="fs-4 custom-hover ml-5"><i class="bi bi-three-dots"></i></a>
+                        <div class="dropdown  custom-hover ml-5">
+                            <a href="javascript:" class="" type="button" id="dropdown_section_menu"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-three-dots"></i>
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="dropdown_section_menu">
+                                <li>
+                                    <a class="dropdown-item" href="javascript:"><i class="bi bi-pencil-square"></i>
+                                        {{ $t('solution_design.section.option_edit_but_text') }}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="javascript:" @click="deleteSection(section)">
+                                        <i class="bi bi-trash3"></i> {{
+                                            $t('solution_design.section.option_delete_but_text') }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </h5>
                     <ul class="functionality-list list-group">
-                        <li v-for="func in section.functionalities" :key="func.id"
+                        <li role="button" v-for="func in section.functionalities" :key="func.id"
                             :class="['list-group-item', { 'functionality-selected': isSelected(func.id) }]"
                             @click="selectFunctionality(func)">
                             <span>{{ func.name }}</span>
                             <span class="ms-auto d-flex align-items-center">
-                                <a href="javascript:" class="text-danger me-2" @click="deleteFunctionality(func)"><i
-                                        class="bi bi-trash3"></i></a>
+                                <a href="javascript:" class="text-danger me-2"
+                                    @click.stop="deleteFunctionality(func)"><i class="bi bi-trash3"></i></a>
                                 <span class="badge bg-secondary">0</span>
                             </span>
                         </li>
@@ -57,7 +75,9 @@
                     <div class="mb-3">
                         <button type="submit" :disabled="!functionalityFormData.section_id"
                             class="btn btn-primary w-100">
-                            {{ functionalityFormData.functionality_id ? 'Update' : 'Save' }}
+                            {{ functionalityFormData.functionality_id ?
+                                $t('solution_design.functionality_form.submit_update_but_text') :
+                                $t('solution_design.functionality_form.submit_save_but_text') }}
                         </button>
                     </div>
                 </form>
@@ -189,32 +209,61 @@ export default {
         findItem(sectionId) {
             return this.sectionsWithFunctionalities.find(section => section.id === sectionId);
         },
+        // selectFunctionality(functionality) {
+        //     this.functionalityFormData = {
+        //         section_id: functionality.section_id,
+        //         name: functionality.name,
+        //         description: functionality.description,
+        //         functionality_id: functionality.id,
+        //     };
+        //     this.activeSectionId = null;
+        //     this.selectedFunctionalityId = functionality.id;
+        // },
         selectFunctionality(functionality) {
-            this.functionalityFormData = {
-                section_id: functionality.section_id,
-                name: functionality.name,
-                description: functionality.description,
-                functionality_id: functionality.id,
-            };
-            this.activeSectionId = null;
-            this.selectedFunctionalityId = functionality.id;
+            if (this.selectedFunctionalityId === functionality.id) {
+                this.selectedFunctionalityId = null;
+                this.resetForm();
+            } else {
+                this.functionalityFormData = {
+                    section_id: functionality.section_id,
+                    name: functionality.name,
+                    description: functionality.description,
+                    functionality_id: functionality.id,
+                };
+                this.selectedFunctionalityId = functionality.id;
+                this.activeSectionId = null;
+            }
         },
         isSelected(functionalityId) {
+            // return this.selectedFunctionalityId = this.selectedFunctionalityId === functionalityId ? null : functionalityId;
             return this.selectedFunctionalityId === functionalityId;
         },
         async deleteFunctionality(functionality) {
             this.clearMessages();
             try {
+                const oldSelectedFunctionalityId = functionality;
                 const { content, message } = await SolutionDesignService.deleteFunctionality({ functionality_id: functionality.id });
                 const section = this.findItem(functionality.section_id);
+                section.functionalities = section.functionalities.filter(item => item.id !== functionality.id);
                 const index = section.functionalities.findIndex(func => func.id === functionality.id);
                 if (index !== -1) section.functionalities.splice(index, 1);
-                console.log('this.selectedFunctionalityId :: ', this.selectedFunctionalityId);
-                console.log('this.functionality.id :: ', this.selectedFunctionalityId);
-                if (this.selectedFunctionalityId != functionality.id) {
-                    console.log('dfsf :: ');
-                    this.selectedFunctionalityId = functionality.id;
-                    // this.resetForm()
+                if (this.selectedFunctionalityId == functionality.id) {
+                    this.resetForm();
+                }
+                showToast(message, 'success');
+            } catch (error) {
+                this.handleError(error);
+            }
+        },
+        async deleteSection(section) {
+            this.clearMessages();
+            try {
+                let result = section.functionalities.find(item => item['id'] === this.selectedFunctionalityId);
+                const { content, message } = await SolutionDesignService.deleteSection({ section_id: section.id });
+                const index = this.sectionsWithFunctionalities.findIndex(sec => sec.id === section.id);
+                if (index !== -1) this.sectionsWithFunctionalities.splice(index, 1);
+                if (result) {
+                    this.resetForm();
                 }
                 showToast(message, 'success');
             } catch (error) {
