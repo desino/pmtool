@@ -3,7 +3,7 @@
     <div>
         <h1 class="primary">{{ $t('solution_design.page_title') }} - {{ initiativeData.name }}</h1>
         <h5>
-            <span class="badge rounded-pill bg-primary text-light">
+            <span class="badge rounded-pill bg-desino text-light">
                 Development Ballpark: {{ initiativeData.ballpark_development_hours }} hours
             </span>
         </h5>

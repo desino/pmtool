@@ -5,7 +5,7 @@
             <div class="card w-100">
                 <div class="card-body"> -->
                     <!-- <h5 class="card-title text-center">{{ $t('office365_login_page_title') }}</h5> -->
-                    <button type="button" @click="loginWithOffice365" class="btn btn-primary w-100 mb-3">{{ $t('office365_login_redirect_link_button_text') }}</button>
+                    <button type="button" @click="loginWithOffice365" class="btn btn-desino w-100 mb-3">{{ $t('office365_login_redirect_link_button_text') }}</button>
                 <!-- </div>
             </div>
         </div>
@@ -17,7 +17,7 @@
     import AuthService from './../../services/AuthService.js';
     import globalMixin from '@/globalMixin';
     import messageService from './../../services/messageService.js';
-    
+
     export default {
         name: 'Office365LoginComponent',
         mixins: [globalMixin],
@@ -53,8 +53,8 @@
             clearMessages() {
                 this.errors = {};
                 messageService.clearMessage();
-            },            
-        },        
+            },
+        },
         beforeUnmount() {
             // Hide the message when the component is unmounted
             this.showMessage = false;

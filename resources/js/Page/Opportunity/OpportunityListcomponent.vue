@@ -1,71 +1,80 @@
 <template>
-    <h1 class="primary">{{ $t('opportunity.page_title') }}</h1>
-    <GlobalMessage v-if="showMessage" />
-    <div class="row mb-3 mt-5 justify-content-end">
+    <h3 class="text-desino">{{ $t('opportunity.page_title') }}</h3>
+    <GlobalMessage v-if="showMessage"/>
+    <div class="row mb-3 justify-content-end">
         <div class="col-12 col-md-3 mb-2 mb-md-0">
-            <input type="text" @keyup="fetchAllOpportunities" class="form-control"
-                :placeholder="$t('opportunity_list_table.search_placeholder_initiative_name')"
-                v-model="filter.initiative_name">
+            <input v-model="filter.initiative_name" :placeholder="$t('opportunity_list_table.search_placeholder_initiative_name')" class="form-control"
+                   type="text"
+                   @keyup="fetchAllOpportunities">
         </div>
         <div class="col-12 col-md-3 mb-2 mb-md-0">
-            <select v-model="filter.client_id" @change="fetchAllOpportunities" id="client_id" class="form-select">
+            <select id="client_id" v-model="filter.client_id" class="form-select" @change="fetchAllOpportunities">
                 <option value="">{{ $t('opportunity_list_table.search_placeholder_client_id') }}</option>
                 <option v-for="client in filterClients" :key="client.id" :value="client.id">{{ client.name }}</option>
             </select>
         </div>
-        <!-- <div class="col-12 col-md-2">
-            <button class="btn btn-primary w-100" type="button" @click="fetchAllOpportunities" @keydown="fetchAllOpportunities">{{ $t('opportunity_list_table.search_button_text') }}</button>
-        </div> -->
     </div>
-    <ul class="list-group mb-3 mt-2">
-        <li class="list-group-item d-flex justify-content-between font-weight-bold">
-            <span class="col fw-bold">{{ $t('opportunity_list_table.client_th_text') }}</span>
-            <span class="col fw-bold">{{ $t('opportunity_list_table.initiative_name_th_text') }}</span>
-            <span class="col fw-bold text-center">{{ $t('opportunity_list_table.ballpark_development_hours_th_text')
-                }}</span>
-            <span class="col fw-bold text-end">{{ $t('opportunity_list_table.actions_th_text') }}</span>
-        </li>
-        <li v-if="opportunities.length > 0" v-for="opportunity in opportunities" :key="opportunity.id"
-            class="list-group-item d-flex justify-content-between align-items-center">
-            <span class="col">{{ opportunity.client.name }}</span>
-            <span class="col">{{ opportunity.name }}</span>
-            <span class="col text-center">{{ opportunity.ballpark_development_hours }}</span>
-            <span class="col text-end">
-                <a href="javascript:" class="text-primary me-2"
-                    :title="$t('opportunity_list_table.actions_edit_tooltip')" @click="editOpportunity(opportunity)">
-                    <i class="bi bi-pencil-square"></i>
-                </a>
-                <a href="javascript:" class="text-warning me-2"
-                    :title="$t('opportunity_list_table.actions_lost_status_tooltip')"
-                    @click="updateStatusLostConfirmed(opportunity.id)">
-                    <i class="bi bi-hand-thumbs-down-fill"></i>
-                </a>
-                <router-link class="text-success me-2"
-                    :title="$t('opportunity_list_table.actions_redirct_to_solution_design_tooltip')"
-                    :to="{ name: 'solution-design', params: { id: opportunity.id } }">
-                    <i class="bi bi-box-arrow-right"></i>
-                </router-link>
-                <!-- <a href="javascript:" class="text-success me-2" :title="$t('opportunity_list_table.actions_redirct_to_solution_design_tooltip')" @click="solutionDesignOpenInNewTab(opportunity.id)">
-                    <i class="bi bi-box-arrow-right"></i>
-                </a> -->
-            </span>
-        </li>
-        <li v-if="opportunities.length > 0" class="list-group-item d-flex justify-content-between align-items-center">
-            <span class="col"></span>
-            <span class="col"></span>
-            <span class="col text-center fw-bold">{{ ballparkTotal }}</span>
-            <span class="col text-end">
-            </span>
-        </li>
-        <li v-else class="list-group-item d-flex justify-content-between align-items-center">
-            <span class="col fw-bold text-center">{{ $t('opportunity_list_table.opportunities_not_found_text') }}</span>
-        </li>
-    </ul>
+    <div class="list-group-item mx-2 mb-3 mt-2">
+        <div class="row justify-content-between font-weight-bold bg-desino text-white rounded-top">
+            <div class="col-lg-4 col-md-6 col-6 fw-bold">{{ $t('opportunity_list_table.client_th_text') }}</div>
+            <div class="col-lg-3 col-md-6 col-6 fw-bold">{{
+                    $t('opportunity_list_table.initiative_name_th_text')
+                }}
+            </div>
+            <div class="col-lg-3 col-md-6 col-6 fw-bold d-none d-lg-block">
+                {{ $t('opportunity_list_table.ballpark_development_hours_th_text') }}
+            </div>
+            <div class="col-lg-2 col-md-6 col-6 fw-bold d-none d-lg-block">
+                {{ $t('opportunity_list_table.actions_th_text') }}
+            </div>
+        </div>
+        <div v-for="opportunity in opportunities" v-if="opportunities.length > 0" :key="opportunity.id">
+            <div class="row border-desino border p-2">
+                <div class="col-lg-4 col-md-6 col-6">{{ opportunity.client.name }}</div>
+                <div class="col-lg-3 col-md-6 col-6">{{ opportunity.name }}</div>
+                <div class="col-lg-3 col-md-6 col-8 text-center text-lg-start">
+                    <span class="d-block d-lg-none fw-bold bg-desino mt-2 p-0 text-white text-center rounded-top"> {{
+                            $t('opportunity_list_table.ballpark_development_hours_th_text')
+                        }} </span>
+                    {{ opportunity.ballpark_development_hours }}
+                </div>
+                <div class="col-lg-2 col-md-6 col-4">
+                    <span class="d-block d-lg-none fw-bold bg-light-subtle mt-2 text-white text-center"> {{
+                            $t('opportunity_list_table.actions_th_text')
+                        }} </span>
+                    <a :title="$t('opportunity_list_table.actions_edit_tooltip')" class="text-desino me-2"
+                       href="javascript:" @click="editOpportunity(opportunity)">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+                    <a :title="$t('opportunity_list_table.actions_lost_status_tooltip')" class="text-warning me-2"
+                       href="javascript:"
+                       @click="updateStatusLostConfirmed(opportunity.id)">
+                        <i class="bi bi-hand-thumbs-down-fill"></i>
+                    </a>
+                    <router-link :title="$t('opportunity_list_table.actions_redirct_to_solution_design_tooltip')"
+                                 :to="{ name: 'solution-design', params: { id: opportunity.id } }"
+                                 class="text-success me-2">
+                        <i class="bi bi-box-arrow-right"></i>
+                    </router-link>
+                </div>
+            </div>
+        </div>
+        <div v-if="opportunities.length > 0" class="row border p-2">
+            <div class="col-lg-4 col-md-6 col-6"></div>
+            <div class="col-lg-3 col-md-6 col-6"></div>
+            <div class="col-lg-3 fw-bold col-md-6 col-8">{{ ballparkTotal }}</div>
+            <div class="col-lg-2 text-end col-md-6 col-4">
+            </div>
+        </div>
+        <div v-else class="list-group-item row">
+            <div class="col fw-bold text-center">{{ $t('opportunity_list_table.opportunities_not_found_text') }}</div>
+        </div>
+    </div>
     <PaginationComponent :currentPage="Number(currentPage)" :totalPages="Number(totalPages)"
-        @page-changed="fetchAllOpportunities" />
-    <div class="modal fade" id="editOpportunityModal" tabindex="-1" aria-labelledby="editOpportunityModalLabel"
-        aria-hidden="true">
-        <EditOpportunityModalComponent ref="editOpportunityModalComponent" @pageUpddated="fetchAllOpportunities" />
+                         @page-changed="fetchAllOpportunities"/>
+    <div id="editOpportunityModal" aria-hidden="true" aria-labelledby="editOpportunityModalLabel" class="modal fade"
+         tabindex="-1">
+        <EditOpportunityModalComponent ref="editOpportunityModalComponent" @pageUpddated="fetchAllOpportunities"/>
     </div>
 </template>
 
@@ -74,10 +83,10 @@ import globalMixin from '@/globalMixin';
 import PaginationComponent from '../../components/PaginationComponent.vue';
 import messageService from '../../services/messageService';
 import OpportunityService from '../../services/OpportunityService';
-import { mapState } from 'vuex/dist/vuex.cjs.js';
+import {mapState} from 'vuex/dist/vuex.cjs.js';
 import GlobalMessage from '../../components/GlobalMessage.vue';
 import EditOpportunityModalComponent from './EditOpportunityModal.vue';
-import { Modal } from 'bootstrap';
+import {Modal} from 'bootstrap';
 import showToast from '../../utils/toasts';
 import eventBus from './../../eventBus';
 
@@ -107,7 +116,7 @@ export default {
     methods: {
         ...mapState(['loading']),
         solutionDesignOpenInNewTab(id) {
-            const routeData = this.$router.resolve({ name: 'solution-design', params: { id } });
+            const routeData = this.$router.resolve({name: 'solution-design', params: {id}});
             window.open(routeData.href, '_blank');
         },
         async getPageInitialData() {
@@ -163,7 +172,7 @@ export default {
 
         async updateStatusLost(id) {
             try {
-                const response = await OpportunityService.updateStatusLost({ id: id });
+                const response = await OpportunityService.updateStatusLost({id: id});
                 showToast(response.data.message, 'success');
                 this.fetchAllOpportunities();
             } catch (error) {

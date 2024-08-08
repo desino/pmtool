@@ -15,7 +15,7 @@
                                 <span v-for="(error, index) in errors.email" :key="index">{{ error }}</span>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">{{ $t('forgot_password_submit_but_text') }}</button>
+                        <button type="submit" class="btn btn-desino w-100">{{ $t('forgot_password_submit_but_text') }}</button>
                         <p class="mb-1">
                             <router-link class="text-decoration-none" :to="{ name: 'login' }">
                                 {{ $t('forgot_password_back_to_login_but_text') }}
@@ -56,9 +56,9 @@ export default {
                     email: this.email,
                 };
                 let response = await AuthService.forgotPassword(credentials);
-                if(response.data.status){                    
+                if(response.data.status){
                     messageService.setMessage(response.data.message, 'success');
-                } else {                    
+                } else {
                     messageService.setMessage(response.data.message, 'danger');
                 }
             } catch (error) {
