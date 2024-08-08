@@ -97,10 +97,26 @@ class SolutionDesignController extends Controller
         DB::beginTransaction();
         $status = false;
         try {
-            DB::commit();
             SolutionDesignServicec::deleteSection($request);
             $statusCode = 200;
             $meesage = __('messages.solution_design.section.delete_success');
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $statusCode = 500;
+        }
+        return ApiHelper::response($status, $meesage, '', $statusCode);
+    }
+
+    public function updateSection(Request $request){
+        DB::beginTransaction();
+        $status = false;
+        try {
+            SolutionDesignServicec::updateSection($request);
+            $statusCode = 200;
+            $meesage = __('messages.solution_design.section.update_success');
+            DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
             $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';

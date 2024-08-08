@@ -10,40 +10,49 @@
         <div class="row mt-4">
             <div class="col-md-4">
                 <div v-if="sectionsWithFunctionalities.length" v-for="section in sectionsWithFunctionalities"
-                    :key="section.id" class="functionality-section">
-                    <h5>
-                        {{ section.name }}
-                        <a href="javascript:" class="fw-bold fs-4 custom-hover mr-5" @click="toggleSection(section.id)">
-                            <i :class="isSectionActive(section.id) ? 'bi bi-dash' : 'bi bi-plus'"></i>
-                        </a>
-                        <div class="dropdown  custom-hover ml-5">
-                            <a href="javascript:" class="" type="button" id="dropdown_section_menu"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-three-dots"></i>
+                    :key="section.id" class="">
+                    <h5 class="d-flex mt-3">
+                        <template v-if="editingSectionId === section.id">
+                            <input type="text" class="form-control" v-model="editingSectionName"
+                                @blur="updateSectionName(section)" @keyup.enter="updateSectionName(section)" />
+                        </template>
+                        <template v-else>
+                            {{ section.name }}
+                            <a href="javascript:" class="fw-bold fs-4 custom-hover mr-5 text-desino"
+                                @click="toggleSection(section.id)">
+                                <i :class="isSectionActive(section.id) ? 'bi bi-dash' : 'bi bi-plus'"></i>
                             </a>
-                            <ul class="dropdown-menu" aria-labelledby="dropdown_section_menu">
-                                <li>
-                                    <a class="dropdown-item" href="javascript:"><i class="bi bi-pencil-square"></i>
-                                        {{ $t('solution_design.section.option_edit_but_text') }}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="javascript:" @click="deleteSection(section)">
-                                        <i class="bi bi-trash3"></i> {{
-                                            $t('solution_design.section.option_delete_but_text') }}
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                            <div class="dropdown custom-hover ml-5">
+                                <a href="javascript:" class="text-desino" type="button" id="dropdown_section_menu"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots"></i>
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="dropdown_section_menu">
+                                    <li>
+                                        <a class="dropdown-item" href="javascript:" @click="editSection(section)">
+                                            <i class="bi bi-pencil-square"></i>
+                                            {{ $t('solution_design.section.option_edit_but_text') }}
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="javascript:" @click="deleteSection(section)">
+                                            <i class="bi bi-trash3"></i>
+                                            {{ $t('solution_design.section.option_delete_but_text') }}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </template>
                     </h5>
-                    <ul class="functionality-list list-group">
+                    <ul class="list-group">
                         <li role="button" v-for="func in section.functionalities" :key="func.id"
-                            :class="['list-group-item', { 'functionality-selected': isSelected(func.id) }]"
+                            :class="['list-group-item d-flex list-group-item-action', { 'bg-desino text-light': isSelected(func.id) }]"
                             @click="selectFunctionality(func)">
                             <span>{{ func.name }}</span>
                             <span class="ms-auto d-flex align-items-center">
-                                <a href="javascript:" class="text-danger me-2"
-                                    @click.stop="deleteFunctionality(func)"><i class="bi bi-trash3"></i></a>
+                                <a href="javascript:" class="text-danger me-2" @click.stop="deleteFunctionality(func)">
+                                    <i class="bi bi-trash3"></i>
+                                </a>
                                 <span class="badge bg-secondary">0</span>
                             </span>
                         </li>
@@ -74,7 +83,7 @@
                     </div>
                     <div class="mb-3">
                         <button type="submit" :disabled="!functionalityFormData.section_id"
-                            class="btn btn-primary w-100">
+                            class="btn bg-desino w-100 text-light">
                             {{ functionalityFormData.functionality_id ?
                                 $t('solution_design.functionality_form.submit_update_but_text') :
                                 $t('solution_design.functionality_form.submit_save_but_text') }}
@@ -118,7 +127,9 @@ export default {
                 functionality_id: "",
             },
             activeSectionId: null,
-            selectedFunctionalityId: null
+            selectedFunctionalityId: null,
+            editingSectionId: null,
+            editingSectionName: "",
         };
     },
     methods: {
@@ -209,16 +220,6 @@ export default {
         findItem(sectionId) {
             return this.sectionsWithFunctionalities.find(section => section.id === sectionId);
         },
-        // selectFunctionality(functionality) {
-        //     this.functionalityFormData = {
-        //         section_id: functionality.section_id,
-        //         name: functionality.name,
-        //         description: functionality.description,
-        //         functionality_id: functionality.id,
-        //     };
-        //     this.activeSectionId = null;
-        //     this.selectedFunctionalityId = functionality.id;
-        // },
         selectFunctionality(functionality) {
             if (this.selectedFunctionalityId === functionality.id) {
                 this.selectedFunctionalityId = null;
@@ -269,6 +270,29 @@ export default {
             } catch (error) {
                 this.handleError(error);
             }
+        },
+        editSection(section) {
+            this.editingSectionId = section.id;
+            this.editingSectionName = section.name;
+        },
+        async updateSectionName(section) {
+            if (this.editingSectionName.trim() === section.name.trim()) {
+                this.editingSectionId = null;
+                return;
+            }
+
+            try {
+                const updateData = {
+                    section_id: section.id,
+                    name: this.editingSectionName.trim(),
+                };
+                const response = await SolutionDesignService.updateSectionName(updateData);
+                section.name = this.editingSectionName.trim();
+                this.editingSectionId = null;
+                showToast(response.message, 'success');
+            } catch (error) {
+                this.handleError(error);
+            }
         }
     },
     mounted() {
@@ -278,7 +302,7 @@ export default {
         this.initiativeId = to.params.id;
         this.fetchData();
         next();
-    }
+    },
 }
 </script>
 

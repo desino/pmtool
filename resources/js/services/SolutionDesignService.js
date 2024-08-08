@@ -14,6 +14,7 @@ const endpoints = {
     storeUpdateFunctionality: `${defaultPath}/store-update-functionality`,
     deleteFunctionality: `${defaultPath}/delete-functionality`,
     deleteSection: `${defaultPath}/delete-section`,
+    updateSection: `${defaultPath}/update-section`,
 }
 
 const SolutionDesignService = {
@@ -61,6 +62,14 @@ const SolutionDesignService = {
     async deleteSection(data) {
         try {
             const response = await axiosRequest.post(endpoints.deleteSection, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async updateSectionName(data) {
+        try {
+            const response = await axiosRequest.post(endpoints.updateSection, data);
             return response.data;
         } catch (error) {
             throw handleError(error);

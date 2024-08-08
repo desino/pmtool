@@ -39,4 +39,11 @@ Class SolutionDesignServicec
         $section->delete();
         return $section;
     }
+
+    public static function updateSection($request) {
+        $postData = $request->post();
+        $section = Section::find($request->post('section_id'));
+        $section->update($postData);
+        return $section;
+    }
 }
