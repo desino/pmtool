@@ -194,6 +194,7 @@
 
     "messages.solution_design.section.delete_success":"Section and it's functionality deleted successfully",
     "messages.solution_design.section.update_success":"Section updated successfully",
+    "messages.solution_design.section.update_functionality_order_no_success":"Functionality order no updated successfully",
 
     "home": "Home",
     "login_title": "Login",
