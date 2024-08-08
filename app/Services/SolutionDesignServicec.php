@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Functionality;
 use App\Models\Initiative;
 use App\Models\Section;
+use Faker\Provider\ar_EG\Person;
 
 Class SolutionDesignServicec
 {
@@ -46,5 +47,50 @@ Class SolutionDesignServicec
         $section = Section::find($request->post('section_id'));
         $section->update($postData);
         return $section;
+    }
+
+    public static function updateFunctionalityOrderNo($request) {
+        $postData = $request->post();
+
+        $postData = $request->post();
+        $sectionId = $postData['section_id'];
+        $itemId = $postData['id'];
+        $newOrderNo = $postData['order_no'];
+
+        $functionalities = Functionality::where('section_id', $sectionId)
+        ->orderBy('order_no')
+        ->get();
+
+        $itemToMove = $functionalities->find($itemId);
+
+        if (!$itemToMove) {
+            return;
+        }
+
+        $currentOrderNo = $itemToMove->order_no;
+
+        if ($currentOrderNo === $newOrderNo) {
+            return; // No change needed
+        }
+
+        foreach ($functionalities as $functionality) {
+            if ($functionality->id !== $itemToMove->id) {
+                if ($currentOrderNo < $newOrderNo) {
+                    // If moving down, decrease the order number for items between current and new positions
+                    if ($functionality->order_no > $currentOrderNo && $functionality->order_no <= $newOrderNo) {
+                        $functionality->decrement('order_no');
+                    }
+                } else {
+                    // If moving up, increase the order number for items between new and current positions
+                    if ($functionality->order_no < $currentOrderNo && $functionality->order_no >= $newOrderNo) {
+                        $functionality->increment('order_no');
+                    }
+                }
+            }
+        }
+
+        // Update the order number of the item to move
+        $itemToMove->order_no = $newOrderNo;
+        $itemToMove->save();
     }
 }

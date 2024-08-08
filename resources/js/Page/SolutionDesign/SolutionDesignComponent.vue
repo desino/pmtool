@@ -1,6 +1,17 @@
 <template>
     <GlobalMessage v-if="showMessage" />
     <div>
+        <!-- <draggable :list="items" item-key="id" handle=".handle" :move="checkMove" @end="onDragEnd">
+            <template #item="{ element }">
+                <div class="list-item">
+                    <div class="handle">
+                        test
+                    </div>
+                    {{ element.name }}
+                    {{ element.id }}
+                </div>
+            </template>
+</draggable> -->
         <h1 class="primary">{{ $t('solution_design.page_title') }} - {{ initiativeData.name }}</h1>
         <h5>
             <span class="badge rounded-pill bg-desino text-light">
@@ -52,7 +63,26 @@
                         </template>
                     </h5>
                     <ul class="list-group">
-                        <li role="button" v-for="func in section.functionalities" :key="func.id"
+                        <!-- group="people" -->
+                        <draggable v-model="section.functionalities" :move="checkMoveFunctionality"
+                            handle=".handle-functionality" @end="functionalityOnDragEnd" class="list-group"
+                            item-key="id">
+                            <template #item="{ element }">
+                                <li :class="['list-group-item d-flex list-group-item-action', { 'bg-desino text-light': isSelected(element.id) }]"
+                                    role="button" @click="selectFunctionality(element)">
+                                    <span><i class="bi bi-grip-horizontal handle-functionality me-2"></i></span>
+                                    <span>{{ element.name }}</span>
+                                    <span class="ms-auto d-flex align-items-center">
+                                        <a href="javascript:" class="text-danger me-2"
+                                            @click.stop="deleteFunctionality(element)">
+                                            <i class="bi bi-trash3"></i>
+                                        </a>
+                                        <span class="badge bg-secondary">0</span>
+                                    </span>
+                                </li>
+                            </template>
+                        </draggable>
+                        <!-- <li role="button" v-for="func in section.functionalities" :key="func.id"
                             :class="['list-group-item d-flex list-group-item-action', { 'bg-desino text-light': isSelected(func.id) }]"
                             @click="selectFunctionality(func)">
                             <span>{{ func.name }}</span>
@@ -62,7 +92,7 @@
                                 </a>
                                 <span class="badge bg-secondary">0</span>
                             </span>
-                        </li>
+                        </li> -->
                     </ul>
                 </div>
             </div>
@@ -112,6 +142,8 @@ import AddNewSectionComponent from './Section/AddNewSectionComponent.vue';
 import TinyMceEditor from './../../components/TinyMceEditor.vue';
 import showToast from '../../utils/toasts';
 import eventBus from '../../eventBus';
+import draggable from 'vuedraggable';
+
 
 export default {
     name: 'SolutionDesignComponent',
@@ -119,10 +151,18 @@ export default {
     components: {
         GlobalMessage,
         AddNewSectionComponent,
-        TinyMceEditor
+        TinyMceEditor,
+        draggable
     },
     data() {
         return {
+            // items: [
+            //     { name: "John 1", id: 0 },
+            //     { name: "Joao 2", id: 1 },
+            //     { name: "Jean 3", id: 2 }
+            // ],
+            drag: false,
+
             initiativeId: this.$route.params.id,
             initiativeData: {},
             sectionsWithFunctionalities: [],
@@ -138,6 +178,7 @@ export default {
             selectedFunctionalityId: null,
             editingSectionId: null,
             editingSectionName: "",
+            moveFunctionality: {},
         };
     },
     methods: {
@@ -305,7 +346,21 @@ export default {
             } catch (error) {
                 this.handleError(error);
             }
-        }
+        },
+        checkMoveFunctionality(e) {
+            this.moveFunctionality = e.draggedContext.element;
+            this.moveFunctionality.order_no = e.draggedContext.futureIndex + 1;
+        },
+
+        async functionalityOnDragEnd(event) {
+            this.drag = false;
+            try {
+                const response = await SolutionDesignService.updateFunctionalityOrderNo(this.moveFunctionality);
+                showToast(response.message, 'success');
+            } catch (error) {
+                this.handleError(error);
+            }
+        },
     },
     mounted() {
         this.fetchData();

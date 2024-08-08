@@ -10,7 +10,7 @@ class FunctionalityObserver
     public function creating(Functionality $functionality)
     {
         $functionality->created_by = Auth::id();
-        $functionality->order_no = $functionality->max('order_no')+1;
+        $functionality->order_no = $functionality->where('section_id',$functionality->section_id)->max('order_no')+1;
         $functionality->updated_at = null;
     }
 

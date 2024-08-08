@@ -40,6 +40,7 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::post('/delete-functionality', 'deleteFunctionality');
         Route::post('/delete-section', 'deleteSection');
         Route::post('/update-section', 'updateSection');
+        Route::post('/update-functionality-order-no', 'updateFunctionalityOrderNo');
     });
 
     Route::controller(HeaderController::class)->prefix('header')->group(function () {
