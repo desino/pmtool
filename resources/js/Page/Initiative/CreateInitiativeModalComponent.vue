@@ -59,8 +59,9 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-desino">{{ $t('create_initiative_modal_submit_but_text')
-                        }}</button>
+                    <button type="submit" class="btn btn-desino bg-desino text-light">{{
+                        $t('create_initiative_modal_submit_but_text')
+                    }}</button>
                 </div>
             </div>
         </form>

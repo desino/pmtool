@@ -32,6 +32,9 @@ export default {
         handleUnselectHeaderInitiativeId() {
             this.selected_initiative_id = "";
         },
+        selectHeaderInitiativeId(initiativeId) {
+            this.selected_initiative_id = initiativeId;
+        },
         navigate(event) {
             const initiativeId = event.target.value;
             if (initiativeId) {
@@ -45,6 +48,7 @@ export default {
         this.getInitiativeWithClienData();
         eventBus.$on('appendHeaderInitiativeSelectBox', this.handleAppendHeaderInitiativeSelectBox);
         eventBus.$on('unselectHeaderInitiativeId', this.handleUnselectHeaderInitiativeId);
+        eventBus.$on('selectHeaderInitiativeId', this.selectHeaderInitiativeId);
     },
 }
 </script>

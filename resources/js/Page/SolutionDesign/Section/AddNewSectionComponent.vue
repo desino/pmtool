@@ -1,7 +1,7 @@
 <template>
     <div class="row mt-3">
         <div class="col-md-4" v-if="!showInput">
-            <button class="button btn btn-desino" type="button" @click="showHideInput">
+            <button class="button btn btn-desino bg-desino text-light" type="button" @click="showHideInput">
                 <i class="bi bi-plus-lg"></i> {{ $t('solution_design.add_section_but_text') }}
             </button>
         </div>

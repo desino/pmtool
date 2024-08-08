@@ -193,6 +193,7 @@
     "messages.solution_design.functionality.delete_success":"Functionality deleted successfully",
 
     "messages.solution_design.section.delete_success":"Section and it's functionality deleted successfully",
+    "messages.solution_design.section.update_success":"Section updated successfully",
 
     "home": "Home",
     "login_title": "Login",

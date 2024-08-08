@@ -104,6 +104,7 @@ import SolutionDesignService from './../../services/SolutionDesignService';
 import AddNewSectionComponent from './Section/AddNewSectionComponent.vue';
 import TinyMceEditor from './../../components/TinyMceEditor.vue';
 import showToast from '../../utils/toasts';
+import eventBus from '../../eventBus';
 
 export default {
     name: 'SolutionDesignComponent',
@@ -137,7 +138,8 @@ export default {
             try {
                 await Promise.all([
                     this.getInitiativeData(),
-                    this.getSectionsWithFunctionalities()
+                    this.getSectionsWithFunctionalities(),
+                    eventBus.$emit('selectHeaderInitiativeId', this.initiativeId)
                 ]);
                 this.clearMessages();
             } catch (error) {
