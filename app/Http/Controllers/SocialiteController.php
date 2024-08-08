@@ -28,7 +28,7 @@ class SocialiteController extends Controller
         $domainArray = explode('@', $remoteUser->getEmail());
 
         $allowedDomainsArray = array_map('trim',explode(',', config('app.allowed_domains_for_office365_login')));
-        if (!in_array($domainArray[1], $allowedDomainsArray)) {            
+        if (!in_array($domainArray[1], $allowedDomainsArray)) {
             //return redirect('/office-365-login-callback?message_class=danger&message='.urlencode(__('messages.auth.office365_login_domains_not_match')).'');
             Session::put('message_class', 'danger');
             Session::put('callback_message', __('messages.auth.office365_login_domains_not_match'));
@@ -42,13 +42,11 @@ class SocialiteController extends Controller
             'password' => 'admin@123'
         ]);
 
-        // Auth::login($user, true);
         $token = $user->createToken('token')->plainTextToken;
         Session::put('message_class', 'success');
         Session::put('callback_message', __('messages.auth.office365_login_success'));
         Session::put('token', $token);
         return redirect('/login');
-        // return redirect('/office-365-login-callback?message_class=success&message='.urlencode(__('messages.auth.office365_login_success')).'&token='.urlencode($token).'');
     }
 
     public function getProviderCallbackSessionData(){
@@ -57,7 +55,7 @@ class SocialiteController extends Controller
             'message' => Session::get('callback_message') ?? null,
             'token' => Session::get('token') ?? null,
             'user' => Auth::user() ?? null
-        ); 
+        );
         Session::flash('message_class');
         Session::flash('callback_message');
         Session::flash('token');

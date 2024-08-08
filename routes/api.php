@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->group(function(){
     Route::controller(AuthController::class)->group(function () {
         Route::get('/user', 'user');
-        // Route::get('/logout', 'logout');
     });
 
     Route::controller(ClientController::class)->prefix('client')->group(function () {

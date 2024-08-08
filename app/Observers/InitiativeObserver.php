@@ -10,13 +10,12 @@ class InitiativeObserver
     public function creating(Initiative $initiative)
     {
         $initiative->created_by = Auth::id();
-        // $initiative->updated_by = Auth::id();
         $initiative->updated_at = null;
     }
 
     public function updating(Initiative $initiative)
-    {        
-        $initiative->updated_by = Auth::id();        
+    {
+        $initiative->updated_by = Auth::id();
     }
     /**
      * Handle the Initiative "created" event.
@@ -31,7 +30,7 @@ class InitiativeObserver
      */
     public function updated(Initiative $initiative): void
     {
-        
+
     }
 
     /**

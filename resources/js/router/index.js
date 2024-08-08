@@ -8,11 +8,6 @@ const router = createRouter({
     history: createWebHistory(),
     routes: [
         ...routes,
-        // {
-        //     path: '/:catchAll(.*)',
-        //     name: 'not-found',
-        //     component: NotFoundComponent
-        // } // Register the catch-all route
     ]
 });
 
@@ -21,8 +16,7 @@ router.beforeEach((to, from, next) => {
 
     // Update document title based on route meta
     document.title = APP_VARIABLES.APP_NAME + ' | ' + to.meta.title;
-    // console.log(to);
-    // debugger;
+
     // Redirect logic based on authentication state
     if ((to.name === 'login' || to.name === 'forgot-password') && isAuthenticated) {
         next({ name: 'home' });

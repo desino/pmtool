@@ -11,7 +11,6 @@ class FunctionalityObserver
     {
         $functionality->created_by = Auth::id();
         $functionality->order_no = $functionality->max('order_no')+1;
-        // $client->updated_by = Auth::id();
         $functionality->updated_at = null;
     }
 

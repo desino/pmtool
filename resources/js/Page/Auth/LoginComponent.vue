@@ -107,8 +107,6 @@ export default {
     mounted() {
         this.clearMessages();
         this.getProviderCallbackSessionData();
-        // console.log('asdasd123:: ', this.appVariables);
-        // console.log('import.meta.env.VITE_APP_NAME:: ', import.meta.env.VITE_APP_NAME);
     },
     beforeUnmount() {
         // Hide the message when the component is unmounted

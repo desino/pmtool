@@ -57,7 +57,7 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-desino bg-desino text-light">{{
                         $t('create_client_modal_submit_but_text')
-                    }}</button>
+                        }}</button>
                 </div>
             </div>
         </form>
@@ -93,7 +93,6 @@ export default {
             this.clearMessages();
             try {
                 const response = await ClientService.storeClient(this.formData);
-                // messageService.setMessage(response.data.message, 'success');
                 showToast(response.data.message, 'success');
                 this.hideModal();
                 eventBus.$emit('reloadOpportunityList');

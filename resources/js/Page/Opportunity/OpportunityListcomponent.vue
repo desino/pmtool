@@ -1,11 +1,11 @@
 <template>
     <h3 class="text-desino">{{ $t('opportunity.page_title') }}</h3>
-    <GlobalMessage v-if="showMessage"/>
+    <GlobalMessage v-if="showMessage" />
     <div class="row mb-3 justify-content-end">
         <div class="col-12 col-md-3 mb-2 mb-md-0">
-            <input v-model="filter.initiative_name" :placeholder="$t('opportunity_list_table.search_placeholder_initiative_name')" class="form-control"
-                   type="text"
-                   @keyup="fetchAllOpportunities">
+            <input v-model="filter.initiative_name"
+                :placeholder="$t('opportunity_list_table.search_placeholder_initiative_name')" class="form-control"
+                type="text" @keyup="fetchAllOpportunities">
         </div>
         <div class="col-12 col-md-3 mb-2 mb-md-0">
             <select id="client_id" v-model="filter.client_id" class="form-select" @change="fetchAllOpportunities">
@@ -18,7 +18,7 @@
         <div class="row justify-content-between font-weight-bold bg-desino text-white rounded-top">
             <div class="col-lg-4 col-md-6 col-6 fw-bold">{{ $t('opportunity_list_table.client_th_text') }}</div>
             <div class="col-lg-3 col-md-6 col-6 fw-bold">{{
-                    $t('opportunity_list_table.initiative_name_th_text')
+                $t('opportunity_list_table.initiative_name_th_text')
                 }}
             </div>
             <div class="col-lg-3 col-md-6 col-6 fw-bold d-none d-lg-block">
@@ -34,26 +34,24 @@
                 <div class="col-lg-3 col-md-6 col-6">{{ opportunity.name }}</div>
                 <div class="col-lg-3 col-md-6 col-8 text-center text-lg-start">
                     <span class="d-block d-lg-none fw-bold bg-desino mt-2 p-0 text-white text-center rounded-top"> {{
-                            $t('opportunity_list_table.ballpark_development_hours_th_text')
+                        $t('opportunity_list_table.ballpark_development_hours_th_text')
                         }} </span>
                     {{ opportunity.ballpark_development_hours }}
                 </div>
                 <div class="col-lg-2 col-md-6 col-4">
                     <span class="d-block d-lg-none fw-bold bg-light-subtle mt-2 text-white text-center"> {{
-                            $t('opportunity_list_table.actions_th_text')
+                        $t('opportunity_list_table.actions_th_text')
                         }} </span>
                     <a :title="$t('opportunity_list_table.actions_edit_tooltip')" class="text-desino me-2"
-                       href="javascript:" @click="editOpportunity(opportunity)">
+                        href="javascript:" @click="editOpportunity(opportunity)">
                         <i class="bi bi-pencil-square"></i>
                     </a>
                     <a :title="$t('opportunity_list_table.actions_lost_status_tooltip')" class="text-warning me-2"
-                       href="javascript:"
-                       @click="updateStatusLostConfirmed(opportunity.id)">
+                        href="javascript:" @click="updateStatusLostConfirmed(opportunity.id)">
                         <i class="bi bi-hand-thumbs-down-fill"></i>
                     </a>
                     <router-link :title="$t('opportunity_list_table.actions_redirct_to_solution_design_tooltip')"
-                                 :to="{ name: 'solution-design', params: { id: opportunity.id } }"
-                                 class="text-success me-2">
+                        :to="{ name: 'solution-design', params: { id: opportunity.id } }" class="text-success me-2">
                         <i class="bi bi-box-arrow-right"></i>
                     </router-link>
                 </div>
@@ -71,10 +69,10 @@
         </div>
     </div>
     <PaginationComponent :currentPage="Number(currentPage)" :totalPages="Number(totalPages)"
-                         @page-changed="fetchAllOpportunities"/>
+        @page-changed="fetchAllOpportunities" />
     <div id="editOpportunityModal" aria-hidden="true" aria-labelledby="editOpportunityModalLabel" class="modal fade"
-         tabindex="-1">
-        <EditOpportunityModalComponent ref="editOpportunityModalComponent" @pageUpddated="fetchAllOpportunities"/>
+        tabindex="-1">
+        <EditOpportunityModalComponent ref="editOpportunityModalComponent" @pageUpddated="fetchAllOpportunities" />
     </div>
 </template>
 
@@ -83,10 +81,10 @@ import globalMixin from '@/globalMixin';
 import PaginationComponent from '../../components/PaginationComponent.vue';
 import messageService from '../../services/messageService';
 import OpportunityService from '../../services/OpportunityService';
-import {mapState} from 'vuex/dist/vuex.cjs.js';
+import { mapState } from 'vuex/dist/vuex.cjs.js';
 import GlobalMessage from '../../components/GlobalMessage.vue';
 import EditOpportunityModalComponent from './EditOpportunityModal.vue';
-import {Modal} from 'bootstrap';
+import { Modal } from 'bootstrap';
 import showToast from '../../utils/toasts';
 import eventBus from './../../eventBus';
 
@@ -116,7 +114,7 @@ export default {
     methods: {
         ...mapState(['loading']),
         solutionDesignOpenInNewTab(id) {
-            const routeData = this.$router.resolve({name: 'solution-design', params: {id}});
+            const routeData = this.$router.resolve({ name: 'solution-design', params: { id } });
             window.open(routeData.href, '_blank');
         },
         async getPageInitialData() {
@@ -158,7 +156,6 @@ export default {
             this.$swal({
                 title: this.$t('opportunity_list_table.actions_lost_status_modal_title'),
                 text: this.$t('opportunity_list_table.actions_lost_status_modal_text'),
-                // icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#1e6abf',
                 cancelButtonColor: '#d33',
@@ -172,7 +169,7 @@ export default {
 
         async updateStatusLost(id) {
             try {
-                const response = await OpportunityService.updateStatusLost({id: id});
+                const response = await OpportunityService.updateStatusLost({ id: id });
                 showToast(response.data.message, 'success');
                 this.fetchAllOpportunities();
             } catch (error) {

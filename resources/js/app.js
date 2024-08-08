@@ -1,8 +1,6 @@
 import './bootstrap.js';
 import { createApp } from "vue/dist/vue.esm-bundler.js";
 import { createI18n } from 'vue-i18n';
-// import en from './locale/en.json';
-// import nl from './locale/nl.json';
 import en from './../../lang/en.json';
 import { APP_VARIABLES } from './constants.js';
 import router from "./router/index.js";

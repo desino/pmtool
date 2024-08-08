@@ -10,13 +10,12 @@ class SectionObserver
     public function creating(Section $section)
     {
         $section->created_by = Auth::id();
-        // $initiative->updated_by = Auth::id();
         $section->updated_at = null;
     }
 
     public function updating(Section $section)
-    {        
-        $section->updated_by = Auth::id();        
+    {
+        $section->updated_by = Auth::id();
     }
     /**
      * Handle the Section "created" event.

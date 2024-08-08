@@ -35,7 +35,7 @@ class OpportunityController extends Controller
     public function update(EditOpportunityRequest $request){
         $requestData = $request->all();
         $initiative = Initiative::find($requestData['id']);
-        // $initiative = Initiative::find(15);
+
         if(!$initiative) {
             return ApiHelper::response(false, __('messages.opportunity.not_found'), null, 404);
         }

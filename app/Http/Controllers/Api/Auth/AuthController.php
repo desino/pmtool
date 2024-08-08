@@ -22,10 +22,10 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse The JSON response.
      */
     public function login(LoginRequest $request)
-    {                
+    {
         if (Auth::attempt($request->only('email', 'password'))) {
             $user = Auth::user();
-            $user['token'] = $user->createToken('token')->plainTextToken;            
+            $user['token'] = $user->createToken('token')->plainTextToken;
             return ApiHelper::response(true, __('messages.auth.login_success'), $user, 200);
         }
         return ApiHelper::response(false, __('messages.auth.login_credentials_does_not_match'), [], 401);
@@ -51,19 +51,19 @@ class AuthController extends Controller
             return ApiHelper::response(true, __($response), '', 200);
         } else {
             return ApiHelper::response(false, __($response), '', 400);
-        }    
+        }
     }
 
-    public function resetPassword(ResetPasswordRequest $request){        
+    public function resetPassword(ResetPasswordRequest $request){
         $response = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
                 $user->forceFill([
                     'password' => bcrypt($password)
                 ])->setRememberToken(\Str::random(60));
-    
+
                 $user->save();
-    
+
                 event(new PasswordReset($user));
             }
         );
@@ -75,12 +75,11 @@ class AuthController extends Controller
     }
 
     public function logout(Request $request)
-    {        
+    {
         $user = Auth::user();
 
-        // Revoke the token
         $user->tokens()->delete();
 
-        return ApiHelper::response(true, __('messages.auth.logout_success'), '', 200);        
+        return ApiHelper::response(true, __('messages.auth.logout_success'), '', 200);
     }
 }

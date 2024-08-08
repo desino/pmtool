@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
 use App\Mail\ResetPasswordMail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -50,7 +48,7 @@ class User extends Authenticatable
     }
 
     public function sendPasswordResetNotification($token)
-    {        
+    {
         try {
             Mail::to($this->email)->send(new ResetPasswordMail($token, $this->email));
         } catch (\Exception $e) {

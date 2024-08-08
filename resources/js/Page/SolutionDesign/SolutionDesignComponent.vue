@@ -157,7 +157,6 @@ export default {
             this.clearMessages();
             try {
                 const { content: { functionality: updatedFunc, transactionType }, message } = await SolutionDesignService.storeUpdateFunctionality(this.functionalityFormData);
-                console.log('message :: ', message);
                 const section = this.findItem(updatedFunc.section_id);
                 if (transactionType === 'created') {
                     section.functionalities.push(updatedFunc);
@@ -169,7 +168,6 @@ export default {
                 this.functionalityFormData.functionality_id = updatedFunc.id;
                 this.selectedFunctionalityId = updatedFunc.id;
                 this.activeSectionId = null;
-                // messageService.setMessage(message, 'success');
                 showToast(message, 'success');
             } catch (error) {
                 this.handleError(error);
@@ -237,7 +235,6 @@ export default {
                 this.selectedFunctionalityId = null;
                 this.resetForm();
             } else {
-                console.log('functionality.description :: ', functionality.description);
                 this.functionalityFormData = {
                     section_id: functionality.section_id,
                     name: functionality.name,
@@ -249,7 +246,6 @@ export default {
             }
         },
         isSelected(functionalityId) {
-            // return this.selectedFunctionalityId = this.selectedFunctionalityId === functionalityId ? null : functionalityId;
             return this.selectedFunctionalityId === functionalityId;
         },
         async deleteFunctionality(functionality) {

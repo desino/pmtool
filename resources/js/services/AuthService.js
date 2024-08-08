@@ -1,5 +1,4 @@
 import axios from "axios";
-// import { endpoints } from "../api/endpoints.js";
 import { handleServerError, handleValidationErrors } from "./ErrorService.js";
 import store from "../store/index.js";
 import router from "../router/index.js";
@@ -52,19 +51,19 @@ const AuthService = {
      */
     async loginWithOffice365(credentials) {
         try {
-            window.location.href = endpoints.office365Login+credentials.provider;
+            window.location.href = endpoints.office365Login + credentials.provider;
         } catch (error) {
             throw handleError(error);
         }
-    },    
+    },
 
-     /**
-     * Asynchronously logs in a user with the provided credentials.
-     *
-     * @param {Object} credentials - An object containing the user's forgot password credentials.
-     * @return {Promise<void>} A Promise that resolves when the user is successfully forgot password in.
-     * @throws {Error} If there is an error during the forgot password process.
-     */
+    /**
+    * Asynchronously logs in a user with the provided credentials.
+    *
+    * @param {Object} credentials - An object containing the user's forgot password credentials.
+    * @return {Promise<void>} A Promise that resolves when the user is successfully forgot password in.
+    * @throws {Error} If there is an error during the forgot password process.
+    */
     async forgotPassword(credentials) {
         try {
             const response = await axiosRequest.post(
@@ -114,7 +113,7 @@ const AuthService = {
         try {
             const response = await axiosRequest.get(endpoints.getProviderCallbackSessionData);
             const resData = response.data.content;
-            if(resData.token != null && resData.token != true){
+            if (resData.token != null && resData.token != true) {
                 store.commit("setAuth", true);
                 store.commit("setToken", resData.token);
                 this.refreshUser();

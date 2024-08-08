@@ -23,7 +23,7 @@ class Initiative extends Model
         return Attribute::make(
             get: fn () => $this->client->name." - ".$this->name,
         );
-    }    
+    }
 
     public function client()
     {
@@ -32,7 +32,7 @@ class Initiative extends Model
 
     public static function statuses()
     {
-        return [            
+        return [
             self::STATUS_OPPORTUNITY => __('initiative.status.opportunity'),
             self::STATUS_ONGOING => __('initiative.status.ongoing'),
             self::STATUS_CLOSED => __('initiative.status.closed'),
@@ -42,22 +42,22 @@ class Initiative extends Model
 
     public static function getStatusOpportunity()
     {
-        return self::STATUS_OPPORTUNITY;        
+        return self::STATUS_OPPORTUNITY;
     }
 
     public static function getStatusOngoing()
     {
-        return self::STATUS_ONGOING;        
+        return self::STATUS_ONGOING;
     }
 
     public static function getStatusClosed()
     {
-        return self::STATUS_CLOSED;        
+        return self::STATUS_CLOSED;
     }
 
     public static function getStatusLost()
     {
-        return self::STATUS_LOST;        
+        return self::STATUS_LOST;
     }
 
     public function scopeStatus($query, int|array $status)
@@ -68,25 +68,15 @@ class Initiative extends Model
         return $query->where('status', $status);
     }
     public function scopeName($query, string $value)
-    {        
+    {
         return $query->where('name', 'like', '%'.$value.'%');
     }
 
     public function scopeClient($query, int|array $value)
-    {    
+    {
         if (is_array($value)) {
             return $query->whereIn('client_id', $value);
-        }    
+        }
         return $query->where('client_id', $value);
     }
-
-    // change with scope and ass in servoce
-    // public static function getInitiatives($status = null){
-    //     $self = self::select('*')
-    //     ->when($status != null, function($query) use ($status){
-    //         return $query->where('status', $status);
-    //     })
-    //     ->get();
-    //     return $self;
-    // }
 }

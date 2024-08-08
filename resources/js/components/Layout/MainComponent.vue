@@ -22,9 +22,8 @@
 
 
 <script>
-// import SidebarComponent from "./SidebarComponent.vue";
 import FooterComponent from "./FooterComponent.vue";
-import {mapGetters} from "vuex";
+import { mapGetters } from "vuex";
 import AuthService from "../../services/AuthService.js";
 import LoadingScreenComponent from "./LoadingScreenComponent.vue";
 import HeaderComponent from "./HeaderComponent.vue";
@@ -32,7 +31,7 @@ import globalMixin from '@/globalMixin';
 export default {
     name: 'MainComponent',
     mixins: [globalMixin],
-    components: {LoadingScreenComponent, HeaderComponent,FooterComponent},
+    components: { LoadingScreenComponent, HeaderComponent, FooterComponent },
     beforeMount() {
         AuthService.refreshUser();
     },
