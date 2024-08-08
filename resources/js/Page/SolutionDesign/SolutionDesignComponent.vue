@@ -13,8 +13,15 @@
                     :key="section.id" class="">
                     <h5 class="d-flex mt-3">
                         <template v-if="editingSectionId === section.id">
-                            <input type="text" class="form-control" v-model="editingSectionName"
-                                @blur="updateSectionName(section)" @keyup.enter="updateSectionName(section)" />
+                            <div>
+                                <input type="text" class="form-control" :class="{ 'is-invalid': errors.section_name }"
+                                    v-model="editingSectionName" @blur="updateSectionName(section)"
+                                    @keyup.enter="updateSectionName(section)" />
+                                <div v-if="errors.section_name" class="invalid-feedback">
+                                    <span v-for="(error, index) in errors.section_name" :key="index">{{ error
+                                        }}</span>
+                                </div>
+                            </div>
                         </template>
                         <template v-else>
                             {{ section.name }}
@@ -210,6 +217,9 @@ export default {
 
             this.selectedFunctionalityId = null;
             this.functionalityFormData.section_id = this.activeSectionId || "";
+
+            this.editingSectionId = null;
+            this.editingSectionName = "";
         },
         isSectionActive(sectionId) {
             return this.activeSectionId === sectionId;
@@ -227,10 +237,11 @@ export default {
                 this.selectedFunctionalityId = null;
                 this.resetForm();
             } else {
+                console.log('functionality.description :: ', functionality.description);
                 this.functionalityFormData = {
                     section_id: functionality.section_id,
                     name: functionality.name,
-                    description: functionality.description,
+                    description: functionality.description ?? '',
                     functionality_id: functionality.id,
                 };
                 this.selectedFunctionalityId = functionality.id;
@@ -276,6 +287,9 @@ export default {
         editSection(section) {
             this.editingSectionId = section.id;
             this.editingSectionName = section.name;
+
+            this.activeSectionId = null;
+            this.selectedFunctionalityId = null;
         },
         async updateSectionName(section) {
             if (this.editingSectionName.trim() === section.name.trim()) {
@@ -286,7 +300,7 @@ export default {
             try {
                 const updateData = {
                     section_id: section.id,
-                    name: this.editingSectionName.trim(),
+                    section_name: this.editingSectionName.trim(),
                 };
                 const response = await SolutionDesignService.updateSectionName(updateData);
                 section.name = this.editingSectionName.trim();

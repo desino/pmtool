@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\FunctionalityRequest;
+use App\Http\Requests\Api\SectionRequest;
 use App\Models\Functionality;
 use App\Models\Section;
 use App\Services\InitiativeService;
@@ -109,7 +110,7 @@ class SolutionDesignController extends Controller
         return ApiHelper::response($status, $meesage, '', $statusCode);
     }
 
-    public function updateSection(Request $request){
+    public function updateSection(SectionRequest $request){
         DB::beginTransaction();
         $status = false;
         try {

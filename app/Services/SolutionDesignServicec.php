@@ -42,6 +42,7 @@ Class SolutionDesignServicec
 
     public static function updateSection($request) {
         $postData = $request->post();
+        $postData['name'] = $postData['section_name'];
         $section = Section::find($request->post('section_id'));
         $section->update($postData);
         return $section;
