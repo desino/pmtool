@@ -9,18 +9,23 @@
                         <input type="hidden" v-model="token" />
                         <input type="hidden" v-model="email" />
                         <div class="mb-3">
-                            <input v-model="password" :class="{'is-invalid': errors.password}" class="form-control" :placeholder="$t('reset_password_input_password')" type="password">
+                            <input v-model="password" :class="{ 'is-invalid': errors.password }" class="form-control"
+                                :placeholder="$t('reset_password_input_password')" type="password">
                             <div v-if="errors.password" class="invalid-feedback">
                                 <span v-for="(error, index) in errors.password" :key="index">{{ error }}</span>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <input v-model="password_confirmation" :class="{'is-invalid': errors.password_confirmation}" class="form-control" :placeholder="$t('reset_password_input_password_confirmation')" type="password">
+                            <input v-model="password_confirmation" :class="{ 'is-invalid': errors.password_confirmation }"
+                                class="form-control" :placeholder="$t('reset_password_input_password_confirmation')"
+                                type="password">
                             <div v-if="errors.password_confirmation" class="invalid-feedback">
-                                <span v-for="(error, index) in errors.password_confirmation" :key="index">{{ error }}</span>
+                                <span v-for="(error, index) in errors.password_confirmation" :key="index">{{ error
+                                    }}</span>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-desino w-100">{{ $t('reset_password_submit_but_text') }}</button>
+                        <button type="submit" class="btn btn-desino w-100 bg-desino text-light">{{
+                            $t('reset_password_submit_but_text') }}</button>
                         <p class="mb-1">
                             <router-link class="text-decoration-none" :to="{ name: 'login' }">
                                 {{ $t('reset_password_back_to_login_but_text') }}
@@ -72,7 +77,7 @@ export default {
                     password_confirmation: this.password_confirmation,
                 };
                 let response = await AuthService.resetPassword(credentials);
-                if(response.data.status){
+                if (response.data.status) {
                     messageService.setMessage(response.data.message, 'success');
                     this.$router.push({ name: 'login' });
                 } else {

@@ -28,7 +28,8 @@
                                 <span v-for="(error, index) in errors.password" :key="index">{{ error }}</span>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-desino w-100">{{ $t('login_submit_but_text') }}</button>
+                        <button type="submit" class="btn btn-desino w-100 bg-desino text-light">{{
+                            $t('login_submit_but_text') }}</button>
                         <p class="mb-1">
                             <router-link class="text-decoration-none" :to="{ name: 'forgot-password' }">
                                 {{ $t('login_forgot_password_link') }}
