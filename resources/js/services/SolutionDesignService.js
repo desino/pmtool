@@ -16,6 +16,7 @@ const endpoints = {
     deleteSection: `${defaultPath}/delete-section`,
     updateSection: `${defaultPath}/update-section`,
     updateFunctionalityOrderNo: `${defaultPath}/update-functionality-order-no`,
+    updateSectionOrderNo: `${defaultPath}/update-section-order-no`,
 }
 
 const SolutionDesignService = {
@@ -79,6 +80,14 @@ const SolutionDesignService = {
     async updateFunctionalityOrderNo(data) {
         try {
             const response = await axiosRequest.post(endpoints.updateFunctionalityOrderNo, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async updateSectionOrderNo(data) {
+        try {
+            const response = await axiosRequest.post(endpoints.updateSectionOrderNo, data);
             return response.data;
         } catch (error) {
             throw handleError(error);

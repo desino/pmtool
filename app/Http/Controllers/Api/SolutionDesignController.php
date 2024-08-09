@@ -127,12 +127,32 @@ class SolutionDesignController extends Controller
     }
 
     public function updateFunctionalityOrderNo(Request $request){
+        print('<pre>');
+        print_r($request->all());
+        print('</pre>');
+        exit;
         DB::beginTransaction();
         $status = false;
         try {
             SolutionDesignServicec::updateFunctionalityOrderNo($request);
             $statusCode = 200;
             $meesage = __('messages.solution_design.section.update_functionality_order_no_success');
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $statusCode = 500;
+        }
+        return ApiHelper::response($status, $meesage, '', $statusCode);
+    }
+
+    public function updateSectionOrderNo(Request $request){
+        DB::beginTransaction();
+        $status = false;
+        try {
+            SolutionDesignServicec::updateSectionOrderNo($request);
+            $statusCode = 200;
+            $meesage = __('messages.solution_design.section.update_section_order_no_success');
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();

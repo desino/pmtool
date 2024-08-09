@@ -10,6 +10,7 @@ class SectionObserver
     public function creating(Section $section)
     {
         $section->created_by = Auth::id();
+        $section->order_no = $section->max('order_no')+1;
         $section->updated_at = null;
     }
 
@@ -38,7 +39,8 @@ class SectionObserver
      */
     public function deleted(Section $section): void
     {
-        //
+        Section::where('order_no','>=',$section->order_no)
+        ->decrement('order_no');
     }
 
     /**

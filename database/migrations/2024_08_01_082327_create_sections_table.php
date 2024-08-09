@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('initiative_id');
             $table->string('name');
+            $table->unsignedBigInteger('order_no')->default(0);
             $table->integer('created_by');
             $table->integer('updated_by')->default(0);
             $table->timestamps();

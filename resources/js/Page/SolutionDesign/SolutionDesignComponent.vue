@@ -10,70 +10,80 @@
         <AddNewSectionComponent :initiativeData="initiativeData" @sectionAdded="handleSectionAdded" />
         <div class="row mt-3">
             <div class="col-md-4">
-                <div v-if="sectionsWithFunctionalities.length" v-for="section in sectionsWithFunctionalities"
-                    :key="section.id" class="">
-                    <h5 class="d-flex mt-3">
-                        <template v-if="editingSectionId === section.id">
-                            <div>
-                                <input type="text" class="form-control" :class="{ 'is-invalid': errors.section_name }"
-                                    v-model="editingSectionName" @blur="updateSectionName(section)"
-                                    @keyup.enter="updateSectionName(section)" />
-                                <div v-if="errors.section_name" class="invalid-feedback">
-                                    <span v-for="(error, index) in errors.section_name" :key="index">{{ error
-                                        }}</span>
+                <draggable v-model="sectionsWithFunctionalities" class="list-group" :move="checkMoveSection"
+                    handle=".handle-section" item-key="id" @end="sectionOnDragEnd">
+                    <template #item="{ element: section, index }">
+                        <div class="section-functionality-container">
+                            <div class="d-flex mt-3">
+                                <div v-if="editingSectionId === section.id">
+                                    <div>
+                                        <input type="text" class="form-control"
+                                            :class="{ 'is-invalid': errors.section_name }" v-model="editingSectionName"
+                                            @blur="updateSectionName(section)"
+                                            @keyup.enter="updateSectionName(section)" />
+                                        <div v-if="errors.section_name" class="invalid-feedback">
+                                            <span v-for="(error, index) in errors.section_name" :key="index">{{ error
+                                                }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div v-else class="d-flex align-items-center">
+                                    <span role="button"><i class="bi bi-grip-horizontal handle-section me-2"></i></span>
+                                    <div class="fw-bold fs-5">
+                                        {{ section.name }}
+                                    </div>
+                                    <div class="dropdown align-contents-start ml-5">
+                                        <a href="javascript:" class="fw-bold fs-4 text-desino"
+                                            @click="toggleSection(section.id)">
+                                            <i :class="isSectionActive(section.id) ? 'bi bi-dash' : 'bi bi-plus'"></i>
+                                        </a>
+                                        <a href="javascript:" class="text-desino fw-bold fs-4 text-desino" type="button"
+                                            id="dropdown_section_menu" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-three-dots"></i>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdown_section_menu">
+                                            <li>
+                                                <a class="dropdown-item" href="javascript:"
+                                                    @click="editSection(section)">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                    {{ $t('solution_design.section.option_edit_but_text') }}
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="javascript:"
+                                                    @click="deleteSection(section)">
+                                                    <i class="bi bi-trash3"></i>
+                                                    {{ $t('solution_design.section.option_delete_but_text') }}
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-                        </template>
-                        <template v-else>
-                            {{ section.name }}
-                            <a href="javascript:" class="fw-bold fs-4 custom-hover mr-5 text-desino"
-                                @click="toggleSection(section.id)">
-                                <i :class="isSectionActive(section.id) ? 'bi bi-dash' : 'bi bi-plus'"></i>
-                            </a>
-                            <div class="dropdown custom-hover ml-5">
-                                <a href="javascript:" class="text-desino" type="button" id="dropdown_section_menu"
-                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-three-dots"></i>
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="dropdown_section_menu">
-                                    <li>
-                                        <a class="dropdown-item" href="javascript:" @click="editSection(section)">
-                                            <i class="bi bi-pencil-square"></i>
-                                            {{ $t('solution_design.section.option_edit_but_text') }}
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="javascript:" @click="deleteSection(section)">
-                                            <i class="bi bi-trash3"></i>
-                                            {{ $t('solution_design.section.option_delete_but_text') }}
-                                        </a>
-                                    </li>
-                                </ul>
+                            <div class="list-group" v-if="section.functionalities">
+                                <draggable v-model="section.functionalities" group="people"
+                                    :move="checkMoveFunctionality" handle=".handle-functionality"
+                                    @end="functionalityOnDragEnd" class="list-group" item-key="id">
+                                    <template #item="{ element: functionality, index: functionalityIndex }">
+                                        <div :class="['list-group-item d-flex list-group-item-action', { 'bg-desino text-light': isSelected(functionality.id) }]"
+                                            role="button" @click="selectFunctionality(functionality)"
+                                            :data-section-id="section.id">
+                                            <span><i class="bi bi-grip-horizontal handle-functionality me-2"></i></span>
+                                            <span>{{ functionality.name }}</span>
+                                            <span class="ms-auto d-flex align-items-center">
+                                                <a href="javascript:" class="text-danger me-2"
+                                                    @click.stop="deleteFunctionality(functionality)">
+                                                    <i class="bi bi-trash3"></i>
+                                                </a>
+                                                <span class="badge bg-secondary">0</span>
+                                            </span>
+                                        </div>
+                                    </template>
+                                </draggable>
                             </div>
-                        </template>
-                    </h5>
-                    <ul class="list-group">
-                        <!-- group="people" -->
-                        <draggable v-model="section.functionalities" :move="checkMoveFunctionality"
-                            handle=".handle-functionality" @end="functionalityOnDragEnd" class="list-group"
-                            item-key="id">
-                            <template #item="{ element }">
-                                <li :class="['list-group-item d-flex list-group-item-action', { 'bg-desino text-light': isSelected(element.id) }]"
-                                    role="button" @click="selectFunctionality(element)">
-                                    <span><i class="bi bi-grip-horizontal handle-functionality me-2"></i></span>
-                                    <span>{{ element.name }}</span>
-                                    <span class="ms-auto d-flex align-items-center">
-                                        <a href="javascript:" class="text-danger me-2"
-                                            @click.stop="deleteFunctionality(element)">
-                                            <i class="bi bi-trash3"></i>
-                                        </a>
-                                        <span class="badge bg-secondary">0</span>
-                                    </span>
-                                </li>
-                            </template>
-                        </draggable>
-                    </ul>
-                </div>
+                        </div>
+                    </template>
+                </draggable>
             </div>
             <div class="col-md-8">
                 <form @submit.prevent="storeUpdateFunctionality">
@@ -108,7 +118,7 @@
                                     v-model="functionalityFormData.section_id">
                                     <option value="">{{
                                         $t('solution_design.functionality_form.section_name_select_box_placeholder')
-                                        }}</option>
+                                    }}</option>
                                     <option v-for="section in sectionsWithFunctionalities" :key="section.id"
                                         :value="section.id">
                                         {{ section.name }}</option>
@@ -179,6 +189,8 @@ export default {
             editingSectionId: null,
             editingSectionName: "",
             moveFunctionality: {},
+            oldMoveFunctionality: {},
+            moveSection: {},
         };
     },
     methods: {
@@ -315,18 +327,29 @@ export default {
         },
         async deleteSection(section) {
             this.clearMessages();
-            try {
-                let result = section.functionalities.find(item => item['id'] === this.selectedFunctionalityId);
-                const { content, message } = await SolutionDesignService.deleteSection({ section_id: section.id });
-                const index = this.sectionsWithFunctionalities.findIndex(sec => sec.id === section.id);
-                if (index !== -1) this.sectionsWithFunctionalities.splice(index, 1);
-                if (result) {
-                    this.resetForm();
+            this.$swal({
+                title: this.$t('solution_design.section_delete_actions_modal_title'),
+                text: this.$t('solution_design.section_delete_actions_modal_text'),
+                showCancelButton: true,
+                confirmButtonColor: '#1e6abf',
+                cancelButtonColor: '#d33',
+                confirmButtonText: this.$t('opportunity_list_table.actions_lost_status_modal_confirm_button_text')
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        let result = section.functionalities.find(item => item['id'] === this.selectedFunctionalityId);
+                        const { content, message } = await SolutionDesignService.deleteSection({ section_id: section.id });
+                        const index = this.sectionsWithFunctionalities.findIndex(sec => sec.id === section.id);
+                        if (index !== -1) this.sectionsWithFunctionalities.splice(index, 1);
+                        if (result) {
+                            this.resetForm();
+                        }
+                        showToast(message, 'success');
+                    } catch (error) {
+                        this.handleError(error);
+                    }
                 }
-                showToast(message, 'success');
-            } catch (error) {
-                this.handleError(error);
-            }
+            })
         },
         editSection(section) {
             this.editingSectionId = section.id;
@@ -355,10 +378,13 @@ export default {
             }
         },
         checkMoveFunctionality(e) {
+            const destinationElement = e.to;
+            const destinationHtml = destinationElement.innerHTML;
+            console.log('destinationHtml :: ', destinationHtml);
+
             this.moveFunctionality = e.draggedContext.element;
             this.moveFunctionality.order_no = e.draggedContext.futureIndex + 1;
         },
-
         async functionalityOnDragEnd(event) {
             this.drag = false;
             try {
@@ -368,6 +394,19 @@ export default {
                 this.handleError(error);
             }
         },
+        checkMoveSection(e) {
+            this.moveSection = e.draggedContext.element;
+            this.moveSection.order_no = e.draggedContext.futureIndex + 1;
+        },
+        async sectionOnDragEnd(e) {
+            this.drag = false;
+            try {
+                const response = await SolutionDesignService.updateSectionOrderNo(this.moveSection);
+                showToast(response.message, 'success');
+            } catch (error) {
+                this.handleError(error);
+            }
+        }
     },
     mounted() {
         this.fetchData();

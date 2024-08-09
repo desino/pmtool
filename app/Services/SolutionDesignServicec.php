@@ -12,6 +12,7 @@ Class SolutionDesignServicec
     public static function getSectionsWithFunctionalities($request) {
         $sectionWithFunctionalities = Section::with('functionalities')
         ->InitiativeId($request->post('initiative_id'))
+        ->orderBy('order_no')
         ->get();
         return $sectionWithFunctionalities;
     }
@@ -84,6 +85,48 @@ Class SolutionDesignServicec
                     // If moving up, increase the order number for items between new and current positions
                     if ($functionality->order_no < $currentOrderNo && $functionality->order_no >= $newOrderNo) {
                         $functionality->increment('order_no');
+                    }
+                }
+            }
+        }
+
+        // Update the order number of the item to move
+        $itemToMove->order_no = $newOrderNo;
+        $itemToMove->save();
+    }
+
+    public static function updateSectionOrderNo($request){
+        $postData = $request->post();
+
+        $postData = $request->post();
+        $itemId = $postData['id'];
+        $newOrderNo = $postData['order_no'];
+
+        $sectiones = Section::orderBy('order_no')->get();
+
+        $itemToMove = $sectiones->find($itemId);
+
+        if (!$itemToMove) {
+            return;
+        }
+
+        $currentOrderNo = $itemToMove->order_no;
+
+        if ($currentOrderNo === $newOrderNo) {
+            return;
+        }
+
+        foreach ($sectiones as $sectione) {
+            if ($sectione->id !== $itemToMove->id) {
+                if ($currentOrderNo < $newOrderNo) {
+                    // If moving down, decrease the order number for items between current and new positions
+                    if ($sectione->order_no > $currentOrderNo && $sectione->order_no <= $newOrderNo) {
+                        $sectione->decrement('order_no');
+                    }
+                } else {
+                    // If moving up, increase the order number for items between new and current positions
+                    if ($sectione->order_no < $currentOrderNo && $sectione->order_no >= $newOrderNo) {
+                        $sectione->increment('order_no');
                     }
                 }
             }

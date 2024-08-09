@@ -195,6 +195,7 @@
     "messages.solution_design.section.delete_success":"Section and it's functionality deleted successfully",
     "messages.solution_design.section.update_success":"Section updated successfully",
     "messages.solution_design.section.update_functionality_order_no_success":"Functionality order no updated successfully",
+    "messages.solution_design.section.update_section_order_no_success":"Section order no updated successfully",
 
     "home": "Home",
     "login_title": "Login",
@@ -285,6 +286,8 @@
     "solution_design.functionality_form.submit_update_but_text": "Update",
     "solution_design.section.option_edit_but_text": "Edit",
     "solution_design.section.option_delete_but_text": "Delete",
+    "solution_design.section_delete_actions_modal_title": "Delete Section",
+    "solution_design.section_delete_actions_modal_text": "Are you sure you want to delete this section?",
     "solution_design.functionality_delete_actions_modal_title": "Delete Functionality",
     "solution_design.functionality_delete_actions_modal_text": "Are you sure you want to delete this functionality?"
 }
