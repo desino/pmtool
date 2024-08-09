@@ -70,7 +70,7 @@ Class SolutionDesignServicec
         $currentOrderNo = $itemToMove->order_no;
 
         if ($currentOrderNo === $newOrderNo) {
-            return; // No change needed
+            return;
         }
 
         foreach ($functionalities as $functionality) {

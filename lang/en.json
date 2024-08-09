@@ -278,9 +278,13 @@
     "solution_design.add_section_but_text": "Add section",
     "solution_design.add_section_input_placeholder": "Enter section name",
     "solution_design.functionality_form.name": "Functionality name",
+    "solution_design.functionality_form.section_name_select_box": "Section",
+    "solution_design.functionality_form.section_name_select_box_placeholder": "Please select section",
     "solution_design.functionality_form.description": "Functionality description",
     "solution_design.functionality_form.submit_save_but_text": "Save",
     "solution_design.functionality_form.submit_update_but_text": "Update",
     "solution_design.section.option_edit_but_text": "Edit",
-    "solution_design.section.option_delete_but_text": "Delete"
+    "solution_design.section.option_delete_but_text": "Delete",
+    "solution_design.functionality_delete_actions_modal_title": "Delete Functionality",
+    "solution_design.functionality_delete_actions_modal_text": "Are you sure you want to delete this functionality?"
 }

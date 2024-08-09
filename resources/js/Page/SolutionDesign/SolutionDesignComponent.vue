@@ -1,24 +1,14 @@
 <template>
     <GlobalMessage v-if="showMessage" />
     <div>
-        <!-- <draggable :list="items" item-key="id" handle=".handle" :move="checkMove" @end="onDragEnd">
-            <template #item="{ element }">
-                <div class="list-item">
-                    <div class="handle">
-                        test
-                    </div>
-                    {{ element.name }}
-                    {{ element.id }}
-                </div>
-            </template>
-</draggable> -->
         <h1 class="primary">{{ $t('solution_design.page_title') }} - {{ initiativeData.name }}</h1>
         <h5>
-            <span class="badge rounded-pill bg-desino text-light">
+            <span class="badge rounded-pill bg-desino text-light mb-3">
                 Development Ballpark: {{ initiativeData.ballpark_development_hours }} hours
             </span>
         </h5>
-        <div class="row mt-4">
+        <AddNewSectionComponent :initiativeData="initiativeData" @sectionAdded="handleSectionAdded" />
+        <div class="row mt-3">
             <div class="col-md-4">
                 <div v-if="sectionsWithFunctionalities.length" v-for="section in sectionsWithFunctionalities"
                     :key="section.id" class="">
@@ -82,35 +72,51 @@
                                 </li>
                             </template>
                         </draggable>
-                        <!-- <li role="button" v-for="func in section.functionalities" :key="func.id"
-                            :class="['list-group-item d-flex list-group-item-action', { 'bg-desino text-light': isSelected(func.id) }]"
-                            @click="selectFunctionality(func)">
-                            <span>{{ func.name }}</span>
-                            <span class="ms-auto d-flex align-items-center">
-                                <a href="javascript:" class="text-danger me-2" @click.stop="deleteFunctionality(func)">
-                                    <i class="bi bi-trash3"></i>
-                                </a>
-                                <span class="badge bg-secondary">0</span>
-                            </span>
-                        </li> -->
                     </ul>
                 </div>
             </div>
             <div class="col-md-8">
                 <form @submit.prevent="storeUpdateFunctionality">
-                    <div v-if="errors.section_id" class="alert alert-danger">
+                    <!-- <div v-if="errors.section_id" class="alert alert-danger">
                         <button type="button" class="btn-close" aria-label="Close" @click="clearMessages"></button>
                         <span v-for="(error, index) in errors.section_id" :key="index">{{ error }}</span>
                     </div>
-                    <input type="hidden" v-model="functionalityFormData.section_id">
+                    <input type="hidden" v-model="functionalityFormData.section_id"> -->
                     <input type="hidden" v-model="functionalityFormData.functionality_id">
-                    <div class="mb-3">
-                        <label for="functionalityName" class="form-label">{{
-                            $t('solution_design.functionality_form.name') }}</label>
-                        <input type="text" class="form-control" :class="{ 'is-invalid': errors.name }"
-                            id="functionalityName" v-model="functionalityFormData.name" placeholder="Enter value">
-                        <div v-if="errors.name" class="invalid-feedback">
-                            <span v-for="(error, index) in errors.name" :key="index">{{ error }}</span>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="functionality_name" class="form-label">{{
+                                    $t('solution_design.functionality_form.name') }} <strong
+                                        class="text-danger">*</strong>
+                                </label>
+                                <input type="text" class="form-control" :class="{ 'is-invalid': errors.name }"
+                                    id="functionality_name" v-model="functionalityFormData.name"
+                                    placeholder="Enter value">
+                                <div v-if="errors.name" class="invalid-feedback">
+                                    <span v-for="(error, index) in errors.name" :key="index">{{ error }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="section_id" class="form-label">{{
+                                    $t('solution_design.functionality_form.section_name_select_box') }} <strong
+                                        class="text-danger">*</strong>
+                                </label>
+                                <select class="form-select" aria-label="Default select example"
+                                    v-model="functionalityFormData.section_id">
+                                    <option value="">{{
+                                        $t('solution_design.functionality_form.section_name_select_box_placeholder')
+                                        }}</option>
+                                    <option v-for="section in sectionsWithFunctionalities" :key="section.id"
+                                        :value="section.id">
+                                        {{ section.name }}</option>
+                                </select>
+                                <div v-if="errors.section_id" class="invalid-feedback">
+                                    <span v-for="(error, index) in errors.section_id" :key="index">{{ error }}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="mb-3">
@@ -129,7 +135,6 @@
                 </form>
             </div>
         </div>
-        <AddNewSectionComponent :initiativeData="initiativeData" @sectionAdded="handleSectionAdded" />
     </div>
 </template>
 
@@ -156,11 +161,6 @@ export default {
     },
     data() {
         return {
-            // items: [
-            //     { name: "John 1", id: 0 },
-            //     { name: "Joao 2", id: 1 },
-            //     { name: "Jean 3", id: 2 }
-            // ],
             drag: false,
 
             initiativeId: this.$route.params.id,
@@ -199,12 +199,8 @@ export default {
             try {
                 const { content: { functionality: updatedFunc, transactionType }, message } = await SolutionDesignService.storeUpdateFunctionality(this.functionalityFormData);
                 const section = this.findItem(updatedFunc.section_id);
-                if (transactionType === 'created') {
-                    section.functionalities.push(updatedFunc);
-                } else if (transactionType === 'updated') {
-                    const index = section.functionalities.findIndex(func => func.id === updatedFunc.id);
-                    if (index !== -1) section.functionalities.splice(index, 1, updatedFunc);
-                }
+                this.getSectionsWithFunctionalities();
+
 
                 this.functionalityFormData.functionality_id = updatedFunc.id;
                 this.selectedFunctionalityId = updatedFunc.id;
@@ -291,20 +287,31 @@ export default {
         },
         async deleteFunctionality(functionality) {
             this.clearMessages();
-            try {
-                const oldSelectedFunctionalityId = functionality;
-                const { content, message } = await SolutionDesignService.deleteFunctionality({ functionality_id: functionality.id });
-                const section = this.findItem(functionality.section_id);
-                section.functionalities = section.functionalities.filter(item => item.id !== functionality.id);
-                const index = section.functionalities.findIndex(func => func.id === functionality.id);
-                if (index !== -1) section.functionalities.splice(index, 1);
-                if (this.selectedFunctionalityId == functionality.id) {
-                    this.resetForm();
+            this.$swal({
+                title: this.$t('solution_design.functionality_delete_actions_modal_title'),
+                text: this.$t('solution_design.functionality_delete_actions_modal_text'),
+                showCancelButton: true,
+                confirmButtonColor: '#1e6abf',
+                cancelButtonColor: '#d33',
+                confirmButtonText: this.$t('opportunity_list_table.actions_lost_status_modal_confirm_button_text')
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        const oldSelectedFunctionalityId = functionality;
+                        const { content, message } = await SolutionDesignService.deleteFunctionality({ functionality_id: functionality.id });
+                        const section = this.findItem(functionality.section_id);
+                        section.functionalities = section.functionalities.filter(item => item.id !== functionality.id);
+                        const index = section.functionalities.findIndex(func => func.id === functionality.id);
+                        if (index !== -1) section.functionalities.splice(index, 1);
+                        if (this.selectedFunctionalityId == functionality.id) {
+                            this.resetForm();
+                        }
+                        showToast(message, 'success');
+                    } catch (error) {
+                        this.handleError(error);
+                    }
                 }
-                showToast(message, 'success');
-            } catch (error) {
-                this.handleError(error);
-            }
+            })
         },
         async deleteSection(section) {
             this.clearMessages();
