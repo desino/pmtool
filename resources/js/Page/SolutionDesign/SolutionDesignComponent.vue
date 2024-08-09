@@ -63,11 +63,11 @@
                             <div class="list-group" v-if="section.functionalities">
                                 <draggable v-model="section.functionalities" group="people"
                                     :move="checkMoveFunctionality" handle=".handle-functionality"
-                                    @end="functionalityOnDragEnd" class="list-group" item-key="id">
+                                    @add="functionalityOnDragAdd($event, index)" @end="functionalityOnDragEnd"
+                                    class="list-group" item-key="id">
                                     <template #item="{ element: functionality, index: functionalityIndex }">
                                         <div :class="['list-group-item d-flex list-group-item-action', { 'bg-desino text-light': isSelected(functionality.id) }]"
-                                            role="button" @click="selectFunctionality(functionality)"
-                                            :data-section-id="section.id">
+                                            role="button" @click="selectFunctionality(functionality)">
                                             <span><i class="bi bi-grip-horizontal handle-functionality me-2"></i></span>
                                             <span>{{ functionality.name }}</span>
                                             <span class="ms-auto d-flex align-items-center">
@@ -377,17 +377,17 @@ export default {
                 this.handleError(error);
             }
         },
+        functionalityOnDragAdd($event, index) {
+            this.oldMoveFunctionality = this.sectionsWithFunctionalities[index];
+        },
         checkMoveFunctionality(e) {
-            const destinationElement = e.to;
-            const destinationHtml = destinationElement.innerHTML;
-            console.log('destinationHtml :: ', destinationHtml);
-
             this.moveFunctionality = e.draggedContext.element;
             this.moveFunctionality.order_no = e.draggedContext.futureIndex + 1;
         },
         async functionalityOnDragEnd(event) {
             this.drag = false;
             try {
+                this.moveFunctionality['move_to_section_id'] = this.oldMoveFunctionality.id;
                 const response = await SolutionDesignService.updateFunctionalityOrderNo(this.moveFunctionality);
                 showToast(response.message, 'success');
             } catch (error) {

@@ -1,7 +1,7 @@
 <template>
     <div class="d-flex vh-100">
         <div class="m-auto text-center">
-            <h1 class="mb-4"><span class="text-desino">{{ user?.name }}</span> is logged in! </h1>
+            <h1 v-if="user" class="mb-4"><span class="text-desino">{{ user?.name }}</span> is logged in! </h1>
             <button class="btn btn-danger btn-block" @click="logout">{{ $t('logout_but_text') }}</button>
         </div>
     </div>

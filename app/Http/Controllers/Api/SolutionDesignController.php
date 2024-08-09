@@ -127,14 +127,25 @@ class SolutionDesignController extends Controller
     }
 
     public function updateFunctionalityOrderNo(Request $request){
-        print('<pre>');
-        print_r($request->all());
-        print('</pre>');
-        exit;
         DB::beginTransaction();
         $status = false;
         try {
-            SolutionDesignServicec::updateFunctionalityOrderNo($request);
+            if($request->post('move_to_section_id') && !empty($request->post('move_to_section_id'))){
+                $request->merge(['section_id' => $request->post('move_to_section_id')]);
+                $request->merge(['functionality_id' => $request->post('id')]);
+                $updateData = $request->post();
+
+                // $updateData = [
+                //     'id' => $request->post('id'),
+                //     'section_id' => $request->post('move_to_section_id'),
+                //     'name' => $request->post('name'),
+                //     'description' => $request->post('description'),
+                //     'order_no' => $request->post('order_no'),
+                // ];
+                SolutionDesignServicec::updateFunctionality($request,$updateData);
+            } else {
+                SolutionDesignServicec::updateFunctionalityOrderNo($request);
+            }
             $statusCode = 200;
             $meesage = __('messages.solution_design.section.update_functionality_order_no_success');
             DB::commit();
