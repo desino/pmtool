@@ -118,7 +118,7 @@
                                     v-model="functionalityFormData.section_id">
                                     <option value="">{{
                                         $t('solution_design.functionality_form.section_name_select_box_placeholder')
-                                    }}</option>
+                                        }}</option>
                                     <option v-for="section in sectionsWithFunctionalities" :key="section.id"
                                         :value="section.id">
                                         {{ section.name }}</option>
@@ -390,6 +390,7 @@ export default {
                 this.moveFunctionality['move_to_section_id'] = this.oldMoveFunctionality.id;
                 const response = await SolutionDesignService.updateFunctionalityOrderNo(this.moveFunctionality);
                 showToast(response.message, 'success');
+                this.oldMoveFunctionality = {};
             } catch (error) {
                 this.handleError(error);
             }

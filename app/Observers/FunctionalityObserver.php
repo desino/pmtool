@@ -17,7 +17,9 @@ class FunctionalityObserver
     public function updating(Functionality $functionality)
     {
         $oldFuntionality = $functionality->getOriginal();
-        if($oldFuntionality['section_id'] != $functionality->section_id){
+        $postData = request()->post();
+        if($oldFuntionality['section_id'] != $functionality->section_id && !isset($postData['move_to_section_id'])){
+        // if($oldFuntionality['section_id'] != $functionality->section_id){
             $functionality->order_no = $functionality->where('section_id',$functionality->section_id)->max('order_no')+1;
         }
         $functionality->updated_by = Auth::id();

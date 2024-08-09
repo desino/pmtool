@@ -143,6 +143,7 @@ class SolutionDesignController extends Controller
                 //     'order_no' => $request->post('order_no'),
                 // ];
                 SolutionDesignServicec::updateFunctionality($request,$updateData);
+                // SolutionDesignServicec::updateFunctionalityOrderNo($request);
             } else {
                 SolutionDesignServicec::updateFunctionalityOrderNo($request);
             }
