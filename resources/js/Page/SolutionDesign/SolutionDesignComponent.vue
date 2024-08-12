@@ -1,78 +1,108 @@
 <template>
-    <GlobalMessage v-if="showMessage" />
-    <div>
-        <h1 class="primary">{{ $t('solution_design.page_title') }} - {{ initiativeData.name }}</h1>
-        <h5>
-            <span class="badge rounded-pill bg-desino text-light mb-3">
+    <div class="app-content-header pb-0">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-6">
+                    <h3 class="m-0">{{ $t('solution_design.page_title') }} - {{ initiativeData.name }}</h3>
+                    <h5>
+            <span class="badge rounded bg-desino text-light my-3">
                 Development Ballpark: {{ initiativeData.ballpark_development_hours }} hours
             </span>
-        </h5>
-        <AddNewSectionComponent :initiativeData="initiativeData" @sectionAdded="handleSectionAdded" />
-        <div class="row mt-3">
-            <div class="col-md-4">
-                <draggable v-model="sectionsWithFunctionalities" class="list-group" :move="checkMoveSection"
-                    handle=".handle-section" item-key="id" @end="sectionOnDragEnd">
+                    </h5>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-end">
+                        <li class="breadcrumb-item"><a class="text-decoration-none"
+                                                       href="javascript:void(0)">{{ $t('Dashboard') }}</a></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <GlobalMessage v-if="showMessage"/>
+
+    <div class="app-content row">
+            <div class="col-md-4 border">
+                <div class="input-group my-3">
+                    <input type="text" class="form-control" placeholder="Search" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                    <span class="input-group-text" id="basic-addon2"><i class="bi bi-search"></i></span>
+                </div>
+                <hr>
+                <draggable v-model="sectionsWithFunctionalities" :move="checkMoveSection" class="list-group"
+                           handle=".handle-section" item-key="id" @end="sectionOnDragEnd">
                     <template #item="{ element: section, index }">
                         <div class="section-functionality-container">
-                            <div class="d-flex mt-3">
+                            <div class="d-flex mt-3 section-container">
                                 <div v-if="editingSectionId === section.id">
                                     <div>
-                                        <input type="text" class="form-control"
-                                            :class="{ 'is-invalid': errors.section_name }" v-model="editingSectionName"
-                                            @blur="updateSectionName(section)"
-                                            @keyup.enter="updateSectionName(section)" />
+                                        <input v-model="editingSectionName"
+                                               :class="{ 'is-invalid': errors.section_name }"
+                                               class="form-control"
+                                               type="text"
+                                               @blur="updateSectionName(section)"
+                                               @keyup.enter="updateSectionName(section)"/>
                                         <div v-if="errors.section_name" class="invalid-feedback">
-                                            <span v-for="(error, index) in errors.section_name" :key="index">{{ error
+                                            <span v-for="(error, index) in errors.section_name" :key="index">{{
+                                                    error
                                                 }}</span>
                                         </div>
                                     </div>
                                 </div>
-                                <div v-else class="d-flex align-items-center">
-                                    <span role="button"><i class="bi bi-grip-horizontal handle-section me-2"></i></span>
-                                    <div class="fw-bold fs-5">
-                                        {{ section.name }}
+                                <div v-else class="d-flex align-items-center section-container">
+                                    <div class="section-sort" role="button">
+                                        <i class="bi bi-grip-horizontal handle-section me-2 hover-sort"></i>
                                     </div>
-                                    <div class="dropdown align-contents-start ml-5">
-                                        <a href="javascript:" class="fw-bold fs-4 text-desino"
-                                            @click="toggleSection(section.id)">
-                                            <i :class="isSectionActive(section.id) ? 'bi bi-dash' : 'bi bi-plus'"></i>
+                                    <div class="fw-bold fs-5">
+                                        <a class="text-decoration-none text-dark " data-bs-toggle="collapse" :data-bs-target="'#collapse' + section.id" aria-expanded="false" :aria-controls="'#collapse' + section.id">
+                                            <span><i class="bi bi-caret-right-fill"></i></span> {{ section.name }}
                                         </a>
-                                        <a href="javascript:" class="text-desino fw-bold fs-4 text-desino" type="button"
-                                            id="dropdown_section_menu" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="bi bi-three-dots"></i>
-                                        </a>
-                                        <ul class="dropdown-menu" aria-labelledby="dropdown_section_menu">
-                                            <li>
-                                                <a class="dropdown-item" href="javascript:"
-                                                    @click="editSection(section)">
-                                                    <i class="bi bi-pencil-square"></i>
-                                                    {{ $t('solution_design.section.option_edit_but_text') }}
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item" href="javascript:"
-                                                    @click="deleteSection(section)">
-                                                    <i class="bi bi-trash3"></i>
-                                                    {{ $t('solution_design.section.option_delete_but_text') }}
-                                                </a>
-                                            </li>
-                                        </ul>
+                                    </div>
+                                    <div class="section-menu">
+                                        <div class="dropdown align-contents-start ml-5 hover-menu">
+                                            <a class="fw-bold fs-4 text-desino" href="javascript:"
+                                               @click="toggleSection(section.id)">
+                                                <i :class="isSectionActive(section.id) ? 'bi bi-dash' : 'bi bi-plus'"></i>
+                                            </a>
+                                            <a id="dropdown_section_menu" aria-expanded="false"
+                                               class="text-desino fw-bold fs-4 text-desino"
+                                               data-bs-toggle="dropdown" href="javascript:" type="button">
+                                                <i class="bi bi-three-dots"></i>
+                                            </a>
+                                            <ul aria-labelledby="dropdown_section_menu" class="dropdown-menu">
+                                                <li>
+                                                    <a class="dropdown-item" href="javascript:"
+                                                       @click="editSection(section)">
+                                                        <i class="bi bi-pencil-square"></i>
+                                                        {{ $t('solution_design.section.option_edit_but_text') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="javascript:"
+                                                       @click="deleteSection(section)">
+                                                        <i class="bi bi-trash3"></i>
+                                                        {{ $t('solution_design.section.option_delete_but_text') }}
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="list-group" v-if="section.functionalities">
-                                <draggable v-model="section.functionalities" group="people"
-                                    :move="checkMoveFunctionality" handle=".handle-functionality"
-                                    @add="functionalityOnDragAdd($event, index)" @end="functionalityOnDragEnd"
-                                    class="list-group" item-key="id">
+                            <div v-if="section.functionalities" class="list-group collapse" :id="'collapse' + section.id">
+                                <draggable v-model="section.functionalities" :move="checkMoveFunctionality"
+                                           class="list-group" group="people"
+                                           handle=".handle-functionality" item-key="id"
+                                           @add="functionalityOnDragAdd($event, index)" @end="functionalityOnDragEnd">
                                     <template #item="{ element: functionality, index: functionalityIndex }">
-                                        <div :class="['list-group-item d-flex list-group-item-action', { 'bg-desino text-light': isSelected(functionality.id) }]"
+                                        <div
+                                            :class="['list-group-item d-flex list-group-item-action', { 'bg-desino text-light': isSelected(functionality.id) }]"
                                             role="button" @click="selectFunctionality(functionality)">
                                             <span><i class="bi bi-grip-horizontal handle-functionality me-2"></i></span>
                                             <span>{{ functionality.name }}</span>
                                             <span class="ms-auto d-flex align-items-center">
-                                                <a href="javascript:" class="text-danger me-2"
-                                                    @click.stop="deleteFunctionality(functionality)">
+                                                <a class="text-danger me-2" href="javascript:"
+                                                   @click.stop="deleteFunctionality(functionality)">
                                                     <i class="bi bi-trash3"></i>
                                                 </a>
                                                 <span class="badge bg-secondary">0</span>
@@ -84,25 +114,23 @@
                         </div>
                     </template>
                 </draggable>
+                <AddNewSectionComponent :initiativeData="initiativeData" @sectionAdded="handleSectionAdded"/>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-8 border-top border-bottom p-3">
                 <form @submit.prevent="storeUpdateFunctionality">
-                    <!-- <div v-if="errors.section_id" class="alert alert-danger">
-                        <button type="button" class="btn-close" aria-label="Close" @click="clearMessages"></button>
-                        <span v-for="(error, index) in errors.section_id" :key="index">{{ error }}</span>
-                    </div>
-                    <input type="hidden" v-model="functionalityFormData.section_id"> -->
-                    <input type="hidden" v-model="functionalityFormData.functionality_id">
+                    <input v-model="functionalityFormData.functionality_id" type="hidden">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="functionality_name" class="form-label">{{
-                                    $t('solution_design.functionality_form.name') }} <strong
+                                <label class="form-label" for="functionality_name">{{
+                                        $t('solution_design.functionality_form.name')
+                                    }} <strong
                                         class="text-danger">*</strong>
                                 </label>
-                                <input type="text" class="form-control" :class="{ 'is-invalid': errors.name }"
-                                    id="functionality_name" v-model="functionalityFormData.name"
-                                    placeholder="Enter value">
+                                <input id="functionality_name" v-model="functionalityFormData.name"
+                                       :class="{ 'is-invalid': errors.name }"
+                                       class="form-control" placeholder="Enter value"
+                                       type="text">
                                 <div v-if="errors.name" class="invalid-feedback">
                                     <span v-for="(error, index) in errors.name" :key="index">{{ error }}</span>
                                 </div>
@@ -110,18 +138,21 @@
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="section_id" class="form-label">{{
-                                    $t('solution_design.functionality_form.section_name_select_box') }} <strong
+                                <label class="form-label" for="section_id">{{
+                                        $t('solution_design.functionality_form.section_name_select_box')
+                                    }} <strong
                                         class="text-danger">*</strong>
                                 </label>
-                                <select class="form-select" aria-label="Default select example"
-                                    v-model="functionalityFormData.section_id">
+                                <select v-model="functionalityFormData.section_id" aria-label="Default select example"
+                                        class="form-select">
                                     <option value="">{{
-                                        $t('solution_design.functionality_form.section_name_select_box_placeholder')
-                                        }}</option>
+                                            $t('solution_design.functionality_form.section_name_select_box_placeholder')
+                                        }}
+                                    </option>
                                     <option v-for="section in sectionsWithFunctionalities" :key="section.id"
-                                        :value="section.id">
-                                        {{ section.name }}</option>
+                                            :value="section.id">
+                                        {{ section.name }}
+                                    </option>
                                 </select>
                                 <div v-if="errors.section_id" class="invalid-feedback">
                                     <span v-for="(error, index) in errors.section_id" :key="index">{{ error }}</span>
@@ -130,22 +161,24 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="functionalityDescription" class="form-label">{{
-                            $t('solution_design.functionality_form.description') }}</label>
-                        <TinyMceEditor v-model="functionalityFormData.description" />
+                        <label class="form-label" for="functionalityDescription">{{
+                                $t('solution_design.functionality_form.description')
+                            }}</label>
+                        <TinyMceEditor v-model="functionalityFormData.description"/>
                     </div>
                     <div class="mb-3">
-                        <button type="submit" :disabled="!functionalityFormData.section_id"
-                            class="btn bg-desino w-100 text-light">
-                            {{ functionalityFormData.functionality_id ?
-                                $t('solution_design.functionality_form.submit_update_but_text') :
-                                $t('solution_design.functionality_form.submit_save_but_text') }}
+                        <button :disabled="!functionalityFormData.section_id" class="btn bg-desino w-100 text-light"
+                                type="submit">
+                            {{
+                                functionalityFormData.functionality_id ?
+                                    $t('solution_design.functionality_form.submit_update_but_text') :
+                                    $t('solution_design.functionality_form.submit_save_but_text')
+                            }}
                         </button>
                     </div>
                 </form>
             </div>
         </div>
-    </div>
 </template>
 
 <script>
@@ -158,10 +191,16 @@ import TinyMceEditor from './../../components/TinyMceEditor.vue';
 import showToast from '../../utils/toasts';
 import eventBus from '../../eventBus';
 import draggable from 'vuedraggable';
+import collapse from "bootstrap/js/src/collapse.js";
 
 
 export default {
     name: 'SolutionDesignComponent',
+    computed: {
+        collapse() {
+            return collapse
+        }
+    },
     mixins: [globalMixin],
     components: {
         GlobalMessage,
@@ -209,7 +248,10 @@ export default {
         async storeUpdateFunctionality() {
             this.clearMessages();
             try {
-                const { content: { functionality: updatedFunc, transactionType }, message } = await SolutionDesignService.storeUpdateFunctionality(this.functionalityFormData);
+                const {
+                    content: {functionality: updatedFunc, transactionType},
+                    message
+                } = await SolutionDesignService.storeUpdateFunctionality(this.functionalityFormData);
                 const section = this.findItem(updatedFunc.section_id);
                 this.getSectionsWithFunctionalities();
 
@@ -224,10 +266,10 @@ export default {
         },
         async getInitiativeData() {
             try {
-                const { content } = await SolutionDesignService.getInitiativeData({ initiative_id: this.initiativeId });
+                const {content} = await SolutionDesignService.getInitiativeData({initiative_id: this.initiativeId});
                 if (!content) {
                     messageService.setMessage(response.message, 'danger');
-                    this.$router.push({ name: 'home' });
+                    this.$router.push({name: 'home'});
                 } else {
                     this.initiativeData = content;
                 }
@@ -237,7 +279,7 @@ export default {
         },
         async getSectionsWithFunctionalities() {
             try {
-                const { content } = await SolutionDesignService.getSectionsWithFunctionalities({ initiative_id: this.initiativeId });
+                const {content} = await SolutionDesignService.getSectionsWithFunctionalities({initiative_id: this.initiativeId});
                 this.sectionsWithFunctionalities = content;
             } catch (error) {
                 this.handleError(error);
@@ -272,7 +314,7 @@ export default {
             return this.activeSectionId === sectionId;
         },
         resetForm() {
-            this.functionalityFormData = { section_id: "", name: "", description: "", functionality_id: "" };
+            this.functionalityFormData = {section_id: "", name: "", description: "", functionality_id: ""};
             this.errors = {};
             this.activeSectionId = null;
         },
@@ -310,7 +352,10 @@ export default {
                 if (result.isConfirmed) {
                     try {
                         const oldSelectedFunctionalityId = functionality;
-                        const { content, message } = await SolutionDesignService.deleteFunctionality({ functionality_id: functionality.id });
+                        const {
+                            content,
+                            message
+                        } = await SolutionDesignService.deleteFunctionality({functionality_id: functionality.id});
                         const section = this.findItem(functionality.section_id);
                         section.functionalities = section.functionalities.filter(item => item.id !== functionality.id);
                         const index = section.functionalities.findIndex(func => func.id === functionality.id);
@@ -338,7 +383,7 @@ export default {
                 if (result.isConfirmed) {
                     try {
                         let result = section.functionalities.find(item => item['id'] === this.selectedFunctionalityId);
-                        const { content, message } = await SolutionDesignService.deleteSection({ section_id: section.id });
+                        const {content, message} = await SolutionDesignService.deleteSection({section_id: section.id});
                         const index = this.sectionsWithFunctionalities.findIndex(sec => sec.id === section.id);
                         if (index !== -1) this.sectionsWithFunctionalities.splice(index, 1);
                         if (result) {

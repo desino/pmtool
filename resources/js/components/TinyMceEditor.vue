@@ -29,7 +29,7 @@ export default defineComponent({
                 suffix: '.min', // Suffix for TinyMCE resources
                 license_key: 'gpl', // for use without api key
                 entity_encoding: 'UTF-8',
-                height: 500,
+                height: 375,
                 width: '100%',
                 menubar: 'format table',
                 language: navigator.language || 'en',

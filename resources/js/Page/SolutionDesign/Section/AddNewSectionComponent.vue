@@ -1,15 +1,19 @@
 <template>
-    <div class="row mt-3">
-        <div class="col-md-4" v-if="!showInput">
-            <button class="button btn btn-desino bg-desino text-light" type="button" @click="showHideInput">
-                <i class="bi bi-plus-lg"></i> {{ $t('solution_design.add_section_but_text') }}
-            </button>
-        </div>
-        <div class="col-md-4" v-if="showInput">
-            <input type="text" @blur="handleBlur" @keyup.enter="handleEnter" v-model="formData.name" autofocus
-                class="form-control" id="name" :placeholder="$t('solution_design.add_section_input_placeholder')">
+
+    <div class="d-flex align-items-center section-container pe-4">
+        <div class="fw-bold fs-5 mt-3">
+            <div class="col-md-12" v-if="!showInput">
+                <a class="text-decoration-none text-dark ms-4" role="button" @click="showHideInput">
+                    <span><i class="bi bi-plus-lg fw-bolder"></i></span> Add Section
+                </a>
+            </div>
+            <div class="col-md-12" v-if="showInput">
+                <input type="text" @blur="handleBlur" @keyup.enter="handleEnter" v-model="formData.name" autofocus
+                       class="form-control ms-4" id="name" :placeholder="$t('solution_design.add_section_input_placeholder')">
+            </div>
         </div>
     </div>
+
 </template>
 
 <script>

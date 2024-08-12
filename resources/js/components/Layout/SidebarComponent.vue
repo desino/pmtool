@@ -1,5 +1,5 @@
 <template>
-    <aside ref="sidebar" class="app-sidebar bg-white">
+    <aside ref="sidebar" class="app-sidebar bg-white border">
         <div class="sidebar-brand">
             <a class="brand-link" href="#">
                 <img
@@ -58,7 +58,7 @@
 
         </div>
         <hr>
-        <div class="border rounded mx-2 shadow">
+        <div class="border rounded mx-2 shadow mb-3">
             <nav class="mt-1">
                 <ul class="nav sidebar-menu flex-column">
                     <li class="nav-item">

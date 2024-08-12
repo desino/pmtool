@@ -20,117 +20,47 @@ $theme-colors-rgb: map-loop($theme-colors, to-rgb, "$value");
 @import "scss/adminlte";
 
 // Custom CSS
-html, body{
+html, body {
     max-width: 100%;
     max-height: 100%;
     overflow-x: hidden !important;
 }
 
-.active>.page-link, .page-link.active {
+.active > .page-link, .page-link.active {
     background-color: $desino !important;
     border-color: $desino !important;
     color: $white !important;
 }
 
- .nav-item > .nav-link.active{
+.nav-item > .nav-link.active {
     background-color: $desino !important;
     color: white !important;
 }
 
-.nav-item.menu-open > .nav-link.active{
+.nav-item.menu-open > .nav-link.active {
     background-color: $white !important;
     color: $dark !important;
 }
 
-
-// for multi select customization
-
-.multiselect__option--selected.multiselect__option--highlight,
-.multiselect__option--group-selected.multiselect__option--highlight {
-    background: $desino !important;
-    color: $white !important;
+.hover-menu,
+.hover-sort{
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
-
-.multiselect__option--selected.multiselect__option--highlight::after,
-.multiselect__option--group-selected.multiselect__option--highlight::after{
-    background: $desino !important;
-    color: $white !important;
-    content: attr(data-deselect);
-}
-
-.multiselect__option--highlight {
-    background: $desino !important;
-    outline: none;
-    color: $white !important;
-}
-
-.multiselect__option--highlight::after {
-    content: attr(data-select);
-    background: $desino !important;
-    color: $white !important;
-}
-
-.multiselect__tags{
-    display: block;
-    width: 100%;
-    line-height: normal !important;
-    color: var(--bs-body-color);
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-color: var(--bs-body-bg);
-    box-shadow: var(--bs-box-shadow-inset);
-    background-clip: padding-box;
-    border: var(--bs-border-width) solid var(--bs-border-color);
-    border-radius: var(--bs-border-radius);
-    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-}
-
-.multiselect__placeholder{
-    color: var(--#{$prefix}secondary-color) !important;
-    font-size: initial !important;
-}
-
-.is-invalid{
-    .multiselect__tags{
-        border-color: var(--bs-form-invalid-border-color);
-        padding-right: calc(1.5em + .75rem);
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
-        background-repeat: no-repeat;
-        background-position: right calc(.375em + .1875rem) center;
-        background-size: calc(.75em + .375rem) calc(.75em + .375rem);
+.section-menu {
+     &:hover .hover-menu {
+        cursor: pointer;
+        opacity: 1;
+        visibility: visible;
     }
 }
 
-.dropdown-menu{
-    min-width: 7rem !important;
+.section-sort{
+    &:hover .hover-sort {
+        cursor: pointer;
+        opacity: 1;
+        visibility: visible;
+    }
 }
 
-.multiselect__tag {
-    position: relative;
-    display: inline-block;
-    padding: 4px 26px 4px 10px;
-    border-radius: 5px;
-    margin-right: 10px;
-    color: #fff;
-    line-height: 1;
-    background: $desino !important;
-    margin-bottom: 5px;
-    white-space: nowrap;
-    overflow: hidden;
-    max-width: 100%;
-    text-overflow: ellipsis;
-}
-
-.multiselect__tag-icon::after {
-    content: "×";
-    color: white;
-    font-size: 14px;
-}
-
-.di-tour-card{
-    min-height: 250px !important;
-    max-height: 250px !important;
-    width: 100%;
-    object-fit: fill !important;
-}
