@@ -1,7 +1,22 @@
 <template>
-    <h3 class="text-desino">{{ $t('opportunity.page_title') }}</h3>
+    <div class="app-content-header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-6">
+                    <h3 class="m-0">{{ $t('opportunity.page_title') }}</h3>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-end">
+                        <li class="breadcrumb-item"><a class="text-decoration-none"
+                                                       href="javascript:void(0)">{{$t('Dashboard')}}</a></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
     <GlobalMessage v-if="showMessage" />
-    <div class="row mb-3 justify-content-end">
+    <div class="app-content">
+    <div class="row mb-3">
         <div class="col-12 col-md-3 mb-2 mb-md-0">
             <input v-model="filter.initiative_name"
                 :placeholder="$t('opportunity_list_table.search_placeholder_initiative_name')" class="form-control"
@@ -16,15 +31,15 @@
     </div>
     <div class="list-group-item mx-2 mb-3 mt-2">
         <div class="row justify-content-between font-weight-bold bg-desino text-white rounded-top">
-            <div class="col-lg-4 col-md-6 col-6 fw-bold">{{ $t('opportunity_list_table.client_th_text') }}</div>
-            <div class="col-lg-3 col-md-6 col-6 fw-bold">{{
+            <div class="col-lg-4 col-md-6 col-6 fw-bold py-2">{{ $t('opportunity_list_table.client_th_text') }}</div>
+            <div class="col-lg-3 col-md-6 col-6 fw-bold py-2">{{
                 $t('opportunity_list_table.initiative_name_th_text')
                 }}
             </div>
-            <div class="col-lg-3 col-md-6 col-6 fw-bold d-none d-lg-block">
+            <div class="col-lg-3 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
                 {{ $t('opportunity_list_table.ballpark_development_hours_th_text') }}
             </div>
-            <div class="col-lg-2 col-md-6 col-6 fw-bold d-none d-lg-block">
+            <div class="col-lg-2 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
                 {{ $t('opportunity_list_table.actions_th_text') }}
             </div>
         </div>
@@ -48,7 +63,7 @@
                     </a>
                     <a :title="$t('opportunity_list_table.actions_lost_status_tooltip')" class="text-warning me-2"
                         href="javascript:" @click="updateStatusLostConfirmed(opportunity.id)">
-                        <i class="bi bi-hand-thumbs-down-fill"></i>
+                        <i class="bi bi-hand-thumbs-down"></i>
                     </a>
                     <router-link :title="$t('opportunity_list_table.actions_redirct_to_solution_design_tooltip')"
                         :to="{ name: 'solution-design', params: { id: opportunity.id } }" class="text-success me-2">
@@ -73,6 +88,7 @@
     <div id="editOpportunityModal" aria-hidden="true" aria-labelledby="editOpportunityModalLabel" class="modal fade"
         tabindex="-1">
         <EditOpportunityModalComponent ref="editOpportunityModalComponent" @pageUpddated="fetchAllOpportunities" />
+    </div>
     </div>
 </template>
 

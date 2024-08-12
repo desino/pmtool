@@ -1,8 +1,16 @@
 @import "custom.scss";
 
+.sidebar-brand{
+    height: 57px !important;
+}
+
 .brand-image{
     float: left;
     width: auto;
-    max-height: 33px;
+    max-height: 50px !important;
     line-height: .8;
+}
+
+.app-sidebar{
+    border-right: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
 }

@@ -1,0 +1,90 @@
+//
+// Misc: Miscellaneous
+//
+
+// Image sizes
+.img-size-64,
+.img-size-50,
+.img-size-32 {
+  height: auto;
+}
+
+.img-size-64 {
+  width: 64px;
+}
+
+.img-size-50 {
+  width: 50px;
+}
+
+.img-size-32 {
+  width: 32px;
+}
+
+// from v3
+
+// Ribbon
+.ribbon-wrapper {
+    height: $ribbon-wrapper-size;
+    overflow: hidden;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: $ribbon-wrapper-size;
+    z-index: 10;
+
+    &.ribbon-lg {
+        height: $ribbon-lg-wrapper-size;
+        width: $ribbon-lg-wrapper-size;
+
+        .ribbon {
+            right: $ribbon-lg-right;
+            top: $ribbon-lg-top;
+            width: $ribbon-lg-width;
+        }
+    }
+
+    &.ribbon-xl {
+        height: $ribbon-xl-wrapper-size;
+        width: $ribbon-xl-wrapper-size;
+
+        .ribbon {
+            right: $ribbon-xl-right;
+            top: $ribbon-xl-top;
+            width: $ribbon-xl-width;
+        }
+    }
+
+    .ribbon {
+        box-shadow: 0 0 $ribbon-border-size rgba($black, .3);
+        font-size: $ribbon-font-size;
+        line-height: $ribbon-line-height;
+        padding: $ribbon-padding;
+        position: relative;
+        right: $ribbon-right;
+        text-align: center;
+        text-shadow: 0 -1px 0 rgba($black, .4);
+        text-transform: uppercase;
+        top: $ribbon-top;
+        transform: rotate(135deg);
+        width: $ribbon-width;
+
+        &::before,
+        &::after {
+            border-left: $ribbon-border-size solid transparent;
+            border-right: $ribbon-border-size solid transparent;
+            border-top: $ribbon-border-size solid #9e9e9e;
+            bottom: -$ribbon-border-size;
+            content: "";
+            position: absolute;
+        }
+
+        &::before {
+            left: 0;
+        }
+
+        &::after {
+            right: 0;
+        }
+    }
+}

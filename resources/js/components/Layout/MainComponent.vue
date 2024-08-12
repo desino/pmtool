@@ -1,15 +1,13 @@
 <template>
-    <div v-if="isAuthenticated">
+    <div v-if="isAuthenticated" class="app-wrapper">
         <header-component></header-component>
-        <!-- <sidebar-component></sidebar-component> -->
+         <sidebar-component></sidebar-component>
 
         <!-- Global Loading Screen -->
         <loading-screen-component></loading-screen-component>
 
         <main class="app-main">
-            <div class="container mt-4">
                 <router-view></router-view>
-            </div>
         </main>
         <footer-component></footer-component>
     </div>
@@ -28,10 +26,11 @@ import AuthService from "../../services/AuthService.js";
 import LoadingScreenComponent from "./LoadingScreenComponent.vue";
 import HeaderComponent from "./HeaderComponent.vue";
 import globalMixin from '@/globalMixin';
+import SidebarComponent from "./SidebarComponent.vue";
 export default {
     name: 'MainComponent',
     mixins: [globalMixin],
-    components: { LoadingScreenComponent, HeaderComponent, FooterComponent },
+    components: {SidebarComponent, LoadingScreenComponent, HeaderComponent, FooterComponent },
     beforeMount() {
         AuthService.refreshUser();
     },
