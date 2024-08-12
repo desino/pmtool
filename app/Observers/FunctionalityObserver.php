@@ -9,19 +9,16 @@ class FunctionalityObserver
 {
     public function creating(Functionality $functionality)
     {
+        $newFunctionalityorderNo = $functionality->where('section_id',$functionality->section_id)->max('order_no')+1;
+        $sectionOrderNo = $functionality->section->order_no;
+        $functionality->display_name = $sectionOrderNo.".".$newFunctionalityorderNo." ".$functionality->name;
         $functionality->created_by = Auth::id();
-        $functionality->order_no = $functionality->where('section_id',$functionality->section_id)->max('order_no')+1;
+        $functionality->order_no = $newFunctionalityorderNo;
         $functionality->updated_at = null;
     }
 
     public function updating(Functionality $functionality)
     {
-        $oldFuntionality = $functionality->getOriginal();
-        // $postData = request()->post();
-        // // if($oldFuntionality['section_id'] != $functionality->section_id && !isset($postData['move_to_section_id'])){
-        // if($oldFuntionality['section_id'] != $functionality->section_id){
-        //     $functionality->order_no = $functionality->where('section_id',$functionality->section_id)->max('order_no')+1;
-        // }
         $functionality->updated_by = Auth::id();
     }
     /**
@@ -37,12 +34,7 @@ class FunctionalityObserver
      */
     public function updated(Functionality $functionality): void
     {
-        // $oldFuntionality = $functionality->getOriginal();
-        // if($oldFuntionality['section_id'] != $functionality->section_id){
-        //     Functionality::where('section_id',$oldFuntionality['section_id'])
-        //     ->where('order_no','>=',$oldFuntionality['order_no'])
-        //     ->decrement('order_no');
-        // }
+
     }
 
     /**
@@ -52,7 +44,12 @@ class FunctionalityObserver
     {
         Functionality::where('section_id',$functionality->section_id)
         ->where('order_no','>=',$functionality->order_no)
-        ->decrement('order_no');
+        ->each( function ($eachMoveToSectionfunctionality, $index) {
+            $eachMoveToSectionfunctionality->decrement('order_no');
+            $eachMoveToSectionfunctionality->display_name = $eachMoveToSectionfunctionality->section->order_no.".".$eachMoveToSectionfunctionality->order_no." ".$eachMoveToSectionfunctionality->name;
+            $eachMoveToSectionfunctionality->save();
+        });
+        // ->decrement('order_no');
     }
 
     /**

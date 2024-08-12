@@ -30,7 +30,7 @@
                                 <div v-else class="d-flex align-items-center">
                                     <span role="button"><i class="bi bi-grip-horizontal handle-section me-2"></i></span>
                                     <div class="fw-bold fs-5">
-                                        {{ section.name }}
+                                        {{ section.display_name }}
                                     </div>
                                     <div class="dropdown align-contents-start ml-5">
                                         <a href="javascript:" class="fw-bold fs-4 text-desino"
@@ -69,7 +69,7 @@
                                         <div :class="['list-group-item d-flex list-group-item-action', { 'bg-desino text-light': isSelected(functionality.id) }]"
                                             role="button" @click="selectFunctionality(functionality)">
                                             <span><i class="bi bi-grip-horizontal handle-functionality me-2"></i></span>
-                                            <span>{{ functionality.name }}</span>
+                                            <span>{{ functionality.display_name }}</span>
                                             <span class="ms-auto d-flex align-items-center">
                                                 <a href="javascript:" class="text-danger me-2"
                                                     @click.stop="deleteFunctionality(functionality)">
@@ -290,7 +290,6 @@ export default {
                     description: functionality.description ?? '',
                     functionality_id: functionality.id,
                 };
-                console.log('functionalityFormData :: ', this.functionalityFormData);
                 this.selectedFunctionalityId = functionality.id;
                 this.activeSectionId = null;
             }
@@ -319,6 +318,7 @@ export default {
                         if (this.selectedFunctionalityId == functionality.id) {
                             this.resetForm();
                         }
+                        this.getSectionsWithFunctionalities();
                         showToast(message, 'success');
                     } catch (error) {
                         this.handleError(error);
@@ -346,6 +346,7 @@ export default {
                             this.resetForm();
                         }
                         showToast(message, 'success');
+                        this.getSectionsWithFunctionalities();
                     } catch (error) {
                         this.handleError(error);
                     }
@@ -371,7 +372,8 @@ export default {
                     section_name: this.editingSectionName.trim(),
                 };
                 const response = await SolutionDesignService.updateSectionName(updateData);
-                section.name = this.editingSectionName.trim();
+                section.name = response.content.name.trim();
+                section.display_name = response.content.display_name.trim();
                 this.editingSectionId = null;
                 showToast(response.message, 'success');
             } catch (error) {
@@ -390,11 +392,16 @@ export default {
             try {
                 this.moveFunctionality.move_to_section_id = this.oldMoveFunctionality.id;
                 const response = await SolutionDesignService.updateFunctionalityOrderNo(this.moveFunctionality);
-                this.getSectionsWithFunctionalities();
-                if (this.functionalityFormData.functionality_id) {
-                    this.functionalityFormData = response.content;
-
+                if (this.functionalityFormData.functionality_id != '') {
+                    this.functionalityFormData = {
+                        'functionality_id': response.content.id,
+                        'section_id': response.content.section_id,
+                        'name': response.content.name,
+                        'order_no': response.content.order_no,
+                        'description': response.content.description
+                    };
                 }
+                this.getSectionsWithFunctionalities();
                 showToast(response.message, 'success');
                 this.oldMoveFunctionality = {};
             } catch (error) {
@@ -409,6 +416,7 @@ export default {
             this.drag = false;
             try {
                 const response = await SolutionDesignService.updateSectionOrderNo(this.moveSection);
+                this.getSectionsWithFunctionalities();
                 showToast(response.message, 'success');
             } catch (error) {
                 this.handleError(error);

@@ -113,8 +113,9 @@ class SolutionDesignController extends Controller
     public function updateSection(SectionRequest $request){
         DB::beginTransaction();
         $status = false;
+        $section = collect([]);
         try {
-            SolutionDesignServicec::updateSection($request);
+            $section = SolutionDesignServicec::updateSection($request);
             $statusCode = 200;
             $meesage = __('messages.solution_design.section.update_success');
             DB::commit();
@@ -123,7 +124,7 @@ class SolutionDesignController extends Controller
             $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
         }
-        return ApiHelper::response($status, $meesage, '', $statusCode);
+        return ApiHelper::response($status, $meesage, $section, $statusCode);
     }
 
     public function updateFunctionalityOrderNo(Request $request){
@@ -143,7 +144,7 @@ class SolutionDesignController extends Controller
             return ApiHelper::response($status, $meesage, collect([]), $statusCode);
         }
 
-        $updatedFunctionality = Functionality::find($request['itemId']);
+        $updatedFunctionality = Functionality::find($request->post('id'));
         return ApiHelper::response($status, $meesage, $updatedFunctionality, $statusCode);
     }
 
