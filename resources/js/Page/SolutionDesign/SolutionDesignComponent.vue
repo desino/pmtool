@@ -86,7 +86,7 @@
                 </draggable>
             </div>
             <div class="col-md-8">
-                <form @submit.prevent="storeUpdateFunctionality">
+                <form @submit.prevent="storeUpdateFunctionality" v-if="functionalityFormData.section_id">
                     <!-- <div v-if="errors.section_id" class="alert alert-danger">
                         <button type="button" class="btn-close" aria-label="Close" @click="clearMessages"></button>
                         <span v-for="(error, index) in errors.section_id" :key="index">{{ error }}</span>
@@ -118,7 +118,7 @@
                                     v-model="functionalityFormData.section_id">
                                     <option value="">{{
                                         $t('solution_design.functionality_form.section_name_select_box_placeholder')
-                                    }}</option>
+                                        }}</option>
                                     <option v-for="section in sectionsWithFunctionalities" :key="section.id"
                                         :value="section.id">
                                         {{ section.name }}</option>
