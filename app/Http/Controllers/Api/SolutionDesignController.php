@@ -127,42 +127,31 @@ class SolutionDesignController extends Controller
     }
 
     public function updateFunctionalityOrderNo(Request $request){
-        DB::beginTransaction();
+        $statusCode = 200;
         $status = false;
-        try {
-            if($request->post('move_to_section_id') && !empty($request->post('move_to_section_id'))){
-                $request->merge(['section_id' => $request->post('move_to_section_id')]);
-                $request->merge(['functionality_id' => $request->post('id')]);
-                $updateData = $request->post();
+        $meesage = __('messages.solution_design.section.update_functionality_order_no_success');
 
-                // $updateData = [
-                //     'id' => $request->post('id'),
-                //     'section_id' => $request->post('move_to_section_id'),
-                //     'name' => $request->post('name'),
-                //     'description' => $request->post('description'),
-                //     'order_no' => $request->post('order_no'),
-                // ];
-                SolutionDesignServicec::updateFunctionality($request,$updateData);
-                // SolutionDesignServicec::updateFunctionalityOrderNo($request);
-            } else {
-                SolutionDesignServicec::updateFunctionalityOrderNo($request);
-            }
-            $statusCode = 200;
-            $meesage = __('messages.solution_design.section.update_functionality_order_no_success');
+        DB::beginTransaction();
+        try {
+            SolutionDesignServicec::updateFunctionalityOrderNo($request);
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
             $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
+            return ApiHelper::response($status, $meesage, collect([]), $statusCode);
         }
-        return ApiHelper::response($status, $meesage, '', $statusCode);
+
+        $updatedFunctionality = Functionality::find($request['itemId']);
+        return ApiHelper::response($status, $meesage, $updatedFunctionality, $statusCode);
     }
 
     public function updateSectionOrderNo(Request $request){
         DB::beginTransaction();
         $status = false;
         try {
-            SolutionDesignServicec::updateSectionOrderNo($request);
+            $retData = SolutionDesignServicec::updateSectionOrderNo($request);
             $statusCode = 200;
             $meesage = __('messages.solution_design.section.update_section_order_no_success');
             DB::commit();

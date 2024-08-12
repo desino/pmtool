@@ -24,7 +24,16 @@ Class SolutionDesignServicec
 
     public static function updateFunctionality($request, $data) {
         $functionality = Functionality::find($data['functionality_id']);
+        $oldFuntionality = clone $functionality;
         $data['id'] = $functionality->id;
+        if($oldFuntionality['section_id'] != $request->post('section_id')){
+            $orderNo = Functionality::where('section_id',$request->post('section_id'))->max('order_no')+1;
+            $request->merge(['section_id' => $oldFuntionality['section_id']]);
+            $request->merge(['id' => $functionality->id]);
+            $request->merge(['move_to_section_id' => $request->post('section_id')]);
+            $request->merge(['order_no' => $orderNo]);
+            self::updateFunctionalityOrderNo($request);
+        }
         $functionality->update($data);
         return $functionality;
     }
@@ -50,49 +59,77 @@ Class SolutionDesignServicec
         return $section;
     }
 
-    public static function updateFunctionalityOrderNo($request) {
-        $postData = $request->post();
 
-        $postData = $request->post();
+    public static function updateFunctionalityOrderNo($request) {
+        $postData = $request->all();
+
+        $retData = [
+            'status' => true,
+            'message' => null,
+            'functionality' => null
+        ];
+
         $sectionId = $postData['section_id'];
         $itemId = $postData['id'];
-        $newOrderNo = $postData['order_no'];
+        $moveToSectionPosition = $postData['order_no'];
+        $moveToSectionId = $postData['move_to_section_id'] ?? null;
 
-        $functionalities = Functionality::where('section_id', $sectionId)
-        ->orderBy('order_no')
-        ->get();
 
-        $itemToMove = $functionalities->find($itemId);
+        if($moveToSectionId){
+            //refresh ordering of current section except moved functionality
+            Functionality::where('section_id', $sectionId)
+            ->orderBy('order_no')
+            ->whereNot('id', $itemId)
+            ->each( function ($eachMoveToSectionfunctionality, $index) {
+                $eachMoveToSectionfunctionality->order_no = $index+1;
+                $eachMoveToSectionfunctionality->save();
+            });
 
-        if (!$itemToMove) {
-            return;
+            //refresh ordering of move to section
+            Functionality::where('section_id', $moveToSectionId)
+            ->orderBy('order_no')
+            ->each( function ($eachMoveToSectionfunctionality, $index) {
+                $eachMoveToSectionfunctionality->order_no = $index+1;
+                $eachMoveToSectionfunctionality->save();
+            });
+
+            //New section: change orders of functionalities comes after this being move functionality based on position from request
+            Functionality::where('section_id', $moveToSectionId)
+            ->orderBy('order_no')
+            ->where('order_no', '>=', $moveToSectionPosition)
+            ->each( function ($eachMoveToSectionfunctionality, $index) {
+                $eachMoveToSectionfunctionality->increment('order_no');
+            });
+
+            Functionality::where('id', $itemId)
+            ->update([
+                'order_no' => $moveToSectionPosition,
+                'section_id' => $moveToSectionId,
+            ]);
+        } else {
+            //refresh ordering of current section except moved functionality
+            Functionality::where('section_id', $sectionId)
+            ->orderBy('order_no')
+            ->whereNot('id', $itemId)
+            ->each( function ($eachMoveToSectionfunctionality, $index) {
+                $eachMoveToSectionfunctionality->order_no = $index+1;
+                $eachMoveToSectionfunctionality->save();
+            });
+
+
+            //New section: change orders of functionalities comes after this being move functionality based on position from request
+            Functionality::where('section_id', $sectionId)
+            ->orderBy('order_no')
+            ->where('order_no', '>=', $moveToSectionPosition)
+            ->each( function ($eachMoveToSectionfunctionality, $index) {
+                $eachMoveToSectionfunctionality->increment('order_no');
+            });
+
+            Functionality::where('id', $itemId)
+            ->update([
+                'order_no' => $moveToSectionPosition,
+            ]);
         }
-
-        $currentOrderNo = $itemToMove->order_no;
-
-        if ($currentOrderNo === $newOrderNo) {
-            return;
-        }
-
-        foreach ($functionalities as $functionality) {
-            if ($functionality->id !== $itemToMove->id) {
-                if ($currentOrderNo < $newOrderNo) {
-                    // If moving down, decrease the order number for items between current and new positions
-                    if ($functionality->order_no > $currentOrderNo && $functionality->order_no <= $newOrderNo) {
-                        $functionality->decrement('order_no');
-                    }
-                } else {
-                    // If moving up, increase the order number for items between new and current positions
-                    if ($functionality->order_no < $currentOrderNo && $functionality->order_no >= $newOrderNo) {
-                        $functionality->increment('order_no');
-                    }
-                }
-            }
-        }
-
-        // Update the order number of the item to move
-        $itemToMove->order_no = $newOrderNo;
-        $itemToMove->save();
     }
 
     public static function updateSectionOrderNo($request){
@@ -135,5 +172,6 @@ Class SolutionDesignServicec
         // Update the order number of the item to move
         $itemToMove->order_no = $newOrderNo;
         $itemToMove->save();
+        return true;
     }
 }
