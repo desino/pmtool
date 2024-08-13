@@ -59,45 +59,32 @@
                                     <i class="bi bi-grip-horizontal handle-section me-2 hover-sort"></i>
                                 </div>
                                 <div class="fw-bold fs-5">
-                                    <i :class="['bi', expandedSections[section.id] ? 'bi-caret-down-fill' : 'bi-caret-right-fill']"
+                                    <i :class="['bi', collapsedSections[section.id] ? 'bi-caret-right-fill' : 'bi-caret-down-fill']"
                                         data-bs-toggle="collapse" :data-bs-target="'#collapse_' + section.id"
-                                        :aria-expanded="expandedSections[section.id]"
+                                        :aria-expanded="!collapsedSections[section.id]"
                                         :aria-controls="'#collapse_' + section.id"
-                                        @click="expandedSections[section.id] = !expandedSections[section.id]"></i>
+                                        @click="collapsedSections[section.id] = !collapsedSections[section.id]"></i>
                                     {{ section.display_name }}
                                 </div>
                                 <div class="section-menu">
-                                    <div class="dropdown align-contents-start ml-5 hover-menu">
-                                        <a class="fw-bold fs-4 text-desino" href="javascript:"
-                                            @click="toggleSection(section.id)">
-                                            <i :class="isSectionActive(section.id) ? 'bi bi-dash' : 'bi bi-plus'"></i>
+                                    <div class="ms-2 hover-menu">
+                                        <a class="me-2" href="javascript:"
+                                           @click="toggleSection(section.id)">
+                                            <i :class="isSectionActive(section.id) ? '' : 'bi bi-plus-square'"></i>
                                         </a>
-                                        <a id="dropdown_section_menu" aria-expanded="false"
-                                            class="text-desino fw-bold fs-4 text-desino" data-bs-toggle="dropdown"
-                                            href="javascript:" type="button">
-                                            <i class="bi bi-three-dots"></i>
+                                        <a class="me-2" href="javascript:"
+                                           @click="editSection(section)">
+                                            <i class="bi bi-pencil-square"></i>
                                         </a>
-                                        <ul aria-labelledby="dropdown_section_menu" class="dropdown-menu">
-                                            <li>
-                                                <a class="dropdown-item" href="javascript:"
-                                                    @click="editSection(section)">
-                                                    <i class="bi bi-pencil-square"></i>
-                                                    {{ $t('solution_design.section.option_edit_but_text') }}
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item" href="javascript:"
-                                                    @click="deleteSection(section)">
-                                                    <i class="bi bi-trash3"></i>
-                                                    {{ $t('solution_design.section.option_delete_but_text') }}
-                                                </a>
-                                            </li>
-                                        </ul>
+                                        <a class="me-2" href="javascript:"
+                                           @click="deleteSection(section)">
+                                            <i class="bi bi-trash3"></i>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div v-if="section.functionalities" class="list-group ps-5 collapse"
+                        <div v-if="section.functionalities" class="list-group ps-5 collapse" :class="{'show': !collapsedSections[section.id]}"
                             :id="'collapse_' + section.id">
                             <draggable v-model="section.functionalities" :move="checkMoveFunctionality"
                                 class="list-group" group="people" handle=".handle-functionality" item-key="id"
@@ -213,7 +200,7 @@ export default {
     data() {
         return {
             drag: false,
-            expandedSections: {}, // for collapse and expand
+            collapsedSections: {}, // for collapse and expand
             initiativeId: this.$route.params.id,
             initiativeData: {},
             sectionsWithFunctionalities: [],
