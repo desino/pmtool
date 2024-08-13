@@ -26,7 +26,7 @@
             <div class="form-group pb-0">
                 <HeaderInitiativeDropBoxComponent/>
             </div>
-            <div v-if="isActive('home')" >
+            <div v-if="isActive('solution-design')" >
                 <div class="shadow">
                     <div class="p-2 rounded-bottom">
                         <nav class="mt-1">
