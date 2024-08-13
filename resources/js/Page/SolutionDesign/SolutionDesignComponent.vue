@@ -59,12 +59,9 @@
                                            :data-bs-target="'#collapse_' + section.id"
                                            :aria-expanded="expandedSections[section.id]"
                                            :aria-controls="'#collapse_' + section.id"
-                                           @click="expandedSections[section.id] = !expandedSections[section.id]"></i>`
+                                           @click="expandedSections[section.id] = !expandedSections[section.id]"></i>
                                         {{ section.display_name }}
                                     </div>
-<!--                                    <div class="fw-bold fs-5">-->
-<!--                                        <i class="bi bi-caret-right-fill" data-bs-toggle="collapse" :data-bs-target="'#collapse_' + section.id" aria-expanded="false" :aria-controls="'#collapse_' + section.id"></i>{{ section.name }}-->
-<!--                                    </div>-->
                                     <div class="section-menu">
                                         <div class="dropdown align-contents-start ml-5 hover-menu">
                                             <a class="fw-bold fs-4 text-desino" href="javascript:"
@@ -123,7 +120,7 @@
                         </div>
                     </template>
                 </draggable>
-                <AddNewSectionComponent :initiativeData="initiativeData" @sectionAdded="handleSectionAdded"/>
+                <AddNewSectionComponent class="mb-3" :initiativeData="initiativeData" @sectionAdded="handleSectionAdded"/>
             </div>
             <div class="col-md-8 border-top border-bottom p-3">
                 <form @submit.prevent="storeUpdateFunctionality" v-if="functionalityFormData.section_id">

@@ -79,8 +79,8 @@
             <div class="col-lg-2 text-end col-md-6 col-4">
             </div>
         </div>
-        <div v-else class="list-group-item row">
-            <div class="col fw-bold text-center">{{ $t('opportunity_list_table.opportunities_not_found_text') }}</div>
+        <div v-else class="list-group-item row border p-4">
+            <div class="col h4 fw-bold text-center">{{ $t('opportunity_list_table.opportunities_not_found_text') }}</div>
         </div>
     </div>
     <PaginationComponent :currentPage="Number(currentPage)" :totalPages="Number(totalPages)"
