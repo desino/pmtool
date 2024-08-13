@@ -3,7 +3,11 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6">
-                    <h3 class="m-0">{{ $t('solution_design.page_title') }} - {{ initiativeData.name }}</h3>
+                    <h3 class="m-0">{{ $t('solution_design.page_title') }} - {{ initiativeData.name }}
+                    <span>
+                        <router-link :to="{ name: 'solution-design.detail', params: { id: initiativeData.id }}"><i class="bi bi-link-45deg"></i></router-link>
+                    </span>
+                    </h3>
                     <h5>
                         <span class="badge rounded bg-desino text-light my-3">
                             Development Ballpark: {{ initiativeData.ballpark_development_hours }} hours
