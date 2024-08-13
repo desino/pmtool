@@ -9,6 +9,10 @@ Class ClientService
 {
     public static function getAllClients() {
         $client = Client::all();
-        return $client;        
+        return $client;
+    }
+
+    public static function checkClient(){
+
     }
 }

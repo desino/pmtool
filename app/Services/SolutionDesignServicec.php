@@ -151,6 +151,7 @@ Class SolutionDesignServicec
 
         //refresh ordering of current section except moved functionality
         Section::orderBy('order_no')
+        ->where('initiative_id',$postData['initiative_id'])
         ->whereNot('id', $itemId)
         ->each( function ($eachMoveToSection, $index) {
             $newOrderNo = $index+1;
@@ -162,6 +163,7 @@ Class SolutionDesignServicec
 
         //New section: change orders of functionalities comes after this being move functionality based on position from request
         Section::orderBy('order_no')
+        ->where('initiative_id',$postData['initiative_id'])
         ->where('order_no', '>=', $moveToSectionPosition)
         ->each( function ($eachMoveToSection, $index) {
             $eachMoveToSection->increment('order_no');
@@ -171,6 +173,7 @@ Class SolutionDesignServicec
 
 
         $section = Section::with('functionalities')
+        ->where('initiative_id',$postData['initiative_id'])
         ->where('id', $itemId)
         ->first();
         $section->update([

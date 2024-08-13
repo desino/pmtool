@@ -9,7 +9,7 @@ class SectionObserver
 {
     public function creating(Section $section)
     {
-        $newSectionOrderNo=$section->max('order_no')+1;
+        $newSectionOrderNo=$section->where('initiative_id',$section->initiative_id)->max('order_no')+1;
         $section->created_by = Auth::id();
         $section->order_no = $newSectionOrderNo;
         $section->display_name = $newSectionOrderNo." ".$section->name;

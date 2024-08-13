@@ -87,11 +87,6 @@
             </div>
             <div class="col-md-8">
                 <form @submit.prevent="storeUpdateFunctionality" v-if="functionalityFormData.section_id">
-                    <!-- <div v-if="errors.section_id" class="alert alert-danger">
-                        <button type="button" class="btn-close" aria-label="Close" @click="clearMessages"></button>
-                        <span v-for="(error, index) in errors.section_id" :key="index">{{ error }}</span>
-                    </div>
-                    <input type="hidden" v-model="functionalityFormData.section_id"> -->
                     <input type="hidden" v-model="functionalityFormData.functionality_id">
                     <div class="row">
                         <div class="col-md-6">
@@ -428,6 +423,7 @@ export default {
     },
     beforeRouteUpdate(to, from, next) {
         this.initiativeId = to.params.id;
+        this.resetForm();
         this.fetchData();
         next();
     },
