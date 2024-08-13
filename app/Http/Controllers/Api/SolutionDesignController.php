@@ -32,7 +32,7 @@ class SolutionDesignController extends Controller
         $section = collect([]);
         try {
             $postData = $request->post();
-            // $postData['name'] = $request->post('name') ?? __('meesage.solution_design.section.create_untitled_text');
+            $postData['name'] = $request->post('section_name');
             $section = Section::create($postData);
             $section->functionalities;
             $status = true;

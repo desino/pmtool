@@ -1,31 +1,29 @@
 <template>
 
-    <div class="d-flex align-items-center section-container pe-4">
-        <div class="fw-bold fs-5 mt-3">
-            <div class="col-md-12" v-if="!showInput">
-                <a class="text-decoration-none text-dark ms-4" role="button" @click="showHideInput">
-                    <span><i class="bi bi-plus-lg fw-bolder"></i></span> Add Section
-                </a>
-            </div>
-            <div class="col-md-12" v-if="showInput">
-                <!-- <input type="text" @blur="handleBlur" @keyup.enter="handleEnter" v-model="formData.name" autofocus
-                    class="form-control ms-4" id="name"
-                    :placeholder="$t('solution_design.add_section_input_placeholder')"> -->
-
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control ms-4"
-                        :placeholder="$t('solution_design.add_section_input_placeholder')" v-model="formData.name"
-                        aria-label="Recipient's username" aria-describedby="button-addon2" @blur="handleBlur"
-                        @keyup.enter="handleEnter">
-                    <button class="btn btn-outline-desino bg-desino text-white" type="button" id="button-addon2"
-                        @click="handleStoreButton">
-                        <i class="bi bi-plus-lg"></i>
-                    </button>
+    <div class="fs-5 mt-3">
+        <div class="col-md-12" v-if="!showInput">
+            <a class="text-decoration-none text-dark ms-4 fw-bold " role="button" @click="showHideInput">
+                <span class="fw-bold"><i class="bi bi-plus-lg"></i></span> Add Section
+            </a>
+        </div>
+        <div class="col-md-8" v-if="showInput">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control ms-4"
+                    :placeholder="$t('solution_design.add_section_input_placeholder')" v-model="formData.section_name"
+                    aria-label="Recipient's username" aria-describedby="button-addon2" @keyup.enter="handleEnter"
+                    @keydown.esc="handleHideInput" :class="{ 'is-invalid': errors.section_name }" autofocus>
+                <button class="btn btn-outline-danger bg-danger text-white" type="button" id="button-addon2"
+                    @click="handleHideInput">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+                <div v-if="errors.section_name" class="invalid-feedback ms-4">
+                    <span v-for="(error, index) in errors.section_name" :key="index">
+                        {{ error }}
+                    </span>
                 </div>
             </div>
         </div>
     </div>
-
 </template>
 
 <script>
@@ -45,7 +43,7 @@ export default {
             showInput: false,
             formData: {
                 initiative_id: '',
-                name: ''
+                section_name: ''
             },
             errors: {}
         };
@@ -63,13 +61,16 @@ export default {
             this.showInput = true;
             this.isSaving = false;
         },
-        handleBlur() {
-            // if (this.isSaving) return;
-            // this.isSaving = true;
-            // this.storeSection();
-
+        handleHideInput() {
             this.resetForm();
         },
+        // handleBlur() {
+        //     // if (this.isSaving) return;
+        //     // this.isSaving = true;
+        //     // this.storeSection();
+
+        //     this.resetForm();
+        // },
         handleStoreButton() {
             if (this.isSaving) return;
             this.isSaving = true;
@@ -77,12 +78,13 @@ export default {
         },
         handleEnter(event) {
             event.preventDefault();
-            if (this.isSaving) return;
+            // if (this.isSaving) return;
             this.isSaving = true;
             this.storeSection();
         },
         async storeSection() {
             try {
+                console.log('this.formData :: ', this.formData);
                 const response = await SolutionDesignService.storeSection(this.formData);
                 this.sectionData = response.content;
                 this.$emit('sectionAdded', this.sectionData);
@@ -105,7 +107,7 @@ export default {
         },
         resetForm() {
             this.showInput = false;
-            this.formData.name = "";
+            this.formData.section_name = "";
             this.errors = {}
         }
     }

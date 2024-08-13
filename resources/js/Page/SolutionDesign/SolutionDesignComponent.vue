@@ -5,186 +5,186 @@
                 <div class="col-sm-6">
                     <h3 class="m-0">{{ $t('solution_design.page_title') }} - {{ initiativeData.name }}</h3>
                     <h5>
-            <span class="badge rounded bg-desino text-light my-3">
-                Development Ballpark: {{ initiativeData.ballpark_development_hours }} hours
-            </span>
+                        <span class="badge rounded bg-desino text-light my-3">
+                            Development Ballpark: {{ initiativeData.ballpark_development_hours }} hours
+                        </span>
                     </h5>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-end">
-                        <li class="breadcrumb-item"><a class="text-decoration-none"
-                                                       href="javascript:void(0)">{{ $t('Dashboard') }}</a></li>
+                        <li class="breadcrumb-item"><a class="text-decoration-none" href="javascript:void(0)">{{
+                            $t('Dashboard') }}</a></li>
                     </ol>
                 </div>
             </div>
         </div>
     </div>
 
-    <GlobalMessage v-if="showMessage"/>
+    <GlobalMessage v-if="showMessage" />
 
     <div class="app-content row">
-            <div class="col-md-4 border">
-                <div class="input-group my-3">
-                    <input type="text" class="form-control" placeholder="Search" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                    <span class="input-group-text" id="basic-addon2"><i class="bi bi-search"></i></span>
-                </div>
-                <hr>
-                <draggable v-model="sectionsWithFunctionalities" :move="checkMoveSection" class="list-group"
-                           handle=".handle-section" item-key="id" @end="sectionOnDragEnd">
-                    <template #item="{ element: section, index }">
-                        <div class="section-functionality-container">
-                            <div class="d-flex mt-3 section-container">
-                                <div v-if="editingSectionId === section.id">
-                                    <div>
+        <div class="col-md-4 border">
+            <div class="input-group my-3">
+                <input type="text" class="form-control" placeholder="Search" aria-label="Recipient's username"
+                    aria-describedby="basic-addon2">
+                <span class="input-group-text" id="basic-addon2"><i class="bi bi-search"></i></span>
+            </div>
+            <hr>
+            <draggable v-model="sectionsWithFunctionalities" :move="checkMoveSection" class="list-group"
+                handle=".handle-section" item-key="id" @end="sectionOnDragEnd">
+                <template #item="{ element: section, index }">
+                    <div class="section-functionality-container">
+                        <div class="mt-3 section-container">
+                            <div v-if="editingSectionId === section.id">
+                                <div class="col-md-8">
+                                    <div class="input-group">
                                         <input v-model="editingSectionName"
-                                               :class="{ 'is-invalid': errors.section_name }"
-                                               class="form-control"
-                                               type="text"
-                                               @blur="updateSectionName(section)"
-                                               @keyup.enter="updateSectionName(section)"/>
-                                        <div v-if="errors.section_name" class="invalid-feedback">
+                                            :class="{ 'is-invalid': errors.section_name }" class="form-control ms-4"
+                                            type="text" @keyup.enter="updateSectionName(section)"
+                                            @keydown.esc="showHideSectionInput(section)" />
+                                        <button class="btn btn-outline-danger bg-danger text-white" type="button"
+                                            id="button-addon2" @click="showHideSectionInput(section)">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                        <div v-if="errors.section_name" class="invalid-feedback ms-4">
                                             <span v-for="(error, index) in errors.section_name" :key="index">{{
-                                                    error
-                                                }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div v-else class="d-flex align-items-center section-container">
-                                    <div class="section-sort" role="button">
-                                        <i class="bi bi-grip-horizontal handle-section me-2 hover-sort"></i>
-                                    </div>
-                                    <div class="fw-bold fs-5">
-                                        <i :class="['bi', expandedSections[section.id] ? 'bi-caret-down-fill' : 'bi-caret-right-fill']"
-                                           data-bs-toggle="collapse"
-                                           :data-bs-target="'#collapse_' + section.id"
-                                           :aria-expanded="expandedSections[section.id]"
-                                           :aria-controls="'#collapse_' + section.id"
-                                           @click="expandedSections[section.id] = !expandedSections[section.id]"></i>
-                                        {{ section.display_name }}
-                                    </div>
-                                    <div class="section-menu">
-                                        <div class="dropdown align-contents-start ml-5 hover-menu">
-                                            <a class="fw-bold fs-4 text-desino" href="javascript:"
-                                               @click="toggleSection(section.id)">
-                                                <i :class="isSectionActive(section.id) ? 'bi bi-dash' : 'bi bi-plus'"></i>
-                                            </a>
-                                            <a id="dropdown_section_menu" aria-expanded="false"
-                                               class="text-desino fw-bold fs-4 text-desino"
-                                               data-bs-toggle="dropdown" href="javascript:" type="button">
-                                                <i class="bi bi-three-dots"></i>
-                                            </a>
-                                            <ul aria-labelledby="dropdown_section_menu" class="dropdown-menu">
-                                                <li>
-                                                    <a class="dropdown-item" href="javascript:"
-                                                       @click="editSection(section)">
-                                                        <i class="bi bi-pencil-square"></i>
-                                                        {{ $t('solution_design.section.option_edit_but_text') }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a class="dropdown-item" href="javascript:"
-                                                       @click="deleteSection(section)">
-                                                        <i class="bi bi-trash3"></i>
-                                                        {{ $t('solution_design.section.option_delete_but_text') }}
-                                                    </a>
-                                                </li>
-                                            </ul>
+                                                error
+                                            }}</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div v-if="section.functionalities" class="list-group ps-5 collapse" :id="'collapse_' + section.id">
-                                <draggable v-model="section.functionalities" :move="checkMoveFunctionality"
-                                           class="list-group" group="people"
-                                           handle=".handle-functionality" item-key="id"
-                                           @add="functionalityOnDragAdd($event, index)" @end="functionalityOnDragEnd">
-                                    <template #item="{ element: functionality, index: functionalityIndex }">
-                                        <div
-                                            class="border-0 border-bottom"
-                                            :class="['list-group-item d-flex list-group-item-action', { 'bg-desino text-light': isSelected(functionality.id) }]"
-                                            role="button" @click="selectFunctionality(functionality)">
-                                            <span><i class="bi bi-grip-horizontal handle-functionality me-2"></i></span>
-                                            <span>{{ functionality.display_name }}</span>
-                                            <span class="ms-auto d-flex align-items-center">
-                                                <a class="text-danger me-2" href="javascript:"
-                                                   @click.stop="deleteFunctionality(functionality)">
-                                                    <i class="bi bi-trash3"></i>
+                            <div v-else class="d-flex align-items-center section-container">
+                                <div class="section-sort" role="button">
+                                    <i class="bi bi-grip-horizontal handle-section me-2 hover-sort"></i>
+                                </div>
+                                <div class="fw-bold fs-5">
+                                    <i :class="['bi', expandedSections[section.id] ? 'bi-caret-down-fill' : 'bi-caret-right-fill']"
+                                        data-bs-toggle="collapse" :data-bs-target="'#collapse_' + section.id"
+                                        :aria-expanded="expandedSections[section.id]"
+                                        :aria-controls="'#collapse_' + section.id"
+                                        @click="expandedSections[section.id] = !expandedSections[section.id]"></i>
+                                    {{ section.display_name }}
+                                </div>
+                                <div class="section-menu">
+                                    <div class="dropdown align-contents-start ml-5 hover-menu">
+                                        <a class="fw-bold fs-4 text-desino" href="javascript:"
+                                            @click="toggleSection(section.id)">
+                                            <i :class="isSectionActive(section.id) ? 'bi bi-dash' : 'bi bi-plus'"></i>
+                                        </a>
+                                        <a id="dropdown_section_menu" aria-expanded="false"
+                                            class="text-desino fw-bold fs-4 text-desino" data-bs-toggle="dropdown"
+                                            href="javascript:" type="button">
+                                            <i class="bi bi-three-dots"></i>
+                                        </a>
+                                        <ul aria-labelledby="dropdown_section_menu" class="dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" href="javascript:"
+                                                    @click="editSection(section)">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                    {{ $t('solution_design.section.option_edit_but_text') }}
                                                 </a>
-                                                <span class="badge bg-secondary">0</span>
-                                            </span>
-                                        </div>
-                                    </template>
-                                </draggable>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="javascript:"
+                                                    @click="deleteSection(section)">
+                                                    <i class="bi bi-trash3"></i>
+                                                    {{ $t('solution_design.section.option_delete_but_text') }}
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
+                        </div>
+                        <div v-if="section.functionalities" class="list-group ps-5 collapse"
+                            :id="'collapse_' + section.id">
+                            <draggable v-model="section.functionalities" :move="checkMoveFunctionality"
+                                class="list-group" group="people" handle=".handle-functionality" item-key="id"
+                                @add="functionalityOnDragAdd($event, index)" @end="functionalityOnDragEnd">
+                                <template #item="{ element: functionality, index: functionalityIndex }">
+                                    <div class="border-0 border-bottom"
+                                        :class="['list-group-item d-flex list-group-item-action', { 'bg-desino text-light': isSelected(functionality.id) }]"
+                                        role="button" @click="selectFunctionality(functionality)">
+                                        <span><i class="bi bi-grip-horizontal handle-functionality me-2"></i></span>
+                                        <span>{{ functionality.display_name }}</span>
+                                        <span class="ms-auto d-flex align-items-center">
+                                            <a class="text-danger me-2" href="javascript:"
+                                                @click.stop="deleteFunctionality(functionality)">
+                                                <i class="bi bi-trash3"></i>
+                                            </a>
+                                            <span class="badge bg-secondary">0</span>
+                                        </span>
+                                    </div>
+                                </template>
+                            </draggable>
+                        </div>
 
-                        </div>
-                    </template>
-                </draggable>
-                <AddNewSectionComponent class="mb-3" :initiativeData="initiativeData" @sectionAdded="handleSectionAdded"/>
-            </div>
-            <div class="col-md-8 border-top border-bottom p-3">
-                <form @submit.prevent="storeUpdateFunctionality" v-if="functionalityFormData.section_id">
-                    <input type="hidden" v-model="functionalityFormData.functionality_id">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label" for="functionality_name">{{
-                                        $t('solution_design.functionality_form.name')
-                                    }} <strong
-                                        class="text-danger">*</strong>
-                                </label>
-                                <input id="functionality_name" v-model="functionalityFormData.name"
-                                       :class="{ 'is-invalid': errors.name }"
-                                       class="form-control" placeholder="Enter value"
-                                       type="text">
-                                <div v-if="errors.name" class="invalid-feedback">
-                                    <span v-for="(error, index) in errors.name" :key="index">{{ error }}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label" for="section_id">{{
-                                        $t('solution_design.functionality_form.section_name_select_box')
-                                    }} <strong
-                                        class="text-danger">*</strong>
-                                </label>
-                                <select v-model="functionalityFormData.section_id" aria-label="Default select example"
-                                        class="form-select">
-                                    <option value="">{{
-                                            $t('solution_design.functionality_form.section_name_select_box_placeholder')
-                                        }}
-                                    </option>
-                                    <option v-for="section in sectionsWithFunctionalities" :key="section.id"
-                                            :value="section.id">
-                                        {{ section.name }}
-                                    </option>
-                                </select>
-                                <div v-if="errors.section_id" class="invalid-feedback">
-                                    <span v-for="(error, index) in errors.section_id" :key="index">{{ error }}</span>
-                                </div>
-                            </div>
-                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="functionalityDescription">{{
-                                $t('solution_design.functionality_form.description')
-                            }}</label>
-                        <TinyMceEditor v-model="functionalityFormData.description"/>
-                    </div>
-                    <div class="mb-3">
-                        <button :disabled="!functionalityFormData.section_id" class="btn bg-desino w-100 text-light"
-                                type="submit">
-                            {{
-                                functionalityFormData.functionality_id ?
-                                    $t('solution_design.functionality_form.submit_update_but_text') :
-                                    $t('solution_design.functionality_form.submit_save_but_text')
-                            }}
-                        </button>
-                    </div>
-                </form>
-            </div>
+                </template>
+            </draggable>
+            <AddNewSectionComponent class="mb-3" :initiativeData="initiativeData" @sectionAdded="handleSectionAdded" />
         </div>
+        <div class="col-md-8 border-top border-bottom p-3">
+            <form @submit.prevent="storeUpdateFunctionality" v-if="functionalityFormData.section_id">
+                <input type="hidden" v-model="functionalityFormData.functionality_id">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label" for="functionality_name">{{
+                                $t('solution_design.functionality_form.name')
+                            }} <strong class="text-danger">*</strong>
+                            </label>
+                            <input id="functionality_name" v-model="functionalityFormData.name"
+                                :class="{ 'is-invalid': errors.name }" class="form-control" placeholder="Enter value"
+                                type="text">
+                            <div v-if="errors.name" class="invalid-feedback">
+                                <span v-for="(error, index) in errors.name" :key="index">{{ error }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label" for="section_id">{{
+                                $t('solution_design.functionality_form.section_name_select_box')
+                            }} <strong class="text-danger">*</strong>
+                            </label>
+                            <select v-model="functionalityFormData.section_id" aria-label="Default select example"
+                                class="form-select">
+                                <option value="">{{
+                                    $t('solution_design.functionality_form.section_name_select_box_placeholder')
+                                }}
+                                </option>
+                                <option v-for="section in sectionsWithFunctionalities" :key="section.id"
+                                    :value="section.id">
+                                    {{ section.name }}
+                                </option>
+                            </select>
+                            <div v-if="errors.section_id" class="invalid-feedback">
+                                <span v-for="(error, index) in errors.section_id" :key="index">{{ error }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="functionalityDescription">{{
+                        $t('solution_design.functionality_form.description')
+                    }}</label>
+                    <TinyMceEditor v-model="functionalityFormData.description" />
+                </div>
+                <div class="mb-3">
+                    <button :disabled="!functionalityFormData.section_id" class="btn bg-desino w-100 text-light"
+                        type="submit">
+                        {{
+                            functionalityFormData.functionality_id ?
+                                $t('solution_design.functionality_form.submit_update_but_text') :
+                                $t('solution_design.functionality_form.submit_save_but_text')
+                        }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
 
 </template>
@@ -251,7 +251,7 @@ export default {
             this.clearMessages();
             try {
                 const {
-                    content: {functionality: updatedFunc, transactionType},
+                    content: { functionality: updatedFunc, transactionType },
                     message
                 } = await SolutionDesignService.storeUpdateFunctionality(this.functionalityFormData);
                 const section = this.findItem(updatedFunc.section_id);
@@ -268,10 +268,10 @@ export default {
         },
         async getInitiativeData() {
             try {
-                const {content} = await SolutionDesignService.getInitiativeData({initiative_id: this.initiativeId});
+                const { content } = await SolutionDesignService.getInitiativeData({ initiative_id: this.initiativeId });
                 if (!content) {
                     messageService.setMessage(response.message, 'danger');
-                    this.$router.push({name: 'home'});
+                    this.$router.push({ name: 'home' });
                 } else {
                     this.initiativeData = content;
                 }
@@ -281,7 +281,7 @@ export default {
         },
         async getSectionsWithFunctionalities() {
             try {
-                const {content} = await SolutionDesignService.getSectionsWithFunctionalities({initiative_id: this.initiativeId});
+                const { content } = await SolutionDesignService.getSectionsWithFunctionalities({ initiative_id: this.initiativeId });
                 this.sectionsWithFunctionalities = content;
             } catch (error) {
                 this.handleError(error);
@@ -316,7 +316,7 @@ export default {
             return this.activeSectionId === sectionId;
         },
         resetForm() {
-            this.functionalityFormData = {section_id: "", name: "", description: "", functionality_id: ""};
+            this.functionalityFormData = { section_id: "", name: "", description: "", functionality_id: "" };
             this.errors = {};
             this.activeSectionId = null;
         },
@@ -357,7 +357,7 @@ export default {
                         const {
                             content,
                             message
-                        } = await SolutionDesignService.deleteFunctionality({functionality_id: functionality.id});
+                        } = await SolutionDesignService.deleteFunctionality({ functionality_id: functionality.id });
                         const section = this.findItem(functionality.section_id);
                         section.functionalities = section.functionalities.filter(item => item.id !== functionality.id);
                         const index = section.functionalities.findIndex(func => func.id === functionality.id);
@@ -385,8 +385,8 @@ export default {
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
-                        let result = section.functionalities.find(item => item['id'] === this.selectedFunctionalityId);
-                        const {content, message} = await SolutionDesignService.deleteSection({section_id: section.id});
+                        let result = section.functionalities.find(item => item['id'] === this.activeSectionId);
+                        const { content, message } = await SolutionDesignService.deleteSection({ section_id: section.id });
                         const index = this.sectionsWithFunctionalities.findIndex(sec => sec.id === section.id);
                         if (index !== -1) this.sectionsWithFunctionalities.splice(index, 1);
                         if (result) {
@@ -407,11 +407,14 @@ export default {
             this.activeSectionId = null;
             this.selectedFunctionalityId = null;
         },
-        async updateSectionName(section) {
+        showHideSectionInput(section) {
             if (this.editingSectionName.trim() === section.name.trim()) {
                 this.editingSectionId = null;
                 return;
             }
+        },
+        async updateSectionName(section) {
+            this.showHideSectionInput(section);
 
             try {
                 const updateData = {
