@@ -84,7 +84,6 @@ export default {
         },
         async storeSection() {
             try {
-                console.log('this.formData :: ', this.formData);
                 const response = await SolutionDesignService.storeSection(this.formData);
                 this.sectionData = response.content;
                 this.$emit('sectionAdded', this.sectionData);
