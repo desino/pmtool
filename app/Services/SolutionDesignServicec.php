@@ -51,10 +51,10 @@ Class SolutionDesignServicec
         return $section;
     }
 
-    public static function updateSection($request) {
+    public static function updateSection($request, $section) {
         $postData = $request->post();
         $postData['name'] = $postData['section_name'];
-        $section = Section::find($request->post('section_id'));
+        // $section = Section::find($request->post('section_id'));
         $postData['display_name'] = $section->order_no." ".$postData['name'];
         $section->update($postData);
         return $section;

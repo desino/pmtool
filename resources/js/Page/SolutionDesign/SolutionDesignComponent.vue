@@ -49,7 +49,7 @@
                                         <div v-if="errors.section_name" class="invalid-feedback ms-4">
                                             <span v-for="(error, index) in errors.section_name" :key="index">{{
                                                 error
-                                            }}</span>
+                                                }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -68,24 +68,21 @@
                                 </div>
                                 <div class="section-menu">
                                     <div class="ms-2 hover-menu">
-                                        <a class="me-2" href="javascript:"
-                                           @click="toggleSection(section.id)">
+                                        <a class="me-2" href="javascript:" @click="toggleSection(section.id)">
                                             <i :class="isSectionActive(section.id) ? '' : 'bi bi-plus-square'"></i>
                                         </a>
-                                        <a class="me-2" href="javascript:"
-                                           @click="editSection(section)">
+                                        <a class="me-2" href="javascript:" @click="editSection(section)">
                                             <i class="bi bi-pencil-square"></i>
                                         </a>
-                                        <a class="me-2" href="javascript:"
-                                           @click="deleteSection(section)">
+                                        <a class="me-2" href="javascript:" @click="deleteSection(section)">
                                             <i class="bi bi-trash3"></i>
                                         </a>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div v-if="section.functionalities" class="list-group ps-5 collapse" :class="{'show': !collapsedSections[section.id]}"
-                            :id="'collapse_' + section.id">
+                        <div v-if="section.functionalities" class="list-group ps-5 collapse"
+                            :class="{ 'show': !collapsedSections[section.id] }" :id="'collapse_' + section.id">
                             <draggable v-model="section.functionalities" :move="checkMoveFunctionality"
                                 class="list-group" group="people" handle=".handle-functionality" item-key="id"
                                 @add="functionalityOnDragAdd($event, index)" @end="functionalityOnDragEnd">
@@ -120,7 +117,7 @@
                         <div class="mb-3">
                             <label class="form-label" for="functionality_name">{{
                                 $t('solution_design.functionality_form.name')
-                            }} <strong class="text-danger">*</strong>
+                                }} <strong class="text-danger">*</strong>
                             </label>
                             <input id="functionality_name" v-model="functionalityFormData.name"
                                 :class="{ 'is-invalid': errors.name }" class="form-control" placeholder="Enter value"
@@ -134,13 +131,13 @@
                         <div class="mb-3">
                             <label class="form-label" for="section_id">{{
                                 $t('solution_design.functionality_form.section_name_select_box')
-                            }} <strong class="text-danger">*</strong>
+                                }} <strong class="text-danger">*</strong>
                             </label>
                             <select v-model="functionalityFormData.section_id" aria-label="Default select example"
                                 class="form-select">
                                 <option value="">{{
                                     $t('solution_design.functionality_form.section_name_select_box_placeholder')
-                                }}
+                                    }}
                                 </option>
                                 <option v-for="section in sectionsWithFunctionalities" :key="section.id"
                                     :value="section.id">
@@ -156,7 +153,7 @@
                 <div class="mb-3">
                     <label class="form-label" for="functionalityDescription">{{
                         $t('solution_design.functionality_form.description')
-                    }}</label>
+                        }}</label>
                     <TinyMceEditor v-model="functionalityFormData.description" />
                 </div>
                 <div class="mb-3">
@@ -414,6 +411,7 @@ export default {
             try {
                 const updateData = {
                     section_id: section.id,
+                    initiative_id: section.initiative_id,
                     section_name: this.editingSectionName.trim(),
                 };
                 const response = await SolutionDesignService.updateSectionName(updateData);

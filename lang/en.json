@@ -145,7 +145,8 @@
     "validation.ulid": "The :attribute field must be a valid ULID.",
     "validation.uuid": "The :attribute field must be a valid UUID.",
 
-    "validation.initiative.client_id": "The client name is required.",
+    "validation.initiative.client_id.required": "The client name is required.",
+    "validation.initiative.client_id.exists": "The selected client name is invalid.",
     "validation.initiative.name": "The initiative name is required.",
 
     "auth.failed": "These credentials do not match our records.",
@@ -176,6 +177,7 @@
 
     "messages.client.store_success": "Client created successfully.",
 
+    "messages.initiative.client_not_exist": "Client does not exist",
     "messages.initiative.store_success": "Initiative created successfully.",
 
     "messages.opportunity.get_list_success": "Opportunities fetched successfully.",
@@ -191,6 +193,9 @@
     "messages.solution_design.functionality.store_success":"Functionality created successfully",
     "messages.solution_design.functionality.update_success":"Functionality updated successfully",
     "messages.solution_design.functionality.delete_success":"Functionality deleted successfully",
+    "messages.solution_design.sectino.store.initiative_not_exist":"Initiative does not exist.",
+    "messages.solution_design.sectino.store.client_not_exist":"Client does not exist.",
+    "messages.solution_design.sectino.store.section_not_exist": "Data not found",
 
     "messages.solution_design.section.delete_success":"Section and it's functionality deleted successfully",
     "messages.solution_design.section.update_success":"Section updated successfully",

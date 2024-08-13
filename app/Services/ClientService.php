@@ -12,7 +12,8 @@ Class ClientService
         return $client;
     }
 
-    public static function checkClient(){
-
+    public static function getClient($id){
+        $client = Client::find($id);
+        return $client;
     }
 }
