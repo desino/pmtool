@@ -54,7 +54,7 @@
                                         <i class="bi bi-grip-horizontal handle-section me-2 hover-sort"></i>
                                     </div>
                                     <div class="fw-bold fs-5">
-                                        <a class="text-decoration-none text-dark " data-bs-toggle="collapse" :data-bs-target="'#collapse' + section.id" aria-expanded="false" :aria-controls="'#collapse' + section.id">
+                                        <a class="text-decoration-none text-dark" data-bs-toggle="collapse" :data-bs-target="'#collapse_' + section.id" aria-expanded="false" :aria-controls="'#collapse_' + section.id">
                                             <span><i class="bi bi-caret-right-fill"></i></span> {{ section.name }}
                                         </a>
                                     </div>
@@ -89,13 +89,14 @@
                                     </div>
                                 </div>
                             </div>
-                            <div v-if="section.functionalities" class="list-group collapse" :id="'collapse' + section.id">
+                            <div v-if="section.functionalities" class="list-group ps-5 collapse" :id="'collapse_' + section.id">
                                 <draggable v-model="section.functionalities" :move="checkMoveFunctionality"
                                            class="list-group" group="people"
                                            handle=".handle-functionality" item-key="id"
                                            @add="functionalityOnDragAdd($event, index)" @end="functionalityOnDragEnd">
                                     <template #item="{ element: functionality, index: functionalityIndex }">
                                         <div
+                                            class="border-0 border-bottom"
                                             :class="['list-group-item d-flex list-group-item-action', { 'bg-desino text-light': isSelected(functionality.id) }]"
                                             role="button" @click="selectFunctionality(functionality)">
                                             <span><i class="bi bi-grip-horizontal handle-functionality me-2"></i></span>
@@ -111,6 +112,7 @@
                                     </template>
                                 </draggable>
                             </div>
+
                         </div>
                     </template>
                 </draggable>
@@ -179,6 +181,8 @@
                 </form>
             </div>
         </div>
+
+
 </template>
 
 <script>
@@ -191,16 +195,10 @@ import TinyMceEditor from './../../components/TinyMceEditor.vue';
 import showToast from '../../utils/toasts';
 import eventBus from '../../eventBus';
 import draggable from 'vuedraggable';
-import collapse from "bootstrap/js/src/collapse.js";
 
 
 export default {
     name: 'SolutionDesignComponent',
-    computed: {
-        collapse() {
-            return collapse
-        }
-    },
     mixins: [globalMixin],
     components: {
         GlobalMessage,
