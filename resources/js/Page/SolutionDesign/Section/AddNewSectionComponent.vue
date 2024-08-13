@@ -8,8 +8,20 @@
                 </a>
             </div>
             <div class="col-md-12" v-if="showInput">
-                <input type="text" @blur="handleBlur" @keyup.enter="handleEnter" v-model="formData.name" autofocus
-                       class="form-control ms-4" id="name" :placeholder="$t('solution_design.add_section_input_placeholder')">
+                <!-- <input type="text" @blur="handleBlur" @keyup.enter="handleEnter" v-model="formData.name" autofocus
+                    class="form-control ms-4" id="name"
+                    :placeholder="$t('solution_design.add_section_input_placeholder')"> -->
+
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control ms-4"
+                        :placeholder="$t('solution_design.add_section_input_placeholder')" v-model="formData.name"
+                        aria-label="Recipient's username" aria-describedby="button-addon2" @blur="handleBlur"
+                        @keyup.enter="handleEnter">
+                    <button class="btn btn-outline-desino bg-desino text-white" type="button" id="button-addon2"
+                        @click="handleStoreButton">
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -52,13 +64,20 @@ export default {
             this.isSaving = false;
         },
         handleBlur() {
-            if (this.isSaving) return; // Prevent duplicate calls
+            // if (this.isSaving) return;
+            // this.isSaving = true;
+            // this.storeSection();
+
+            this.resetForm();
+        },
+        handleStoreButton() {
+            if (this.isSaving) return;
             this.isSaving = true;
             this.storeSection();
         },
         handleEnter(event) {
-            event.preventDefault(); // Prevent form submission if inside a form
-            if (this.isSaving) return; // Prevent duplicate calls
+            event.preventDefault();
+            if (this.isSaving) return;
             this.isSaving = true;
             this.storeSection();
         },

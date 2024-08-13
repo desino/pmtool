@@ -27,12 +27,12 @@ class SolutionDesignController extends Controller
         return ApiHelper::response(true, '', $initiative, 200);
     }
 
-    public function storeSection(Request $request){
+    public function storeSection(SectionRequest $request){
         $status = false;
         $section = collect([]);
         try {
             $postData = $request->post();
-            $postData['name'] = $request->post('name') ?? __('meesage.solution_design.section.create_untitled_text');
+            // $postData['name'] = $request->post('name') ?? __('meesage.solution_design.section.create_untitled_text');
             $section = Section::create($postData);
             $section->functionalities;
             $status = true;
