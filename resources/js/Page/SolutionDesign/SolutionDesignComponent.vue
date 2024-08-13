@@ -59,8 +59,8 @@
                                            :data-bs-target="'#collapse_' + section.id"
                                            :aria-expanded="expandedSections[section.id]"
                                            :aria-controls="'#collapse_' + section.id"
-                                           @click="expandedSections[section.id] = !expandedSections[section.id]"></i>
-                                        {{ section.name }}
+                                           @click="expandedSections[section.id] = !expandedSections[section.id]"></i>`
+                                        {{ section.display_name }}
                                     </div>
 <!--                                    <div class="fw-bold fs-5">-->
 <!--                                        <i class="bi bi-caret-right-fill" data-bs-toggle="collapse" :data-bs-target="'#collapse_' + section.id" aria-expanded="false" :aria-controls="'#collapse_' + section.id"></i>{{ section.name }}-->
@@ -107,7 +107,7 @@
                                             :class="['list-group-item d-flex list-group-item-action', { 'bg-desino text-light': isSelected(functionality.id) }]"
                                             role="button" @click="selectFunctionality(functionality)">
                                             <span><i class="bi bi-grip-horizontal handle-functionality me-2"></i></span>
-                                            <span>{{ functionality.name }}</span>
+                                            <span>{{ functionality.display_name }}</span>
                                             <span class="ms-auto d-flex align-items-center">
                                                 <a class="text-danger me-2" href="javascript:"
                                                    @click.stop="deleteFunctionality(functionality)">
@@ -126,8 +126,8 @@
                 <AddNewSectionComponent :initiativeData="initiativeData" @sectionAdded="handleSectionAdded"/>
             </div>
             <div class="col-md-8 border-top border-bottom p-3">
-                <form @submit.prevent="storeUpdateFunctionality">
-                    <input v-model="functionalityFormData.functionality_id" type="hidden">
+                <form @submit.prevent="storeUpdateFunctionality" v-if="functionalityFormData.section_id">
+                    <input type="hidden" v-model="functionalityFormData.functionality_id">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
@@ -368,6 +368,7 @@ export default {
                         if (this.selectedFunctionalityId == functionality.id) {
                             this.resetForm();
                         }
+                        this.getSectionsWithFunctionalities();
                         showToast(message, 'success');
                     } catch (error) {
                         this.handleError(error);
@@ -395,6 +396,7 @@ export default {
                             this.resetForm();
                         }
                         showToast(message, 'success');
+                        this.getSectionsWithFunctionalities();
                     } catch (error) {
                         this.handleError(error);
                     }
@@ -420,7 +422,8 @@ export default {
                     section_name: this.editingSectionName.trim(),
                 };
                 const response = await SolutionDesignService.updateSectionName(updateData);
-                section.name = this.editingSectionName.trim();
+                section.name = response.content.name.trim();
+                section.display_name = response.content.display_name.trim();
                 this.editingSectionId = null;
                 showToast(response.message, 'success');
             } catch (error) {
@@ -437,8 +440,18 @@ export default {
         async functionalityOnDragEnd(event) {
             this.drag = false;
             try {
-                this.moveFunctionality['move_to_section_id'] = this.oldMoveFunctionality.id;
+                this.moveFunctionality.move_to_section_id = this.oldMoveFunctionality.id;
                 const response = await SolutionDesignService.updateFunctionalityOrderNo(this.moveFunctionality);
+                if (this.functionalityFormData.functionality_id != '') {
+                    this.functionalityFormData = {
+                        'functionality_id': response.content.id,
+                        'section_id': response.content.section_id,
+                        'name': response.content.name,
+                        'order_no': response.content.order_no,
+                        'description': response.content.description
+                    };
+                }
+                this.getSectionsWithFunctionalities();
                 showToast(response.message, 'success');
                 this.oldMoveFunctionality = {};
             } catch (error) {
@@ -453,6 +466,7 @@ export default {
             this.drag = false;
             try {
                 const response = await SolutionDesignService.updateSectionOrderNo(this.moveSection);
+                this.getSectionsWithFunctionalities();
                 showToast(response.message, 'success');
             } catch (error) {
                 this.handleError(error);
@@ -464,6 +478,7 @@ export default {
     },
     beforeRouteUpdate(to, from, next) {
         this.initiativeId = to.params.id;
+        this.resetForm();
         this.fetchData();
         next();
     },
