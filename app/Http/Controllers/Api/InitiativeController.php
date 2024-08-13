@@ -26,7 +26,6 @@ class InitiativeController extends Controller
         ];
         DB::beginTransaction();
         try {
-
             $initiative = Initiative::create($validatData);
             $status = true;
             $meesage = __('messages.initiative.store_success');
