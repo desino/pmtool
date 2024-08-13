@@ -54,10 +54,17 @@
                                         <i class="bi bi-grip-horizontal handle-section me-2 hover-sort"></i>
                                     </div>
                                     <div class="fw-bold fs-5">
-                                        <a class="text-decoration-none text-dark" data-bs-toggle="collapse" :data-bs-target="'#collapse_' + section.id" aria-expanded="false" :aria-controls="'#collapse_' + section.id">
-                                            <span><i class="bi bi-caret-right-fill"></i></span> {{ section.name }}
-                                        </a>
+                                        <i :class="['bi', expandedSections[section.id] ? 'bi-caret-down-fill' : 'bi-caret-right-fill']"
+                                           data-bs-toggle="collapse"
+                                           :data-bs-target="'#collapse_' + section.id"
+                                           :aria-expanded="expandedSections[section.id]"
+                                           :aria-controls="'#collapse_' + section.id"
+                                           @click="expandedSections[section.id] = !expandedSections[section.id]"></i>
+                                        {{ section.name }}
                                     </div>
+<!--                                    <div class="fw-bold fs-5">-->
+<!--                                        <i class="bi bi-caret-right-fill" data-bs-toggle="collapse" :data-bs-target="'#collapse_' + section.id" aria-expanded="false" :aria-controls="'#collapse_' + section.id"></i>{{ section.name }}-->
+<!--                                    </div>-->
                                     <div class="section-menu">
                                         <div class="dropdown align-contents-start ml-5 hover-menu">
                                             <a class="fw-bold fs-4 text-desino" href="javascript:"
@@ -209,7 +216,7 @@ export default {
     data() {
         return {
             drag: false,
-
+            expandedSections: {}, // for collapse and expand
             initiativeId: this.$route.params.id,
             initiativeData: {},
             sectionsWithFunctionalities: [],
@@ -450,7 +457,7 @@ export default {
             } catch (error) {
                 this.handleError(error);
             }
-        }
+        },
     },
     mounted() {
         this.fetchData();
