@@ -53,7 +53,7 @@
                                         <div v-if="errors.section_name" class="invalid-feedback ms-4">
                                             <span v-for="(error, index) in errors.section_name" :key="index">{{
                                                 error
-                                            }}</span>
+                                                }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -72,24 +72,21 @@
                                 </div>
                                 <div class="section-menu">
                                     <div class="ms-2 hover-menu">
-                                        <a class="me-2" href="javascript:"
-                                           @click="toggleSection(section.id)">
+                                        <a class="me-2" href="javascript:" @click="toggleSection(section.id)">
                                             <i :class="isSectionActive(section.id) ? '' : 'bi bi-plus-square'"></i>
                                         </a>
-                                        <a class="me-2" href="javascript:"
-                                           @click="editSection(section)">
+                                        <a class="me-2" href="javascript:" @click="editSection(section)">
                                             <i class="bi bi-pencil-square"></i>
                                         </a>
-                                        <a class="me-2" href="javascript:"
-                                           @click="deleteSection(section)">
+                                        <a class="me-2" href="javascript:" @click="deleteSection(section)">
                                             <i class="bi bi-trash3"></i>
                                         </a>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div v-if="section.functionalities" class="list-group ps-5 collapse" :class="{'show': !collapsedSections[section.id]}"
-                            :id="'collapse_' + section.id">
+                        <div v-if="section.functionalities" class="list-group ps-5 collapse"
+                            :class="{ 'show': !collapsedSections[section.id] }" :id="'collapse_' + section.id">
                             <draggable v-model="section.functionalities" :move="checkMoveFunctionality"
                                 class="list-group" group="people" handle=".handle-functionality" item-key="id"
                                 @add="functionalityOnDragAdd($event, index)" @end="functionalityOnDragEnd">
@@ -124,7 +121,7 @@
                         <div class="mb-3">
                             <label class="form-label" for="functionality_name">{{
                                 $t('solution_design.functionality_form.name')
-                            }} <strong class="text-danger">*</strong>
+                                }} <strong class="text-danger">*</strong>
                             </label>
                             <input id="functionality_name" v-model="functionalityFormData.name"
                                 :class="{ 'is-invalid': errors.name }" class="form-control" placeholder="Enter value"
@@ -138,13 +135,13 @@
                         <div class="mb-3">
                             <label class="form-label" for="section_id">{{
                                 $t('solution_design.functionality_form.section_name_select_box')
-                            }} <strong class="text-danger">*</strong>
+                                }} <strong class="text-danger">*</strong>
                             </label>
                             <select v-model="functionalityFormData.section_id" aria-label="Default select example"
-                                class="form-select">
+                                class="form-select" :class="{ 'is-invalid': errors.section_id }">
                                 <option value="">{{
                                     $t('solution_design.functionality_form.section_name_select_box_placeholder')
-                                }}
+                                    }}
                                 </option>
                                 <option v-for="section in sectionsWithFunctionalities" :key="section.id"
                                     :value="section.id">
@@ -160,7 +157,7 @@
                 <div class="mb-3">
                     <label class="form-label" for="functionalityDescription">{{
                         $t('solution_design.functionality_form.description')
-                    }}</label>
+                        }}</label>
                     <TinyMceEditor v-model="functionalityFormData.description" />
                 </div>
                 <div class="mb-3">
@@ -213,6 +210,7 @@ export default {
             functionalityFormData: {
                 section_id: "",
                 name: "",
+                initiative_id: "",
                 description: "",
                 functionality_id: "",
             },
@@ -241,6 +239,7 @@ export default {
         async storeUpdateFunctionality() {
             this.clearMessages();
             try {
+                this.functionalityFormData.initiative_id = this.initiativeId;
                 const {
                     content: { functionality: updatedFunc, transactionType },
                     message
@@ -324,6 +323,7 @@ export default {
                     name: functionality.name,
                     description: functionality.description ?? '',
                     functionality_id: functionality.id,
+                    initiative_id: this.initiativeId,
                 };
                 this.selectedFunctionalityId = functionality.id;
                 this.activeSectionId = null;
@@ -344,11 +344,12 @@ export default {
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
+                        functionality.initiative_id = this.initiativeId;
                         const oldSelectedFunctionalityId = functionality;
                         const {
                             content,
                             message
-                        } = await SolutionDesignService.deleteFunctionality({ functionality_id: functionality.id });
+                        } = await SolutionDesignService.deleteFunctionality(functionality);
                         const section = this.findItem(functionality.section_id);
                         section.functionalities = section.functionalities.filter(item => item.id !== functionality.id);
                         const index = section.functionalities.findIndex(func => func.id === functionality.id);
@@ -376,8 +377,10 @@ export default {
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
+                        console.log('this.section :: ', section);
                         let result = section.functionalities.find(item => item['id'] === this.activeSectionId);
-                        const { content, message } = await SolutionDesignService.deleteSection({ section_id: section.id });
+                        delete section.functionalities;
+                        const { content, message } = await SolutionDesignService.deleteSection(section);
                         const index = this.sectionsWithFunctionalities.findIndex(sec => sec.id === section.id);
                         if (index !== -1) this.sectionsWithFunctionalities.splice(index, 1);
                         if (result) {
@@ -386,6 +389,7 @@ export default {
                         showToast(message, 'success');
                         this.getSectionsWithFunctionalities();
                     } catch (error) {
+                        this.getSectionsWithFunctionalities();
                         this.handleError(error);
                     }
                 }
@@ -418,6 +422,7 @@ export default {
             try {
                 const updateData = {
                     section_id: section.id,
+                    initiative_id: section.initiative_id,
                     section_name: this.editingSectionName.trim(),
                 };
                 const response = await SolutionDesignService.updateSectionName(updateData);
@@ -437,9 +442,14 @@ export default {
             this.moveFunctionality.order_no = e.draggedContext.futureIndex + 1;
         },
         async functionalityOnDragEnd(event) {
+            this.clearMessages();
+            if (Object.keys(this.moveFunctionality).length === 0) {
+                return;
+            }
             this.drag = false;
             try {
                 this.moveFunctionality.move_to_section_id = this.oldMoveFunctionality.id;
+                this.moveFunctionality.initiative_id = this.initiativeId;
                 const response = await SolutionDesignService.updateFunctionalityOrderNo(this.moveFunctionality);
                 if (this.functionalityFormData.functionality_id != '') {
                     this.functionalityFormData = {
@@ -454,6 +464,7 @@ export default {
                 showToast(response.message, 'success');
                 this.oldMoveFunctionality = {};
             } catch (error) {
+                this.getSectionsWithFunctionalities();
                 this.handleError(error);
             }
         },
@@ -462,14 +473,24 @@ export default {
             this.moveSection.order_no = e.draggedContext.futureIndex + 1;
         },
         async sectionOnDragEnd(e) {
+            this.clearMessages();
+            if (Object.keys(this.moveSection).length === 0) {
+                return;
+            }
             this.drag = false;
             try {
+                delete this.moveSection.functionalities;
                 const response = await SolutionDesignService.updateSectionOrderNo(this.moveSection);
                 this.getSectionsWithFunctionalities();
                 showToast(response.message, 'success');
             } catch (error) {
+                this.getSectionsWithFunctionalities();
                 this.handleError(error);
             }
+        },
+        clearMessages() {
+            this.errors = {};
+            messageService.clearMessage();
         },
     },
     mounted() {

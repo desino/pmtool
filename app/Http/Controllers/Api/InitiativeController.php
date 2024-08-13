@@ -20,10 +20,17 @@ class InitiativeController extends Controller
 
     public function store(InitiativeRequest $request){
         $validatData = $request->validated();
+
         $status = false;
         $retData = [
             'initiative' => "",
         ];
+
+        // $getClient = ClientService::getClient($validatData['client_id']);
+        // if($getClient){
+        //     return ApiHelper::response($status, __('messages.initiative.client_not_exist'), $retData, 400);
+        // }
+
         DB::beginTransaction();
         try {
             $initiative = Initiative::create($validatData);

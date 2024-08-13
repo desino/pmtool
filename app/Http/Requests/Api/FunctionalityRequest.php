@@ -23,7 +23,7 @@ class FunctionalityRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "section_id" => "required",
+            "section_id" => "required|exists:sections,id",
             "name" => "required|string",
             "description" => "nullable",
             "functionality_id" => "nullable",
@@ -33,6 +33,7 @@ class FunctionalityRequest extends FormRequest
     public function messages(): array{
         return [
             "section_id.required" => __('message.solution_design.functionality.section_id.required'),
+            "section_id.exists" => __('message.solution_design.functionality.section_id.exists'),
         ];
     }
 }

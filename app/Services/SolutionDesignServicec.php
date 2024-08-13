@@ -17,6 +17,14 @@ Class SolutionDesignServicec
         return $sectionWithFunctionalities;
     }
 
+    public static function getSection($id, $initiativeId = null) {
+        $section = Section::when($initiativeId != null, function($q) use($initiativeId){
+            $q->where('initiative_id',$initiativeId);
+        })
+        ->find($id);
+        return $section;
+    }
+
     public static function storeFunctionality($request, $data) {
         $functionality = Functionality::create($data);
         return $functionality;
@@ -26,6 +34,7 @@ Class SolutionDesignServicec
         $functionality = Functionality::find($data['functionality_id']);
         $oldFuntionality = clone $functionality;
         $data['id'] = $functionality->id;
+        $data['display_name'] = $functionality->section->order_no.".".$functionality->order_no." ".$request->post('name');
         if($oldFuntionality['section_id'] != $request->post('section_id')){
             $orderNo = Functionality::where('section_id',$request->post('section_id'))->max('order_no')+1;
             $request->merge(['section_id' => $oldFuntionality['section_id']]);
@@ -38,12 +47,6 @@ Class SolutionDesignServicec
         return $functionality;
     }
 
-    public static function deleteFunctionality($request) {
-        $functionality = Functionality::find($request->post('functionality_id'));
-        $functionality->delete();
-        return $functionality;
-    }
-
     public static function deleteSection($request) {
         $section = Section::find($request->post('section_id'));
         $section->functionalities()->delete();
@@ -51,10 +54,9 @@ Class SolutionDesignServicec
         return $section;
     }
 
-    public static function updateSection($request) {
+    public static function updateSection($request, $section) {
         $postData = $request->post();
         $postData['name'] = $postData['section_name'];
-        $section = Section::find($request->post('section_id'));
         $postData['display_name'] = $section->order_no." ".$postData['name'];
         $section->update($postData);
         return $section;

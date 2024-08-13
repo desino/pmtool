@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer('section_id')->unsigned();
             $table->string('name');
             $table->string('display_name')->nullable();
-            $table->text('description')->nullable();
+            $table->longText('description')->nullable();
             $table->unsignedBigInteger('order_no')->default(0);
             $table->integer('created_by');
             $table->integer('updated_by')->default(0);

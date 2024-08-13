@@ -24,7 +24,7 @@ class InitiativeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'client_id' => 'required',
+            'client_id' => 'required|exists:clients,id',
             'name' => 'required',
             'ballpark_development_hours' => 'required|numeric',
             'is_sold' => 'nullable',
@@ -35,7 +35,8 @@ class InitiativeRequest extends FormRequest
     public function messages()
     {
         return [
-            'client_id.required' => __('validation.initiative.client_id'),
+            'client_id.required' => __('validation.initiative.client_id.required'),
+            'client_id.exists' => __('validation.initiative.client_id.exists'),
             'name.required' => __('validation.initiative.name'),
         ];
     }
