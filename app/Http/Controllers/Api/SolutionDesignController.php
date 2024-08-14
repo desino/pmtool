@@ -13,6 +13,7 @@ use App\Services\InitiativeService;
 use App\Services\SolutionDesignServicec;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SolutionDesignController extends Controller
 {
@@ -52,6 +53,7 @@ class SolutionDesignController extends Controller
         } catch (\Exception $e) {
             $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
+            Log::info($e->getMessage());
         }
         return ApiHelper::response($status, $meesage, $section, $statusCode);
     }
@@ -83,6 +85,7 @@ class SolutionDesignController extends Controller
             DB::rollBack();
             $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
+            Log::info($e->getMessage());
         }
         return ApiHelper::response($status, $meesage, $section, $statusCode);
     }
@@ -137,6 +140,7 @@ class SolutionDesignController extends Controller
             DB::rollBack();
             $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
+            Log::info($e->getMessage());
         }
         return ApiHelper::response($status, $meesage, $retData, $statusCode);
     }
@@ -172,6 +176,7 @@ class SolutionDesignController extends Controller
             DB::rollBack();
             $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
+            Log::info($e->getMessage());
         }
         return ApiHelper::response($status, $meesage, '', $statusCode);
     }
@@ -203,6 +208,7 @@ class SolutionDesignController extends Controller
             DB::rollBack();
             $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
+            Log::info($e->getMessage());
         }
         return ApiHelper::response($status, $meesage, '', $statusCode);
     }
@@ -239,6 +245,7 @@ class SolutionDesignController extends Controller
             DB::rollBack();
             $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
+            Log::info($e->getMessage());
             return ApiHelper::response($status, $meesage, collect([]), $statusCode);
         }
 
@@ -271,6 +278,7 @@ class SolutionDesignController extends Controller
             DB::rollBack();
             $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
+            Log::info($e->getMessage());
         }
         return ApiHelper::response($status, $meesage, '', $statusCode);
     }

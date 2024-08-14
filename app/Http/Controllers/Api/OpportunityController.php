@@ -10,6 +10,7 @@ use App\Services\ClientService;
 use App\Services\InitiativeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class OpportunityController extends Controller
 {
@@ -51,6 +52,7 @@ class OpportunityController extends Controller
             DB::rollBack();
             $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
+            Log::info($e->getMessage());
         }
         return ApiHelper::response($status, $meesage, '', $statusCode);
     }
@@ -75,6 +77,7 @@ class OpportunityController extends Controller
             DB::rollBack();
             $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
+            Log::info($e->getMessage());
         }
         return ApiHelper::response($status, $meesage, '', $statusCode);
     }

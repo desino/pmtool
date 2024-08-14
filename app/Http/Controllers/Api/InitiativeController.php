@@ -10,6 +10,7 @@ use App\Models\Initiative;
 use App\Services\ClientService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class InitiativeController extends Controller
 {
@@ -46,6 +47,7 @@ class InitiativeController extends Controller
             DB::rollBack();
             $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
+            Log::info($e->getMessage());
         }
         return ApiHelper::response($status, $meesage, $retData, $statusCode);
     }

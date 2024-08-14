@@ -9,6 +9,7 @@ use App\Models\Section;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TicketController extends Controller
 {
@@ -50,6 +51,7 @@ class TicketController extends Controller
             DB::rollBack();
             $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
+            Log::info($e->getMessage());
         }
         return ApiHelper::response($status, $meesage, $retData, $statusCode);
     }
