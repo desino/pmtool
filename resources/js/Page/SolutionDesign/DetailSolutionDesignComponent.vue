@@ -23,9 +23,9 @@
 
     <GlobalMessage v-if="showMessage"/>
 
-    <div class="app-content row  mh-100">
-        <div class="col-md-4 border-top border-bottom position-static d-none d-lg-block">
-            <div class="input-group my-3">
+    <div class="app-content row position-relative">
+        <div class="col-md-4 border-top border-bottom sticky top-0 d-none d-lg-block">
+            <div class="input-group sticky-top pt-3 pb-1 bg-white">
                 <input aria-label="Search" class="form-control" placeholder="Search" type="text">
                 <span class="input-group-text"><i class="bi bi-search"></i></span>
             </div>
