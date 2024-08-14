@@ -205,6 +205,8 @@
     "messages.solution_design.section.update_functionality_order_no_success":"Functionality order no updated successfully",
     "messages.solution_design.section.update_section_order_no_success":"Section order no updated successfully",
 
+    "messages.create_ticket.store_success": "Ticket created successfully.",
+
     "home": "Home",
     "login_title": "Login",
 
@@ -240,12 +242,28 @@
     "create_client_modal_submit_but_text": "Create Client",
 
     "create_initiative_modal_title": "Create Initiative",
+    "create_ticket_modal_title": "Create Ticket",
     "create_initiative_modal_select_client_name": "Client name",
     "create_initiative_modal_input_name": "Initiative Name",
     "create_initiative_modal_input_ballpark_development_hours": "Ballpark Development Hours",
     "create_initiative_modal_input_is_sold": "Sold",
     "create_initiative_modal_submit_but_text": "Create Initiative",
+
+    "create_ticket_modal_submit_but_create_close_text": "Create & Close",
+    "create_ticket_modal_submit_but_create_add_new_text": "Create & Add New",
+    "create_ticket_modal_submit_but_create_detail_text": "Create and detail",
+    "create_ticket_modal_close_but_text": "Close",
     "create_initiative_modal_select_client_name_placeholder": "Select Client",
+
+    "create_ticket_modal_input_name": "Ticket Name",
+    "create_ticket_modal_select_functinoality_id": "Feature",
+    "create_ticket_modal_select_functinoality_placeholder": "Type to search",
+    "create_ticket_modal_modal_input_initial_estimation_development_time": "Initial Estimation Development Time",
+
+    "ticket_type.feature.improvement": "Feature Improvement",
+    "ticket_type.feature.bug": "Feature Bug",
+    "ticket_type.feature.development": "Feature Development",
+    "ticket_type.feature.maintainance_task": "Feature Maintainance Task",
 
     "initiative.status.opportunity": "Opportunity",
     "initiative.status.ongoing": "Ongoing",
@@ -257,6 +275,7 @@
     "header.menu.create_client": "Create Client",
     "header.menu.create_initiative": "Create Initiative",
     "header.menu.opportunites": "Opportunites",
+    "header.menu.crete_ticket": "Crete Ticket",
 
     "opportunity.page_title": "Opportunities",
     "opportunity_list_table.client_th_text": "Client",

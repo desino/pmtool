@@ -4,9 +4,10 @@
             <div class="row">
                 <div class="col-sm-6">
                     <h3 class="m-0">{{ $t('solution_design.page_title') }} - {{ initiativeData.name }}
-                    <span>
-                        <router-link :to="{ name: 'solution-design.detail', params: { id: initiativeData.id }}"><i class="bi bi-link-45deg"></i></router-link>
-                    </span>
+                        <span>
+                            <router-link :to="{ name: 'solution-design.detail', params: { id: initiativeData.id } }"><i
+                                    class="bi bi-link-45deg"></i></router-link>
+                        </span>
                     </h3>
                     <h5>
                         <span class="badge rounded bg-desino text-light my-3">
@@ -60,7 +61,7 @@
                             </div>
                             <div v-else class="d-flex align-items-center section-container">
                                 <div class="section-sort" role="button">
-                                    <i class="bi bi-grip-horizontal handle-section me-2 hover-sort"></i>
+                                    <i class="bi bi-grip-vertical handle-section me-2 hover-sort"></i>
                                 </div>
                                 <div class="fw-bold fs-5">
                                     <i :class="['bi', collapsedSections[section.id] ? 'bi-caret-right-fill' : 'bi-caret-down-fill']"
@@ -94,7 +95,7 @@
                                     <div class="border-0 border-bottom"
                                         :class="['list-group-item d-flex list-group-item-action', { 'bg-desino text-light': isSelected(functionality.id) }]"
                                         role="button" @click="selectFunctionality(functionality)">
-                                        <span><i class="bi bi-grip-horizontal handle-functionality me-2"></i></span>
+                                        <span><i class="bi bi-grip-vertical handle-functionality me-2"></i></span>
                                         <span>{{ functionality.display_name }}</span>
                                         <span class="ms-auto d-flex align-items-center">
                                             <a class="text-danger me-2" href="javascript:"

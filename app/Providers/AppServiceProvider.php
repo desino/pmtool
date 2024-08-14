@@ -6,10 +6,12 @@ use App\Models\Client;
 use App\Models\Functionality;
 use App\Models\Initiative;
 use App\Models\Section;
+use App\Models\Ticket;
 use App\Observers\ClientObserver;
 use App\Observers\FunctionalityObserver;
 use App\Observers\InitiativeObserver;
 use App\Observers\SectionObserver;
+use App\Observers\TicketObserver;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -36,6 +38,7 @@ class AppServiceProvider extends ServiceProvider
         Initiative::observe(InitiativeObserver::class);
         Section::observe(SectionObserver::class);
         Functionality::observe(FunctionalityObserver::class);
+        Ticket::observe(TicketObserver::class);
         Event::listen(
             SocialiteWasCalled::class,
             GraphExtendSocialite::class.'@handle',

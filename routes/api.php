@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\HeaderController;
 use App\Http\Controllers\Api\InitiativeController;
 use App\Http\Controllers\Api\OpportunityController;
 use App\Http\Controllers\Api\SolutionDesignController;
+use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -42,6 +43,11 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::post('/update-section', 'updateSection');
         Route::post('/update-functionality-order-no', 'updateFunctionalityOrderNo');
         Route::post('/update-section-order-no', 'updateSectionOrderNo');
+    });
+
+    Route::controller(TicketController::class)->prefix('ticket')->group(function () {
+        Route::post('get-section-functionality', 'getSectionFunctionality');
+        Route::post('store', 'store');
     });
 
     Route::controller(HeaderController::class)->prefix('header')->group(function () {

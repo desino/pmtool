@@ -1,15 +1,13 @@
 @import "custom.scss";
+@import "vue-multiselect/dist/vue-multiselect.css";
 
 /*.sidebar-brand{*/
 /*    height: 57px !important;*/
 /*}*/
 
-.brand-image{
+.brand-image {
     float: left;
     width: auto;
     max-height: 50px !important;
-    line-height: .8;
+    line-height: 0.8;
 }
-
-
-
