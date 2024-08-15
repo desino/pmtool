@@ -14,11 +14,9 @@
 @import "bootstrap-variables"; // little modified are here
 
 $desino: #3d62a6;
-$discover-india: #D6B884;
 // custom colors
 $custom-colors: (
     'desino'    : $desino,
-    'discover-india':$discover-india
 );
 $theme-colors: map-merge($theme-colors, $custom-colors);
 

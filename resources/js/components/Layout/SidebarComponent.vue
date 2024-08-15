@@ -109,7 +109,7 @@ import { mapGetters } from "vuex";
 import { useRoute } from "vue-router";
 import CreateInitiativeModalComponent from "@/Page/Initiative/CreateInitiativeModalComponent.vue";
 import CreateClientModalComponent from "@/Page/Client/CreateClientModalComponent.vue";
-import CreateTicketModalComponent from "@/Page/SolutionDesign/ticket/CreateTicketModalComponent.vue";
+import CreateTicketModalComponent from "@/Page/SolutionDesign/Ticket/CreateTicketModalComponent.vue";
 import HeaderInitiativeDropBoxComponent from "@/Page/Initiative/HeaderInitiativeDropBoxComponent.vue";
 import { Modal } from "bootstrap";
 import eventBus from "@/eventBus.js";

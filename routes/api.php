@@ -48,6 +48,8 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::controller(TicketController::class)->prefix('ticket')->group(function () {
         Route::post('get-section-functionality', 'getSectionFunctionality');
         Route::post('store', 'store');
+        Route::get('show/{id}','show');
+        Route::get('all-tickets/','allTicketsForDropdown');
     });
 
     Route::controller(HeaderController::class)->prefix('header')->group(function () {
