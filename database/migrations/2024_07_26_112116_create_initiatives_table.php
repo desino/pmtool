@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('initiatives', function (Blueprint $table) {
             $table->id();
-            $table->integer('client_id');
+            $table->string('asana_project_id')->nullable();
+            $table->bigInteger('client_id');
             $table->string('name');
             $table->bigInteger('ballpark_development_hours');
             $table->integer('status')->default(0);

@@ -6,6 +6,7 @@ use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\EditOpportunityRequest;
 use App\Models\Initiative;
+use App\Services\AsanaService;
 use App\Services\ClientService;
 use App\Services\InitiativeService;
 use Illuminate\Http\Request;
@@ -14,7 +15,13 @@ use Illuminate\Support\Facades\Log;
 
 class OpportunityController extends Controller
 {
-    public function index(Request $request){
+    protected AsanaService $asanaService;
+    public function __construct(AsanaService $asanaService)
+    {
+        $this->asanaService = $asanaService;
+    }
+    public function index(Request $request)
+    {
         $perPage = $request->input('per_page', 10);
         $oppertunities = InitiativeService::getOpportunityInitiative($request, $perPage, Initiative::getStatusOpportunity());
         $parsedOppertunities = ApiHelper::parsePagination($oppertunities);
@@ -25,7 +32,8 @@ class OpportunityController extends Controller
         return ApiHelper::response(true, __('messages.opportunity.get_list_success'), $responseData, 200);
     }
 
-    public function getInitialData(Request $request){
+    public function getInitialData(Request $request)
+    {
         $clients = ClientService::getAllClients();
         $responseData = [
             'clients' => $clients
@@ -33,17 +41,30 @@ class OpportunityController extends Controller
         return ApiHelper::response(true, '', $responseData, 200);
     }
 
-    public function update(EditOpportunityRequest $request){
+    public function update(EditOpportunityRequest $request)
+    {
         $requestData = $request->all();
         $initiative = Initiative::find($requestData['id']);
 
-        if(!$initiative) {
+        if (!$initiative) {
             return ApiHelper::response(false, __('messages.opportunity.not_found'), null, 404);
         }
         $status = false;
+
+        if ($initiative->asana_project_id) {            
+            $data = [
+                'name' => $requestData['name'],
+            ];
+            $project = $this->asanaService->updateProject($initiative->asana_project_id, $data);
+    
+            if ($project['error_status']) {
+                return ApiHelper::response($status, __('messages.asana.initiative.store_error'), '', 500);
+            }
+            $requestData['asana_project_id'] = $project['data']['data']['gid'];
+        }
         DB::beginTransaction();
         try {
-            $initiative->update($requestData);
+            $initiative->update($requestData);            
             $status = true;
             $meesage = __('messages.opportunity.update_success');
             $statusCode = 200;
@@ -57,9 +78,10 @@ class OpportunityController extends Controller
         return ApiHelper::response($status, $meesage, '', $statusCode);
     }
 
-    public function updateStatusLost(Request $request){
+    public function updateStatusLost(Request $request)
+    {
         $initiative = Initiative::find($request->post('id'));
-        if(!$initiative) {
+        if (!$initiative) {
             return ApiHelper::response(false, __('messages.opportunity.not_found'), null, 404);
         }
         $status = false;
