@@ -93,4 +93,26 @@ class TicketController extends Controller
         }
         return ApiHelper::response($status, $meesage, $retData, $statusCode);
     }
+
+    public function show($id)
+    {
+        $ticket = Ticket::with('functionality')->find($id);
+
+        if (!$ticket) {
+            return ApiHelper::response('false', __('messages.ticket.not_found'), [], 404);
+        }
+
+        return ApiHelper::response(true, __('messages.ticket.fetched'), $ticket, 200);
+    }
+
+    public function allTicketsForDropdown()
+    {
+        $tickets = Ticket::query()->get(['id', 'name']);
+
+        if ($tickets->isEmpty()) {
+            return ApiHelper::response('false', __('messages.ticket.not_found'), [], 404);
+        }
+
+        return ApiHelper::response(true, __('messages.ticket.fetched'), $tickets, 200);
+    }
 }

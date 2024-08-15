@@ -10,6 +10,8 @@ const defaultPath = `${APP_VARIABLES.DEFAULT_API_PATH}/ticket`;
 const endpoints = {
     getSectionFunctionalityForCreateTicketModal: `${defaultPath}/get-section-functionality`,
     storeTicket: `${defaultPath}/store`,
+    fetchTicket: `${defaultPath}/show/:id`,
+    fetchAllTicketForDropDown : `${defaultPath}/all-tickets`
 }
 
 const SolutionDesignService = {
@@ -24,6 +26,24 @@ const SolutionDesignService = {
     async storeTicket(data) {
         try {
             const response = await axiosRequest.post(endpoints.storeTicket, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async fetchTicket(id){
+        try {
+            const endpoint = endpoints.fetchTicket.replace(':id', id);
+            const response = await axiosRequest.get(endpoint);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async fetchAllTicketForDropDown(){
+        try {
+            const endpoint = endpoints.fetchAllTicketForDropDown;
+            const response = await axiosRequest.get(endpoint);
             return response.data;
         } catch (error) {
             throw handleError(error);

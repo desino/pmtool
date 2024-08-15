@@ -182,6 +182,8 @@
     "messages.solution_design.section.update_functionality_order_no_success": "Functionality order no updated successfully",
     "messages.solution_design.section.update_section_order_no_success": "Section order no updated successfully",
     "messages.create_ticket.store_success": "Ticket created successfully.",
+    "messages.ticket.not_found": "Ticket doesn't exist",
+    "messages.ticket.fetched": "Ticket fetched successfully",
     "home": "Home",
     "login_title": "Login",
     "login_page_title": "Login",
