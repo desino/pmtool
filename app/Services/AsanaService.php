@@ -19,8 +19,13 @@ class AsanaService
     {
         $this->workspaceId = Config::get('app.asana_workspace_id');
         $key = "2/1206969167492969/1208008802985718:fb3401866e90c74deebdf582c71c00b3";
-        $this->client = new Client([
-            'verify' => "C:\wamp64\bin\php\php8.3.6\/extras\ssl\cacert-2024-07-02.pem",
+        $verify = [];
+        if (env('APP_ENV') == 'local') {
+            $verify = [
+                'verify' => "C:\wamp64\bin\php\php8.3.6\/extras\ssl\cacert-2024-07-02.pem",
+            ];
+        }
+        $this->client = new Client($verify + [
             'base_uri' => 'https://app.asana.com/api/1.0/',
             'headers' => [
                 'Authorization' => 'Bearer ' . $key,
