@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
+            $table->string('asana_task_id')->nullable();
             $table->bigInteger('functionality_id');
             $table->string('name');
             $table->integer('type');
             $table->bigInteger('initial_estimation_development_time');
+            $table->longText('release_note')->nullable();
             $table->integer('created_by');
             $table->integer('updated_by')->default(0);
             $table->timestamps();

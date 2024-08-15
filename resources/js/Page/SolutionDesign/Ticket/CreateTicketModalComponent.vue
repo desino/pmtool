@@ -115,6 +115,7 @@ export default {
         async storeTicket() {
             this.clearMessages();
             try {
+                this.formData.initiative_id = this.selectedInitiativeId;
                 const response = await TicketService.storeTicket(this.formData);
                 // messageService.setMessage(response.data.message, 'success');
                 if (this.submitButtonClicked === 'create_close' || this.submitButtonClicked === 'create_detail') {
@@ -147,7 +148,6 @@ export default {
         },
         resetForm() {
             this.formData = {
-                initiative_id: "",
                 functionality_id: "",
                 type: "",
                 initial_estimation_development_time: "",
