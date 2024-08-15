@@ -11,6 +11,7 @@ const endpoints = {
     getSectionFunctionalityForCreateTicketModal: `${defaultPath}/get-section-functionality`,
     storeTicket: `${defaultPath}/store`,
     fetchTicket: `${defaultPath}/show/:id`,
+    updateReleaseNote: `${defaultPath}/update-release-note/:id`,
     fetchAllTicketForDropDown : `${defaultPath}/all-tickets`
 }
 
@@ -26,6 +27,15 @@ const SolutionDesignService = {
     async storeTicket(data) {
         try {
             const response = await axiosRequest.post(endpoints.storeTicket, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async updateReleaseNote(id,data){
+        try {
+            const endpoint = endpoints.updateReleaseNote.replace(':id', id);
+            const response = await axiosRequest.post(endpoint,data);
             return response.data;
         } catch (error) {
             throw handleError(error);

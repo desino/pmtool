@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\TitcketRequest;
+use App\Http\Requests\UpdateReleaseNoteRequest;
 use App\Models\Section;
 use App\Models\Ticket;
 use Exception;
@@ -61,6 +62,7 @@ class TicketController extends Controller
 
     public function show($id)
     {
+        \Log::info('hwere');
         $ticket = Ticket::with('functionality')->find($id);
 
         if (!$ticket) {
@@ -70,9 +72,40 @@ class TicketController extends Controller
         return ApiHelper::response(true, __('messages.ticket.fetched'), $ticket, 200);
     }
 
+    public function updateReleaseNote($id, UpdateReleaseNoteRequest $request)
+    {
+
+        $ticket = Ticket::with('functionality')->find($id);
+        if (!$ticket) {
+            return ApiHelper::response('false', __('messages.ticket.not_found'), [], 404);
+        }
+
+        $requestData = $request->validated();
+
+        $status = true;
+        $code = 200;
+        $message = __('messages.ticket.update_success');
+
+        try {
+            DB::transaction(function () use ($ticket, $requestData) {
+                $ticket->update($requestData);
+            });
+        } catch (Exception $e) {
+            \Log::error('Update Release Note Failed: '.$e->getMessage());
+
+            $status = false;
+            $code = 500;
+            $message = __('messages.ticket.update_failed');
+        }
+
+        return ApiHelper::response($status, $message, $ticket, $code);
+
+
+    }
+
     public function allTicketsForDropdown()
     {
-        $tickets = Ticket::query()->get(['id','name']);
+        $tickets = Ticket::query()->get(['id', 'name']);
 
         if ($tickets->isEmpty()) {
             return ApiHelper::response('false', __('messages.ticket.not_found'), [], 404);
@@ -81,4 +114,5 @@ class TicketController extends Controller
         return ApiHelper::response(true, __('messages.ticket.fetched'), $tickets, 200);
 
     }
+
 }

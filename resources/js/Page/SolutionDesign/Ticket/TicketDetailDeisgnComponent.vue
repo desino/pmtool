@@ -165,7 +165,14 @@
                         <div class="card-body">
                             <p> Describe & Document the change done for the client. Use print-screen so that the client
                                 has clarity on how the functionality has changed</p>
-                            <TinyMceEditor v-model="test_desc"/>
+                            <TinyMceEditor v-model="releaseNoteForm.release_note"/>
+                            <div v-if="errors.release_note"
+                                 class="text-danger mt-2">
+                                <span v-for="(error, index) in errors.release_note" :key="index">{{ error }}</span>
+                            </div>
+                            <button class="btn w-100 bg-desino text-white fw-bold m-2 rounded"
+                                    @click="updateReleaseNote"> Update
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -211,6 +218,7 @@ import Multiselect from 'vue-multiselect';
 import TinyMceEditor from "./../../../components/TinyMceEditor.vue";
 import ticketService from "../../../services/TicketService.js";
 import messageService from "../../../services/messageService.js";
+import showToast from "./../../../utils/toasts.js";
 
 export default {
     name: 'SolutionDesignComponent',
@@ -230,14 +238,18 @@ export default {
                 task_type: '',
                 functionality_name: '',
             },
-            test_desc: '',
-            tasksForDropdown: []
+            releaseNoteForm: {
+                'release_note': '',
+            },
+            tasksForDropdown: [],
+            errors: {},
+            showMessage: true,
         };
     },
     computed: {
         selectedTaskObject: {
             get() {
-                return this.tasksForDropdown.find(task => task.id === this.selectedTask) || null;
+                return this.tasksForDropdown.find(task => task.id == this.selectedTask) || null;
             },
             set(newTask) {
                 this.selectedTask = newTask ? newTask.id : this.ticket_id;
@@ -248,7 +260,7 @@ export default {
         selectedTask(newTask) {
             // Update the URL when a task is selected
             if (newTask) {
-                this.$router.push({ name: 'task.detail', params: { id: newTask } });
+                this.$router.push({name: 'task.detail', params: {id: newTask}});
                 this.fetchTicketData(newTask);
             }
         }
@@ -263,6 +275,17 @@ export default {
                 this.setData(response.content);
             }
         },
+        async updateReleaseNote() {
+            this.clearMessages();
+            try {
+                const response = await ticketService.updateReleaseNote(this.ticket_id, this.releaseNoteForm);
+                this.releaseNoteForm.release_note=content.release_note;
+                showToast(response.message, 'success');
+                this.resetForm();
+            } catch (error) {
+                this.handleError(error);
+            }
+        },
         async fetchAllTicketForDropDown() {
             const response = await ticketService.fetchAllTicketForDropDown();
             if (!response.content) {
@@ -272,7 +295,7 @@ export default {
                 this.tasksForDropdown = response.content;
 
                 // Set the default task in the dropdown based on the route param
-                const defaultTask = this.tasksForDropdown.find(task => task.id == this.ticket_id);
+                const defaultTask = this.tasksForDropdown.find(task => task.id === this.ticket_id);
                 if (defaultTask) {
                     this.selectedTaskObject = defaultTask;
                 }
@@ -283,6 +306,7 @@ export default {
             this.ticketData.initial_dev_time = content.initial_estimation_development_time;
             this.ticketData.task_type = content.type_label;
             this.ticketData.functionality_name = content.functionality.name;
+            this.releaseNoteForm.release_note=content.release_note;
         },
         onTaskSelect() {
             // Ensure the selected task is synced with the dropdown
@@ -291,7 +315,24 @@ export default {
                     this.selectedTask = this.selectedTaskObject.id;
                 }
             });
-        }
+        },
+        resetForm() {
+            this.releaseNoteForm = {
+                release_note: "",
+            };
+            this.errors = {};
+        },
+        clearMessages() {
+            this.errors = {};
+            messageService.clearMessage();
+        },
+        handleError(error) {
+            if (error.type === 'validation') {
+                this.errors = error.errors;
+            } else {
+                messageService.setMessage(error.message, 'danger');
+            }
+        },
     },
     mounted() {
         this.fetchAllTicketForDropDown();

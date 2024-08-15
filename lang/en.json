@@ -208,7 +208,8 @@
     "messages.create_ticket.store_success": "Ticket created successfully.",
     "messages.ticket.not_found": "Ticket doesn't exist",
     "messages.ticket.fetched": "Ticket fetched successfully",
-
+    "messages.ticket.update_success": "Release Note updated successfully",
+    "messages.ticket.update_failed": "Release Note was not updated.",
     "home": "Home",
     "login_title": "Login",
 

@@ -50,6 +50,7 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::post('store', 'store');
         Route::get('show/{id}','show');
         Route::get('all-tickets/','allTicketsForDropdown');
+        Route::post('update-release-note/{id}','updateReleaseNote');
     });
 
     Route::controller(HeaderController::class)->prefix('header')->group(function () {
