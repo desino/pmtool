@@ -10,6 +10,7 @@ use App\Models\Section;
 use App\Models\Ticket;
 use App\Services\AsanaService;
 use App\Services\InitiativeService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -21,12 +22,9 @@ class TicketController extends Controller
     {
         $this->asanaService = $asanaService;
     }
-    public function getSectionFunctionality(Request $request)
+    public function getSectionFunctionality(int $initiative_id)
     {
-        $sectionFunctionalities = Section::select(
-            'id',
-            'name',
-        )
+        $sectionFunctionalities = Section::select(['id', 'name',])
             ->with(['functionalities' => function ($q) {
                 $q->select(
                     'id',
@@ -35,7 +33,7 @@ class TicketController extends Controller
                     'id'
                 );
             }])
-            ->where('initiative_id', $request->post('initiative_id'))
+            ->where('initiative_id', $initiative_id)
             ->get();
         return ApiHelper::response(true, '', $sectionFunctionalities, 200);
     }
@@ -61,8 +59,8 @@ class TicketController extends Controller
             return ApiHelper::response($status, __('messages.asana.project_does_not_exist'), '', 500);
         }
 
-        $ticketTypes = Ticket::types();
-        $projectId = $initiative->asana_project_id; // from getProject api        
+        $ticketTypes = Ticket::getAllTypes();
+        $projectId = $initiative->asana_project_id; // from getProject api
         $data = [
             'name' => $validatData['name'],
             'resource_type' => 'task',
@@ -95,10 +93,34 @@ class TicketController extends Controller
         return ApiHelper::response($status, $meesage, $retData, $statusCode);
     }
 
-    public function show($id)
+    public function index($initiative_id,Request $request)
     {
-        \Log::info('hwere');
-        $ticket = Ticket::with('functionality')->find($id);
+        $filters=$request->filters;
+        $tickets = Ticket::whereHas('functionality.section',function ($query) use ($initiative_id){
+                $query->where('initiative_id',$initiative_id);
+        })->when($filters['task_name'] != '', function (Builder $query) use ($filters) {
+            $query->whereLike('name','%'.$filters['task_name'].'%');
+        })->when($filters['task_type'] != '', function (Builder $query) use ($filters) {
+            $query->where('type',$filters['task_type']);
+        })->get();
+
+        $tickets=$tickets->transform(function ($ticket){
+           return [
+               'id'=>$ticket->id,
+               'name' => $ticket->name,
+               'type_label'=>$ticket->type_label,
+               'created_at' => $ticket->created_at->format('Y-m-d'),
+               ];
+        });
+
+        $task_type=Ticket::getAllTypes();
+
+        return ApiHelper::response('false', __('messages.ticket.fetched'), $tickets, 200,$task_type);
+    }
+
+    public function show($initiative_id,$ticket_id)
+    {
+        $ticket = Ticket::with('functionality')->find($ticket_id);
 
         if (!$ticket) {
             return ApiHelper::response('false', __('messages.ticket.not_found'), [], 404);
@@ -107,10 +129,10 @@ class TicketController extends Controller
         return ApiHelper::response(true, __('messages.ticket.fetched'), $ticket, 200);
     }
 
-    public function updateReleaseNote($id, UpdateReleaseNoteRequest $request)
+    public function updateReleaseNote($ticket_id, UpdateReleaseNoteRequest $request)
     {
 
-        $ticket = Ticket::with('functionality')->find($id);
+        $ticket = Ticket::with('functionality')->find($ticket_id);
         if (!$ticket) {
             return ApiHelper::response('false', __('messages.ticket.not_found'), [], 404);
         }

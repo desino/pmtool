@@ -225,13 +225,14 @@ export default {
     components: {
         TinyMceEditor,
         GlobalMessage,
-        Multiselect
+        Multiselect,
     },
-    props: ['id'],
+    props: ['initiative_id','ticket_id'],
     data() {
         return {
-            ticket_id: this.$route.params.id,
-            selectedTask: this.$route.params.id, // Initialize with the current route param
+            localInitiativeId: this.$route.params.initiative_id,
+            localTicketId: this.$route.params.ticket_id,
+            selectedTask: this.$route.params.ticket_id,
             ticketData: {
                 name: '',
                 initial_dev_time: '',
@@ -252,7 +253,7 @@ export default {
                 return this.tasksForDropdown.find(task => task.id == this.selectedTask) || null;
             },
             set(newTask) {
-                this.selectedTask = newTask ? newTask.id : this.ticket_id;
+                this.selectedTask = newTask ? newTask.id : this.localTicketId;
             }
         }
     },
@@ -260,25 +261,36 @@ export default {
         selectedTask(newTask) {
             // Update the URL when a task is selected
             if (newTask) {
-                this.$router.push({name: 'task.detail', params: {id: newTask}});
+                let param ={
+                    initiative_id:this.localInitiativeId,ticket_id: newTask
+                }
+                this.$router.push({name: 'task.detail', params: param });
                 this.fetchTicketData(newTask);
             }
         }
     },
     methods: {
         async fetchTicketData(id) {
-            const response = await ticketService.fetchTicket(id);
-            if (!response.content) {
-                messageService.setMessage(response.message, 'danger');
-                this.$router.push({name: 'home'});
-            } else {
-                this.setData(response.content);
+            try{
+                let data ={
+                    initiative_id:this.localInitiativeId,
+                    ticket_id:id
+                }
+                const response = await ticketService.fetchTicket(data);
+                if (!response.content) {
+                    messageService.setMessage(response.message, 'danger');
+                    this.$router.push({name: 'home'});
+                } else {
+                    this.setData(response.content);
+                }
+            }catch (error){
+                    console.error('An error occurred again:', error);
             }
         },
         async updateReleaseNote() {
             this.clearMessages();
             try {
-                const response = await ticketService.updateReleaseNote(this.ticket_id, this.releaseNoteForm);
+                const response = await ticketService.updateReleaseNote(this.localTicketId, this.releaseNoteForm);
                 this.releaseNoteForm.release_note=content.release_note;
                 showToast(response.message, 'success');
                 this.resetForm();
@@ -286,8 +298,8 @@ export default {
                 this.handleError(error);
             }
         },
-        async fetchAllTicketForDropDown() {
-            const response = await ticketService.fetchAllTicketForDropDown();
+        async fetchAllTicketForDropDown(initiative_id) {
+            const response = await ticketService.fetchAllTicketForDropDown(initiative_id);
             if (!response.content) {
                 messageService.setMessage(response.message, 'danger');
                 this.$router.push({name: 'home'});
@@ -295,7 +307,7 @@ export default {
                 this.tasksForDropdown = response.content;
 
                 // Set the default task in the dropdown based on the route param
-                const defaultTask = this.tasksForDropdown.find(task => task.id === this.ticket_id);
+                const defaultTask = this.tasksForDropdown.find(task => task.id === this.localTicketId);
                 if (defaultTask) {
                     this.selectedTaskObject = defaultTask;
                 }
@@ -335,8 +347,8 @@ export default {
         },
     },
     mounted() {
-        this.fetchAllTicketForDropDown();
-        this.fetchTicketData(this.ticket_id);
+        this.fetchAllTicketForDropDown(this.localInitiativeId);
+        this.fetchTicketData(this.localTicketId);
     }
 }
 </script>

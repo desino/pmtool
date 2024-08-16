@@ -104,7 +104,7 @@ export default {
     },
     methods: {
         async fetchData() {
-            this.selectedInitiativeId = this.$route.params.id;
+            this.selectedInitiativeId = this.$route.params.id ?? this.$route.params.initiative_id ;
             this.formData.initiative_id = this.selectedInitiativeId;
             const credentials = {
                 initiative_id: this.selectedInitiativeId
@@ -118,8 +118,13 @@ export default {
                 this.formData.initiative_id = this.selectedInitiativeId;
                 const response = await TicketService.storeTicket(this.formData);
                 // messageService.setMessage(response.data.message, 'success');
-                if (this.submitButtonClicked === 'create_close' || this.submitButtonClicked === 'create_detail') {
+                if (this.submitButtonClicked === 'create_close') {
                     this.hideModal();
+                }
+                if(this.submitButtonClicked === 'create_detail')
+                {
+                    this.hideModal();
+                    this.$router.push({ name: 'task.detail', params: {initiative_id:this.formData.initiative_id, ticket_id: response.id } });
                 }
                 showToast(response.message, 'success');
                 this.resetForm();

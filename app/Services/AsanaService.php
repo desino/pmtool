@@ -6,6 +6,7 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Env;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 
@@ -20,9 +21,9 @@ class AsanaService
         $this->workspaceId = Config::get('app.asana_workspace_id');
         $key = "2/1206969167492969/1208008802985718:fb3401866e90c74deebdf582c71c00b3";
         $verify = [];
-        if (env('APP_ENV') == 'local') {
+        if (Env::get('SSl_CERTIFICATE','') != '') {
             $verify = [
-                'verify' => "C:\wamp64\bin\php\php8.3.6\/extras\ssl\cacert-2024-07-02.pem",
+                'verify' => Env::get('SSl_CERTIFICATE','')
             ];
         }
         $this->client = new Client($verify + [
@@ -68,6 +69,7 @@ class AsanaService
                 'projects' => [$projectId],
             ])
         ];
+
 
         try {
             $this->response = $this->client->post("tasks", [

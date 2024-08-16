@@ -5,20 +5,31 @@ import router from "../router/index.js";
 import axiosRequest from "../config/axios.js";
 import { APP_VARIABLES } from "../constants.js";
 
-const defaultPath = `${APP_VARIABLES.DEFAULT_API_PATH}/ticket`;
+const defaultPath = `${APP_VARIABLES.DEFAULT_API_PATH}/solution-design/:initiative_id/ticket`;
 
 const endpoints = {
     getSectionFunctionalityForCreateTicketModal: `${defaultPath}/get-section-functionality`,
+    getAllTickets: `${defaultPath}/all`,
     storeTicket: `${defaultPath}/store`,
-    fetchTicket: `${defaultPath}/show/:id`,
-    updateReleaseNote: `${defaultPath}/update-release-note/:id`,
-    fetchAllTicketForDropDown : `${defaultPath}/all-tickets`
+    fetchTicket: `${defaultPath}/show/:ticket_id`,
+    updateReleaseNote: `${defaultPath}/update-release-note/:ticket_id`,
+    fetchAllTicketForDropDown : `${defaultPath}/all-ticket`
 }
 
 const SolutionDesignService = {
     async getInitiativeSectionFunctionality(data) {
         try {
-            const response = await axiosRequest.post(endpoints.getSectionFunctionalityForCreateTicketModal, data);
+            const endpoint = endpoints.getSectionFunctionalityForCreateTicketModal.replace(':initiative_id', data.initiative_id);
+            const response = await axiosRequest.get(endpoint);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async fetchAllTickets(initiative_id,data){
+        try {
+            const endpoint = endpoints.getAllTickets.replace(':initiative_id',initiative_id);
+            const response = await axiosRequest.get(endpoint,{params:data});
             return response.data;
         } catch (error) {
             throw handleError(error);
@@ -26,7 +37,8 @@ const SolutionDesignService = {
     },
     async storeTicket(data) {
         try {
-            const response = await axiosRequest.post(endpoints.storeTicket, data);
+            const endpoint = endpoints.storeTicket.replace(':initiative_id',data.initiative_id);
+            const response = await axiosRequest.post(endpoint, data);
             return response.data;
         } catch (error) {
             throw handleError(error);
@@ -41,18 +53,18 @@ const SolutionDesignService = {
             throw handleError(error);
         }
     },
-    async fetchTicket(id){
+    async fetchTicket(data){
         try {
-            const endpoint = endpoints.fetchTicket.replace(':id', id);
+            const endpoint = endpoints.fetchTicket.replace(':initiative_id', data.initiative_id).replace(':ticket_id', data.ticket_id);
             const response = await axiosRequest.get(endpoint);
             return response.data;
         } catch (error) {
             throw handleError(error);
         }
     },
-    async fetchAllTicketForDropDown(){
+    async fetchAllTicketForDropDown(initiative_id){
         try {
-            const endpoint = endpoints.fetchAllTicketForDropDown;
+            const endpoint = endpoints.fetchAllTicketForDropDown.replace(':initiative_id',initiative_id);
             const response = await axiosRequest.get(endpoint);
             return response.data;
         } catch (error) {

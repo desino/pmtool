@@ -10,20 +10,23 @@
 <script>
 import eventBus from '../../eventBus';
 import HeaderService from '../../services/HeaderService';
+import {mapActions} from "vuex";
+import store from "../../store/index.js";
 
 export default {
     name: 'HeaderInitiativeDropBoxComponent',
     data() {
         return {
             initiatives: [],
-            selected_initiative_id: this.$route.params.id ?? '',
+            selected_initiative_id: this.$route.params.initiative_id ?? this.$route.params.id,
         }
     },
     methods: {
+        ...mapActions(['setCurrentInitiative']),
         async getInitiativeWithClienData() {
             const response = await HeaderService.getInitiatives();
             this.initiatives = response.content;
-            this.selected_initiative_id = this.$route.params.id ?? '';
+            this.selected_initiative_id = this.$route.params.id ?? this.$route.params.initiative_id;
         },
         handleAppendHeaderInitiativeSelectBox(data) {
             this.initiatives.push(data.initiative);
@@ -37,6 +40,7 @@ export default {
         },
         navigate(event) {
             const initiativeId = event.target.value;
+            store.commit("setCurrentInitiative", {id:initiativeId});
             if (initiativeId) {
                 this.$router.push({ name: 'solution-design', params: { id: initiativeId } });
             } else {

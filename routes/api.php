@@ -43,15 +43,18 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::post('/update-section', 'updateSection');
         Route::post('/update-functionality-order-no', 'updateFunctionalityOrderNo');
         Route::post('/update-section-order-no', 'updateSectionOrderNo');
+
+        Route::controller(TicketController::class)->prefix('{initiative_id}/ticket')->group(function () {
+            Route::get('get-section-functionality', 'getSectionFunctionality');
+            Route::get('all','index');
+            Route::post('store', 'store');
+            Route::get('show/{ticket_id}','show');
+            Route::get('all-ticket/','allTicketsForDropdown');
+            Route::post('update-release-note/{ticket_id}','updateReleaseNote');
+        });
     });
 
-    Route::controller(TicketController::class)->prefix('ticket')->group(function () {
-        Route::post('get-section-functionality', 'getSectionFunctionality');
-        Route::post('store', 'store');
-        Route::get('show/{id}','show');
-        Route::get('all-tickets/','allTicketsForDropdown');
-        Route::post('update-release-note/{id}','updateReleaseNote');
-    });
+
 
     Route::controller(HeaderController::class)->prefix('header')->group(function () {
        Route::get('/get-initiatives', 'getInitiatives');

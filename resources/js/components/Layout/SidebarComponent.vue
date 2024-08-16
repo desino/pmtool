@@ -22,7 +22,7 @@
             <div class="form-group pb-0">
                 <HeaderInitiativeDropBoxComponent />
             </div>
-            <div v-if="isActive('solution-design')">
+            <div v-if="isActive('solution-design') || isActive('tasks') || isActive('task.detail')">
                 <div class="shadow">
                     <div class="p-2 rounded-bottom">
                         <nav class="mt-1">
@@ -30,14 +30,20 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" href="javascript:" @click="showCreateTicketModal">
                                         <i class="bi bi-plus-circle mx-2"></i>
-                                        {{ $t('header.menu.crete_ticket') }}
+                                        {{ $t('header.menu.create_ticket') }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" href="javascript:" @click="showCreateClientModal"><i
+                                    <a class="nav-link text-dark" href="javascript:"><i
                                             class="bi bi-file-pdf-fill mx-2"></i>
                                         {{ $t('Solution Design') }}
                                     </a>
+                                </li>
+                                <li class="nav-item" v-if="currentInitiative.id">
+                                    <router-link class="nav-link text-dark" :to="{ name: 'tasks', params: { id: currentInitiative.id } }">
+                                        <i class="bi bi-list-ol mx-2"></i>
+                                        {{ $t('header.menu.all_ticket') }}
+                                    </router-link>
                                 </li>
                             </ul>
                         </nav>
@@ -105,7 +111,7 @@
 
 
 <script>
-import { mapGetters } from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import { useRoute } from "vue-router";
 import CreateInitiativeModalComponent from "@/Page/Initiative/CreateInitiativeModalComponent.vue";
 import CreateClientModalComponent from "@/Page/Client/CreateClientModalComponent.vue";
@@ -129,7 +135,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(['user'])
+        ...mapGetters(['user','currentInitiative']),
     },
     methods: {
         showCreateClientModal() {
@@ -166,6 +172,6 @@ export default {
             document.body.classList.add('sidebar-collapse');
             this.$emit('collapse');
         }
-    }
+    },
 };
 </script>
