@@ -20,7 +20,7 @@ class AsanaService
         $this->workspaceId = Config::get('app.asana_workspace_id');
         $key = "2/1206969167492969/1208008802985718:fb3401866e90c74deebdf582c71c00b3";
         $verify = [];
-        if (env('APP_ENV') == 'local') {
+        if (env('APP_ENV', 'local') == 'local') {
             $verify = [
                 'verify' => "C:\wamp64\bin\php\php8.3.6\/extras\ssl\cacert-2024-07-02.pem",
             ];

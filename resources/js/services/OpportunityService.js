@@ -11,6 +11,8 @@ const endpoints = {
     getInitialData: `${defaultPath}/get-initial-data`,
     updateOpportunity: `${defaultPath}/update`,
     updateStatusLost: `${defaultPath}/update-status-lost`,
+    getClientList: `${defaultPath}/get-client-list`,
+    getOpportunity: `${defaultPath}/get-opportunity/:id`,
 
 };
 const OpportunityService = {
@@ -45,7 +47,23 @@ const OpportunityService = {
     async updateStatusLost(data) {
         try {
             const response = await axiosRequest.post(endpoints.updateStatusLost, data);
-            return response;
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async getClientList() {
+        try {
+            const response = await axiosRequest.get(endpoints.getClientList);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async getOpportunity(id) {
+        try {
+            const response = await axiosRequest.get(endpoints.getOpportunity.replace(':id', id));
+            return response.data;
         } catch (error) {
             throw handleError(error);
         }

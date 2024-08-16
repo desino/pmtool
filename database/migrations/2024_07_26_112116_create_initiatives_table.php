@@ -18,6 +18,10 @@ return new class extends Migration
             $table->string('name');
             $table->bigInteger('ballpark_development_hours');
             $table->integer('status')->default(0);
+            $table->string('share_point_url')->nullable();
+            $table->bigInteger('functional_owner_id')->nullable();
+            $table->bigInteger('technical_owner_id')->nullable();
+            $table->bigInteger('quality_owner_id')->nullable();
             $table->integer('created_by');
             $table->integer('updated_by')->default(0);
             $table->timestamps();

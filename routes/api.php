@@ -12,7 +12,7 @@ use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('auth:sanctum')->group(function(){
+Route::middleware('auth:sanctum')->group(function () {
     Route::controller(AuthController::class)->group(function () {
         Route::get('/user', 'user');
     });
@@ -31,6 +31,8 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::get('/get-initial-data', 'getInitialData');
         Route::post('/update', 'update');
         Route::post('/update-status-lost', 'updateStatusLost');
+        Route::get('get-client-list', 'getClientList');
+        Route::get('get-opportunity/{id}', 'getOpportunity');
     });
 
     Route::controller(SolutionDesignController::class)->prefix('solution-design')->group(function () {
@@ -48,12 +50,12 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::controller(TicketController::class)->prefix('ticket')->group(function () {
         Route::post('get-section-functionality', 'getSectionFunctionality');
         Route::post('store', 'store');
-        Route::get('show/{id}','show');
-        Route::get('all-tickets/','allTicketsForDropdown');
+        Route::get('show/{id}', 'show');
+        Route::get('all-tickets/', 'allTicketsForDropdown');
     });
 
     Route::controller(HeaderController::class)->prefix('header')->group(function () {
-       Route::get('/get-initiatives', 'getInitiatives');
+        Route::get('/get-initiatives', 'getInitiatives');
     });
 });
 

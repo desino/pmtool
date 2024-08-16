@@ -25,14 +25,25 @@ class EditOpportunityRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'ballpark_development_hours' => 'required|numeric',            
+            'ballpark_development_hours' => 'required|numeric',
+            'share_point_url' => 'nullable|url',
+            'functional_owner_id' => 'nullable|exists:clients,id',
+            'quality_owner_id' => 'nullable|exists:clients,id',
+            'technical_owner_id' => 'nullable|exists:clients,id',
+            'environments.*.name' => 'required|string',
+            'environments.*.url' => 'required|string|url',
         ];
     }
 
     public function messages()
     {
-        return [            
+        return [
             'name.required' => __('validation.initiative.name'),
+            'environments.*.name.required' => __('validation.environments.name.required'),
+            'environments.*.name.string' => __('validation.environments.name.string'),
+            'environments.*.url.required' => __('validation.environments.url.required'),
+            'environments.*.url.string' => __('validation.environments.url.string'),
+            'environments.*.url.url' => __('validation.environments.url.url'),
         ];
     }
 

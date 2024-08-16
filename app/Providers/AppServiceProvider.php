@@ -5,10 +5,12 @@ namespace App\Providers;
 use App\Models\Client;
 use App\Models\Functionality;
 use App\Models\Initiative;
+use App\Models\InitiativeEnvironment;
 use App\Models\Section;
 use App\Models\Ticket;
 use App\Observers\ClientObserver;
 use App\Observers\FunctionalityObserver;
+use App\Observers\InitiativeEnvironmentObserver;
 use App\Observers\InitiativeObserver;
 use App\Observers\SectionObserver;
 use App\Observers\TicketObserver;
@@ -39,9 +41,10 @@ class AppServiceProvider extends ServiceProvider
         Section::observe(SectionObserver::class);
         Functionality::observe(FunctionalityObserver::class);
         Ticket::observe(TicketObserver::class);
+        InitiativeEnvironment::observe(InitiativeEnvironmentObserver::class);
         Event::listen(
             SocialiteWasCalled::class,
-            GraphExtendSocialite::class.'@handle',
+            GraphExtendSocialite::class . '@handle',
         );
     }
 }

@@ -6,6 +6,7 @@ use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\EditOpportunityRequest;
 use App\Models\Initiative;
+use App\Models\InitiativeEnvironment;
 use App\Services\AsanaService;
 use App\Services\ClientService;
 use App\Services\InitiativeService;
@@ -44,6 +45,7 @@ class OpportunityController extends Controller
     public function update(EditOpportunityRequest $request)
     {
         $requestData = $request->all();
+
         $initiative = Initiative::find($requestData['id']);
 
         if (!$initiative) {
@@ -65,17 +67,26 @@ class OpportunityController extends Controller
         DB::beginTransaction();
         try {
             $initiative->update($requestData);
+            $initiative->initiativeEnvironments()->delete();
+            $environments = $requestData['environments'];
+            if (!empty($environments)) {
+                foreach ($environments as $environment) {
+                    $environment['initiative_id'] = $initiative->id;
+                    $attributes = ['id' => $environment['id']];
+                    InitiativeEnvironment::updateOrCreate($attributes, $environment);
+                }
+            }
             $status = true;
-            $meesage = __('messages.opportunity.update_success');
+            $message = __('messages.opportunity.update_success');
             $statusCode = 200;
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
             Log::info($e->getMessage());
         }
-        return ApiHelper::response($status, $meesage, '', $statusCode);
+        return ApiHelper::response($status, $message, '', $statusCode);
     }
 
     public function updateStatusLost(Request $request)
@@ -92,15 +103,27 @@ class OpportunityController extends Controller
             ];
             $initiative->update($updateData);
             $status = true;
-            $meesage = __('messages.opportunity.update_status_lost_success');
+            $message = __('messages.opportunity.update_status_lost_success');
             $statusCode = 200;
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
             Log::info($e->getMessage());
         }
-        return ApiHelper::response($status, $meesage, '', $statusCode);
+        return ApiHelper::response($status, $message, '', $statusCode);
+    }
+
+    public function getClientList(Request $request)
+    {
+        $clientList = ClientService::getAllClients();
+        return ApiHelper::response(true, '', $clientList, 200);
+    }
+
+    public function getOpportunity(Request $request, $id)
+    {
+        $clientList = InitiativeService::getInitiative($request, $id);
+        return ApiHelper::response(true, '', $clientList, 200);
     }
 }
