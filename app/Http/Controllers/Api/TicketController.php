@@ -70,7 +70,7 @@ class TicketController extends Controller
             // 'notes' => 'This is a task created from the API.',
             // 'due_on' => '2024-08-10',
         ];
-        $task = $this->asanaService->creatfuneTask($projectId, $data);
+        $task = $this->asanaService->createTask($projectId, $data);
         if ($task['error_status']) {
             return ApiHelper::response($status, __('messages.asana.create_ticket.store_error'), '', 500);
         }
