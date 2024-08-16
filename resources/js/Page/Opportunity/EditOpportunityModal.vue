@@ -255,15 +255,16 @@ export default {
             this.formData.functional_owner_id = opportunity.functional_owner_id;
             this.formData.technical_owner_id = opportunity.technical_owner_id;
             this.formData.quality_owner_id = opportunity.quality_owner_id;
-            this.formData.environments = opportunity.initiative_environments.length == 0 ? [{
+            let opportunityEnvironments = opportunity.initiative_environments;
+            opportunityEnvironments.forEach((environment) => {
+                environment.desino_managed_fl = environment.desino_managed_fl == 1 ?? false;
+            })
+            this.formData.environments = opportunityEnvironments.length == 0 ? [{
                 id: '',
                 name: '',
                 url: '',
                 desino_managed_fl: false,
-            }] : opportunity.initiative_environments;
-            this.formData.environments.forEach((environment) => {
-                environment.desino_managed_fl = environment.desino_managed_fl == 1 ?? false;
-            })
+            }] : opportunity.opportunityEnvironments;
             this.getClientList();
         },
         async updateOpportunity() {
