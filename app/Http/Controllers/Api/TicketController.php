@@ -6,6 +6,7 @@ use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\TitcketRequest;
 use App\Http\Requests\UpdateReleaseNoteRequest;
+use App\Models\Functionality;
 use App\Models\Section;
 use App\Models\Ticket;
 use App\Services\AsanaService;
@@ -69,7 +70,7 @@ class TicketController extends Controller
             // 'notes' => 'This is a task created from the API.',
             // 'due_on' => '2024-08-10',
         ];
-        $task = $this->asanaService->createTask($projectId, $data);
+        $task = $this->asanaService->creatfuneTask($projectId, $data);
         if ($task['error_status']) {
             return ApiHelper::response($status, __('messages.asana.create_ticket.store_error'), '', 500);
         }
@@ -93,15 +94,19 @@ class TicketController extends Controller
         return ApiHelper::response($status, $meesage, $retData, $statusCode);
     }
 
+//    TODO : refactor this after functionality completes
     public function index($initiative_id,Request $request)
     {
         $filters=$request->filters;
+
         $tickets = Ticket::whereHas('functionality.section',function ($query) use ($initiative_id){
                 $query->where('initiative_id',$initiative_id);
         })->when($filters['task_name'] != '', function (Builder $query) use ($filters) {
             $query->whereLike('name','%'.$filters['task_name'].'%');
         })->when($filters['task_type'] != '', function (Builder $query) use ($filters) {
             $query->where('type',$filters['task_type']);
+        })->when($filters['functionalities'] != null, function (Builder $query) use ($filters) {
+            $query->whereIn('functionality_id',array_column($filters['functionalities'],'id'));
         })->get();
 
         $tickets=$tickets->transform(function ($ticket){
@@ -113,9 +118,12 @@ class TicketController extends Controller
                ];
         });
 
-        $task_type=Ticket::getAllTypes();
+        $meta['task_type']=Ticket::getAllTypes();
+        $meta['functionalities']=Functionality::whereHas('section',function ($query) use ($initiative_id){
+            $query->where('initiative_id',$initiative_id);
+        })->get(['id','display_name']);
 
-        return ApiHelper::response('false', __('messages.ticket.fetched'), $tickets, 200,$task_type);
+        return ApiHelper::response('false', __('messages.ticket.fetched'), $tickets, 200,$meta);
     }
 
     public function show($initiative_id,$ticket_id)

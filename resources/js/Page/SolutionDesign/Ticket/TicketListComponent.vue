@@ -29,6 +29,13 @@
                     </option>
                 </select>
             </div>
+            <div class="col-12 col-md-3 mb-2 mb-md-0">
+                <multiselect v-model="filter.functionalities" :multiple="true" :options="functionalities"
+                             :searchable="true" deselect-label=""
+                             label="display_name" placeholder="Functionality" track-by="id"
+                             @select="fetchAllTasks">
+                </multiselect>
+            </div>
         </div>
         <div class="list-group-item mx-2 mb-3 mt-2">
             <div class="row justify-content-between font-weight-bold bg-desino text-white rounded-top">
@@ -79,11 +86,13 @@ import messageService from '../../../services/messageService';
 import GlobalMessage from '../../../components/GlobalMessage.vue';
 import { mapActions } from 'vuex';
 import ticketService from "../../../services/TicketService";
+import Multiselect from "vue-multiselect";
 
 export default {
     name: 'TicketListComponent',
     mixins: [globalMixin],
     components: {
+        Multiselect,
         GlobalMessage,
         PaginationComponent
     },
@@ -96,9 +105,11 @@ export default {
             totalPages: "",
             errors: {},
             filterTaskTypes: [],
+            functionalities: [],
             filter: {
                 task_name: "",
                 task_type: "",
+                functionalities: "",
             },
             showMessage: true
         }
@@ -115,7 +126,8 @@ export default {
                 await this.setLoading(true);
                 const response = await ticketService.fetchAllTickets(this.initiative_id,params);
                 this.tasks = response.content;
-                this.filterTaskTypes=response.meta_data;
+                this.filterTaskTypes=response.meta_data.task_type;
+                this.functionalities=response.meta_data.functionalities;
                 await this.setLoading(false);
             } catch (error) {
                 this.handleError(error);
