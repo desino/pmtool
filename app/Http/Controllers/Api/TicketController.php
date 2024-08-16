@@ -11,6 +11,7 @@ use App\Models\Section;
 use App\Models\Ticket;
 use App\Services\AsanaService;
 use App\Services\InitiativeService;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,10 +20,12 @@ use Illuminate\Support\Facades\Log;
 class TicketController extends Controller
 {
     protected AsanaService $asanaService;
+
     public function __construct(AsanaService $asanaService)
     {
         $this->asanaService = $asanaService;
     }
+
     public function getSectionFunctionality(int $initiative_id)
     {
         $sectionFunctionalities = Section::select(['id', 'name',])
@@ -85,7 +88,7 @@ class TicketController extends Controller
                 'ticket' => $ticket,
             ];
             DB::commit();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
@@ -95,38 +98,36 @@ class TicketController extends Controller
     }
 
 //    TODO : refactor this after functionality completes
-    public function index($initiative_id,Request $request)
+    public function index($initiative_id, Request $request)
     {
-        $filters=$request->filters;
+        $filters = $request->filters;
 
-        $tickets = Ticket::whereHas('functionality.section',function ($query) use ($initiative_id){
-                $query->where('initiative_id',$initiative_id);
+        $tickets = Ticket::whereHas('functionality.section', function ($query) use ($initiative_id) {
+            $query->where('initiative_id', $initiative_id);
         })->when($filters['task_name'] != '', function (Builder $query) use ($filters) {
-            $query->whereLike('name','%'.$filters['task_name'].'%');
+            $query->whereLike('name', '%' . $filters['task_name'] . '%');
         })->when($filters['task_type'] != '', function (Builder $query) use ($filters) {
-            $query->where('type',$filters['task_type']);
-        })->when($filters['functionalities'] != null, function (Builder $query) use ($filters) {
-            $query->whereIn('functionality_id',array_column($filters['functionalities'],'id'));
+            $query->where('type', $filters['task_type']);
         })->get();
 
-        $tickets=$tickets->transform(function ($ticket){
-           return [
-               'id'=>$ticket->id,
-               'name' => $ticket->name,
-               'type_label'=>$ticket->type_label,
-               'created_at' => $ticket->created_at->format('Y-m-d'),
-               ];
+        $tickets = $tickets->transform(function ($ticket) {
+            return [
+                'id' => $ticket->id,
+                'name' => $ticket->name,
+                'type_label' => $ticket->type_label,
+                'created_at' => $ticket->created_at->format('Y-m-d'),
+            ];
         });
 
-        $meta['task_type']=Ticket::getAllTypes();
-        $meta['functionalities']=Functionality::whereHas('section',function ($query) use ($initiative_id){
-            $query->where('initiative_id',$initiative_id);
-        })->get(['id','display_name']);
+        $meta['task_type'] = Ticket::getAllTypes();
+        $meta['functionalities'] = Functionality::whereHas('section', function ($query) use ($initiative_id) {
+            $query->where('initiative_id', $initiative_id);
+        })->get(['id', 'display_name']);
 
-        return ApiHelper::response('false', __('messages.ticket.fetched'), $tickets, 200,$meta);
+        return ApiHelper::response('false', __('messages.ticket.fetched'), $tickets, 200, $meta);
     }
 
-    public function show($initiative_id,$ticket_id)
+    public function show($initiative_id, $ticket_id)
     {
         $ticket = Ticket::with('functionality')->find($ticket_id);
 
@@ -156,7 +157,7 @@ class TicketController extends Controller
                 $ticket->update($requestData);
             });
         } catch (Exception $e) {
-            \Log::error('Update Release Note Failed: '.$e->getMessage());
+            \Log::error('Update Release Note Failed: ' . $e->getMessage());
 
             $status = false;
             $code = 500;
