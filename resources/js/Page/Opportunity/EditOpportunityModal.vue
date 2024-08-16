@@ -252,9 +252,9 @@ export default {
             this.formData.is_sold = opportunity.status === 2 ?? false;
             this.formData.client_name = opportunity.client.name;
             this.formData.share_point_url = opportunity.share_point_url;
-            this.formData.functional_owner_id = opportunity.functional_owner_id;
-            this.formData.technical_owner_id = opportunity.technical_owner_id;
-            this.formData.quality_owner_id = opportunity.quality_owner_id;
+            this.formData.functional_owner_id = opportunity.functional_owner_id ?? '';
+            this.formData.technical_owner_id = opportunity.technical_owner_id ?? '';
+            this.formData.quality_owner_id = opportunity.quality_owner_id ?? '';
             let opportunityEnvironments = opportunity.initiative_environments;
             opportunityEnvironments.forEach((environment) => {
                 environment.desino_managed_fl = environment.desino_managed_fl == 1 ?? false;
