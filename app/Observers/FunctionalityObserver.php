@@ -9,9 +9,9 @@ class FunctionalityObserver
 {
     public function creating(Functionality $functionality)
     {
-        $newFunctionalityorderNo = $functionality->where('section_id',$functionality->section_id)->max('order_no')+1;
+        $newFunctionalityorderNo = $functionality->where('section_id', $functionality->section_id)->max('order_no') + 1;
         $sectionOrderNo = $functionality->section->order_no;
-        $functionality->display_name = $sectionOrderNo.".".$newFunctionalityorderNo." ".$functionality->name;
+        $functionality->display_name = $sectionOrderNo . "." . $newFunctionalityorderNo . " " . $functionality->name;
         $functionality->created_by = Auth::id();
         $functionality->order_no = $newFunctionalityorderNo;
         $functionality->updated_at = null;
@@ -32,23 +32,20 @@ class FunctionalityObserver
     /**
      * Handle the Functionality "updated" event.
      */
-    public function updated(Functionality $functionality): void
-    {
-
-    }
+    public function updated(Functionality $functionality): void {}
 
     /**
      * Handle the Functionality "deleted" event.
      */
     public function deleted(Functionality $functionality): void
     {
-        Functionality::where('section_id',$functionality->section_id)
-        ->where('order_no','>=',$functionality->order_no)
-        ->each( function ($eachMoveToSectionfunctionality, $index) {
-            $eachMoveToSectionfunctionality->decrement('order_no');
-            $eachMoveToSectionfunctionality->display_name = $eachMoveToSectionfunctionality->section->order_no.".".$eachMoveToSectionfunctionality->order_no." ".$eachMoveToSectionfunctionality->name;
-            $eachMoveToSectionfunctionality->save();
-        });
+        Functionality::where('section_id', $functionality->section_id)
+            ->where('order_no', '>=', $functionality->order_no)
+            ->each(function ($eachMoveToSectionfunctionality, $index) {
+                $eachMoveToSectionfunctionality->decrement('order_no');
+                $eachMoveToSectionfunctionality->display_name = $eachMoveToSectionfunctionality->section->order_no . "." . $eachMoveToSectionfunctionality->order_no . " " . $eachMoveToSectionfunctionality->name;
+                $eachMoveToSectionfunctionality->save();
+            });
         // ->decrement('order_no');
     }
 

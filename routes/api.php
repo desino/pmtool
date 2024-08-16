@@ -31,6 +31,8 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::get('/get-initial-data', 'getInitialData');
         Route::post('/update', 'update');
         Route::post('/update-status-lost', 'updateStatusLost');
+        Route::get('get-client-list', 'getClientList');
+        Route::get('get-opportunity/{id}', 'getOpportunity');
     });
 
     Route::controller(SolutionDesignController::class)->prefix('solution-design')->group(function () {
@@ -57,7 +59,7 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
     Route::controller(HeaderController::class)->prefix('header')->group(function () {
-       Route::get('/get-initiatives', 'getInitiatives');
+        Route::get('/get-initiatives', 'getInitiatives');
     });
 });
 

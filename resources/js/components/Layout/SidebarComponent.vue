@@ -85,7 +85,7 @@
                         <router-link :class="{ active: isActive('opportunities') }" :to="{ name: 'opportunities' }"
                             class="nav-link text-dark" @click="unselectHeaderInitiative"><i class="bi bi-list mx-2"></i>
                             {{
-                                $t('header.menu.opportunites')
+                                $t('header.menu.opportunities')
                             }}
                         </router-link>
                     </li>

@@ -68,7 +68,7 @@
                             href="javascript:" @click="updateStatusLostConfirmed(opportunity.id)">
                             <i class="bi bi-hand-thumbs-down"></i>
                         </a>
-                        <router-link :title="$t('opportunity_list_table.actions_redirct_to_solution_design_tooltip')"
+                        <router-link :title="$t('opportunity_list_table.actions_redirect_to_solution_design_tooltip')"
                             :to="{ name: 'solution-design', params: { id: opportunity.id } }" class="text-success me-2">
                             <i class="bi bi-box-arrow-right"></i>
                         </router-link>
@@ -91,7 +91,7 @@
             @page-changed="fetchAllOpportunities" />
         <div id="editOpportunityModal" aria-hidden="true" aria-labelledby="editOpportunityModalLabel" class="modal fade"
             tabindex="-1">
-            <EditOpportunityModalComponent ref="editOpportunityModalComponent" @pageUpddated="fetchAllOpportunities" />
+            <EditOpportunityModalComponent ref="editOpportunityModalComponent" @pageUpdated="fetchAllOpportunities" />
         </div>
     </div>
 </template>
@@ -152,14 +152,14 @@ export default {
                     page: page,
                     filters: this.filter
                 }
-                // this.setLoading(true);
-                const response = await OpportunityService.fetchAllOpportunites(params);
+                this.setLoading(true);
+                const response = await OpportunityService.fetchAllOpportunities(params);
                 const content = response.content;
-                this.opportunities = content.oppertunities.records;
-                this.currentPage = content.oppertunities.paginationInfo.current_page;
-                this.totalPages = content.oppertunities.paginationInfo.last_page;
+                this.opportunities = content.opportunities.records;
+                this.currentPage = content.opportunities.paginationInfo.current_page;
+                this.totalPages = content.opportunities.paginationInfo.last_page;
                 this.ballparkTotal = content.ballparkTotal;
-                // this.setLoading(false);
+                this.setLoading(false);
             } catch (error) {
                 this.handleError(error);
             }

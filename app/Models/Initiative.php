@@ -11,7 +11,7 @@ class Initiative extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
-    protected $append = ['client_initiative_name','simple_attribute'];
+    protected $append = ['client_initiative_name', 'simple_attribute'];
 
     public const STATUS_OPPORTUNITY = 1;
     public const STATUS_ONGOING = 2;
@@ -21,13 +21,18 @@ class Initiative extends Model
     protected function clientInitiativeName(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->client->name." - ".$this->name,
+            get: fn() => $this->client->name . " - " . $this->name,
         );
     }
 
     public function client()
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function initiativeEnvironments()
+    {
+        return $this->hasMany(InitiativeEnvironment::class);
     }
 
     public static function statuses()
@@ -69,7 +74,7 @@ class Initiative extends Model
     }
     public function scopeName($query, string $value)
     {
-        return $query->where('name', 'like', '%'.$value.'%');
+        return $query->where('name', 'like', '%' . $value . '%');
     }
 
     public function scopeClient($query, int|array $value)

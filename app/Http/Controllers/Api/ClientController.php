@@ -20,7 +20,7 @@ class ClientController extends Controller
     }
     public function store(ClientRequest $request)
     {
-        $validatData = $request->validated();
+        $validateData = $request->validated();
 
         $status = false;
         $retData = [
@@ -28,7 +28,7 @@ class ClientController extends Controller
         ];
 
         $data = [
-            'name' => $validatData['initiative_name'],
+            'name' => $validateData['initiative_name'],
         ];
         $project = $this->asanaService->createProject($data);
         if ($project['error_status']) {
@@ -37,11 +37,11 @@ class ClientController extends Controller
 
         DB::beginTransaction();
         try {
-            $client = Client::create($validatData);
-            $validatData['client_id'] = $client->id;
-            $validatData['name'] = $validatData['initiative_name'];
-            $validatData['asana_project_id'] = $project['data']['data']['gid'];
-            $initiative = $client->initiatives()->create($validatData);
+            $client = Client::create($validateData);
+            $validateData['client_id'] = $client->id;
+            $validateData['name'] = $validateData['initiative_name'];
+            $validateData['asana_project_id'] = $project['data']['data']['gid'];
+            $initiative = $client->initiatives()->create($validateData);
             $status = true;
             $meesage = __('messages.client.store_success');
             $statusCode = 200;

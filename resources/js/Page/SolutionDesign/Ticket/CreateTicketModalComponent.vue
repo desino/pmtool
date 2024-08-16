@@ -22,12 +22,12 @@
                     </div>
                     <div class="mb-3">
                         <label for="client_id" class="form-label">{{
-                            $t('create_ticket_modal_select_functinoality_id') }}
+                            $t('create_ticket_modal_select_functionality_id') }}
                             <strong class="text-danger">*</strong></label>
                         <multiselect v-model="formData.functionality_id"
                             :class="{ 'is-invalid': errors.functionality_id }" :options="sectionsFunctionalitiesList"
                             group-values="functionalities" group-label="name"
-                            :placeholder="$t('create_ticket_modal_select_functinoality_placeholder')" label="name"
+                            :placeholder="$t('create_ticket_modal_select_functionality_placeholder')" label="name"
                             track-by="id">
                         </multiselect>
                         <div v-if="errors.functionality_id" class="invalid-feedback">
