@@ -21,7 +21,7 @@ class AsanaService
         $key = "2/1206969167492969/1208008802985718:fb3401866e90c74deebdf582c71c00b3";
         $verify = [];
 
-        if (Config::get('env') == 'local') {
+        if (Config::get('app.env') == 'local') {
             $verify = [
                 'verify' => "C:\wamp64\bin\php\php8.3.6\/extras\ssl\cacert-2024-07-02.pem",
             ];

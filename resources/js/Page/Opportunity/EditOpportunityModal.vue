@@ -15,7 +15,7 @@
                             <div class="mb-3">
                                 <label for="client_name" class="form-label">{{
                                     $t('edit_opportunity_modal_select_client_name')
-                                }} <strong class="text-danger">*</strong></label>
+                                    }} <strong class="text-danger">*</strong></label>
                                 <input type="text" v-model="formData.client_name" disabled
                                     :class="{ 'is-invalid': errors.client_name }" id="name" class="form-control">
                                 <div v-if="errors.client_name" class="invalid-feedback">
@@ -42,7 +42,7 @@
                             <div v-if="errors.ballpark_development_hours" class="invalid-feedback">
                                 <span v-for="(error, index) in errors.ballpark_development_hours" :key="index">{{
                                     error
-                                }}</span>
+                                    }}</span>
                             </div>
                         </div>
                     </div>
@@ -115,7 +115,7 @@
                         <div v-if="errors.ballpark_development_hours" class="invalid-feedback">
                             <span v-for="(error, index) in errors.ballpark_development_hours" :key="index">{{
                                 error
-                            }}</span>
+                                }}</span>
                         </div>
                     </div>
 
@@ -133,7 +133,7 @@
                                 <div v-if="errors.share_point_url" class="invalid-feedback">
                                     <span v-for="(error, index) in errors.share_point_url" :key="index">{{
                                         error
-                                    }}</span>
+                                        }}</span>
                                 </div>
                             </div>
                             <div v-for="(environment, index) in formData.environments" :key="index">
@@ -264,7 +264,7 @@ export default {
                 name: '',
                 url: '',
                 desino_managed_fl: false,
-            }] : opportunity.opportunityEnvironments;
+            }] : opportunityEnvironments;
             this.getClientList();
         },
         async updateOpportunity() {
