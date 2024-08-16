@@ -3,45 +3,49 @@
         <form @submit.prevent="storeTicket">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="createTicketModalLabel">{{ $t('create_ticket_modal_title') }}
+                    <h5 id="createTicketModalLabel" class="modal-title">{{ $t('create_ticket_modal_title') }}
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
                 </div>
                 <div class="modal-body">
-                    <GlobalMessage v-if="showMessage" />
-                    <input type="hidden" name="initiative_id" v-model="formData.initiative_id">
-                    <input type="hidden" name="type" v-model="formData.type">
+                    <GlobalMessage v-if="showMessage"/>
+                    <input v-model="formData.initiative_id" name="initiative_id" type="hidden">
+                    <input v-model="formData.type" name="type" type="hidden">
                     <div class="mb-3">
-                        <label for="name" class="form-label">{{ $t('create_ticket_modal_input_name') }} <strong
-                                class="text-danger">*</strong></label>
-                        <input type="text" v-model="formData.name" :class="{ 'is-invalid': errors.name }" id="name"
-                            class="form-control">
+                        <label class="form-label" for="name">{{ $t('create_ticket_modal_input_name') }} <strong
+                            class="text-danger">*</strong></label>
+                        <input id="name" v-model="formData.name" :class="{ 'is-invalid': errors.name }" class="form-control"
+                               type="text">
                         <div v-if="errors.name" class="invalid-feedback">
                             <span v-for="(error, index) in errors.name" :key="index">{{ error }}</span>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="client_id" class="form-label">{{
-                            $t('create_ticket_modal_select_functionality_id') }}
+                        <label class="form-label" for="client_id">{{
+                                $t('create_ticket_modal_select_functionality_id')
+                            }}
                             <strong class="text-danger">*</strong></label>
                         <multiselect v-model="formData.functionality_id"
-                            :class="{ 'is-invalid': errors.functionality_id }" :options="sectionsFunctionalitiesList"
-                            group-values="functionalities" group-label="name"
-                            :placeholder="$t('create_ticket_modal_select_functionality_placeholder')" label="name"
-                            track-by="id">
+                                     :class="{ 'is-invalid': errors.functionality_id }"
+                                     :options="sectionsFunctionalitiesList"
+                                     :placeholder="$t('create_ticket_modal_select_functionality_placeholder')" group-label="name"
+                                     group-values="functionalities"
+                                     label="name"
+                                     track-by="id">
                         </multiselect>
                         <div v-if="errors.functionality_id" class="invalid-feedback">
                             <span v-for="(error, index) in errors.functionality_id" :key="index">{{ error }}</span>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="initial_estimation_development_time" class="form-label">{{
-                            $t('create_ticket_modal_modal_input_initial_estimation_development_time') }} <strong
+                        <label class="form-label" for="initial_estimation_development_time">{{
+                                $t('create_ticket_modal_modal_input_initial_estimation_development_time')
+                            }} <strong
                                 class="text-danger">*</strong>
                         </label>
-                        <input type="number" v-model="formData.initial_estimation_development_time"
-                            :class="{ 'is-invalid': errors.initial_estimation_development_time }"
-                            id="initial_estimation_development_time" class="form-control">
+                        <input id="initial_estimation_development_time" v-model="formData.initial_estimation_development_time"
+                               :class="{ 'is-invalid': errors.initial_estimation_development_time }"
+                               class="form-control" type="number">
                         <div v-if="errors.initial_estimation_development_time" class="invalid-feedback">
                             <span v-for="(error, index) in errors.initial_estimation_development_time" :key="index">
                                 {{ error }}
@@ -50,19 +54,19 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-desino bg-desino text-light"
-                        @click="handleSubmitButtonClick('create_close')">
+                    <button class="btn btn-desino bg-desino text-light" type="submit"
+                            @click="handleSubmitButtonClick('create_close')">
                         {{ $t('create_ticket_modal_submit_but_create_close_text') }}
                     </button>
-                    <button type="submit" class="btn btn-desino bg-desino text-light"
-                        @click="handleSubmitButtonClick('create_new')">
+                    <button class="btn btn-desino bg-desino text-light" type="submit"
+                            @click="handleSubmitButtonClick('create_new')">
                         {{ $t('create_ticket_modal_submit_but_create_add_new_text') }}
                     </button>
-                    <button type="submit" class="btn btn-desino bg-desino text-light"
-                        @click="handleSubmitButtonClick('create_detail')">
+                    <button class="btn btn-desino bg-desino text-light" type="submit"
+                            @click="handleSubmitButtonClick('create_detail')">
                         {{ $t('create_ticket_modal_submit_but_create_detail_text') }}
                     </button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button class="btn btn-secondary" @click="hideModal" data-bs-dismiss="modal" type="button">Close</button>
                 </div>
             </div>
         </form>
@@ -73,10 +77,10 @@
 import GlobalMessage from './../../../components/GlobalMessage.vue';
 import messageService from '../../../services/messageService';
 import TicketService from '../../../services/TicketService';
-import { Modal } from 'bootstrap';
+import {Modal} from 'bootstrap';
 import showToast from '../../../utils/toasts';
-import eventBus from '../../../eventBus';
 import Multiselect from 'vue-multiselect';
+import {mapActions} from "vuex";
 
 export default {
     name: 'CreateTicketModalComponent',
@@ -103,8 +107,9 @@ export default {
         };
     },
     methods: {
+        ...mapActions(['setLoading']),
         async fetchData() {
-            this.selectedInitiativeId = this.$route.params.id ?? this.$route.params.initiative_id ;
+            this.selectedInitiativeId = this.$route.params.id ?? this.$route.params.initiative_id;
             this.formData.initiative_id = this.selectedInitiativeId;
             const credentials = {
                 initiative_id: this.selectedInitiativeId
@@ -115,17 +120,24 @@ export default {
         async storeTicket() {
             this.clearMessages();
             try {
+                this.setLoading(true);
+
                 this.formData.initiative_id = this.selectedInitiativeId;
                 const response = await TicketService.storeTicket(this.formData);
+                console.log(response);
                 // messageService.setMessage(response.data.message, 'success');
                 if (this.submitButtonClicked === 'create_close') {
                     this.hideModal();
                 }
-                if(this.submitButtonClicked === 'create_detail')
-                {
+                if (this.submitButtonClicked === 'create_detail') {
                     this.hideModal();
-                    this.$router.push({ name: 'task.detail', params: {initiative_id:this.formData.initiative_id, ticket_id: response.id } });
+                    this.$router.push({
+                        name: 'task.detail',
+                        params: {initiative_id: this.formData.initiative_id, ticket_id: response.content.ticket.id}
+                    });
                 }
+                this.setLoading(false);
+
                 showToast(response.message, 'success');
                 this.resetForm();
             } catch (error) {
@@ -140,6 +152,7 @@ export default {
             if (modalElement) {
                 const modal = Modal.getInstance(modalElement);
                 if (modal) {
+                    this.setLoading(false);
                     modal.hide();
                 }
             }
