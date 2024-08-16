@@ -23,11 +23,11 @@ class OpportunityController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->input('per_page', 10);
-        $oppertunities = InitiativeService::getOpportunityInitiative($request, $perPage, Initiative::getStatusOpportunity());
-        $parsedOppertunities = ApiHelper::parsePagination($oppertunities);
+        $Opportunities = InitiativeService::getOpportunityInitiative($request, $perPage, Initiative::getStatusOpportunity());
+        $parsedOpportunities = ApiHelper::parsePagination($Opportunities);
         $responseData = [
-            'oppertunities' => $parsedOppertunities,
-            'ballparkTotal' => $oppertunities->sum('ballpark_development_hours'),
+            'opportunities' => $parsedOpportunities,
+            'ballparkTotal' => $Opportunities->sum('ballpark_development_hours'),
         ];
         return ApiHelper::response(true, __('messages.opportunity.get_list_success'), $responseData, 200);
     }
@@ -51,12 +51,12 @@ class OpportunityController extends Controller
         }
         $status = false;
 
-        if ($initiative->asana_project_id) {            
+        if ($initiative->asana_project_id) {
             $data = [
                 'name' => $requestData['name'],
             ];
             $project = $this->asanaService->updateProject($initiative->asana_project_id, $data);
-    
+
             if ($project['error_status']) {
                 return ApiHelper::response($status, __('messages.asana.initiative.store_error'), '', 500);
             }
@@ -64,7 +64,7 @@ class OpportunityController extends Controller
         }
         DB::beginTransaction();
         try {
-            $initiative->update($requestData);            
+            $initiative->update($requestData);
             $status = true;
             $meesage = __('messages.opportunity.update_success');
             $statusCode = 200;

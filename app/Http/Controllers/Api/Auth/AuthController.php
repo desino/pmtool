@@ -40,11 +40,12 @@ class AuthController extends Controller
     public function user(Request $request)
     {
         if (Auth::check()) {
-            return ApiHelper::response(true, __('messages.auth.looged_in_user_data_fatching_success'), $request->user(), 200);
+            return ApiHelper::response(true, __('messages.auth.logged_in_user_data_fetching_success'), $request->user(), 200);
         }
     }
 
-    public function sendResetLink(ForgotPasswordRequest $request){
+    public function sendResetLink(ForgotPasswordRequest $request)
+    {
         $response = Password::sendResetLink($request->only('email'));
 
         if ($response === Password::RESET_LINK_SENT) {
@@ -54,7 +55,8 @@ class AuthController extends Controller
         }
     }
 
-    public function resetPassword(ResetPasswordRequest $request){
+    public function resetPassword(ResetPasswordRequest $request)
+    {
         $response = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {

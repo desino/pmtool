@@ -16,10 +16,10 @@ class Ticket extends Model
         'type_label'
     ];
 
-    PUBLIC CONST TYPE_FEATURE_IMPROVEMENT = 1;
-    PUBLIC CONST TYPE_FEATURE_BUG = 2;
-    PUBLIC CONST TYPE_FEATURE_DEVELOPMENT = 3;
-    PUBLIC CONST TYPE_FEATURE_MAINTAINANCE_TASK = 4;
+    public const TYPE_FEATURE_IMPROVEMENT = 1;
+    public const TYPE_FEATURE_BUG = 2;
+    public const TYPE_FEATURE_DEVELOPMENT = 3;
+    public const TYPE_FEATURE_MAINTENANCE_TASK = 4;
 
     public static function types()
     {
@@ -27,7 +27,7 @@ class Ticket extends Model
             self::TYPE_FEATURE_IMPROVEMENT => __('ticket_type.feature.improvement'),
             self::TYPE_FEATURE_BUG => __('ticket_type.feature.bug'),
             self::TYPE_FEATURE_DEVELOPMENT => __('ticket_type.feature.development'),
-            self::TYPE_FEATURE_MAINTAINANCE_TASK => __('ticket_type.feature.maintainance_task'),
+            self::TYPE_FEATURE_MAINTENANCE_TASK => __('ticket_type.feature.maintenance_task'),
         ];
     }
 
@@ -37,7 +37,7 @@ class Ticket extends Model
             self::TYPE_FEATURE_IMPROVEMENT => __('ticket_type.feature.improvement'),
             self::TYPE_FEATURE_BUG => __('ticket_type.feature.bug'),
             self::TYPE_FEATURE_DEVELOPMENT => __('ticket_type.feature.development'),
-            self::TYPE_FEATURE_MAINTAINANCE_TASK => __('ticket_type.feature.maintainance_task'),
+            self::TYPE_FEATURE_MAINTENANCE_TASK => __('ticket_type.feature.maintenance_task'),
             default => '-'
         };
     }
@@ -54,9 +54,9 @@ class Ticket extends Model
     {
         return self::TYPE_FEATURE_DEVELOPMENT;
     }
-    public static function getTypeFeatureMaintainanceTask()
+    public static function getTypeFeatureMaintenanceTask()
     {
-        return self::TYPE_FEATURE_MAINTAINANCE_TASK;
+        return self::TYPE_FEATURE_MAINTENANCE_TASK;
     }
 
     public function functionality(): BelongsTo

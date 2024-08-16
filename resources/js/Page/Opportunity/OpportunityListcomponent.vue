@@ -36,7 +36,7 @@
                 </div>
                 <div class="col-lg-3 col-md-6 col-6 fw-bold py-2">{{
                     $t('opportunity_list_table.initiative_name_th_text')
-                    }}
+                }}
                 </div>
                 <div class="col-lg-3 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
                     {{ $t('opportunity_list_table.ballpark_development_hours_th_text') }}
@@ -59,7 +59,7 @@
                     <div class="col-lg-2 col-md-6 col-4">
                         <span class="d-block d-lg-none fw-bold bg-light-subtle mt-2 text-white text-center"> {{
                             $t('opportunity_list_table.actions_th_text')
-                            }} </span>
+                        }} </span>
                         <a :title="$t('opportunity_list_table.actions_edit_tooltip')" class="text-desino me-2"
                             href="javascript:" @click="editOpportunity(opportunity)">
                             <i class="bi bi-pencil-square"></i>
@@ -68,7 +68,7 @@
                             href="javascript:" @click="updateStatusLostConfirmed(opportunity.id)">
                             <i class="bi bi-hand-thumbs-down"></i>
                         </a>
-                        <router-link :title="$t('opportunity_list_table.actions_redirct_to_solution_design_tooltip')"
+                        <router-link :title="$t('opportunity_list_table.actions_redirect_to_solution_design_tooltip')"
                             :to="{ name: 'solution-design', params: { id: opportunity.id } }" class="text-success me-2">
                             <i class="bi bi-box-arrow-right"></i>
                         </router-link>
@@ -152,14 +152,14 @@ export default {
                     page: page,
                     filters: this.filter
                 }
-                // this.setLoading(true);
-                const response = await OpportunityService.fetchAllOpportunites(params);
+                this.setLoading(true);
+                const response = await OpportunityService.fetchAllOpportunities(params);
                 const content = response.content;
-                this.opportunities = content.oppertunities.records;
-                this.currentPage = content.oppertunities.paginationInfo.current_page;
-                this.totalPages = content.oppertunities.paginationInfo.last_page;
+                this.opportunities = content.opportunities.records;
+                this.currentPage = content.opportunities.paginationInfo.current_page;
+                this.totalPages = content.opportunities.paginationInfo.last_page;
                 this.ballparkTotal = content.ballparkTotal;
-                // this.setLoading(false);
+                this.setLoading(false);
             } catch (error) {
                 this.handleError(error);
             }

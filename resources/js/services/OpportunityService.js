@@ -22,7 +22,7 @@ const OpportunityService = {
             throw handleError(error);
         }
     },
-    async fetchAllOpportunites(params) {
+    async fetchAllOpportunities(params) {
         try {
             // const response = await axiosRequest.post(endpoints.getOpportunities,params);
             const response = await axiosRequest.post(endpoints.getOpportunities, params);
