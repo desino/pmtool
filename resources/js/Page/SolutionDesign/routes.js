@@ -1,6 +1,7 @@
 import SolutionDesignComponent from "./SolutionDesignComponent.vue";
 import DetailSolutionDesignComponent from "./DetailSolutionDesignComponent.vue";
 import TicketDetailDeisgnComponent from "@/Page/SolutionDesign/Ticket/TicketDetailDeisgnComponent.vue";
+import TicketListComponent from "@/Page/SolutionDesign/Ticket/TicketListComponent.vue";
 
 export default [
     {
@@ -16,7 +17,13 @@ export default [
         meta: { requiresAuth: true, title: 'Solution Design Detail' },
     },
     {
-        path: '/task-detail/:id',
+        path: '/solution-design/:id/tickets/',
+        name: 'tasks',
+        component: TicketListComponent,
+        meta: { requiresAuth: true, title: 'Task List' },
+    },
+    {
+        path: '/solution-design/:initiative_id/ticket-detail/:ticket_id',
         name: 'task.detail',
         component: TicketDetailDeisgnComponent,
         meta: { requiresAuth: true, title: 'Task Detail' },

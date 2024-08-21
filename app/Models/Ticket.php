@@ -21,7 +21,7 @@ class Ticket extends Model
     public const TYPE_FEATURE_DEVELOPMENT = 3;
     public const TYPE_FEATURE_MAINTENANCE_TASK = 4;
 
-    public static function types()
+    public static function getAllTypes()
     {
         return [
             self::TYPE_FEATURE_IMPROVEMENT => __('ticket_type.feature.improvement'),

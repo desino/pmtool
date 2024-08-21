@@ -378,7 +378,6 @@ export default {
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
-                        console.log('this.section :: ', section);
                         let result = section.functionalities.find(item => item['id'] === this.activeSectionId);
                         delete section.functionalities;
                         const { content, message } = await SolutionDesignService.deleteSection(section);

@@ -14,9 +14,10 @@ class ApiHelper
      * @param string $message The message of the response. Defaults to an empty string.
      * @param mixed $content The data to be included in the response. Defaults to an empty string.
      * @param int $http_code The HTTP status code of the response. Defaults to 500.
+     * @param mixed $meta The metadata required other than main response.
      * @return JsonResponse The JSON response.
      */
-    public static function response(bool $status = false, string $message = 'Something Went Wrong', mixed $content = '', int $http_code = 500): JsonResponse
+    public static function response(bool $status = false, string $message = 'Something Went Wrong', mixed $content = '', int $http_code = 500, mixed $meta=[]): JsonResponse
     {
 
         $response['status'] = $status;
@@ -32,6 +33,7 @@ class ApiHelper
             $content = $content->items();
         }*/
         $response['content'] = $content;
+        $response['meta_data']=$meta;
 
         return response()->json($response, $http_code);
     }
@@ -59,4 +61,3 @@ class ApiHelper
         return $parsedPagination;
     }
 }
- 

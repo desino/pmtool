@@ -3,6 +3,7 @@ import store from "../store/index.js";
 import { routes } from "../router/routes.js";
 import NotFoundComponent from "../components/Errors/NotFoundComponent.vue";
 import { APP_VARIABLES } from './../constants.js';
+import eventBus from "./../eventBus.js";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -13,6 +14,19 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     let isAuthenticated = store.getters.isAuthenticated;
+
+    const routesWithInitiativeId = [
+        'solution-design',
+        'solution-design.detail',
+        'tasks',
+        'task.detail'
+    ];
+
+    if(routesWithInitiativeId.includes(to.name))
+    {
+        let initiativeId = to.params.initiative_id ?? to.params.id;
+        store.commit("setCurrentInitiative", {id:initiativeId});
+    }
 
     // Update document title based on route meta
     document.title = APP_VARIABLES.APP_NAME + ' | ' + to.meta.title;
