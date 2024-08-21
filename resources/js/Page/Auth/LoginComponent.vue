@@ -49,6 +49,7 @@ import globalMixin from '@/globalMixin';
 import messageService from './../../services/messageService.js';
 import GlobalMessage from './../../components/GlobalMessage.vue';
 import Office365LoginComponent from "./Office365LoginComponent.vue";
+import { mapActions } from 'vuex';
 
 export default {
     name: 'LoginComponent',
@@ -66,15 +67,18 @@ export default {
         };
     },
     methods: {
+        ...mapActions(['setLoading']),
         async loginUser() {
             this.clearMessages();
             try {
+                this.setLoading(true);
                 const credentials = {
                     email: this.email,
                     password: this.password
                 };
                 await AuthService.loginUser(credentials);
                 this.$router.push({ name: 'home' });
+                this.setLoading(false);
             } catch (error) {
                 this.handleLoginError(error);
             }
@@ -99,6 +103,7 @@ export default {
             } else {
                 messageService.setMessage(error.message, 'danger');
             }
+            this.setLoading(false);
         },
         clearMessages() {
             this.errors = {};

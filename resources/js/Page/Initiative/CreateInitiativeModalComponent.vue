@@ -75,6 +75,8 @@ import messageService from '../../services/messageService';
 import { Modal } from 'bootstrap';
 import showToast from '../../utils/toasts';
 import eventBus from '../../eventBus';
+import { mapActions } from 'vuex';
+
 export default {
     name: 'CreateInitiativeModalComponent',
     components: {
@@ -94,24 +96,28 @@ export default {
         };
     },
     methods: {
+        ...mapActions(['setLoading']),
         async storeInitiative() {
             this.clearMessages();
             try {
+                this.setLoading(true);
                 const response = await InitiativeService.storeInitiative(this.formData);
-                // messageService.setMessage(response.data.message, 'success');
                 showToast(response.data.message, 'success');
                 this.hideModal();
                 eventBus.$emit('reloadOpportunityList');
                 eventBus.$emit('appendHeaderInitiativeSelectBox', response.data.content);
                 this.$router.push({ name: 'solution-design', params: { id: response.data.content.initiative.id } });
+                this.setLoading(false);
             } catch (error) {
                 this.handleLoginError(error);
             }
         },
 
         async fetchClients() {
+            this.setLoading(true);
             const response = await InitiativeService.getInitiativeClients();
             this.clients = response.data.content;
+            this.setLoading(false);
         },
         handleLoginError(error) {
             if (error.type === 'validation') {
@@ -119,6 +125,7 @@ export default {
             } else {
                 messageService.setMessage(error.message, 'danger');
             }
+            this.setLoading(false);
         },
         clearMessages() {
             this.errors = {};

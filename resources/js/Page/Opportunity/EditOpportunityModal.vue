@@ -15,7 +15,7 @@
                             <div class="mb-3">
                                 <label for="client_name" class="form-label">{{
                                     $t('edit_opportunity_modal_select_client_name')
-                                    }} <strong class="text-danger">*</strong></label>
+                                }} <strong class="text-danger">*</strong></label>
                                 <input type="text" v-model="formData.client_name" disabled
                                     :class="{ 'is-invalid': errors.client_name }" id="name" class="form-control">
                                 <div v-if="errors.client_name" class="invalid-feedback">
@@ -42,7 +42,7 @@
                             <div v-if="errors.ballpark_development_hours" class="invalid-feedback">
                                 <span v-for="(error, index) in errors.ballpark_development_hours" :key="index">{{
                                     error
-                                    }}</span>
+                                }}</span>
                             </div>
                         </div>
                     </div>
@@ -115,7 +115,7 @@
                         <div v-if="errors.ballpark_development_hours" class="invalid-feedback">
                             <span v-for="(error, index) in errors.ballpark_development_hours" :key="index">{{
                                 error
-                                }}</span>
+                            }}</span>
                         </div>
                     </div>
 
@@ -133,7 +133,7 @@
                                 <div v-if="errors.share_point_url" class="invalid-feedback">
                                     <span v-for="(error, index) in errors.share_point_url" :key="index">{{
                                         error
-                                        }}</span>
+                                    }}</span>
                                 </div>
                             </div>
                             <div v-for="(environment, index) in formData.environments" :key="index">
@@ -208,6 +208,7 @@ import OpportunityService from '../../services/OpportunityService';
 import messageService from '../../services/messageService';
 import { Modal } from 'bootstrap';
 import showToast from '../../utils/toasts';
+import { mapActions } from 'vuex';
 export default {
     name: 'EditOpportunityModal',
     components: {
@@ -241,10 +242,10 @@ export default {
         };
     },
     methods: {
+        ...mapActions(['setLoading']),
         getEditOpportunityFormData(opportunity) {
+            this.setLoading(true);
             this.clearMessages();
-            // const opportunityData = this.getOpportunity(opportunity.id);
-            // console.log('opportunityData :: ', opportunityData);
             this.formData.id = opportunity.id;
             this.formData.client_id = opportunity.client_id;
             this.formData.name = opportunity.name;
@@ -266,14 +267,17 @@ export default {
                 desino_managed_fl: false,
             }] : opportunityEnvironments;
             this.getClientList();
+            this.setLoading(false);
         },
         async updateOpportunity() {
             this.clearMessages();
             try {
+                this.setLoading(true);
                 const response = await OpportunityService.updateOpportunity(this.formData);
                 showToast(response.data.message, 'success');
                 this.hideModal();
                 this.$emit('pageUpdated');
+                this.setLoading(false);
             } catch (error) {
                 this.handleError(error);
             }
@@ -295,27 +299,22 @@ export default {
         async getClientList() {
             this.clearMessages();
             try {
+                this.setLoading(true);
                 const response = await OpportunityService.getClientList();
                 this.clients = response.content;
+                this.setLoading(false);
             } catch (error) {
                 this.handleError(error);
             }
         },
-        async getOpportunity(id) {
-            this.clearMessages();
-            try {
-                const response = await OpportunityService.getOpportunity(id);
-                return response.content;
-            } catch (error) {
-                this.handleError(error);
-            }
-        },
+
         handleError(error) {
             if (error.type === 'validation') {
                 this.errors = error.errors;
             } else {
                 messageService.setMessage(error.message, 'danger');
             }
+            this.setLoading(false);
         },
         clearMessages() {
             this.errors = {};

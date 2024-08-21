@@ -6,9 +6,8 @@
                     <h3 class="m-0">Task Name - {{ ticketData.name }}</h3>
                     <div class="col-md-12 py-2">
                         <multiselect v-model="selectedTaskObject" :multiple="false" :options="tasksForDropdown"
-                                     :searchable="true" deselect-label="Can't remove this value"
-                                     label="name" placeholder="Search & Select Task" track-by="id"
-                                     @input="onTaskSelect">
+                            :searchable="true" deselect-label="Can't remove this value" label="name"
+                            placeholder="Search & Select Task" track-by="id" @input="onTaskSelect">
                         </multiselect>
                     </div>
                 </div>
@@ -24,7 +23,7 @@
 
     <hr>
 
-    <GlobalMessage v-if="showMessage"/>
+    <GlobalMessage v-if="showMessage" />
 
 
     <div class="app-content mt-2">
@@ -84,8 +83,8 @@
                     <div class="card-body p-2 px-4 text-left d-flex align-items-center">
                         <div class="w-100 lh-1">
                             <h6 class="fw-bold mx-1">Task Estimation</h6>
-                            <span
-                                class="badge rounded-3 bg-success-subtle text-success">{{ ticketData.initial_dev_time }} hrs</span>
+                            <span class="badge rounded-3 bg-success-subtle text-success">{{ ticketData.initial_dev_time
+                                }} hrs</span>
                         </div>
                     </div>
                 </div>
@@ -165,13 +164,12 @@
                         <div class="card-body">
                             <p> Describe & Document the change done for the client. Use print-screen so that the client
                                 has clarity on how the functionality has changed</p>
-                            <TinyMceEditor v-model="releaseNoteForm.release_note"/>
-                            <div v-if="errors.release_note"
-                                 class="text-danger mt-2">
+                            <TinyMceEditor v-model="releaseNoteForm.release_note" />
+                            <div v-if="errors.release_note" class="text-danger mt-2">
                                 <span v-for="(error, index) in errors.release_note" :key="index">{{ error }}</span>
                             </div>
                             <button class="btn w-100 bg-desino text-white fw-bold m-2 rounded"
-                                    @click="updateReleaseNote"> Update
+                                @click="updateReleaseNote"> Update
                             </button>
                         </div>
                     </div>
@@ -219,6 +217,7 @@ import TinyMceEditor from "./../../../components/TinyMceEditor.vue";
 import ticketService from "../../../services/TicketService.js";
 import messageService from "../../../services/messageService.js";
 import showToast from "./../../../utils/toasts.js";
+import { mapActions } from 'vuex';
 
 export default {
     name: 'SolutionDesignComponent',
@@ -227,7 +226,7 @@ export default {
         GlobalMessage,
         Multiselect,
     },
-    props: ['initiative_id','ticket_id'],
+    props: ['initiative_id', 'ticket_id'],
     data() {
         return {
             localInitiativeId: this.$route.params.initiative_id,
@@ -261,39 +260,44 @@ export default {
         selectedTask(newTask) {
             // Update the URL when a task is selected
             if (newTask) {
-                let param ={
-                    initiative_id:this.localInitiativeId,ticket_id: newTask
+                let param = {
+                    initiative_id: this.localInitiativeId, ticket_id: newTask
                 }
-                this.$router.push({name: 'task.detail', params: param });
+                this.$router.push({ name: 'task.detail', params: param });
                 this.fetchTicketData(newTask);
             }
         }
     },
     methods: {
+        ...mapActions(['setLoading']),
         async fetchTicketData(id) {
-            try{
-                let data ={
-                    initiative_id:this.localInitiativeId,
-                    ticket_id:id
+            try {
+                this.setLoading(true);
+                let data = {
+                    initiative_id: this.localInitiativeId,
+                    ticket_id: id
                 }
                 const response = await ticketService.fetchTicket(data);
                 if (!response.content) {
                     messageService.setMessage(response.message, 'danger');
-                    this.$router.push({name: 'home'});
+                    this.$router.push({ name: 'home' });
                 } else {
                     this.setData(response.content);
                 }
-            }catch (error){
-                    console.error('An error occurred again:', error);
+                this.setLoading(false);
+            } catch (error) {
+                console.error('An error occurred again:', error);
             }
         },
         async updateReleaseNote() {
             this.clearMessages();
             try {
+                this.setLoading(true);
                 const response = await ticketService.updateReleaseNote(this.localTicketId, this.releaseNoteForm);
-                this.releaseNoteForm.release_note=content.release_note;
+                this.releaseNoteForm.release_note = content.release_note;
                 showToast(response.message, 'success');
                 this.resetForm();
+                this.setLoading(false);
             } catch (error) {
                 this.handleError(error);
             }
@@ -302,7 +306,7 @@ export default {
             const response = await ticketService.fetchAllTicketForDropDown(initiative_id);
             if (!response.content) {
                 messageService.setMessage(response.message, 'danger');
-                this.$router.push({name: 'home'});
+                this.$router.push({ name: 'home' });
             } else {
                 this.tasksForDropdown = response.content;
 
@@ -318,7 +322,7 @@ export default {
             this.ticketData.initial_dev_time = content.initial_estimation_development_time;
             this.ticketData.task_type = content.type_label;
             this.ticketData.functionality_name = content.functionality.name;
-            this.releaseNoteForm.release_note=content.release_note;
+            this.releaseNoteForm.release_note = content.release_note;
         },
         onTaskSelect() {
             // Ensure the selected task is synced with the dropdown
@@ -344,6 +348,7 @@ export default {
             } else {
                 messageService.setMessage(error.message, 'danger');
             }
+            this.setLoading(false);
         },
     },
     mounted() {

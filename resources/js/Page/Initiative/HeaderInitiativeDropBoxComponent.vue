@@ -27,6 +27,7 @@ export default {
             const response = await HeaderService.getInitiatives();
             this.initiatives = response.content;
             this.selected_initiative_id = this.$route.params.id ?? this.$route.params.initiative_id;
+            eventBus.$emit('sidebarSelectHeaderInitiativeId', this.selected_initiative_id);
         },
         handleAppendHeaderInitiativeSelectBox(data) {
             this.initiatives.push(data.initiative);
@@ -44,6 +45,7 @@ export default {
         navigate(event) {
             const initiativeId = event.target.value;
             store.commit("setCurrentInitiative", { id: initiativeId });
+            eventBus.$emit('sidebarSelectHeaderInitiativeId', initiativeId);
             if (initiativeId) {
                 this.$router.push({ name: 'solution-design', params: { id: initiativeId } });
             } else {

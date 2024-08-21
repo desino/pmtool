@@ -188,6 +188,7 @@ import TinyMceEditor from './../../components/TinyMceEditor.vue';
 import showToast from '../../utils/toasts';
 import eventBus from '../../eventBus';
 import draggable from 'vuedraggable';
+import { mapActions } from 'vuex';
 
 
 export default {
@@ -225,6 +226,7 @@ export default {
         };
     },
     methods: {
+        ...mapActions(['setLoading']),
         async fetchData() {
             try {
                 await Promise.all([
@@ -240,6 +242,7 @@ export default {
         async storeUpdateFunctionality() {
             this.clearMessages();
             try {
+                this.setLoading(true);
                 this.functionalityFormData.initiative_id = this.initiativeId;
                 const {
                     content: { functionality: updatedFunc, transactionType },
@@ -253,12 +256,14 @@ export default {
                 this.selectedFunctionalityId = updatedFunc.id;
                 this.activeSectionId = null;
                 showToast(message, 'success');
+                this.setLoading(false);
             } catch (error) {
                 this.handleError(error);
             }
         },
         async getInitiativeData() {
             try {
+                this.setLoading(true);
                 const { content } = await SolutionDesignService.getInitiativeData({ initiative_id: this.initiativeId });
                 if (!content) {
                     messageService.setMessage(response.message, 'danger');
@@ -266,14 +271,17 @@ export default {
                 } else {
                     this.initiativeData = content;
                 }
+                this.setLoading(false);
             } catch (error) {
                 this.handleError(error);
             }
         },
         async getSectionsWithFunctionalities() {
             try {
+                this.setLoading(true);
                 const { content } = await SolutionDesignService.getSectionsWithFunctionalities({ initiative_id: this.initiativeId });
                 this.sectionsWithFunctionalities = content;
+                this.setLoading(false);
             } catch (error) {
                 this.handleError(error);
             }
@@ -287,6 +295,7 @@ export default {
             } else {
                 messageService.setMessage(error.message, 'danger');
             }
+            this.setLoading(false);
         },
         clearMessages() {
             this.errors = {};
@@ -345,6 +354,7 @@ export default {
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
+                        this.setLoading(true);
                         functionality.initiative_id = this.initiativeId;
                         const oldSelectedFunctionalityId = functionality;
                         const {
@@ -360,6 +370,7 @@ export default {
                         }
                         this.getSectionsWithFunctionalities();
                         showToast(message, 'success');
+                        this.setLoading(false);
                     } catch (error) {
                         this.handleError(error);
                     }
@@ -378,6 +389,7 @@ export default {
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
+                        this.setLoading(true);
                         let result = section.functionalities.find(item => item['id'] === this.activeSectionId);
                         delete section.functionalities;
                         const { content, message } = await SolutionDesignService.deleteSection(section);
@@ -388,6 +400,7 @@ export default {
                         }
                         showToast(message, 'success');
                         this.getSectionsWithFunctionalities();
+                        this.setLoading(false);
                     } catch (error) {
                         this.getSectionsWithFunctionalities();
                         this.handleError(error);
@@ -420,6 +433,7 @@ export default {
             this.showHideSectionInput(section);
 
             try {
+                this.setLoading(true);
                 const updateData = {
                     section_id: section.id,
                     initiative_id: section.initiative_id,
@@ -430,6 +444,7 @@ export default {
                 section.display_name = response.content.display_name.trim();
                 this.editingSectionId = null;
                 showToast(response.message, 'success');
+                this.setLoading(false);
             } catch (error) {
                 this.handleError(error);
             }
@@ -448,6 +463,7 @@ export default {
             }
             this.drag = false;
             try {
+                this.setLoading(true);
                 this.moveFunctionality.move_to_section_id = this.oldMoveFunctionality.id;
                 this.moveFunctionality.initiative_id = this.initiativeId;
                 const response = await SolutionDesignService.updateFunctionalityOrderNo(this.moveFunctionality);
@@ -463,6 +479,7 @@ export default {
                 this.getSectionsWithFunctionalities();
                 showToast(response.message, 'success');
                 this.oldMoveFunctionality = {};
+                this.setLoading(false);
             } catch (error) {
                 this.getSectionsWithFunctionalities();
                 this.handleError(error);
@@ -479,10 +496,12 @@ export default {
             }
             this.drag = false;
             try {
+                this.setLoading(true);
                 delete this.moveSection.functionalities;
                 const response = await SolutionDesignService.updateSectionOrderNo(this.moveSection);
                 this.getSectionsWithFunctionalities();
                 showToast(response.message, 'success');
+                this.setLoading(false);
             } catch (error) {
                 this.getSectionsWithFunctionalities();
                 this.handleError(error);

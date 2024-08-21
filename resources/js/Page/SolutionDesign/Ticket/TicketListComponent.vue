@@ -8,7 +8,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-end">
                         <li class="breadcrumb-item"><a class="text-decoration-none" href="javascript:void(0)">{{
-                                $t('Dashboard') }}</a></li>
+                            $t('Dashboard') }}</a></li>
                     </ol>
                 </div>
             </div>
@@ -18,22 +18,20 @@
     <div class="app-content">
         <div class="row mb-3">
             <div class="col-12 col-md-3 mb-2 mb-md-0">
-                <input v-model="filter.task_name"
-                       :placeholder="$t('ticket.filter.task_name')" class="form-control"
-                       type="text" @keyup="fetchAllTasks">
+                <input v-model="filter.task_name" :placeholder="$t('ticket.filter.task_name')" class="form-control"
+                    type="text" @keyup="fetchAllTasks">
             </div>
             <div class="col-12 col-md-3 mb-2 mb-md-0">
                 <select id="client_id" v-model="filter.task_type" class="form-select" @change="fetchAllTasks">
                     <option value="">{{ $t('ticket.filter.task_type_placeholder') }}</option>
-                    <option v-for="(name,id) in filterTaskTypes" :key="id" :value="id">{{ name }}
+                    <option v-for="(name, id) in filterTaskTypes" :key="id" :value="id">{{ name }}
                     </option>
                 </select>
             </div>
             <div class="col-12 col-md-3 mb-2 mb-md-0">
                 <multiselect v-model="filter.functionalities" :multiple="true" :options="functionalities"
-                             :searchable="true" deselect-label=""
-                             label="display_name" placeholder="Functionality" track-by="id"
-                             @select="fetchAllTasks">
+                    :searchable="true" deselect-label="" label="display_name" placeholder="Functionality" track-by="id"
+                    @select="fetchAllTasks">
                 </multiselect>
             </div>
         </div>
@@ -61,8 +59,10 @@
                     </div>
                     <div class="col-lg-2 col-md-6 col-4">
                         <span class="d-block d-lg-none fw-bold bg-light-subtle mt-2 text-white text-center">
-                                {{ $t('ticket.list.column_action') }}</span>
-                        <router-link :to="{ name: 'task.detail', params: {initiative_id:this.initiative_id, ticket_id: task.id } }" class="text-success me-2">
+                            {{ $t('ticket.list.column_action') }}</span>
+                        <router-link
+                            :to="{ name: 'task.detail', params: { initiative_id: this.initiative_id, ticket_id: task.id } }"
+                            class="text-success me-2">
                             <i class="bi bi-box-arrow-up-right fw-bold"></i>
                         </router-link>
 
@@ -75,7 +75,7 @@
             </div>
         </div>
         <PaginationComponent :currentPage="Number(currentPage)" :totalPages="Number(totalPages)"
-                             @page-changed="fetchAllTasks" />
+            @page-changed="fetchAllTasks" />
     </div>
 </template>
 
@@ -96,10 +96,10 @@ export default {
         GlobalMessage,
         PaginationComponent
     },
-    props:['id'],
+    props: ['id'],
     data() {
         return {
-            initiative_id:this.$route.params.id,
+            initiative_id: this.$route.params.id,
             tasks: [],
             currentPage: "",
             totalPages: "",
@@ -124,10 +124,10 @@ export default {
                     filters: this.filter
                 }
                 await this.setLoading(true);
-                const response = await ticketService.fetchAllTickets(this.initiative_id,params);
+                const response = await ticketService.fetchAllTickets(this.initiative_id, params);
                 this.tasks = response.content;
-                this.filterTaskTypes=response.meta_data.task_type;
-                this.functionalities=response.meta_data.functionalities;
+                this.filterTaskTypes = response.meta_data.task_type;
+                this.functionalities = response.meta_data.functionalities;
                 await this.setLoading(false);
             } catch (error) {
                 this.handleError(error);
@@ -139,6 +139,7 @@ export default {
             } else {
                 messageService.setMessage(error.message, 'danger');
             }
+            this.setLoading(false);
         },
         clearMessages() {
             this.errors = {};

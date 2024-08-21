@@ -21,11 +21,12 @@ class AsanaService
         $this->workspaceId = Config::get('app.asana_workspace_id');
         $key = "2/1206969167492969/1208008802985718:fb3401866e90c74deebdf582c71c00b3";
         $verify = [];
-        if (Env::get('SSl_CERTIFICATE','') != '') {
+        if (Config::get('app.ssl_certificate') != '') {
             $verify = [
-                'verify' => Env::get('SSl_CERTIFICATE','')
+                'verify' => Config::get('app.ssl_certificate')
             ];
         }
+
         $this->client = new Client($verify + [
             'base_uri' => 'https://app.asana.com/api/1.0/',
             'headers' => [

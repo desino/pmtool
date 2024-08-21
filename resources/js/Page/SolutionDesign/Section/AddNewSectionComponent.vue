@@ -30,6 +30,7 @@
 import messageService from './../../../services/messageService';
 import SolutionDesignService from './../../../services/SolutionDesignService';
 import showToast from '../../../utils/toasts';
+import { mapActions } from 'vuex';
 export default {
     name: 'AddNewSectionComponent',
     props: {
@@ -57,6 +58,7 @@ export default {
         }
     },
     methods: {
+        ...mapActions(['setLoading']),
         showHideInput() {
             this.showInput = true;
             this.isSaving = false;
@@ -84,11 +86,13 @@ export default {
         },
         async storeSection() {
             try {
+                this.setLoading(true);
                 const response = await SolutionDesignService.storeSection(this.formData);
                 this.sectionData = response.content;
                 this.$emit('sectionAdded', this.sectionData);
                 this.resetForm();
                 showToast(response.message, 'success');
+                this.setLoading(false);
             } catch (error) {
                 this.handleError(error);
             }
@@ -99,6 +103,7 @@ export default {
             } else {
                 messageService.setMessage(error.message, 'danger');
             }
+            this.setLoading(false);
         },
         clearMessages() {
             this.errors = {};

@@ -34,7 +34,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" href="javascript:"><i
+                                    <a class="nav-link text-dark" href="javascript:" @click="showSolutionDesign"><i
                                             class="bi bi-file-pdf-fill mx-2"></i>
                                         {{ $t('header.menu.solution_design') }}
                                     </a>
@@ -58,10 +58,21 @@
                 </div>
                 <hr>
                 <ul class="list-group border">
-                    <li class="list-group-item fw-bold border-bottom">Initiative Links</li>
-                    <a href="#" class="list-group-item border-0">Cloudways Acceptance</a>
-                    <a href="#" class="list-group-item border-0">Cloudways Prod</a>
-                    <a href="#" class="list-group-item border-0">IQVIA Acceptance</a>
+                    <li class="list-group-item fw-bold border-bottom">{{ $t('header.menu.initiative_links') }}</li>
+
+                    <a v-if="initiativeData.share_point_url" :href="initiativeData.share_point_url" target="_blank"
+                        class="list-group-item border-0">
+                        <i class="bi bi-folder-symlink"></i>
+                        {{ $t('header.menu.initiative.share_point_url') }}</a>
+                    <div v-if="initiativeData.initiative_environments"
+                        v-for="environment in initiativeData.initiative_environments">
+                        <a :href="environment.url" target="_blank" class="list-group-item border-0">
+                            <i class="bi bi-hdd-rack-fill"></i>
+                            {{ environment.name }}
+                        </a>
+                    </div>
+                    <div v-if="initiativeData?.initiative_environments?.length === 0" class="list-group-item border-0">
+                    </div>
                 </ul>
             </div>
 
@@ -116,7 +127,7 @@
     </div>
     <div id="editOpportunityModal" aria-hidden="true" aria-labelledby="editOpportunityModalLabel" class="modal fade"
         tabindex="-1">
-        <EditOpportunityModalComponent ref="editOpportunityModalComponent" />
+        <EditOpportunityModalComponent ref="editOpportunityModalComponent" @pageUpdated="getInitiativeData" />
     </div>
 </template>
 
@@ -150,12 +161,14 @@ export default {
     data() {
         return {
             sidebar_selected_initiative_id: null,
+            initiativeData: "",
         }
     },
     computed: {
         ...mapGetters(['user', 'currentInitiative']),
     },
     methods: {
+        ...mapActions(['setLoading']),
         showCreateClientModal() {
             this.$refs.createClientModalComponent.resetForm();
             const modalElement = document.getElementById('createClientModal');
@@ -183,22 +196,19 @@ export default {
             }
         },
         async showEditOpportunityModal() {
-            const opportunityData = this.getOpportunity(this.sidebar_selected_initiative_id);
-            console.log('opportunityData :: ', opportunityData);
-            // this.$refs.editOpportunityModalComponent.getEditOpportunityFormData(opportunity);
-            // const modalElement = document.getElementById('editOpportunityModal');
-            // if (modalElement) {
-            //     const modal = new Modal(modalElement);
-            //     modal.show();
-            // }
+            this.setLoading(true);
+            const response = await OpportunityService.getOpportunity(this.sidebar_selected_initiative_id);
+            this.$refs.editOpportunityModalComponent.getEditOpportunityFormData(response.content);
+            const modalElement = document.getElementById('editOpportunityModal');
+            if (modalElement) {
+                const modal = new Modal(modalElement);
+                modal.show();
+            }
+            this.setLoading(false);
         },
-        async getOpportunity(id) {
-            console.log('id :: ', id);
-            try {
-                const response = await OpportunityService.getOpportunity(id);
-                return response.content;
-            } catch (error) {
-                this.handleError(error);
+        showSolutionDesign() {
+            if (this.sidebar_selected_initiative_id) {
+                this.$router.push({ name: 'solution-design', params: { id: this.sidebar_selected_initiative_id } });
             }
         },
         unselectHeaderInitiative() {
@@ -211,6 +221,11 @@ export default {
         },
         sidebarSelectHeaderInitiativeId(id) {
             this.sidebar_selected_initiative_id = id;
+            this.getInitiativeData();
+        },
+        async getInitiativeData() {
+            const response = await OpportunityService.getOpportunity(this.sidebar_selected_initiative_id);
+            this.initiativeData = response.content;
         }
     },
     mounted() {

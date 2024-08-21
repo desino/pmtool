@@ -71,6 +71,7 @@ import messageService from '../../services/messageService';
 import { Modal } from 'bootstrap';
 import showToast from '../../utils/toasts';
 import eventBus from './../../eventBus';
+import { mapActions } from 'vuex';
 export default {
     name: 'CreateClientModalComponent',
     components: {
@@ -89,15 +90,18 @@ export default {
         };
     },
     methods: {
+        ...mapActions(['setLoading']),
         async storeClient() {
             this.clearMessages();
             try {
+                this.setLoading(true);
                 const response = await ClientService.storeClient(this.formData);
                 showToast(response.data.message, 'success');
                 this.hideModal();
                 eventBus.$emit('reloadOpportunityList');
                 eventBus.$emit('appendHeaderInitiativeSelectBox', response.data.content);
                 this.$router.push({ name: 'solution-design', params: { id: response.data.content.initiative.id } });
+                this.setLoading(false);
             } catch (error) {
                 this.handleLoginError(error);
             }
@@ -108,6 +112,7 @@ export default {
             } else {
                 messageService.setMessage(error.message, 'danger');
             }
+            this.setLoading(false);
         },
         clearMessages() {
             this.errors = {};
