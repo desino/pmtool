@@ -36,7 +36,13 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" href="javascript:" @click="showCreateClientModal"><i
                                             class="bi bi-file-pdf-fill mx-2"></i>
-                                        {{ $t('Solution Design') }}
+                                        {{ $t('header.menu.solution_design') }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" href="javascript:" @click="showEditOpportunityModal">
+                                        <i class="bi bi-pencil-square mx-2"></i>
+                                        {{ $t('header.menu.edit_initiative') }}
                                     </a>
                                 </li>
                             </ul>
@@ -101,6 +107,10 @@
         tabindex="-1">
         <CreateTicketModalComponent ref="createTicketModalComponent" />
     </div>
+    <div id="editOpportunityModal" aria-hidden="true" aria-labelledby="editOpportunityModalLabel" class="modal fade"
+        tabindex="-1">
+        <EditOpportunityModalComponent ref="editOpportunityModalComponent" />
+    </div>
 </template>
 
 
@@ -111,12 +121,14 @@ import CreateInitiativeModalComponent from "@/Page/Initiative/CreateInitiativeMo
 import CreateClientModalComponent from "@/Page/Client/CreateClientModalComponent.vue";
 import CreateTicketModalComponent from "@/Page/SolutionDesign/Ticket/CreateTicketModalComponent.vue";
 import HeaderInitiativeDropBoxComponent from "@/Page/Initiative/HeaderInitiativeDropBoxComponent.vue";
+import EditOpportunityModalComponent from './../../Page/Opportunity/EditOpportunityModal.vue';
 import { Modal } from "bootstrap";
 import eventBus from "@/eventBus.js";
+import OpportunityService from "../../services/OpportunityService";
 
 export default {
     name: 'SidebarComponent',
-    components: { HeaderInitiativeDropBoxComponent, CreateClientModalComponent, CreateInitiativeModalComponent, CreateTicketModalComponent },
+    components: { HeaderInitiativeDropBoxComponent, CreateClientModalComponent, CreateInitiativeModalComponent, CreateTicketModalComponent, EditOpportunityModalComponent },
     setup() {
         const route = useRoute();
 
@@ -127,6 +139,11 @@ export default {
         return {
             isActive,
         };
+    },
+    data() {
+        return {
+            sidebar_selected_initiative_id: null,
+        }
     },
     computed: {
         ...mapGetters(['user'])
@@ -158,6 +175,25 @@ export default {
                 modal.show();
             }
         },
+        async showEditOpportunityModal() {
+            const opportunityData = this.getOpportunity(this.sidebar_selected_initiative_id);
+            console.log('opportunityData :: ', opportunityData);
+            // this.$refs.editOpportunityModalComponent.getEditOpportunityFormData(opportunity);
+            // const modalElement = document.getElementById('editOpportunityModal');
+            // if (modalElement) {
+            //     const modal = new Modal(modalElement);
+            //     modal.show();
+            // }
+        },
+        async getOpportunity(id) {
+            console.log('id :: ', id);
+            try {
+                const response = await OpportunityService.getOpportunity(id);
+                return response.content;
+            } catch (error) {
+                this.handleError(error);
+            }
+        },
         unselectHeaderInitiative() {
             eventBus.$emit('unselectHeaderInitiativeId');
         },
@@ -165,7 +201,13 @@ export default {
             document.body.classList.remove('sidebar-open');
             document.body.classList.add('sidebar-collapse');
             this.$emit('collapse');
+        },
+        sidebarSelectHeaderInitiativeId(id) {
+            this.sidebar_selected_initiative_id = id;
         }
+    },
+    mounted() {
+        eventBus.$on('sidebarSelectHeaderInitiativeId', this.sidebarSelectHeaderInitiativeId);
     }
 };
 </script>

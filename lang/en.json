@@ -253,6 +253,8 @@
     "header.menu.create_initiative": "Create Initiative",
     "header.menu.opportunities": "Opportunities",
     "header.menu.crete_ticket": "Crete Ticket",
+    "header.menu.solution_design": "Solution Design",
+    "header.menu.edit_initiative": "Edit Initiative",
     "opportunity.page_title": "Opportunities",
     "opportunity_list_table.client_th_text": "Client",
     "opportunity_list_table.initiative_name_th_text": "Initiative Name",
