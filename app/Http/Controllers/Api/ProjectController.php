@@ -69,7 +69,7 @@ class ProjectController extends Controller
         $status = false;
         $requestData = $request->all();
 
-        $project = Project::find($requestData['id']);
+        $project = Project::where('initiative_id', $requestData['initiative_id'])->find($requestData['id']);
         if (!$project) {
             return ApiHelper::response($status, __('messages.project.not_found'), '', 400);
         }
@@ -102,7 +102,7 @@ class ProjectController extends Controller
     {
         $status = false;
         $requestData = $request->all();
-        $project = Project::find($requestData['id']);
+        $project = Project::where('initiative_id', $requestData['initiative_id'])->find($requestData['id']);
         if (!$project) {
             return ApiHelper::response($status, __('messages.project.not_found'), '', 400);
         }
