@@ -117,6 +117,7 @@ class ProjectController extends Controller
             $status = true;
             $message = __('messages.project.update_success');
             $statusCode = 200;
+            DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
             $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
