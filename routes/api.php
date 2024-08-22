@@ -59,6 +59,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::controller(ProjectController::class)->prefix('{initiative_id}/project')->group(function () {
             Route::post('/', 'index');
             Route::post('/change-status', 'changeStatus');
+            Route::post('/update', 'update');
         });
     });
 

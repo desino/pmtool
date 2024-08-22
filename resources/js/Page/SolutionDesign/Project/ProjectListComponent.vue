@@ -74,6 +74,11 @@
         </div>
         <PaginationComponent :currentPage="Number(currentPage)" :totalPages="Number(totalPages)"
             @page-changed="getProjectList" />
+
+        <div id="editProjectModal" aria-hidden="true" aria-labelledby="editProjectModalLabel" class="modal fade"
+            tabindex="-1">
+            <EditProjectModalComponent ref="editProjectModalComponent" @projectUpdated="getProjectList" />
+        </div>
     </div>
 </template>
 <script>
@@ -83,11 +88,14 @@ import GlobalMessage from './../../../components/GlobalMessage.vue';
 import { mapActions } from 'vuex';
 import PaginationComponent from './../../../components/PaginationComponent.vue';
 import showToast from './../../../utils/toasts';
+import EditProjectModalComponent from './EditProjectModalComponent.vue';
+import { Modal } from 'bootstrap';
 export default {
     name: 'ProjectList',
     components: {
         GlobalMessage,
-        PaginationComponent
+        PaginationComponent,
+        EditProjectModalComponent
     },
     data() {
         return {
@@ -140,6 +148,7 @@ export default {
                         project.initiative_id = this.initiative_id;
                         const { message } = await ProjectService.updateProjectStatus(project);
                         showToast(message, 'success');
+                        // this.getProjectList();
                     } catch (error) {
                         project.status = !project.status;
                         this.handleError(error);
@@ -147,10 +156,16 @@ export default {
                 } else {
                     project.status = !project.status;
                 }
-            })
+            });
         },
         async editProject(project) {
-
+            // console.log('this.project :: ', project);
+            this.$refs.editProjectModalComponent.getEditProjectFormData(project);
+            const modalElement = document.getElementById('editProjectModal');
+            if (modalElement) {
+                const modal = new Modal(modalElement);
+                modal.show();
+            }
         },
         handleError(error) {
             if (error.type === 'validation') {

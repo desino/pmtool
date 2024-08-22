@@ -10,6 +10,7 @@ const defaultPath = `${APP_VARIABLES.DEFAULT_API_PATH}/solution-design/:initiati
 const endpoints = {
     getProjects: `${defaultPath}`,
     changeStatus: `${defaultPath}/change-status`,
+    updateProject: `${defaultPath}/update`,
 }
 
 const ProjectService = {
@@ -26,6 +27,15 @@ const ProjectService = {
     async updateProjectStatus(data) {
         try {
             const endpoint = endpoints.changeStatus.replace(':initiative_id', data.initiative_id);
+            const response = await axiosRequest.post(endpoint, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async updateProject(data) {
+        try {
+            const endpoint = endpoints.updateProject.replace(':initiative_id', data.initiative_id);
             const response = await axiosRequest.post(endpoint, data);
             return response.data;
         } catch (error) {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\ProjectRequest;
 use App\Models\Project;
 use App\Services\InitiativeService;
 use Illuminate\Http\Request;
@@ -19,6 +20,7 @@ class ProjectController extends Controller
         $filters = $request->post('filters');
         $projects = Project::select(
             'id',
+            'initiative_id',
             'name',
             'status',
         )
@@ -87,6 +89,34 @@ class ProjectController extends Controller
             $message = __('messages.project.update_status_success');
             $statusCode = 200;
             DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $statusCode = 500;
+            Log::info($e->getMessage());
+        }
+        return ApiHelper::response($status, $message, '', $statusCode);
+    }
+
+    public function update(ProjectRequest $request)
+    {
+        $status = false;
+        $requestData = $request->all();
+        $project = Project::find($requestData['id']);
+        if (!$project) {
+            return ApiHelper::response($status, __('messages.project.not_found'), '', 400);
+        }
+        $initiative = InitiativeService::getInitiative($request);
+        if (!$initiative) {
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
+        }
+
+        DB::beginTransaction();
+        try {
+            $project->update($requestData);
+            $status = true;
+            $message = __('messages.project.update_success');
+            $statusCode = 200;
         } catch (\Exception $e) {
             DB::rollBack();
             $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
