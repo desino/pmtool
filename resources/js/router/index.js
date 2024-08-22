@@ -19,13 +19,13 @@ router.beforeEach((to, from, next) => {
         'solution-design',
         'solution-design.detail',
         'tasks',
-        'task.detail'
+        'task.detail',
+        'projects',
     ];
 
-    if(routesWithInitiativeId.includes(to.name))
-    {
+    if (routesWithInitiativeId.includes(to.name)) {
         let initiativeId = to.params.initiative_id ?? to.params.id;
-        store.commit("setCurrentInitiative", {id:initiativeId});
+        store.commit("setCurrentInitiative", { id: initiativeId });
     }
 
     // Update document title based on route meta

@@ -22,7 +22,8 @@
             <div class="form-group pb-0">
                 <HeaderInitiativeDropBoxComponent />
             </div>
-            <div v-if="isActive('solution-design') || isActive('tasks') || isActive('task.detail')">
+            <div
+                v-if="isActive('solution-design') || isActive('tasks') || isActive('task.detail') || isActive('projects')">
                 <div class="shadow">
                     <div class="p-2 rounded-bottom">
                         <nav class="mt-1">
@@ -50,6 +51,13 @@
                                         :to="{ name: 'tasks', params: { id: currentInitiative.id } }">
                                         <i class="bi bi-list-ol mx-2"></i>
                                         {{ $t('header.menu.all_ticket') }}
+                                    </router-link>
+                                </li>
+                                <li class="nav-item" v-if="currentInitiative.id">
+                                    <router-link class="nav-link text-dark"
+                                        :to="{ name: 'projects', params: { id: currentInitiative.id } }">
+                                        <i class="bi bi-list-ul mx-2"></i>
+                                        {{ $t('header.menu.projects') }}
                                     </router-link>
                                 </li>
                             </ul>
@@ -226,7 +234,7 @@ export default {
         async getInitiativeData() {
             const response = await OpportunityService.getOpportunity(this.sidebar_selected_initiative_id);
             this.initiativeData = response.content;
-        }
+        },
     },
     mounted() {
         eventBus.$on('sidebarSelectHeaderInitiativeId', this.sidebarSelectHeaderInitiativeId);

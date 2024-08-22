@@ -16,4 +16,9 @@ class Project extends Model
     {
         return Config::get('myapp.default_project_name');
     }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
 }

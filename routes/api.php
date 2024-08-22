@@ -6,13 +6,14 @@ use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\HeaderController;
 use App\Http\Controllers\Api\InitiativeController;
 use App\Http\Controllers\Api\OpportunityController;
+use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\SolutionDesignController;
 use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('auth:sanctum')->group(function(){
+Route::middleware('auth:sanctum')->group(function () {
     Route::controller(AuthController::class)->group(function () {
         Route::get('/user', 'user');
     });
@@ -48,11 +49,16 @@ Route::middleware('auth:sanctum')->group(function(){
 
         Route::controller(TicketController::class)->prefix('{initiative_id}/ticket')->group(function () {
             Route::get('get-section-functionality', 'getSectionFunctionality');
-            Route::get('all','index');
+            Route::get('all', 'index');
             Route::post('store', 'store');
-            Route::get('show/{ticket_id}','show');
-            Route::get('all-ticket/','allTicketsForDropdown');
-            Route::post('update-release-note/{ticket_id}','updateReleaseNote');
+            Route::get('show/{ticket_id}', 'show');
+            Route::get('all-ticket/', 'allTicketsForDropdown');
+            Route::post('update-release-note/{ticket_id}', 'updateReleaseNote');
+        });
+
+        Route::controller(ProjectController::class)->prefix('{initiative_id}/project')->group(function () {
+            Route::post('/', 'index');
+            Route::post('/change-status', 'changeStatus');
         });
     });
 

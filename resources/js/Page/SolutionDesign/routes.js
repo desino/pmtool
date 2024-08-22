@@ -2,6 +2,7 @@ import SolutionDesignComponent from "./SolutionDesignComponent.vue";
 import DetailSolutionDesignComponent from "./DetailSolutionDesignComponent.vue";
 import TicketDetailDeisgnComponent from "@/Page/SolutionDesign/Ticket/TicketDetailDeisgnComponent.vue";
 import TicketListComponent from "@/Page/SolutionDesign/Ticket/TicketListComponent.vue";
+import ProjectListComponent from "./Project/ProjectListComponent.vue";
 
 export default [
     {
@@ -27,5 +28,11 @@ export default [
         name: 'task.detail',
         component: TicketDetailDeisgnComponent,
         meta: { requiresAuth: true, title: 'Task Detail' },
+    },
+    {
+        path: '/solution-design/:id/projects',
+        name: 'projects',
+        component: ProjectListComponent,
+        meta: { requiresAuth: true, title: 'Project' },
     }
 ];
