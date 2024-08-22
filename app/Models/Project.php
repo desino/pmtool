@@ -11,8 +11,10 @@ class Project extends Model
 
     protected $guarded = ['id'];
 
-    public function initiative()
+    public const DEFAULT_PROJECT_NAME = 'Maintenance';
+
+    public static function getDefaultProjectName()
     {
-        return $this->belongsTo(Initiative::class);
+        return self::DEFAULT_PROJECT_NAME;
     }
 }

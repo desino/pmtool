@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\InitiativeRequest;
 use App\Models\Client;
 use App\Models\Initiative;
+use App\Models\Project;
 use App\Services\AsanaService;
 use App\Services\ClientService;
 use Illuminate\Http\Request;
@@ -30,19 +31,19 @@ class InitiativeController extends Controller
 
     public function store(InitiativeRequest $request)
     {
-        $validatData = $request->validated();
+        $validateData = $request->validated();
 
         $status = false;
         $retData = [
             'initiative' => "",
         ];
 
-        // $getClient = ClientService::getClient($validatData['client_id']);
+        // $getClient = ClientService::getClient($validateData['client_id']);
         // if($getClient){
         //     return ApiHelper::response($status, __('messages.initiative.client_not_exist'), $retData, 400);
         // }        
         $data = [
-            'name' => $validatData['name'],
+            'name' => $validateData['name'],
         ];
         $project = $this->asanaService->createProject($data);
         if ($project['error_status']) {
@@ -51,10 +52,12 @@ class InitiativeController extends Controller
 
         DB::beginTransaction();
         try {
-            $validatData['asana_project_id'] = $project['data']['data']['gid'];
-            $initiative = Initiative::create($validatData);
+            $validateData['asana_project_id'] = $project['data']['data']['gid'];
+            $initiative = Initiative::create($validateData);
+            $validateData['name'] = Project::getDefaultProjectName();
+            $initiative->project()->create($validateData);
             $status = true;
-            $meesage = __('messages.initiative.store_success');
+            $message = __('messages.initiative.store_success');
             $statusCode = 200;
             $initiative->client;
             $retData = [
@@ -63,10 +66,10 @@ class InitiativeController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
             Log::info($e->getMessage());
         }
-        return ApiHelper::response($status, $meesage, $retData, $statusCode);
+        return ApiHelper::response($status, $message, $retData, $statusCode);
     }
 }

@@ -35,6 +35,11 @@ class Initiative extends Model
         return $this->hasMany(InitiativeEnvironment::class);
     }
 
+    public function project()
+    {
+        return $this->hasOne(Project::class);
+    }
+
     public static function statuses()
     {
         return [

@@ -44,7 +44,7 @@ class TicketController extends Controller
 
     public function store(TitcketRequest $request)
     {
-        $validatData = $request->validated();
+        $validateData = $request->validated();
         $status = false;
         $retData = [
             'ticket' => "",
@@ -52,10 +52,10 @@ class TicketController extends Controller
 
         $initiative = InitiativeService::getInitiative($request);
         if (!$initiative) {
-            return ApiHelper::response($status, __('messages.solution_design.sectino.initiative_not_exist'), '', 400);
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
         }
         if (!$initiative->client) {
-            return ApiHelper::response($status, __('messages.solution_design.sectino.client_not_exist'), '', 400);
+            return ApiHelper::response($status, __('messages.solution_design.section.client_not_exist'), '', 400);
         }
 
         $getAsanaProject = $this->asanaService->getProject(trim($initiative->asana_project_id));
@@ -66,10 +66,10 @@ class TicketController extends Controller
         $ticketTypes = Ticket::getAllTypes();
         $projectId = $initiative->asana_project_id; // from getProject api
         $data = [
-            'name' => $validatData['name'],
+            'name' => $validateData['name'],
             'resource_type' => 'task',
             'resource_subtype' => 'default_task',
-            // 'resource_subtype' => $ticketTypes[$validatData['type']],
+            // 'resource_subtype' => $ticketTypes[$validateData['type']],
             // 'notes' => 'This is a task created from the API.',
             // 'due_on' => '2024-08-10',
         ];
@@ -77,12 +77,12 @@ class TicketController extends Controller
         if ($task['error_status']) {
             return ApiHelper::response($status, __('messages.asana.create_ticket.store_error'), '', 500);
         }
-        $validatData['asana_task_id'] = $task['data']['data']['gid'];
+        $validateData['asana_task_id'] = $task['data']['data']['gid'];
         DB::beginTransaction();
         try {
-            $ticket = Ticket::create($validatData);
+            $ticket = Ticket::create($validateData);
             $status = true;
-            $meesage = __('messages.create_ticket.store_success');
+            $message = __('messages.create_ticket.store_success');
             $statusCode = 200;
             $retData = [
                 'ticket' => $ticket,
@@ -90,14 +90,14 @@ class TicketController extends Controller
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
-            $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
             Log::info($e->getMessage());
         }
-        return ApiHelper::response($status, $meesage, $retData, $statusCode);
+        return ApiHelper::response($status, $message, $retData, $statusCode);
     }
 
-//    TODO : refactor this after functionality completes
+    //    TODO : refactor this after functionality completes
     public function index($initiative_id, Request $request)
     {
         $filters = $request->filters;
@@ -165,8 +165,6 @@ class TicketController extends Controller
         }
 
         return ApiHelper::response($status, $message, $ticket, $code);
-
-
     }
 
     public function allTicketsForDropdown()
@@ -179,5 +177,4 @@ class TicketController extends Controller
 
         return ApiHelper::response(true, __('messages.ticket.fetched'), $tickets, 200);
     }
-
 }

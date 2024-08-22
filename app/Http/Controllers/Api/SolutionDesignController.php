@@ -51,14 +51,14 @@ class SolutionDesignController extends Controller
             $section = Section::create($postData);
             $section->functionalities;
             $status = true;
-            $meesage = __('messages.solution_design.section.store_success');
+            $message = __('messages.solution_design.section.store_success');
             $statusCode = 200;
         } catch (\Exception $e) {
-            $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
             Log::info($e->getMessage());
         }
-        return ApiHelper::response($status, $meesage, $section, $statusCode);
+        return ApiHelper::response($status, $message, $section, $statusCode);
     }
 
     public function updateSection(SectionRequest $request)
@@ -74,29 +74,29 @@ class SolutionDesignController extends Controller
 
         $initiative = InitiativeService::getInitiative($request);
         if (!$initiative) {
-            return ApiHelper::response($status, __('messages.solution_design.sectino.initiative_not_exist'), '', 400);
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
         }
         if (!$initiative->client) {
-            return ApiHelper::response($status, __('messages.solution_design.sectino.client_not_exist'), '', 400);
+            return ApiHelper::response($status, __('messages.solution_design.section.client_not_exist'), '', 400);
         }
 
         try {
             $section = SolutionDesignServicec::updateSection($request, $section);
             $statusCode = 200;
-            $meesage = __('messages.solution_design.section.update_success');
+            $message = __('messages.solution_design.section.update_success');
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
             Log::info($e->getMessage());
         }
-        return ApiHelper::response($status, $meesage, $section, $statusCode);
+        return ApiHelper::response($status, $message, $section, $statusCode);
     }
 
     public function storeUpdateFunctionality(FunctionalityRequest $request)
     {
-        $validatData = $request->validated();
+        $validateData = $request->validated();
         $status = false;
         $retData = [
             'functionality' => ""
@@ -104,7 +104,7 @@ class SolutionDesignController extends Controller
 
         $initiative = InitiativeService::getInitiative($request);
         if (!$initiative) {
-            return ApiHelper::response($status, __('messages.solution_design.sectino.initiative_not_exist'), '', 400);
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
         }
         if (!$initiative->client) {
             return ApiHelper::response($status, __('messages.solution_design.sectino.client_not_exist'), '', 400);
@@ -126,13 +126,13 @@ class SolutionDesignController extends Controller
         try {
             $status = true;
             $transactionType = "";
-            if (isset($validatData['functionality_id'])) {
-                $functionality = SolutionDesignServicec::updateFunctionality($request, $validatData);
-                $meesage = __('messages.solution_design.functionality.update_success');
+            if (isset($validateData['functionality_id'])) {
+                $functionality = SolutionDesignServicec::updateFunctionality($request, $validateData);
+                $message = __('messages.solution_design.functionality.update_success');
                 $transactionType = "updated";
             } else {
-                $functionality = SolutionDesignServicec::storeFunctionality($request, $validatData);
-                $meesage = __('messages.solution_design.functionality.store_success');
+                $functionality = SolutionDesignServicec::storeFunctionality($request, $validateData);
+                $message = __('messages.solution_design.functionality.store_success');
                 $transactionType = "created";
             }
             $statusCode = 200;
@@ -143,11 +143,11 @@ class SolutionDesignController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
             Log::info($e->getMessage());
         }
-        return ApiHelper::response($status, $meesage, $retData, $statusCode);
+        return ApiHelper::response($status, $message, $retData, $statusCode);
     }
 
     public function deleteFunctionality(Request $request)
@@ -156,10 +156,10 @@ class SolutionDesignController extends Controller
 
         $initiative = InitiativeService::getInitiative($request);
         if (!$initiative) {
-            return ApiHelper::response($status, __('messages.solution_design.sectino.initiative_not_exist'), '', 400);
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
         }
         if (!$initiative->client) {
-            return ApiHelper::response($status, __('messages.solution_design.sectino.client_not_exist'), '', 400);
+            return ApiHelper::response($status, __('messages.solution_design.section.client_not_exist'), '', 400);
         }
 
         $section = SolutionDesignServicec::getSection($request->post('section_id'), $request->post('initiative_id'));
@@ -177,14 +177,14 @@ class SolutionDesignController extends Controller
             $functionality->delete();
             DB::commit();
             $statusCode = 200;
-            $meesage = __('messages.solution_design.functionality.delete_success');
+            $message = __('messages.solution_design.functionality.delete_success');
         } catch (\Exception $e) {
             DB::rollBack();
-            $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
             Log::info($e->getMessage());
         }
-        return ApiHelper::response($status, $meesage, '', $statusCode);
+        return ApiHelper::response($status, $message, '', $statusCode);
     }
     public function deleteSection(Request $request)
     {
@@ -192,10 +192,10 @@ class SolutionDesignController extends Controller
 
         $initiative = InitiativeService::getInitiative($request);
         if (!$initiative) {
-            return ApiHelper::response($status, __('messages.solution_design.sectino.initiative_not_exist'), '', 400);
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
         }
         if (!$initiative->client) {
-            return ApiHelper::response($status, __('messages.solution_design.sectino.client_not_exist'), '', 400);
+            return ApiHelper::response($status, __('messages.solution_design.section.client_not_exist'), '', 400);
         }
 
         $section = SolutionDesignServicec::getSection($request->post('id'), $request->post('initiative_id'));
@@ -209,29 +209,29 @@ class SolutionDesignController extends Controller
             $section->delete();
             // SolutionDesignServicec::deleteSection($request);
             $statusCode = 200;
-            $meesage = __('messages.solution_design.section.delete_success');
+            $message = __('messages.solution_design.section.delete_success');
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
             Log::info($e->getMessage());
         }
-        return ApiHelper::response($status, $meesage, '', $statusCode);
+        return ApiHelper::response($status, $message, '', $statusCode);
     }
 
     public function updateFunctionalityOrderNo(Request $request)
     {
         $statusCode = 200;
         $status = false;
-        $meesage = __('messages.solution_design.section.update_functionality_order_no_success');
+        $message = __('messages.solution_design.section.update_functionality_order_no_success');
 
         $initiative = InitiativeService::getInitiative($request);
         if (!$initiative) {
-            return ApiHelper::response($status, __('messages.solution_design.sectino.initiative_not_exist'), '', 400);
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
         }
         if (!$initiative->client) {
-            return ApiHelper::response($status, __('messages.solution_design.sectino.client_not_exist'), '', 400);
+            return ApiHelper::response($status, __('messages.solution_design.section.client_not_exist'), '', 400);
         }
 
         $section = SolutionDesignServicec::getSection($request->post('section_id'), $request->post('initiative_id'));
@@ -251,14 +251,14 @@ class SolutionDesignController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
             Log::info($e->getMessage());
-            return ApiHelper::response($status, $meesage, collect([]), $statusCode);
+            return ApiHelper::response($status, $message, collect([]), $statusCode);
         }
 
         $updatedFunctionality = Functionality::find($request->post('id'));
-        return ApiHelper::response($status, $meesage, $updatedFunctionality, $statusCode);
+        return ApiHelper::response($status, $message, $updatedFunctionality, $statusCode);
     }
 
     public function updateSectionOrderNo(Request $request)
@@ -268,10 +268,10 @@ class SolutionDesignController extends Controller
 
         $initiative = InitiativeService::getInitiative($request);
         if (!$initiative) {
-            return ApiHelper::response($status, __('messages.solution_design.sectino.initiative_not_exist'), '', 400);
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
         }
         if (!$initiative->client) {
-            return ApiHelper::response($status, __('messages.solution_design.sectino.client_not_exist'), '', 400);
+            return ApiHelper::response($status, __('messages.solution_design.section.client_not_exist'), '', 400);
         }
 
         $section = SolutionDesignServicec::getSection($request->post('id'), $request->post('initiative_id'));
@@ -281,14 +281,14 @@ class SolutionDesignController extends Controller
         try {
             $retData = SolutionDesignServicec::updateSectionOrderNo($request);
             $statusCode = 200;
-            $meesage = __('messages.solution_design.section.update_section_order_no_success');
+            $message = __('messages.solution_design.section.update_section_order_no_success');
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
             Log::info($e->getMessage());
         }
-        return ApiHelper::response($status, $meesage, '', $statusCode);
+        return ApiHelper::response($status, $message, '', $statusCode);
     }
 }

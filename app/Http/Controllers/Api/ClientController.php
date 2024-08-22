@@ -6,6 +6,7 @@ use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\ClientRequest;
 use App\Models\Client;
+use App\Models\Project;
 use App\Services\AsanaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -42,8 +43,10 @@ class ClientController extends Controller
             $validateData['name'] = $validateData['initiative_name'];
             $validateData['asana_project_id'] = $project['data']['data']['gid'];
             $initiative = $client->initiatives()->create($validateData);
+            $validateData['name'] = Project::getDefaultProjectName();
+            $initiative->project()->create($validateData);
             $status = true;
-            $meesage = __('messages.client.store_success');
+            $message = __('messages.client.store_success');
             $statusCode = 200;
             $retData = [
                 'initiative' => $initiative->load('client'),
@@ -51,10 +54,10 @@ class ClientController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $meesage = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
             $statusCode = 500;
             Log::info($e->getMessage());
         }
-        return ApiHelper::response($status, $meesage, $retData, $statusCode);
+        return ApiHelper::response($status, $message, $retData, $statusCode);
     }
 }
