@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('asana_task_id')->nullable();
             $table->bigInteger('functionality_id');
+            $table->bigInteger('project_id');
             $table->string('name');
             $table->integer('type');
             $table->bigInteger('initial_estimation_development_time');

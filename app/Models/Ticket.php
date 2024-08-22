@@ -63,4 +63,9 @@ class Ticket extends Model
     {
         return $this->belongsTo(Functionality::class);
     }
+
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class);
+    }
 }
