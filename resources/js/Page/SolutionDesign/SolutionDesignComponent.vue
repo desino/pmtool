@@ -517,7 +517,7 @@ export default {
     },
     beforeRouteUpdate(to, from, next) {
         this.initiativeId = to.params.id;
-        this.resetForm();
+        // this.resetForm();
         this.fetchData();
         next();
     },
