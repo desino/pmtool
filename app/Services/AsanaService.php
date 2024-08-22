@@ -18,12 +18,12 @@ class AsanaService
     private $response = "";
     public function __construct()
     {
-        $this->workspaceId = Config::get('app.asana_workspace_id');
+        $this->workspaceId = Config::get('myapp.asana_workspace_id');
         $key = "2/1206969167492969/1208008802985718:fb3401866e90c74deebdf582c71c00b3";
         $verify = [];
-        if (Config::get('app.ssl_certificate') != '') {
+        if (Config::get('myapp.ssl_certificate') != '') {
             $verify = [
-                'verify' => Config::get('app.ssl_certificate')
+                'verify' => Config::get('myapp.ssl_certificate')
             ];
         }
 

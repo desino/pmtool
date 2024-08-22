@@ -7,27 +7,28 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Facades\Socialite;
 
 class SocialiteController extends Controller
 {
-    public function redirectToProvider($provider){
+    public function redirectToProvider($provider)
+    {
         $provider = self::convertProviderSlugToServiceName($provider);
-        return Socialite::driver($provider)->scopes(config("services.".$provider.".scopes"))->redirect();
+        return Socialite::driver($provider)->scopes(config("services." . $provider . ".scopes"))->redirect();
     }
 
     public function handleProviderCallback($provider)
     {
         $provider = self::convertProviderSlugToServiceName($provider);
         $remoteUser = Socialite::driver($provider)
-        ->scopes(config("services.{$provider}.scopes"))
-        ->user();
+            ->scopes(config("services.{$provider}.scopes"))
+            ->user();
 
         $domainArray = explode('@', $remoteUser->getEmail());
-
-        $allowedDomainsArray = array_map('trim',explode(',', config('app.allowed_domains_for_office365_login')));
+        $allowedDomainsArray = array_map('trim', explode(',', Config::get('myapp.allowed_domains_for_office365_login')));
         if (!in_array($domainArray[1], $allowedDomainsArray)) {
             //return redirect('/office-365-login-callback?message_class=danger&message='.urlencode(__('messages.auth.office365_login_domains_not_match')).'');
             Session::put('message_class', 'danger');
@@ -49,7 +50,8 @@ class SocialiteController extends Controller
         return redirect('/login');
     }
 
-    public function getProviderCallbackSessionData(){
+    public function getProviderCallbackSessionData()
+    {
         $retData = array(
             'message_class' => Session::get('message_class') ?? null,
             'message' => Session::get('callback_message') ?? null,
@@ -59,12 +61,11 @@ class SocialiteController extends Controller
         Session::flash('message_class');
         Session::flash('callback_message');
         Session::flash('token');
-        return ApiHelper::response(true,__('messages.auth.provider_callback_session_text'),$retData,200);
+        return ApiHelper::response(true, __('messages.auth.provider_callback_session_text'), $retData, 200);
     }
 
     public static function convertProviderSlugToServiceName($providerSlug)
     {
         return str_replace('-', '_', $providerSlug);
     }
-
 }

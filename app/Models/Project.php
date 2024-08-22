@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Config;
 
 class Project extends Model
 {
@@ -11,10 +12,8 @@ class Project extends Model
 
     protected $guarded = ['id'];
 
-    public const DEFAULT_PROJECT_NAME = 'Maintenance';
-
     public static function getDefaultProjectName()
     {
-        return self::DEFAULT_PROJECT_NAME;
+        return Config::get('myapp.default_project_name');
     }
 }

@@ -27,6 +27,9 @@ export default {
             const response = await HeaderService.getInitiatives();
             this.initiatives = response.content;
             this.selected_initiative_id = this.$route.params.id ?? this.$route.params.initiative_id;
+            if (this.selected_initiative_id === undefined) {
+                this.selected_initiative_id = "";
+            }
             eventBus.$emit('sidebarSelectHeaderInitiativeId', this.selected_initiative_id);
         },
         handleAppendHeaderInitiativeSelectBox(data) {
