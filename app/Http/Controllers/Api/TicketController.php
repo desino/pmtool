@@ -120,6 +120,7 @@ class TicketController extends Controller
 
     public function show($initiative_id, $ticket_id)
     {
+        abort(404);
         $ticket = Ticket::with('functionality')->find($ticket_id);
 
         if (!$ticket) {

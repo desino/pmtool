@@ -6,7 +6,8 @@ export default new Vuex.Store({
         token: localStorage.getItem('token') || null,
         user: null,
         loading: false,
-        currentInitiative:{}
+        currentInitiative:{},
+        serverError: false
     },
     mutations: {
         /**
@@ -49,6 +50,16 @@ export default new Vuex.Store({
         },
 
         /**
+         * Sets the loading status in the state.
+         *
+         * @param {Object} state - The Vuex state object.
+         * @param {boolean} error - The error to set.
+         */
+        setServerError(state, error) {
+            state.serverError = error;
+        },
+
+        /**
          * Sets the current project/initiative in the state.
          *
          * @param {Object} state - The Vuex state object.
@@ -64,9 +75,13 @@ export default new Vuex.Store({
         },
         setCurrentInitiative({commit},initiative){
             commit('setCurrentInitiative', initiative);
+        },
+        setServerError({ commit }, error) {
+            commit('setServerError', error);
         }
     },
     getters: {
+        isServerError: state => state.serverError,
         token: state => state.token,
         isAuthenticated: state => state.isAuthenticated,
         user: state => state.user,

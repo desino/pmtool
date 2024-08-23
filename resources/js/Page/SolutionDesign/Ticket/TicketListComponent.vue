@@ -151,7 +151,7 @@ export default {
     mounted() {
         this.fetchAllTasks();
     },
-    beforeUnmount() {d
+    beforeUnmount() {
         this.showMessage = false;
     }
 }
