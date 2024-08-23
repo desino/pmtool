@@ -192,6 +192,9 @@
     "messages.ticket.update_success": "Release Note updated successfully",
     "messages.ticket.update_failed": "Release Note was not updated.",
     "messages.project.get_list_success": "Projects fetched successfully.",
+    "messages.project.not_found": "Project not found.",
+    "messages.project.update_status_success": "Project status updated successfully.",
+    "messages.project.update_success": "Project updated successfully.",
     "home": "Home",
     "login_title": "Login",
     "login_page_title": "Login",
@@ -324,6 +327,7 @@
     "project.list.actions_edit_tooltip": "Edit record",
     "project.list.actions_change_status_modal_title_text": "Change Status",
     "project.list.actions_change_status_modal_text": "Are you sure you want to change status?",
-    "messages.project.not_found": "Project not found.",
-    "messages.project.update_status_success": "Project status updated successfully."
+    "project.list.edit.modal_title": "Edit Project",
+    "project.list.edit.modal_submit_but_text": "Update Project",
+    "project.list.edit.modal.form.project_name": "Project Name"
 }
