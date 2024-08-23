@@ -44,9 +44,9 @@ const SolutionDesignService = {
             throw handleError(error);
         }
     },
-    async updateReleaseNote(id,data){
+    async updateReleaseNote(data){
         try {
-            const endpoint = endpoints.updateReleaseNote.replace(':id', id);
+            const endpoint = endpoints.updateReleaseNote.replace(':initiative_id', data.initiative_id).replace(':ticket_id', data.ticket_id);
             const response = await axiosRequest.post(endpoint,data);
             return response.data;
         } catch (error) {
