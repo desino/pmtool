@@ -13,7 +13,9 @@ const endpoints = {
     storeTicket: `${defaultPath}/store`,
     fetchTicket: `${defaultPath}/show/:ticket_id`,
     updateReleaseNote: `${defaultPath}/update-release-note/:ticket_id`,
-    fetchAllTicketForDropDown : `${defaultPath}/all-ticket`
+    fetchAllTicketForDropDown: `${defaultPath}/all-ticket`,
+    getInitiativeProjectList: `${defaultPath}/get-initiative-project-list`,
+    assignProject: `${defaultPath}/assign-project`
 }
 
 const SolutionDesignService = {
@@ -26,10 +28,10 @@ const SolutionDesignService = {
             throw handleError(error);
         }
     },
-    async fetchAllTickets(initiative_id,data){
+    async fetchAllTickets(initiative_id, data) {
         try {
-            const endpoint = endpoints.getAllTickets.replace(':initiative_id',initiative_id);
-            const response = await axiosRequest.get(endpoint,{params:data});
+            const endpoint = endpoints.getAllTickets.replace(':initiative_id', initiative_id);
+            const response = await axiosRequest.get(endpoint, { params: data });
             return response.data;
         } catch (error) {
             throw handleError(error);
@@ -37,23 +39,23 @@ const SolutionDesignService = {
     },
     async storeTicket(data) {
         try {
-            const endpoint = endpoints.storeTicket.replace(':initiative_id',data.initiative_id);
+            const endpoint = endpoints.storeTicket.replace(':initiative_id', data.initiative_id);
             const response = await axiosRequest.post(endpoint, data);
             return response.data;
         } catch (error) {
             throw handleError(error);
         }
     },
-    async updateReleaseNote(id,data){
+    async updateReleaseNote(id, data) {
         try {
             const endpoint = endpoints.updateReleaseNote.replace(':id', id);
-            const response = await axiosRequest.post(endpoint,data);
+            const response = await axiosRequest.post(endpoint, data);
             return response.data;
         } catch (error) {
             throw handleError(error);
         }
     },
-    async fetchTicket(data){
+    async fetchTicket(data) {
         try {
             const endpoint = endpoints.fetchTicket.replace(':initiative_id', data.initiative_id).replace(':ticket_id', data.ticket_id);
             const response = await axiosRequest.get(endpoint);
@@ -62,15 +64,34 @@ const SolutionDesignService = {
             throw handleError(error);
         }
     },
-    async fetchAllTicketForDropDown(initiative_id){
+    async fetchAllTicketForDropDown(initiative_id) {
         try {
-            const endpoint = endpoints.fetchAllTicketForDropDown.replace(':initiative_id',initiative_id);
+            const endpoint = endpoints.fetchAllTicketForDropDown.replace(':initiative_id', initiative_id);
             const response = await axiosRequest.get(endpoint);
             return response.data;
         } catch (error) {
             throw handleError(error);
         }
+    },
+    async getInitiativeProjects(initiative_id) {
+        try {
+            const endpoint = endpoints.getInitiativeProjectList.replace(':initiative_id', initiative_id);
+            const response = await axiosRequest.get(endpoint);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async assignProject(data) {
+        try {
+            const endpoint = endpoints.assignProject.replace(':initiative_id', data.initiative_id);
+            const response = await axiosRequest.post(endpoint, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
     }
+
 }
 
 function handleError(error) {

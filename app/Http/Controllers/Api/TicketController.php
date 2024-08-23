@@ -4,13 +4,16 @@ namespace App\Http\Controllers\Api;
 
 use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\AssignProjectRequest;
 use App\Http\Requests\Api\TitcketRequest;
 use App\Http\Requests\UpdateReleaseNoteRequest;
 use App\Models\Functionality;
+use App\Models\Project;
 use App\Models\Section;
 use App\Models\Ticket;
 use App\Services\AsanaService;
 use App\Services\InitiativeService;
+use App\Services\ProjectService;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -167,5 +170,52 @@ class TicketController extends Controller
         }
 
         return ApiHelper::response(true, __('messages.ticket.fetched'), $tickets, 200);
+    }
+
+    public function getInitiativeProjectList(Request $request, $initiativeId)
+    {
+        $project = ProjectService::getInitiativeProjects($initiativeId);
+        return ApiHelper::response(true, '', $project, 200);
+    }
+
+    public function assignProject(AssignProjectRequest $request, $initiativeId)
+    {
+        $status = false;
+        $initiative = InitiativeService::getInitiative($request);
+        if (!$initiative) {
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
+        }
+
+        if ($request->has('project_id') && !empty($request->input('project_id'))) {
+            $project = Project::where('initiative_id', $initiativeId)->find($request->project_id);
+            if (!$project) {
+                return ApiHelper::response($status, __('messages.project.project_not_exist'), '', 400);
+            }
+        }
+        DB::beginTransaction();
+        try {
+            if ($request->has('project_id') && !empty($request->input('project_id'))) {
+                ProjectService::assignProjectForTasks($request);
+            }
+            if ($request->has('project_name') && !empty($request->input('project_name'))) {
+                ProjectService::createAndAssignProjectForTasks($request);
+            }
+            $status = true;
+            $message = __('messages.project.assign_success');
+            $statusCode = 200;
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $statusCode = 500;
+            Log::info($e->getMessage());
+        }
+        return ApiHelper::response($status, $message, '', $statusCode);
+
+        // ProjectService::createOrAssignProjectForTasks($request);
+        print('<pre>');
+        print_r($request->all());
+        print('</pre>');
+        exit;
     }
 }
