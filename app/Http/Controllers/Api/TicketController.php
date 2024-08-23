@@ -102,22 +102,13 @@ class TicketController extends Controller
     {
         $filters = $request->filters;
 
-        $tickets = Ticket::whereHas('functionality.section', function ($query) use ($initiative_id) {
+        $tickets = Ticket::select(['id', 'name', 'type'])->whereHas('functionality.section', function ($query) use ($initiative_id) {
             $query->where('initiative_id', $initiative_id);
         })->when($filters['task_name'] != '', function (Builder $query) use ($filters) {
             $query->whereLike('name', '%' . $filters['task_name'] . '%');
         })->when($filters['task_type'] != '', function (Builder $query) use ($filters) {
             $query->where('type', $filters['task_type']);
-        })->get();
-
-        $tickets = $tickets->transform(function ($ticket) {
-            return [
-                'id' => $ticket->id,
-                'name' => $ticket->name,
-                'type_label' => $ticket->type_label,
-                'created_at' => $ticket->created_at->format('Y-m-d'),
-            ];
-        });
+        })->paginate(10);
 
         $meta['task_type'] = Ticket::getAllTypes();
         $meta['functionalities'] = Functionality::whereHas('section', function ($query) use ($initiative_id) {

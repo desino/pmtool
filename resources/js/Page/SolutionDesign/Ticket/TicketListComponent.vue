@@ -125,7 +125,9 @@ export default {
                 }
                 await this.setLoading(true);
                 const response = await ticketService.fetchAllTickets(this.initiative_id, params);
-                this.tasks = response.content;
+                this.tasks = response.content.data;
+                this.currentPage = response.content.current_page;
+                this.totalPages = response.content.last_page;
                 this.filterTaskTypes = response.meta_data.task_type;
                 this.functionalities = response.meta_data.functionalities;
                 await this.setLoading(false);
@@ -149,8 +151,7 @@ export default {
     mounted() {
         this.fetchAllTasks();
     },
-    beforeUnmount() {
-        // Hide the message when the component is unmounted
+    beforeUnmount() {d
         this.showMessage = false;
     }
 }
