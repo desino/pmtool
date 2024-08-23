@@ -145,6 +145,7 @@ export default {
         ...mapActions(['setLoading']),
         async fetchAllTasks(page = 1) {
             this.clearMessages();
+            this.selectedTasks = [];
             try {
                 const params = {
                     page: page,
