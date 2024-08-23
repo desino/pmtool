@@ -293,10 +293,14 @@ export default {
             this.clearMessages();
             try {
                 this.setLoading(true);
-                const response = await ticketService.updateReleaseNote(this.localTicketId, this.releaseNoteForm);
-                this.releaseNoteForm.release_note = content.release_note;
+                let data = {
+                    'release_note': this.releaseNoteForm.release_note,
+                    'initiative_id': this.localInitiativeId,
+                    'ticket_id': this.localTicketId
+                }
+                const response = await ticketService.updateReleaseNote(data);
+                this.setData(response.content);
                 showToast(response.message, 'success');
-                this.resetForm();
                 this.setLoading(false);
             } catch (error) {
                 this.handleError(error);
