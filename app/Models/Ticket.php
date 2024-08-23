@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,7 +14,8 @@ class Ticket extends Model
     protected $guarded = ['id'];
 
     protected $appends = [
-        'type_label'
+        'type_label',
+        'display_created_at'
     ];
 
     public const TYPE_FEATURE_IMPROVEMENT = 1;
@@ -42,6 +44,13 @@ class Ticket extends Model
         };
     }
 
+    protected function displayCreatedAt(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->created_at->format('m/d/Y'),
+        );
+    }
+
     public static function getTypeFeatureImprovement()
     {
         return self::TYPE_FEATURE_IMPROVEMENT;
@@ -64,7 +73,7 @@ class Ticket extends Model
         return $this->belongsTo(Functionality::class);
     }
 
-    public function project(): BelongsTo
+    public function project()
     {
         return $this->belongsTo(Project::class);
     }

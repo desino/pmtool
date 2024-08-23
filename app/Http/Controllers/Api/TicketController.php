@@ -105,18 +105,40 @@ class TicketController extends Controller
     {
         $filters = $request->filters;
 
-        $tickets = Ticket::select(['id', 'name', 'type'])->whereHas('functionality.section', function ($query) use ($initiative_id) {
-            $query->where('initiative_id', $initiative_id);
-        })->when($filters['task_name'] != '', function (Builder $query) use ($filters) {
-            $query->whereLike('name', '%' . $filters['task_name'] . '%');
-        })->when($filters['task_type'] != '', function (Builder $query) use ($filters) {
-            $query->where('type', $filters['task_type']);
-        })->paginate(10);
+        $tickets = Ticket::select(
+            'id',
+            'name',
+            'type',
+            'project_id',
+            'created_at',
+        )
+            ->with(['project' => function ($q) {
+                $q->select(
+                    'id',
+                    'initiative_id',
+                    'name',
+                );
+            }])
+            ->whereHas('functionality.section', function ($query) use ($initiative_id) {
+                $query->where('initiative_id', $initiative_id);
+            })->when($filters['task_name'] != '', function (Builder $query) use ($filters) {
+                $query->whereLike('name', '%' . $filters['task_name'] . '%');
+            })->when($filters['task_type'] != '', function (Builder $query) use ($filters) {
+                $query->where('type', $filters['task_type']);
+            })
+            ->when(!empty($filters['functionalities']), function (Builder $query) use ($filters) {
+                $query->whereIn('functionality_id', array_column($filters['functionalities'], 'id'));
+            })
+            ->when(!empty($filters['projects']) != '', function (Builder $query) use ($filters) {
+                $query->whereIn('project_id', array_column($filters['projects'], 'id'));
+            })
+            ->paginate(10);
 
         $meta['task_type'] = Ticket::getAllTypes();
         $meta['functionalities'] = Functionality::whereHas('section', function ($query) use ($initiative_id) {
             $query->where('initiative_id', $initiative_id);
         })->get(['id', 'display_name']);
+        $meta['projects'] = ProjectService::getInitiativeProjects($initiative_id);
 
         return ApiHelper::response('false', __('messages.ticket.fetched'), $tickets, 200, $meta);
     }
@@ -211,11 +233,5 @@ class TicketController extends Controller
             Log::info($e->getMessage());
         }
         return ApiHelper::response($status, $message, '', $statusCode);
-
-        // ProjectService::createOrAssignProjectForTasks($request);
-        print('<pre>');
-        print_r($request->all());
-        print('</pre>');
-        exit;
     }
 }

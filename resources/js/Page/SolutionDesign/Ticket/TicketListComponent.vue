@@ -30,8 +30,15 @@
             </div>
             <div class="col-12 col-md-3 mb-2 mb-md-0">
                 <multiselect v-model="filter.functionalities" :multiple="true" :options="functionalities"
-                    :searchable="true" deselect-label="" label="display_name" placeholder="Functionality" track-by="id"
-                    @select="fetchAllTasks">
+                    :searchable="true" deselect-label="" label="display_name"
+                    :placeholder="$t('ticket.filter.functionalities_placeholder')" track-by="id" @select="fetchAllTasks"
+                    @Remove="fetchAllTasks">
+                </multiselect>
+            </div>
+            <div class="col-12 col-md-3 mb-2 mb-md-0">
+                <multiselect v-model="filter.projects" :multiple="true" :options="projects" :searchable="true"
+                    deselect-label="" label="name" :placeholder="$t('ticket.filter.projects_placeholder')" track-by="id"
+                    @select="fetchAllTasks" @Remove="fetchAllTasks">
                 </multiselect>
             </div>
         </div>
@@ -49,33 +56,44 @@
                     <input class="form-check-input" type="checkbox" id="chk_all_tickets" v-model="isChkAllTickets"
                         @change="handleSelectAllTasks">
                 </div>
-                <div class="col-lg-3 col-md-6 col-6 fw-bold py-2">
+                <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
                     {{ $t('ticket.list.column_task_name') }}
                 </div>
-                <div class="col-lg-3 col-md-6 col-6 fw-bold py-2">{{ $t('ticket.list.column_task_type') }}
+                <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
+                    {{ $t('ticket.list.column_task_type') }}
+                </div>
+                <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
+                    {{ $t('ticket.list.column_project') }}
                 </div>
                 <div class="col-lg-3 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
                     {{ $t('ticket.list.column_task_created_at') }}
                 </div>
-                <div class="col-lg-2 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
+                <div class="col-lg-2 col-md-6 col-6 fw-bold py-2 d-flex justify-content-end align-items-end">
                     {{ $t('ticket.list.column_action') }}
                 </div>
             </div>
             <div v-for="task in tasks" v-if="tasks.length > 0" :key="task.id">
-                <div class="row border-desino border p-2">
-                    <div class="col-lg-1 col-md-6 col-6">
+                <div class="row justify-content-between border-desino border">
+                    <div class="col-lg-1 col-md-6 col-6 py-1">
                         <input class="form-check-input" type="checkbox" :id="'chk_ticket_' + task.id"
                             v-model="task.isChecked" @change="handleSelectTasks(task)">
                     </div>
-                    <div class="col-lg-3 col-md-6 col-6">{{ task.name }}</div>
-                    <div class="col-lg-3 col-md-6 col-6">{{ task.type_label }}</div>
+                    <div class="col-lg-2 col-md-6 col-6">{{ task.name }}</div>
+                    <div class="col-lg-2 col-md-6 col-6">{{ task.type_label }}</div>
+                    <div class="col-lg-2 col-md-6 col-6 py-1">
+                        <!-- {{ task.project?.name }} -->
+                        <multiselect v-model="task.project" :options="projects" :searchable="true" deselect-label=""
+                            label="name" :placeholder="$t('ticket.filter.projects_placeholder')" track-by="id"
+                            @select="updateProjectTask">
+                        </multiselect>
+                    </div>
                     <div class="col-lg-3 col-md-6 col-8 text-center text-lg-start">
                         <span class="d-block d-lg-none fw-bold bg-desino mt-2 p-0 text-white text-center rounded-top">
                             {{ $t('ticket.list.column_task_created_at') }} </span>
-                        {{ task.created_at }}
+                        {{ task.display_created_at }}
                     </div>
-                    <div class="col-lg-2 col-md-6 col-4">
-                        <span class="d-block d-lg-none fw-bold bg-light-subtle mt-2 text-white text-center">
+                    <div class="col-lg-2 col-md-6 col-4 d-flex justify-content-end align-items-end">
+                        <span class="d-block d-lg-none fw-bold bg-desino mt-2 text-white text-center">
                             {{ $t('ticket.list.column_action') }}</span>
                         <router-link
                             :to="{ name: 'task.detail', params: { initiative_id: this.initiative_id, ticket_id: task.id } }"
@@ -130,10 +148,12 @@ export default {
             totalPages: "",
             filterTaskTypes: [],
             functionalities: [],
+            projects: [],
             filter: {
                 task_name: "",
                 task_type: "",
-                functionalities: "",
+                functionalities: [],
+                projects: [],
             },
             isChkAllTickets: false,
             selectedTasks: [],
@@ -157,6 +177,7 @@ export default {
                 this.totalPages = response.content.last_page;
                 this.filterTaskTypes = response.meta_data.task_type;
                 this.functionalities = response.meta_data.functionalities;
+                this.projects = response.meta_data.projects;
                 this.tasks = response.content.data.map(task => ({
                     ...task,
                     isChecked: false,
@@ -197,6 +218,10 @@ export default {
                 const modal = new Modal(modalElement);
                 modal.show();
             }
+        },
+        updateProjectTask(selectedOption, id) {
+            console.log('id :: ', id);
+            console.log('project :: ', selectedOption);
         },
         handleError(error) {
             if (error.type === 'validation') {
