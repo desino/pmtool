@@ -54,6 +54,8 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('show/{ticket_id}', 'show');
             Route::get('all-ticket/', 'allTicketsForDropdown');
             Route::post('update-release-note/{ticket_id}', 'updateReleaseNote');
+            Route::get('get-initiative-project-list', 'getInitiativeProjectList');
+            Route::post('assign-project', 'assignProject');
         });
 
         Route::controller(ProjectController::class)->prefix('{initiative_id}/project')->group(function () {
