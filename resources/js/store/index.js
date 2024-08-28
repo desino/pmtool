@@ -7,7 +7,7 @@ export default new Vuex.Store({
         user: null,
         loading: false,
         currentInitiative:{},
-        serverError: false
+        serverError: {}
     },
     mutations: {
         /**
@@ -53,7 +53,7 @@ export default new Vuex.Store({
          * Sets the loading status in the state.
          *
          * @param {Object} state - The Vuex state object.
-         * @param {boolean} error - The error to set.
+         * @param {Object} error - The error to set.
          */
         setServerError(state, error) {
             state.serverError = error;
@@ -81,7 +81,7 @@ export default new Vuex.Store({
         }
     },
     getters: {
-        isServerError: state => state.serverError,
+        serverError: state => state.serverError,
         token: state => state.token,
         isAuthenticated: state => state.isAuthenticated,
         user: state => state.user,

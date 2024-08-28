@@ -1,21 +1,19 @@
 <template>
-    <div v-if="isAuthenticated" class="app-wrapper" :class="isServerError ? 'app-main-error' : ''">
+    <div v-if="isAuthenticated" class="app-wrapper">
         <header-component></header-component>
          <sidebar-component></sidebar-component>
 
-
-        <div v-if="!isServerError">
+        <div v-if="!serverError.message">
             <!-- Global Loading Screen -->
             <loading-screen-component></loading-screen-component>
         </div>
 
 
         <main class="app-main">
-            <div v-if="isServerError">
-                <not-found-component>
-                </not-found-component>
+            <div v-if="serverError.message">
+               <ApiErrorPageComponent :error-message="serverError.message" :error-code="serverError.response.status"/>
             </div>
-            <div v-show="!isServerError">
+            <div v-show="!serverError.message">
                 <router-view></router-view>
             </div>
         </main>
@@ -39,17 +37,20 @@ import HeaderComponent from "./HeaderComponent.vue";
 import globalMixin from '@/globalMixin';
 import SidebarComponent from "./SidebarComponent.vue";
 import NotFoundComponent from "@/components/Errors/NotFoundComponent.vue";
+import ApiErrorPageComponent from "@/components/Errors/ApiErrorPageComponent.vue";
 export default {
     name: 'MainComponent',
     mixins: [globalMixin],
-    components: {NotFoundComponent, SidebarComponent, LoadingScreenComponent, HeaderComponent, FooterComponent },
+    components: {
+        ApiErrorPageComponent,
+        NotFoundComponent, SidebarComponent, LoadingScreenComponent, HeaderComponent, FooterComponent },
     beforeMount() {
         AuthService.refreshUser();
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
     },
     computed: {
-        ...mapGetters(['isAuthenticated','isServerError']),
+        ...mapGetters(['isAuthenticated','serverError']),
     },
 };
 </script>

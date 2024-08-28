@@ -8,18 +8,19 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-end">
                         <li class="breadcrumb-item"><a class="text-decoration-none" href="javascript:void(0)">{{
-                            $t('Dashboard') }}</a></li>
+                                $t('Dashboard')
+                            }}</a></li>
                     </ol>
                 </div>
             </div>
         </div>
     </div>
-    <GlobalMessage v-if="showMessage" />
+    <GlobalMessage v-if="showMessage"/>
     <div class="app-content">
         <div class="row mb-3">
             <div class="col-12 col-md-3 mb-2 mb-md-0">
                 <input v-model="filter.task_name" :placeholder="$t('ticket.filter.task_name')" class="form-control"
-                    type="text" @keyup="fetchAllTasks">
+                       type="text" @keyup="fetchAllTasks">
             </div>
             <div class="col-12 col-md-3 mb-2 mb-md-0">
                 <select id="client_id" v-model="filter.task_type" class="form-select" @change="fetchAllTasks">
@@ -50,53 +51,54 @@
                 </button>
             </div>
         </div>
-        <div class="list-group-item mx-2 mb-3 mt-2">
-            <div class="row justify-content-between font-weight-bold bg-desino text-white rounded-top">
-                <div class="col-lg-1 col-md-6 col-6 fw-bold py-2">
-                    <input class="form-check-input" type="checkbox" id="chk_all_tickets" v-model="isChkAllTickets"
-                        @change="handleSelectAllTasks">
-                </div>
-                <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
-                    {{ $t('ticket.list.column_task_name') }}
-                </div>
-                <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
-                    {{ $t('ticket.list.column_task_type') }}
-                </div>
-                <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
-                    {{ $t('ticket.list.column_project') }}
-                </div>
-                <div class="col-lg-3 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
-                    {{ $t('ticket.list.column_task_created_at') }}
-                </div>
-                <div class="col-lg-2 col-md-6 col-6 fw-bold py-2 d-flex justify-content-end align-items-end">
-                    {{ $t('ticket.list.column_action') }}
-                </div>
-            </div>
-            <div v-for="(task, index) in tasks" v-if="tasks.length > 0" :key="task.id">
-                <div class="row justify-content-between border-desino border">
-                    <div class="col-lg-1 col-md-6 col-6 py-1">
-                        <input class="form-check-input" type="checkbox" :id="'chk_ticket_' + task.id"
-                            v-model="task.isChecked" @change="handleSelectTasks(task)">
+        <ul class="list-group list-group-flush mb-3 mt-2">
+            <li class="font-weight-bold bg-desino text-white rounded-top list-group-item">
+                <div class="row">
+                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
+                        <input class="form-check-input mx-2" type="checkbox" id="chk_all_tickets" v-model="isChkAllTickets"
+                               @change="handleSelectAllTasks">
+                        {{ $t('ticket.list.column_task_name') }}
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6">{{ task.name }}</div>
-                    <div class="col-lg-2 col-md-6 col-6">{{ task.type_label }}</div>
-                    <div class="col-lg-2 col-md-6 col-6 py-1">
-                        <!-- {{ task.project?.name }} -->
+                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
+                        {{ $t('ticket.list.column_task_type') }}
+                    </div>
+                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
+                        {{ $t('ticket.list.column_project') }}
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
+                        {{ $t('ticket.list.column_task_created_at') }}
+                    </div>
+                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
+                        {{ $t('ticket.list.column_action') }}
+                    </div>
+                </div>
+            </li>
+            <li v-for="(task, index) in tasks" v-if="tasks.length > 0" :key="task.id" class="border-desino border list-group-item">
+                <div class="row">
+                    <div class="col-lg-2 col-md-6 col-6 d-flex align-items-center">
+                        <input class="form-check-input mx-2" type="checkbox" :id="'chk_ticket_' + task.id"
+                               v-model="task.isChecked" @change="handleSelectTasks(task)">
+                       <span class="mx-2">
+                           {{ task.name }}
+                       </span>
+                    </div>
+                    <div class="col-lg-2 col-md-6 col-6 d-lg-flex align-items-center">{{ task.type_label }}</div>
+                    <div class="col-lg-2 col-md-6 col-6 d-lg-flex align-items-center">
+                          <span class="d-block d-lg-none fw-bold bg-desino mt-2 p-0 text-white text-center rounded-top">
+                            {{ $t('ticket.list.column_project') }} </span>
                         <multiselect v-model="task.project" :options="projects" :searchable="true" deselect-label=""
-                            label="name" :placeholder="$t('ticket.filter.projects_placeholder')" track-by="id"
-                            @open="storePreviousProject(task.project)"
-                            @select="assignOrRemoveProjectForTask(task.id, 'assign', index, $event)"
-                            @Remove="assignOrRemoveProjectForTask(task.id, 'remove', index, $event)">
+                                     label="name" :placeholder="$t('ticket.filter.projects_placeholder')" track-by="id"
+                                     @open="storePreviousProject(task.project)"
+                                     @select="assignOrRemoveProjectForTask(task.id, 'assign', index, $event)"
+                                     @Remove="assignOrRemoveProjectForTask(task.id, 'remove', index, $event)">
                         </multiselect>
                     </div>
-                    <div class="col-lg-3 col-md-6 col-8 text-center text-lg-start">
+                    <div class="col-lg-3 col-md-6 col-6 d-lg-flex align-items-center text-center text-lg-start">
                         <span class="d-block d-lg-none fw-bold bg-desino mt-2 p-0 text-white text-center rounded-top">
                             {{ $t('ticket.list.column_task_created_at') }} </span>
                         {{ task.display_created_at }}
                     </div>
-                    <div class="col-lg-2 col-md-6 col-4 d-flex justify-content-end align-items-end">
-                        <span class="d-block d-lg-none fw-bold bg-desino mt-2 text-white text-center">
-                            {{ $t('ticket.list.column_action') }}</span>
+                    <div class="col-lg-2 col-md-12 col-12 d-lg-flex align-items-center text-end">
                         <router-link
                             :to="{ name: 'task.detail', params: { initiative_id: this.initiative_id, ticket_id: task.id } }"
                             class="text-success me-2">
@@ -105,12 +107,12 @@
 
                     </div>
                 </div>
-            </div>
-            <div v-else class="list-group-item row border p-4">
+            </li>
+            <li v-else class="list-group-item border p-4">
                 <div class="col h4 fw-bold text-center">{{ $t('ticket.list.not_ticket') }}
                 </div>
-            </div>
-        </div>
+            </li>
+        </ul>
         <PaginationComponent :currentPage="Number(currentPage)" :totalPages="Number(totalPages)"
             @page-changed="fetchAllTasks" />
 
@@ -126,7 +128,7 @@ import globalMixin from '@/globalMixin';
 import PaginationComponent from '../../../components/PaginationComponent.vue';
 import messageService from '../../../services/messageService';
 import GlobalMessage from '../../../components/GlobalMessage.vue';
-import { mapActions } from 'vuex';
+import {mapActions} from 'vuex';
 import ticketService from "../../../services/TicketService";
 import Multiselect from "vue-multiselect";
 import AssignProjectModalComponent from "./AssignProjectModalComponent.vue";

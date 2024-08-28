@@ -7,7 +7,7 @@ const axiosRequest = axios.create({
 
 axiosRequest.interceptors.request.use(
     config => {
-        store.commit('setServerError', false);
+        store.commit('setServerError', {});
         const token = store.state.token;
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
@@ -15,7 +15,8 @@ axiosRequest.interceptors.request.use(
         return config;
     },
     error => {
-        store.commit('setServerError', true);
+        store.commit('setLoading', false);
+        store.commit('setServerError', error);
         return Promise.reject(error);
     }
 );
@@ -29,7 +30,8 @@ axiosRequest.interceptors.response.use(
             store.commit('setUser', null);
             await router.push({ name: 'login' });
         }
-        store.commit('setServerError', true);
+        store.commit('setLoading', false);
+        store.commit('setServerError', error);
         return Promise.reject(error);
     }
 );
