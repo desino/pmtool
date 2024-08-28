@@ -2,11 +2,12 @@ import store from "../store/index.js";
 import router from "../router/index.js";
 
 const axiosRequest = axios.create({
-    'Content-Type': 'application/json',    
+    'Content-Type': 'application/json',
 });
 
 axiosRequest.interceptors.request.use(
     config => {
+        store.commit('setServerError', {});
         const token = store.state.token;
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
@@ -14,6 +15,8 @@ axiosRequest.interceptors.request.use(
         return config;
     },
     error => {
+        store.commit('setLoading', false);
+        store.commit('setServerError', error);
         return Promise.reject(error);
     }
 );
@@ -27,9 +30,10 @@ axiosRequest.interceptors.response.use(
             store.commit('setUser', null);
             await router.push({ name: 'login' });
         }
+        store.commit('setLoading', false);
+        store.commit('setServerError', error);
         return Promise.reject(error);
     }
 );
 
 export default axiosRequest;
- 

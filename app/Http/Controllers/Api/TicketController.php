@@ -145,7 +145,12 @@ class TicketController extends Controller
 
     public function show($initiative_id, $ticket_id)
     {
-        $ticket = Ticket::with('functionality')->find($ticket_id);
+        $ticket = Ticket::with('functionality')
+            ->where('id', $ticket_id)
+            ->whereHas('functionality.section', function ($query) use ($initiative_id) {
+                $query->where('initiative_id', $initiative_id);
+            })
+            ->get()->first();
 
         if (!$ticket) {
             return ApiHelper::response('false', __('messages.ticket.not_found'), [], 404);

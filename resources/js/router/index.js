@@ -31,6 +31,8 @@ router.beforeEach((to, from, next) => {
     // Update document title based on route meta
     document.title = APP_VARIABLES.APP_NAME + ' | ' + to.meta.title;
 
+    store.commit('setServerError', {});
+
     // Redirect logic based on authentication state
     if ((to.name === 'login' || to.name === 'forgot-password') && isAuthenticated) {
         next({ name: 'home' });
@@ -39,6 +41,9 @@ router.beforeEach((to, from, next) => {
     } else {
         next();  // Continue navigation
     }
+
+
+
 });
 
 
