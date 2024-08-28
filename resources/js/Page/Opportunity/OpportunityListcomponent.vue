@@ -30,8 +30,9 @@
                 </select>
             </div>
         </div>
-        <div class="list-group-item mx-2 mb-3 mt-2">
-            <div class="row justify-content-between font-weight-bold bg-desino text-white rounded-top">
+        <ul class="list-group list-group-flush mb-3 mt-2">
+            <li class="list-group-item font-weight-bold bg-desino text-white rounded-top">
+                <div class="row">
                 <div class="col-lg-4 col-md-6 col-6 fw-bold py-2">{{ $t('opportunity_list_table.client_th_text') }}
                 </div>
                 <div class="col-lg-3 col-md-6 col-6 fw-bold py-2">{{
@@ -44,9 +45,10 @@
                 <div class="col-lg-2 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
                     {{ $t('opportunity_list_table.actions_th_text') }}
                 </div>
-            </div>
-            <div v-for="opportunity in opportunities" v-if="opportunities.length > 0" :key="opportunity.id">
-                <div class="row border-desino border p-2">
+                </div>
+            </li>
+            <li class="border-desino border list-group-item" v-for="opportunity in opportunities" v-if="opportunities.length > 0" :key="opportunity.id">
+                <div class="row">
                     <div class="col-lg-4 col-md-6 col-6">{{ opportunity.client.name }}</div>
                     <div class="col-lg-3 col-md-6 col-6">{{ opportunity.name }}</div>
                     <div class="col-lg-3 col-md-6 col-8 text-center text-lg-start">
@@ -74,19 +76,21 @@
                         </router-link>
                     </div>
                 </div>
-            </div>
-            <div v-if="opportunities.length > 0" class="row border p-2">
+            </li>
+            <li v-if="opportunities.length > 0" class="border-desino border list-group-item">
+                <div class="row">
                 <div class="col-lg-4 col-md-6 col-6"></div>
                 <div class="col-lg-3 col-md-6 col-6"></div>
                 <div class="col-lg-3 fw-bold col-md-6 col-8">{{ ballparkTotal }}</div>
                 <div class="col-lg-2 text-end col-md-6 col-4">
                 </div>
-            </div>
-            <div v-else class="list-group-item row border p-4">
+                </div>
+            </li>
+            <li v-else class="list-group-item row border p-4">
                 <div class="col h4 fw-bold text-center">{{ $t('opportunity_list_table.opportunities_not_found_text') }}
                 </div>
-            </div>
-        </div>
+            </li>
+        </ul>
         <PaginationComponent :currentPage="Number(currentPage)" :totalPages="Number(totalPages)"
             @page-changed="fetchAllOpportunities" />
         <div id="editOpportunityModal" aria-hidden="true" aria-labelledby="editOpportunityModalLabel" class="modal fade"

@@ -31,47 +31,50 @@
             </div>
         </div>
 
-        <div class="list-group-item mx-2 mb-3 mt-2">
-            <div class="row justify-content-between font-weight-bold bg-desino text-white rounded-top">
-                <div class="col-lg-4 col-md-6 col-6 fw-bold py-2">
-                    {{ $t('project.list.name_th_text') }}
-                </div>
-                <div class="col-lg-3 col-md-6 col-6 fw-bold py-2 d-flex justify-content-center align-items-center">
-                    {{ $t('project.list.project_status_th_text') }}
-                </div>
-                <div class="col-lg-3 col-md-6 col-6 fw-bold py-2 d-flex justify-content-center align-items-center">
-                    {{ $t('project.list.tickets_th_text') }}
-                </div>
-                <div class="col-lg-2 col-md-6 col-6 fw-bold py-2 d-flex justify-content-end align-items-end">
-                    {{ $t('project.list.actions_th_text') }}
-                </div>
-            </div>
-            <div class="row justify-content-between border-desino border" v-if="projects.length > 0"
-                v-for="project in projects">
-                <div class="col-lg-4 col-md-6 col-6 py-1">
-                    {{ project.name }}
-                </div>
-                <div class="col-lg-3 col-md-6 col-6 py-1 d-flex justify-content-center align-items-center">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
-                            v-model="project.status" @change="handleCheckboxChange(project)">
+        <ul class="list-group list-group-flush list mb-3 mt-2">
+            <li class="list-group-item font-weight-bold bg-desino text-white rounded-top">
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 col-6 fw-bold py-2">
+                        {{ $t('project.list.name_th_text') }}
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-6 fw-bold py-2 d-flex justify-content-center align-items-center">
+                        {{ $t('project.list.project_status_th_text') }}
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-6 fw-bold py-2 d-flex justify-content-center align-items-center">
+                        {{ $t('project.list.tickets_th_text') }}
+                    </div>
+                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2 d-flex justify-content-end align-items-end">
+                        {{ $t('project.list.actions_th_text') }}
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6 col-6 py-1 d-flex justify-content-center align-items-center">
-                    {{ project.tickets_count }}
+            </li>
+            <li class="list-group-item border-desino border" v-if="projects.length > 0" v-for="project in projects">
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 col-6 py-1">
+                        {{ project.name }}
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-6 py-1 d-flex justify-content-center align-items-center">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
+                                v-model="project.status" @change="handleCheckboxChange(project)">
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-6 py-1 d-flex justify-content-center align-items-center">
+                        {{ project.tickets_count }}
+                    </div>
+                    <div class="col-lg-2 col-md-6 col-6 py-1 d-flex justify-content-end align-items-end">
+                        <a :title="$t('project.list.actions_edit_tooltip')" class="text-desino me-2" href="javascript:"
+                            @click="editProject(project)">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                    </div>
                 </div>
-                <div class="col-lg-2 col-md-6 col-6 py-1 d-flex justify-content-end align-items-end">
-                    <a :title="$t('project.list.actions_edit_tooltip')" class="text-desino me-2" href="javascript:"
-                        @click="editProject(project)">
-                        <i class="bi bi-pencil-square"></i>
-                    </a>
-                </div>
-            </div>
-            <div v-else class="list-group-item row border p-4">
+            </li>
+            <li v-else class="list-group-item row border p-4">
                 <div class="col h4 fw-bold text-center">{{ $t('project.list.projects_not_found_text') }}
                 </div>
-            </div>
-        </div>
+            </li>
+        </ul>
         <PaginationComponent :currentPage="Number(currentPage)" :totalPages="Number(totalPages)"
             @page-changed="getProjectList" />
 
