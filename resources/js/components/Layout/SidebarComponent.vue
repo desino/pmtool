@@ -232,6 +232,7 @@ export default {
             this.getInitiativeData();
         },
         async getInitiativeData() {
+            console.log('ddd :: ');
             const response = await OpportunityService.getOpportunity(this.sidebar_selected_initiative_id);
             this.initiativeData = response.content;
         },
