@@ -111,6 +111,8 @@ class TicketController extends Controller
             'type',
             'project_id',
             'created_at',
+            'asana_task_id',
+            'functionality_id',
         )
             ->with(['project' => function ($q) {
                 $q->select(
@@ -118,6 +120,24 @@ class TicketController extends Controller
                     'initiative_id',
                     'name',
                 );
+            }])
+            ->with(['functionality' => function ($q) {
+                $q->select(
+                    'id',
+                    'section_id',
+                );
+                $q->with(['section' => function ($q) {
+                    $q->select(
+                        'id',
+                        'initiative_id',
+                    );
+                    $q->with(['initiative' => function ($q) {
+                        $q->select(
+                            'id',
+                            'asana_project_id'
+                        );
+                    }]);
+                }]);
             }])
             ->whereHas('functionality.section', function ($query) use ($initiative_id) {
                 $query->where('initiative_id', $initiative_id);

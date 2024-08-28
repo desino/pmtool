@@ -19,7 +19,13 @@ class Section extends Model
         return $query->where('initiative_id', $value);
     }
 
-    public function functionalities(){
-        return $this->hasMany(Functionality::class)->orderBy('order_no','asc');
+    public function functionalities()
+    {
+        return $this->hasMany(Functionality::class)->orderBy('order_no', 'asc');
+    }
+
+    public function initiative()
+    {
+        return $this->belongsTo(Initiative::class);
     }
 }
