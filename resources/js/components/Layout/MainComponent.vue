@@ -1,7 +1,7 @@
 <template>
     <div v-if="isAuthenticated" class="app-wrapper">
         <header-component></header-component>
-         <sidebar-component></sidebar-component>
+        <sidebar-component></sidebar-component>
 
         <div v-if="!serverError.message">
             <!-- Global Loading Screen -->
@@ -11,7 +11,8 @@
 
         <main class="app-main">
             <div v-if="serverError.message">
-               <ApiErrorPageComponent :error-message="serverError.message" :error-code="serverError.response.status"/>
+                <ApiErrorPageComponent :error-message="serverError.message"
+                    :error-code="serverError.response?.status" />
             </div>
             <div v-show="!serverError.message">
                 <router-view></router-view>
@@ -43,14 +44,15 @@ export default {
     mixins: [globalMixin],
     components: {
         ApiErrorPageComponent,
-        NotFoundComponent, SidebarComponent, LoadingScreenComponent, HeaderComponent, FooterComponent },
+        NotFoundComponent, SidebarComponent, LoadingScreenComponent, HeaderComponent, FooterComponent
+    },
     beforeMount() {
         AuthService.refreshUser();
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
     },
     computed: {
-        ...mapGetters(['isAuthenticated','serverError']),
+        ...mapGetters(['isAuthenticated', 'serverError']),
     },
 };
 </script>

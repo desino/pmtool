@@ -190,7 +190,6 @@ export default {
                 }
             })
         },
-
         async updateStatusLost(id) {
             try {
                 const response = await OpportunityService.updateStatusLost({ id: id });
@@ -200,7 +199,6 @@ export default {
                 this.handleError(error);
             }
         },
-
         handleError(error) {
             if (error.type === 'validation') {
                 this.errors = error.errors;
@@ -213,7 +211,6 @@ export default {
             this.errors = {};
             messageService.clearMessage();
         },
-
         handleReloadOpportunityList() {
             this.fetchAllOpportunities();
         }

@@ -77,6 +77,7 @@ export default new Vuex.Store({
             commit('setCurrentInitiative', initiative);
         },
         setServerError({ commit }, error) {
+            console.log(error);
             commit('setServerError', error);
         }
     },
