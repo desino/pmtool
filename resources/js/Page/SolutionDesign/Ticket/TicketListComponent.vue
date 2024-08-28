@@ -62,13 +62,13 @@
                     <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
                         {{ $t('ticket.list.column_task_type') }}
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
+                    <div class="col-lg-3 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
                         {{ $t('ticket.list.column_project') }}
                     </div>
-                    <div class="col-lg-3 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
+                    <div class="col-lg-3 col-md-6 col-6 fw-bold py-2 d-none d-lg-block text-center">
                         {{ $t('ticket.list.column_task_created_at') }}
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
+                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2 d-none d-lg-block text-lg-end">
                         {{ $t('ticket.list.column_action') }}
                     </div>
                 </div>
@@ -83,7 +83,7 @@
                        </span>
                     </div>
                     <div class="col-lg-2 col-md-6 col-6 d-lg-flex align-items-center">{{ task.type_label }}</div>
-                    <div class="col-lg-2 col-md-6 col-6 d-lg-flex align-items-center">
+                    <div class="col-lg-3 col-md-6 col-6 d-lg-flex align-items-center">
                           <span class="d-block d-lg-none fw-bold bg-desino mt-2 p-0 text-white text-center rounded-top">
                             {{ $t('ticket.list.column_project') }} </span>
                         <multiselect v-model="task.project" :options="projects" :searchable="true" deselect-label=""
@@ -93,12 +93,12 @@
                                      @Remove="assignOrRemoveProjectForTask(task.id, 'remove', index, $event)">
                         </multiselect>
                     </div>
-                    <div class="col-lg-3 col-md-6 col-6 d-lg-flex align-items-center text-center text-lg-start">
+                    <div class="col-lg-3 col-md-6 col-6 d-lg-flex align-items-center justify-content-center text-center">
                         <span class="d-block d-lg-none fw-bold bg-desino mt-2 p-0 text-white text-center rounded-top">
                             {{ $t('ticket.list.column_task_created_at') }} </span>
                         {{ task.display_created_at }}
                     </div>
-                    <div class="col-lg-2 col-md-12 col-12 d-lg-flex align-items-center text-end">
+                    <div class="col-lg-2 col-md-12 col-12 d-lg-flex align-items-center justify-content-end text-end">
                         <router-link
                             :to="{ name: 'task.detail', params: { initiative_id: this.initiative_id, ticket_id: task.id } }"
                             class="text-success me-2">
