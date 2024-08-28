@@ -89,7 +89,7 @@
                             {{ $t('ticket.list.column_project') }} </span>
                         <multiselect v-model="task.project" :options="projects" :searchable="true" deselect-label=""
                             label="name" :placeholder="$t('ticket.filter.projects_placeholder')" track-by="id"
-                            :ref="`item-${index}`" @open="storePreviousProject(task.project, index)"
+                            :ref="'taskProjectDropdowns-' + index" @open="storePreviousProject(task.project, index)"
                             @select="assignOrRemoveProjectForTask(task.id, 'assign', index, $event)"
                             @Remove="assignOrRemoveProjectForTask(task.id, 'remove', index, $event)">
                         </multiselect>
@@ -229,13 +229,17 @@ export default {
         },
         async assignOrRemoveProjectForTask(taskId, type, index, selectedOption) {
             this.clearMessages();
+            const alertText = type == 'assign' ? this.$t('ticket.assign_or_remove.project.conformation_popup_assign_text') : this.$t('ticket.assign_or_remove.project.conformation_popup_remove_text');
             this.$swal({
                 title: this.$t('ticket.assign_or_remove.project.conformation_popup_title'),
-                text: this.$t('ticket.assign_or_remove.project.conformation_popup_text'),
+                text: alertText,
                 showCancelButton: true,
                 confirmButtonColor: '#1e6abf',
                 cancelButtonColor: '#d33',
-                confirmButtonText: this.$t('ticket.assign_or_remove.project.conformation_popup_confirm_button_text')
+                confirmButtonText: this.$t('ticket.assign_or_remove.project.conformation_popup_confirm_button_text'),
+                didClose: () => {
+                    this.closeDropdown(index);
+                }
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
@@ -259,6 +263,12 @@ export default {
             }).catch(() => {
                 this.tasks[index].project = this.previousProject;
             });
+        },
+        closeDropdown(index) {
+            const dropdown = this.$refs['taskProjectDropdowns-' + index][0];
+            if (dropdown && dropdown.isOpen) {
+                dropdown.deactivate();
+            }
         },
         storePreviousProject(previousValue, index) {
             this.previousProject = previousValue;
