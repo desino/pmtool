@@ -11,7 +11,7 @@
 
         <main class="app-main">
             <div v-if="serverError.message">
-               <ApiErrorPageComponent :error-message="serverError.message" :error-code="serverError.response.status"/>
+               <ApiErrorPageComponent :error-message="serverError.message" :error-code="serverError.response?.status"/>
             </div>
             <div v-show="!serverError.message">
                 <router-view></router-view>
@@ -52,5 +52,8 @@ export default {
     computed: {
         ...mapGetters(['isAuthenticated','serverError']),
     },
+    updated() {
+        console.log(this.serverError,'from amin');
+    }
 };
 </script>

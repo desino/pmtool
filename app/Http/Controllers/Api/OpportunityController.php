@@ -30,7 +30,7 @@ class OpportunityController extends Controller
             'opportunities' => $parsedOpportunities,
             'ballparkTotal' => $Opportunities->sum('ballpark_development_hours'),
         ];
-        return ApiHelper::response(true, __('messages.opportunity.get_list_success'), $responseData, 200);
+        return ApiHelper::response(true, __('messages.opportunity.get_list_success'), $responseData, 404);
     }
 
     public function getInitialData(Request $request)
