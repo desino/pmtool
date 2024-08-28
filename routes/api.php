@@ -56,6 +56,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('update-release-note/{ticket_id}', 'updateReleaseNote');
             Route::get('get-initiative-project-list', 'getInitiativeProjectList');
             Route::post('assign-project', 'assignProject');
+            Route::post('assign-or-remove-project-for-task', 'assignOrRemoveProjectForTask');
         });
 
         Route::controller(ProjectController::class)->prefix('{initiative_id}/project')->group(function () {

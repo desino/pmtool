@@ -72,7 +72,7 @@
                     {{ $t('ticket.list.column_action') }}
                 </div>
             </div>
-            <div v-for="task in tasks" v-if="tasks.length > 0" :key="task.id">
+            <div v-for="(task, index) in tasks" v-if="tasks.length > 0" :key="task.id">
                 <div class="row justify-content-between border-desino border">
                     <div class="col-lg-1 col-md-6 col-6 py-1">
                         <input class="form-check-input" type="checkbox" :id="'chk_ticket_' + task.id"
@@ -84,7 +84,9 @@
                         <!-- {{ task.project?.name }} -->
                         <multiselect v-model="task.project" :options="projects" :searchable="true" deselect-label=""
                             label="name" :placeholder="$t('ticket.filter.projects_placeholder')" track-by="id"
-                            @select="updateProjectTask">
+                            @open="storePreviousProject(task.project)"
+                            @select="assignOrRemoveProjectForTask(task.id, 'assign', index, $event)"
+                            @Remove="assignOrRemoveProjectForTask(task.id, 'remove', index, $event)">
                         </multiselect>
                     </div>
                     <div class="col-lg-3 col-md-6 col-8 text-center text-lg-start">
@@ -129,6 +131,7 @@ import ticketService from "../../../services/TicketService";
 import Multiselect from "vue-multiselect";
 import AssignProjectModalComponent from "./AssignProjectModalComponent.vue";
 import { Modal } from 'bootstrap';
+import showToast from '../../../utils/toasts';
 
 export default {
     name: 'TicketListComponent',
@@ -157,12 +160,17 @@ export default {
             },
             isChkAllTickets: false,
             selectedTasks: [],
+            previousProject: null,
             errors: {},
             showMessage: true
         }
     },
     methods: {
         ...mapActions(['setLoading']),
+        storePreviousProject(previousValue) {
+            console.log('previousValue :: ', previousValue);
+            this.previousProject = previousValue;
+        },
         async fetchAllTasks(page = 1) {
             this.clearMessages();
             this.selectedTasks = [];
@@ -219,9 +227,38 @@ export default {
                 modal.show();
             }
         },
-        updateProjectTask(selectedOption, id) {
-            console.log('id :: ', id);
-            console.log('project :: ', selectedOption);
+        async assignOrRemoveProjectForTask(taskId, type, index, selectedOption) {
+            this.clearMessages();
+            this.$swal({
+                title: this.$t('ticket.assign_or_remove.project.conformation_popup_title'),
+                text: this.$t('ticket.assign_or_remove.project.conformation_popup_text'),
+                showCancelButton: true,
+                confirmButtonColor: '#1e6abf',
+                cancelButtonColor: '#d33',
+                confirmButtonText: this.$t('ticket.assign_or_remove.project.conformation_popup_confirm_button_text')
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        const params = {
+                            taskId: taskId,
+                            type: type,
+                            initiative_id: this.initiative_id,
+                            selectedOption: selectedOption,
+                        }
+                        await this.setLoading(true);
+                        const { message } = await ticketService.assignOrRemoveProjectForTask(params);
+                        showToast(message, 'success');
+                        await this.setLoading(false);
+                    } catch (error) {
+                        this.handleError(error);
+                        this.tasks[index].project = this.previousProject;
+                    }
+                } else {
+                    this.tasks[index].project = this.previousProject;
+                }
+            }).catch(() => {
+                this.tasks[index].project = this.previousProject;
+            });
         },
         handleError(error) {
             if (error.type === 'validation') {
