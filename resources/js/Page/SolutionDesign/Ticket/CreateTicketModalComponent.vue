@@ -24,7 +24,7 @@
                         <div class="mb-3">
                             <label class="form-label" for="client_id">{{
                                 $t('create_ticket_modal_select_functionality_id')
-                                }}
+                            }}
                                 <strong class="text-danger">*</strong></label>
                             <multiselect v-model="formData.functionality_id"
                                 :class="{ 'is-invalid': errors.functionality_id }"
@@ -39,7 +39,7 @@
                         <div class="mb-3">
                             <label class="form-label" for="initial_estimation_development_time">{{
                                 $t('create_ticket_modal_modal_input_initial_estimation_development_time')
-                                }} <strong class="text-danger">*</strong>
+                            }} <strong class="text-danger">*</strong>
                             </label>
                             <input id="initial_estimation_development_time"
                                 v-model="formData.initial_estimation_development_time"
@@ -146,8 +146,8 @@ export default {
                 if (this.submitButtonClicked === 'create_detail') {
                     this.showCreateTicketModalContent = false;
                     this.showAsanaIframContent = true;
-                    // this.iframeAsanaTaskDetailSrc = "https://app.asana.com/0/1207884997541645/1208126964022359/f";
-                    this.iframeAsanaTaskDetailSrc = "https://www.google.com/";
+                    this.iframeAsanaTaskDetailSrc = "https://app.asana.com/0/1207884997541645/1208126964022359/f";
+                    // this.iframeAsanaTaskDetailSrc = "https://www.google.com/";
                     // this.hideModal();
                     // this.$router.push({
                     //     name: 'task.detail',
