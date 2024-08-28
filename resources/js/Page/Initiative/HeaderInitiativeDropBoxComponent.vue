@@ -30,16 +30,16 @@ export default {
             if (this.selected_initiative_id === undefined) {
                 this.selected_initiative_id = "";
             }
-            // eventBus.$emit('sidebarSelectHeaderInitiativeId', this.selected_initiative_id);
+            eventBus.$emit('sidebarSelectHeaderInitiativeId', this.selected_initiative_id);
         },
         handleAppendHeaderInitiativeSelectBox(data) {
             this.initiatives.push(data.initiative);
             this.selected_initiative_id = data.initiative.id;
-            // eventBus.$emit('sidebarSelectHeaderInitiativeId', this.selected_initiative_id);
+            eventBus.$emit('sidebarSelectHeaderInitiativeId', this.selected_initiative_id);
         },
         handleUnselectHeaderInitiativeId() {
             this.selected_initiative_id = "";
-            // eventBus.$emit('sidebarSelectHeaderInitiativeId', this.selected_initiative_id);
+            eventBus.$emit('sidebarSelectHeaderInitiativeId', this.selected_initiative_id);
         },
         selectHeaderInitiativeId(initiativeId) {
             this.selected_initiative_id = initiativeId;
