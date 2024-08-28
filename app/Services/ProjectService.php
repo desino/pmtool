@@ -29,4 +29,9 @@ class ProjectService
         $projectId = $request->input('project_id');
         Ticket::whereIn('id', $request->input('selectedTasks'))->update(['project_id' => $projectId]);
     }
+
+    public static function removeProjectForTasks($request)
+    {
+        Ticket::whereIn('id', $request->input('selectedTasks'))->update(['project_id' => null]);
+    }
 }

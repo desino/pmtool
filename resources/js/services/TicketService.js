@@ -15,7 +15,8 @@ const endpoints = {
     updateReleaseNote: `${defaultPath}/update-release-note/:ticket_id`,
     fetchAllTicketForDropDown: `${defaultPath}/all-ticket`,
     getInitiativeProjectList: `${defaultPath}/get-initiative-project-list`,
-    assignProject: `${defaultPath}/assign-project`
+    assignProject: `${defaultPath}/assign-project`,
+    assignOrRemoveProjectForTask: `${defaultPath}/assign-or-remove-project-for-task`,
 }
 
 const SolutionDesignService = {
@@ -85,6 +86,15 @@ const SolutionDesignService = {
     async assignProject(data) {
         try {
             const endpoint = endpoints.assignProject.replace(':initiative_id', data.initiative_id);
+            const response = await axiosRequest.post(endpoint, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async assignOrRemoveProjectForTask(data) {
+        try {
+            const endpoint = endpoints.assignOrRemoveProjectForTask.replace(':initiative_id', data.initiative_id);
             const response = await axiosRequest.post(endpoint, data);
             return response.data;
         } catch (error) {

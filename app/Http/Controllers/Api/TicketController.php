@@ -235,4 +235,42 @@ class TicketController extends Controller
         }
         return ApiHelper::response($status, $message, '', $statusCode);
     }
+
+    public function assignOrRemoveProjectForTask(Request $request, $initiativeId)
+    {
+        $status = false;
+        $initiative = InitiativeService::getInitiative($request);
+        if (!$initiative) {
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
+        }
+
+        $project = Project::where('initiative_id', $initiativeId)->find($request->input('selectedOption')['id']);
+        if (!$project) {
+            return ApiHelper::response($status, __('messages.project.project_not_exist'), '', 400);
+        }
+
+        DB::beginTransaction();
+        try {
+            $request->merge(['project_id' => $request->input('selectedOption')['id']]);
+            $request->merge(['selectedTasks' => [$request->input('taskId')]]);
+
+            if ($request->has('type') && !empty($request->input('type')) && $request->input('type') == 'assign') {
+                ProjectService::assignProjectForTasks($request);
+                $message = __('messages.project.assign_success');
+            }
+            if ($request->has('type') && !empty($request->input('type')) && $request->input('type') == 'remove') {
+                ProjectService::removeProjectForTasks($request);
+                $message = __('messages.project.remove_success');
+            }
+            $status = true;
+            $statusCode = 200;
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $statusCode = 500;
+            Log::info($e->getMessage());
+        }
+        return ApiHelper::response($status, $message, '', $statusCode);
+    }
 }
