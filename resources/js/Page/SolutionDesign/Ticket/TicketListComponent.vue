@@ -29,8 +29,8 @@
                 </select>
             </div>
             <div class="col-12 col-md-3 mb-2 mb-md-0">
-                <multiselect v-model="filter.functionalities" :multiple="true" :options="functionalities"
-                    :searchable="true" deselect-label="" label="display_name"
+                <multiselect v-model="filter.functionalities" ref="multiselect" :multiple="true"
+                    :options="functionalities" :searchable="true" deselect-label="" label="display_name"
                     :placeholder="$t('ticket.filter.functionalities_placeholder')" track-by="id" @select="fetchAllTasks"
                     @Remove="fetchAllTasks">
                 </multiselect>
@@ -84,7 +84,7 @@
                         <!-- {{ task.project?.name }} -->
                         <multiselect v-model="task.project" :options="projects" :searchable="true" deselect-label=""
                             label="name" :placeholder="$t('ticket.filter.projects_placeholder')" track-by="id"
-                            @open="storePreviousProject(task.project)"
+                            :ref="`item-${index}`" @open="storePreviousProject(task.project, index)"
                             @select="assignOrRemoveProjectForTask(task.id, 'assign', index, $event)"
                             @Remove="assignOrRemoveProjectForTask(task.id, 'remove', index, $event)">
                         </multiselect>
@@ -167,10 +167,6 @@ export default {
     },
     methods: {
         ...mapActions(['setLoading']),
-        storePreviousProject(previousValue) {
-            console.log('previousValue :: ', previousValue);
-            this.previousProject = previousValue;
-        },
         async fetchAllTasks(page = 1) {
             this.clearMessages();
             this.selectedTasks = [];
@@ -259,6 +255,9 @@ export default {
             }).catch(() => {
                 this.tasks[index].project = this.previousProject;
             });
+        },
+        storePreviousProject(previousValue, index) {
+            this.previousProject = previousValue;
         },
         handleError(error) {
             if (error.type === 'validation') {
