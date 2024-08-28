@@ -47,7 +47,7 @@ class Ticket extends Model
     protected function displayCreatedAt(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->created_at->format('m/d/Y'),
+            get: fn() => $this->created_at ? $this->created_at->format('m/d/Y') : '',
         );
     }
 

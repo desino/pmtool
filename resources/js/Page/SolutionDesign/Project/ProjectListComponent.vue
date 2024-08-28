@@ -162,7 +162,6 @@ export default {
             });
         },
         async editProject(project) {
-            // console.log('this.project :: ', project);
             this.$refs.editProjectModalComponent.getEditProjectFormData(project);
             const modalElement = document.getElementById('editProjectModal');
             if (modalElement) {

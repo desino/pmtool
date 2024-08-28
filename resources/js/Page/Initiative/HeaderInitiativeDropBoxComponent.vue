@@ -43,7 +43,7 @@ export default {
         },
         selectHeaderInitiativeId(initiativeId) {
             this.selected_initiative_id = initiativeId;
-            // eventBus.$emit('sidebarSelectHeaderInitiativeId', this.selected_initiative_id);
+            eventBus.$emit('sidebarSelectHeaderInitiativeId', this.selected_initiative_id);
         },
         navigate(event) {
             const initiativeId = event.target.value;
