@@ -206,7 +206,6 @@ export default {
         async showEditOpportunityModal() {
             this.setLoading(true);
             const response = await OpportunityService.getOpportunity(this.sidebar_selected_initiative_id);
-            console.log("this.sidebar_selected_initiative_id:: ", this.sidebar_selected_initiative_id);
             this.$refs.editOpportunityModalComponent.getEditOpportunityFormData(response.content);
             const modalElement = document.getElementById('editOpportunityModal');
             if (modalElement) {
@@ -233,8 +232,10 @@ export default {
             this.getInitiativeData();
         },
         async getInitiativeData() {
-            const response = await OpportunityService.getOpportunity(this.sidebar_selected_initiative_id);
-            this.initiativeData = response.content;
+            if (this.sidebar_selected_initiative_id) {
+                const response = await OpportunityService.getOpportunity(this.sidebar_selected_initiative_id);
+                this.initiativeData = response.content;
+            }
         },
     },
     mounted() {
