@@ -1,10 +1,10 @@
 <template>
     <aside ref="sidebar" class="app-sidebar bg-white border">
         <div class="sidebar-brand">
-            <a class="brand-link" href="#">
+            <router-link class="brand-link" :to="{ name: 'home' }" @click="unselectHeaderInitiative">
                 <img alt="Brand Image" class="brand-image"
                     src="https://www.desino.be/wp-content/uploads/2024/01/Logo_Finaloriginal-black.png" />
-            </a>
+            </router-link>
         </div>
         <div class="p-2 border-bottom">
             <div class="my-3 d-flex ">
@@ -146,7 +146,7 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import { useRoute } from "vue-router";
+import { RouterLink, useRoute } from "vue-router";
 import CreateInitiativeModalComponent from "@/Page/Initiative/CreateInitiativeModalComponent.vue";
 import CreateClientModalComponent from "@/Page/Client/CreateClientModalComponent.vue";
 import CreateTicketModalComponent from "@/Page/SolutionDesign/Ticket/CreateTicketModalComponent.vue";
