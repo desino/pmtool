@@ -64,10 +64,10 @@ class Ticket extends Model
     public function getTypeLabelAttribute()
     {
         return match ($this->type) {
-            self::TYPE_CHANGE_REQUEST => __('ticket_type.improvement'),
+            self::TYPE_CHANGE_REQUEST => __('ticket_type.change_request'),
             self::TYPE_BUG => __('ticket_type.bug'),
             self::TYPE_DEVELOPMENT => __('ticket_type.development'),
-            self::TYPE_MAINTENANCE => __('ticket_type.maintenance_task'),
+            self::TYPE_MAINTENANCE => __('ticket_type.maintenance'),
             default => '-'
         };
     }
