@@ -27,9 +27,9 @@ class EditOpportunityRequest extends FormRequest
             'name' => 'required',
             'ballpark_development_hours' => 'required|numeric',
             'share_point_url' => 'nullable|url',
-            'functional_owner_id' => 'nullable|exists:clients,id',
-            'quality_owner_id' => 'nullable|exists:clients,id',
-            'technical_owner_id' => 'nullable|exists:clients,id',
+            'functional_owner_id' => 'nullable|exists:users,id',
+            'quality_owner_id' => 'nullable|exists:users,id',
+            'technical_owner_id' => 'nullable|exists:users,id',
             'environments.*.name' => 'required|string',
             'environments.*.url' => 'required|string|url',
         ];
