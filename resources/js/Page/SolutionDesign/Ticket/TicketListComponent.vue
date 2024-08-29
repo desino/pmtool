@@ -76,12 +76,14 @@
             <li v-for="(task, index) in tasks" v-if="tasks.length > 0" :key="task.id"
                 class="border-desino border list-group-item">
                 <div class="row align-items-center">
-                    <div class="col-lg-2 col-md-6 col-6">
-                        <input class="form-check-input mx-2" type="checkbox" :id="'chk_ticket_' + task.id"
-                            v-model="task.isChecked" @change="handleSelectTasks(task)">
-                        <span class="mx-2">
+                    <div class="col-lg-2 col-md-6 col-6 d-flex">
+                        <div class="mx-2">
+                            <input class="form-check-input" type="checkbox" :id="'chk_ticket_' + task.id"
+                                v-model="task.isChecked" @change="handleSelectTasks(task)">
+                        </div>
+                        <div class="mx-2">
                             {{ task.name }}
-                        </span>
+                        </div>
                     </div>
                     <div class="col-lg-2 col-md-6 col-6">{{ task.type_label }}</div>
                     <div class="col-lg-3 col-md-6 col-6">
@@ -140,6 +142,7 @@ import Multiselect from "vue-multiselect";
 import AssignProjectModalComponent from "./AssignProjectModalComponent.vue";
 import { Modal } from 'bootstrap';
 import showToast from '../../../utils/toasts';
+import eventBus from "@/eventBus.js";
 
 export default {
     name: 'TicketListComponent',
@@ -292,6 +295,7 @@ export default {
     },
     mounted() {
         this.fetchAllTasks();
+        eventBus.$on('refreshTickets', this.fetchAllTasks);
     },
     beforeUnmount() {
         this.showMessage = false;

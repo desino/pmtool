@@ -79,6 +79,7 @@ import { Modal } from 'bootstrap';
 import showToast from '../../../utils/toasts';
 import Multiselect from 'vue-multiselect';
 import { mapActions } from "vuex";
+import eventBus from "@/eventBus.js";
 
 export default {
     name: 'CreateTicketModalComponent',
@@ -145,6 +146,9 @@ export default {
 
                 showToast(response.message, 'success');
                 this.resetForm();
+                if (this.$route.name === 'tasks') {
+                    eventBus.$emit('refreshTickets');
+                }
             } catch (error) {
                 this.handleError(error);
             }
