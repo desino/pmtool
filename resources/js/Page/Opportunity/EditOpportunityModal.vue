@@ -15,7 +15,7 @@
                             <div class="mb-3">
                                 <label for="client_name" class="form-label">{{
                                     $t('edit_opportunity_modal_select_client_name')
-                                }} <strong class="text-danger">*</strong></label>
+                                    }} <strong class="text-danger">*</strong></label>
                                 <input type="text" v-model="formData.client_name" disabled
                                     :class="{ 'is-invalid': errors.client_name }" id="name" class="form-control">
                                 <div v-if="errors.client_name" class="invalid-feedback">
@@ -42,7 +42,7 @@
                             <div v-if="errors.ballpark_development_hours" class="invalid-feedback">
                                 <span v-for="(error, index) in errors.ballpark_development_hours" :key="index">{{
                                     error
-                                }}</span>
+                                    }}</span>
                             </div>
                         </div>
                     </div>
@@ -115,7 +115,7 @@
                         <div v-if="errors.ballpark_development_hours" class="invalid-feedback">
                             <span v-for="(error, index) in errors.ballpark_development_hours" :key="index">{{
                                 error
-                            }}</span>
+                                }}</span>
                         </div>
                     </div>
 
@@ -133,7 +133,7 @@
                                 <div v-if="errors.share_point_url" class="invalid-feedback">
                                     <span v-for="(error, index) in errors.share_point_url" :key="index">{{
                                         error
-                                    }}</span>
+                                        }}</span>
                                 </div>
                             </div>
                         </div>
@@ -217,6 +217,7 @@ import messageService from '../../services/messageService';
 import { Modal } from 'bootstrap';
 import showToast from '../../utils/toasts';
 import { mapActions } from 'vuex';
+import eventBus from "@/eventBus.js";
 export default {
     name: 'EditOpportunityModal',
     components: {
@@ -282,9 +283,11 @@ export default {
             try {
                 this.setLoading(true);
                 const response = await OpportunityService.updateOpportunity(this.formData);
+                console.log('response :: ', this.formData.id);
                 showToast(response.data.message, 'success');
                 this.hideModal();
                 this.$emit('pageUpdated');
+                eventBus.$emit('sidebarSelectInitiativeUpdate');
                 this.setLoading(false);
             } catch (error) {
                 this.handleError(error);

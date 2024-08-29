@@ -61,6 +61,7 @@ export default {
         eventBus.$on('appendHeaderInitiativeSelectBox', this.handleAppendHeaderInitiativeSelectBox);
         eventBus.$on('unselectHeaderInitiativeId', this.handleUnselectHeaderInitiativeId);
         eventBus.$on('selectHeaderInitiativeId', this.selectHeaderInitiativeId);
+        eventBus.$on('sidebarSelectInitiativeUpdate', this.getInitiativeWithClientData);
     },
 }
 </script>
