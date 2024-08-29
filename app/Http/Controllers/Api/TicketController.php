@@ -176,7 +176,9 @@ class TicketController extends Controller
             return ApiHelper::response('false', __('messages.ticket.not_found'), [], 404);
         }
 
-        return ApiHelper::response(true, __('messages.ticket.fetched'), $ticket, 200);
+        $meta_data['all_tickets'] = Ticket::query()->get(['id', 'name']);
+
+        return ApiHelper::response(true, __('messages.ticket.fetched'), $ticket, 200,$meta_data);
     }
 
     public function updateReleaseNote($ticket_id, UpdateReleaseNoteRequest $request)

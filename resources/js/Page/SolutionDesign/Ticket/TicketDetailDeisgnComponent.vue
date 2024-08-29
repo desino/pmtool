@@ -283,6 +283,7 @@ export default {
                     this.$router.push({ name: 'home' });
                 } else {
                     this.setData(response.content);
+                    this.tasksForDropdown = response.meta_data.all_tickets;
                 }
                 this.setLoading(false);
             } catch (error) {
@@ -304,21 +305,6 @@ export default {
                 this.setLoading(false);
             } catch (error) {
                 this.handleError(error);
-            }
-        },
-        async fetchAllTicketForDropDown(initiative_id) {
-            const response = await ticketService.fetchAllTicketForDropDown(initiative_id);
-            if (!response.content) {
-                messageService.setMessage(response.message, 'danger');
-                this.$router.push({ name: 'home' });
-            } else {
-                this.tasksForDropdown = response.content;
-
-                // Set the default task in the dropdown based on the route param
-                const defaultTask = this.tasksForDropdown.find(task => task.id === this.localTicketId);
-                if (defaultTask) {
-                    this.selectedTaskObject = defaultTask;
-                }
             }
         },
         setData(content) {
@@ -356,7 +342,6 @@ export default {
         },
     },
     mounted() {
-        this.fetchAllTicketForDropDown(this.localInitiativeId);
         this.fetchTicketData(this.localTicketId);
     }
 }
