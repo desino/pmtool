@@ -15,7 +15,7 @@
                             <div class="mb-3">
                                 <label for="client_name" class="form-label">{{
                                     $t('edit_opportunity_modal_select_client_name')
-                                    }} <strong class="text-danger">*</strong></label>
+                                }} <strong class="text-danger">*</strong></label>
                                 <input type="text" v-model="formData.client_name" disabled
                                     :class="{ 'is-invalid': errors.client_name }" id="name" class="form-control">
                                 <div v-if="errors.client_name" class="invalid-feedback">
@@ -42,7 +42,7 @@
                             <div v-if="errors.ballpark_development_hours" class="invalid-feedback">
                                 <span v-for="(error, index) in errors.ballpark_development_hours" :key="index">{{
                                     error
-                                    }}</span>
+                                }}</span>
                             </div>
                         </div>
                     </div>
@@ -57,8 +57,8 @@
                                 class="form-select">
                                 <option value="">{{
                                     $t('create_initiative_modal_select_functional_owner_placeholder') }}</option>
-                                <option v-for="client in clients" :key="client.id" :value="client.id">{{
-                                    client.name }}
+                                <option v-for="user in users" :key="user.id" :value="user.id">{{
+                                    user.name }}
                                 </option>
                             </select>
                             <div v-if="errors.functional_owner_id" class="invalid-feedback">
@@ -75,8 +75,8 @@
                                 class="form-select">
                                 <option value="">{{
                                     $t('create_initiative_modal_select_technical_owner_placeholder') }}</option>
-                                <option v-for="client in clients" :key="client.id" :value="client.id">{{
-                                    client.name }}
+                                <option v-for="user in users" :key="user.id" :value="user.id">{{
+                                    user.name }}
                                 </option>
                             </select>
                             <div v-if="errors.technical_owner_id" class="invalid-feedback">
@@ -93,8 +93,8 @@
                                 class="form-select">
                                 <option value="">{{
                                     $t('create_initiative_modal_select_quality_owner_placeholder') }}</option>
-                                <option v-for="client in clients" :key="client.id" :value="client.id">{{
-                                    client.name }}
+                                <option v-for="user in users" :key="user.id" :value="user.id">{{
+                                    user.name }}
                                 </option>
                             </select>
                             <div v-if="errors.quality_owner_id" class="invalid-feedback">
@@ -115,7 +115,7 @@
                         <div v-if="errors.ballpark_development_hours" class="invalid-feedback">
                             <span v-for="(error, index) in errors.ballpark_development_hours" :key="index">{{
                                 error
-                                }}</span>
+                            }}</span>
                         </div>
                     </div>
 
@@ -133,7 +133,7 @@
                                 <div v-if="errors.share_point_url" class="invalid-feedback">
                                     <span v-for="(error, index) in errors.share_point_url" :key="index">{{
                                         error
-                                        }}</span>
+                                    }}</span>
                                 </div>
                             </div>
                         </div>
@@ -244,7 +244,7 @@ export default {
                     }
                 ],
             },
-            clients: [],
+            users: [],
             errors: {},
             showMessage: true
         };
@@ -274,7 +274,7 @@ export default {
                 url: '',
                 desino_managed_fl: false,
             }] : opportunityEnvironments;
-            this.getClientList();
+            this.getUserList();
             this.setLoading(false);
         },
         async updateOpportunity() {
@@ -304,12 +304,12 @@ export default {
         removeEnvironment(index) {
             this.formData.environments.splice(index, 1);
         },
-        async getClientList() {
+        async getUserList() {
             this.clearMessages();
             try {
                 this.setLoading(true);
-                const response = await OpportunityService.getClientList();
-                this.clients = response.content;
+                const response = await OpportunityService.getUserList();
+                this.users = response.content;
                 this.setLoading(false);
             } catch (error) {
                 this.handleError(error);

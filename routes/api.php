@@ -33,6 +33,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/update', 'update');
         Route::post('/update-status-lost', 'updateStatusLost');
         Route::get('get-client-list', 'getClientList');
+        Route::get('get-user-list', 'getUserList');
         Route::get('get-opportunity/{id}', 'getOpportunity');
     });
 

@@ -12,6 +12,7 @@ const endpoints = {
     updateOpportunity: `${defaultPath}/update`,
     updateStatusLost: `${defaultPath}/update-status-lost`,
     getClientList: `${defaultPath}/get-client-list`,
+    getUserList: `${defaultPath}/get-user-list`,
     getOpportunity: `${defaultPath}/get-opportunity/:id`,
 
 };
@@ -53,6 +54,14 @@ const OpportunityService = {
     async getClientList() {
         try {
             const response = await axiosRequest.get(endpoints.getClientList);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async getUserList() {
+        try {
+            const response = await axiosRequest.get(endpoints.getUserList);
             return response.data;
         } catch (error) {
             throw handleError(error);

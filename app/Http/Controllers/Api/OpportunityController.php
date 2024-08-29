@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\EditOpportunityRequest;
 use App\Models\Initiative;
 use App\Models\InitiativeEnvironment;
+use App\Models\User;
 use App\Services\AsanaService;
 use App\Services\ClientService;
 use App\Services\InitiativeService;
@@ -118,6 +119,12 @@ class OpportunityController extends Controller
     public function getClientList(Request $request)
     {
         $clientList = ClientService::getAllClients();
+        return ApiHelper::response(true, '', $clientList, 200);
+    }
+
+    public function getUserList(Request $request)
+    {
+        $clientList = User::all();
         return ApiHelper::response(true, '', $clientList, 200);
     }
 
