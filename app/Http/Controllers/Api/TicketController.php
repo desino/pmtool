@@ -89,6 +89,7 @@ class TicketController extends Controller
             $statusCode = 200;
             $retData = [
                 'ticket' => $ticket,
+                'asanaTaskData' => $task['data']['data'],
             ];
             DB::commit();
         } catch (Exception $e) {
@@ -178,7 +179,7 @@ class TicketController extends Controller
 
         $meta_data['all_tickets'] = Ticket::query()->get(['id', 'name']);
 
-        return ApiHelper::response(true, __('messages.ticket.fetched'), $ticket, 200,$meta_data);
+        return ApiHelper::response(true, __('messages.ticket.fetched'), $ticket, 200, $meta_data);
     }
 
     public function updateReleaseNote($ticket_id, UpdateReleaseNoteRequest $request)
