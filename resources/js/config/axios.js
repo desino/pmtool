@@ -5,6 +5,10 @@ const axiosRequest = axios.create({
     'Content-Type': 'application/json',
 });
 
+const serverErrorNotShowStatusCode = [
+    422,
+];
+
 axiosRequest.interceptors.request.use(
     config => {
         store.commit('setServerError', {});
@@ -30,8 +34,10 @@ axiosRequest.interceptors.response.use(
             store.commit('setUser', null);
             await router.push({ name: 'login' });
         }
-        store.commit('setLoading', false);
-        store.commit('setServerError', error);
+        if (!serverErrorNotShowStatusCode.includes(error.response.status)) {
+            store.commit('setLoading', false);
+            store.commit('setServerError', error);
+        }
         return Promise.reject(error);
     }
 );

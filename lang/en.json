@@ -311,6 +311,8 @@
     "opportunity_list_table.actions_redirect_to_solution_design_tooltip": "Redirect to Solution Design",
     "edit_opportunity_modal_title": "Edit Opportunity",
     "edit_opportunity_modal_submit_but_text": "Update Opportunity",
+    "edit_opportunity_modal_card_header_sharepoint_link_text": "Sharepoint Link",
+    "edit_opportunity_modal_card_header_servers_text": "Servers",
     "edit_opportunity_modal_select_client_name": "Client name",
     "edit_opportunity_modal_input_name": "Initiative Name",
     "edit_opportunity_modal_input_ballpark_development_hours": "Ballpark Development Hours",

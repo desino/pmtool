@@ -133,9 +133,13 @@
         tabindex="-1">
         <CreateTicketModalComponent ref="createTicketModalComponent" />
     </div>
-    <div id="editOpportunityModal" aria-hidden="true" aria-labelledby="editOpportunityModalLabel" class="modal fade"
+    <!-- <div id="editOpportunityModal" aria-hidden="true" aria-labelledby="editOpportunityModalLabel" class="modal fade"
         tabindex="-1">
         <EditOpportunityModalComponent ref="editOpportunityModalComponent" @pageUpdated="getInitiativeData" />
+    </div> -->
+    <div id="editInitiativeModal" aria-hidden="true" aria-labelledby="editInitiativeModalLabel" class="modal fade"
+        tabindex="-1">
+        <EditOpportunityModalComponent ref="editInitiativeModalComponent" @pageUpdated="getInitiativeData" />
     </div>
 </template>
 
@@ -206,8 +210,8 @@ export default {
         async showEditOpportunityModal() {
             this.setLoading(true);
             const response = await OpportunityService.getOpportunity(this.sidebar_selected_initiative_id);
-            this.$refs.editOpportunityModalComponent.getEditOpportunityFormData(response.content);
-            const modalElement = document.getElementById('editOpportunityModal');
+            this.$refs.editInitiativeModalComponent.getEditOpportunityFormData(response.content);
+            const modalElement = document.getElementById('editInitiativeModal');
             if (modalElement) {
                 const modal = new Modal(modalElement);
                 modal.show();

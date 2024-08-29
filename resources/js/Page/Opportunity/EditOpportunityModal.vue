@@ -15,7 +15,7 @@
                             <div class="mb-3">
                                 <label for="client_name" class="form-label">{{
                                     $t('edit_opportunity_modal_select_client_name')
-                                }} <strong class="text-danger">*</strong></label>
+                                    }} <strong class="text-danger">*</strong></label>
                                 <input type="text" v-model="formData.client_name" disabled
                                     :class="{ 'is-invalid': errors.client_name }" id="name" class="form-control">
                                 <div v-if="errors.client_name" class="invalid-feedback">
@@ -42,7 +42,7 @@
                             <div v-if="errors.ballpark_development_hours" class="invalid-feedback">
                                 <span v-for="(error, index) in errors.ballpark_development_hours" :key="index">{{
                                     error
-                                }}</span>
+                                    }}</span>
                             </div>
                         </div>
                     </div>
@@ -115,13 +115,13 @@
                         <div v-if="errors.ballpark_development_hours" class="invalid-feedback">
                             <span v-for="(error, index) in errors.ballpark_development_hours" :key="index">{{
                                 error
-                            }}</span>
+                                }}</span>
                         </div>
                     </div>
 
                     <div class="card mb-3">
                         <div class="card-header">
-                            <h6 class="mb-0">Sharepoint Link</h6>
+                            <h6 class="mb-0">{{ $t('edit_opportunity_modal_card_header_sharepoint_link_text') }}</h6>
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
@@ -133,9 +133,17 @@
                                 <div v-if="errors.share_point_url" class="invalid-feedback">
                                     <span v-for="(error, index) in errors.share_point_url" :key="index">{{
                                         error
-                                    }}</span>
+                                        }}</span>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h6 class="mb-0">{{ $t('edit_opportunity_modal_card_header_servers_text') }}</h6>
+                        </div>
+                        <div class="card-body">
                             <div v-for="(environment, index) in formData.environments" :key="index">
                                 <div class="row">
                                     <div class="col-md-3 mb-3">
@@ -326,6 +334,13 @@ export default {
                 const modal = Modal.getInstance(modalElement);
                 if (modal) {
                     modal.hide();
+                }
+            }
+            const editInitiativeModalElement = document.getElementById('editInitiativeModal');
+            if (editInitiativeModalElement) {
+                const initiativeModal = Modal.getInstance(editInitiativeModalElement);
+                if (initiativeModal) {
+                    initiativeModal.hide();
                 }
             }
         }
