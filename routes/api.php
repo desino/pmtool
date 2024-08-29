@@ -50,6 +50,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::controller(TicketController::class)->prefix('{initiative_id}/ticket')->group(function () {
             Route::get('get-section-functionality', 'getSectionFunctionality');
+            Route::get('get-ticket-types', 'getTicketTypes');
             Route::get('all', 'index');
             Route::post('store', 'store');
             Route::get('show/{ticket_id}', 'show');

@@ -28,7 +28,7 @@ class TitcketRequest extends FormRequest
             'functionality_id' => 'required|exists:functionalities,id',
             'initial_estimation_development_time' => 'required|numeric',
             'initiative_id' => 'nullable',
-            'type' => 'nullable',
+            'type' => 'required',
         ];
     }
 
@@ -36,7 +36,7 @@ class TitcketRequest extends FormRequest
     {
         $data = parent::all($keys);
         $data['functionality_id'] = $data['functionality_id']['id'] ?? "";
-        $data['type'] = Ticket::getTypeFeatureImprovement();
+        // $data['type'] = Ticket::getTypeChangeRequest();
         return $data;
     }
 }

@@ -17,12 +17,22 @@ const endpoints = {
     getInitiativeProjectList: `${defaultPath}/get-initiative-project-list`,
     assignProject: `${defaultPath}/assign-project`,
     assignOrRemoveProjectForTask: `${defaultPath}/assign-or-remove-project-for-task`,
+    getTicketTypes: `${defaultPath}/get-ticket-types`,
 }
 
 const SolutionDesignService = {
     async getInitiativeSectionFunctionality(data) {
         try {
             const endpoint = endpoints.getSectionFunctionalityForCreateTicketModal.replace(':initiative_id', data.initiative_id);
+            const response = await axiosRequest.get(endpoint);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async getTicketTypes(data) {
+        try {
+            const endpoint = endpoints.getTicketTypes.replace(':initiative_id', data.initiative_id);
             const response = await axiosRequest.get(endpoint);
             return response.data;
         } catch (error) {

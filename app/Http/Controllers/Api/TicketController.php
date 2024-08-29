@@ -45,6 +45,12 @@ class TicketController extends Controller
         return ApiHelper::response(true, '', $sectionFunctionalities, 200);
     }
 
+    public function getTicketTypes()
+    {
+        $ticketTypes = Ticket::getAllTypes();
+        return ApiHelper::response(true, '', $ticketTypes, 200);
+    }
+
     public function store(TitcketRequest $request)
     {
         $validateData = $request->validated();

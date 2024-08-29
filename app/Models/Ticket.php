@@ -18,28 +18,56 @@ class Ticket extends Model
         'display_created_at'
     ];
 
-    public const TYPE_FEATURE_IMPROVEMENT = 1;
-    public const TYPE_FEATURE_BUG = 2;
-    public const TYPE_FEATURE_DEVELOPMENT = 3;
-    public const TYPE_FEATURE_MAINTENANCE_TASK = 4;
+    public const TYPE_CHANGE_REQUEST = 1;
+    public const TYPE_BUG = 2;
+    public const TYPE_DEVELOPMENT = 3;
+    public const TYPE_MAINTENANCE = 4;
 
     public static function getAllTypes()
     {
         return [
-            self::TYPE_FEATURE_IMPROVEMENT => __('ticket_type.feature.improvement'),
-            self::TYPE_FEATURE_BUG => __('ticket_type.feature.bug'),
-            self::TYPE_FEATURE_DEVELOPMENT => __('ticket_type.feature.development'),
-            self::TYPE_FEATURE_MAINTENANCE_TASK => __('ticket_type.feature.maintenance_task'),
+            ['id' => self::TYPE_CHANGE_REQUEST, 'name' => __('ticket_type.change_request')],
+            ['id' => self::TYPE_BUG, 'name' => __('ticket_type.bug')],
+            ['id' => self::TYPE_DEVELOPMENT, 'name' => __('ticket_type.development')],
+            ['id' => self::TYPE_MAINTENANCE, 'name' => __('ticket_type.maintenance')],
         ];
+    }
+
+    public static function getTypeOfCode($typeId)
+    {
+        return match ($typeId) {
+            self::TYPE_CHANGE_REQUEST => __('ticket_type.improvement.code'),
+            self::TYPE_BUG => __('ticket_type.bug.code'),
+            self::TYPE_DEVELOPMENT => __('ticket_type.development.code'),
+            self::TYPE_MAINTENANCE => __('ticket_type.maintenance_task.code'),
+            default => '-'
+        };
+    }
+
+    public static function getTypeChangeRequest()
+    {
+        return self::TYPE_CHANGE_REQUEST;
+    }
+    public static function getTypeBug()
+    {
+        return self::TYPE_BUG;
+    }
+    public static function getTypeDevelopment()
+    {
+        return self::TYPE_DEVELOPMENT;
+    }
+    public static function getTypeMaintenanceTask()
+    {
+        return self::TYPE_MAINTENANCE;
     }
 
     public function getTypeLabelAttribute()
     {
         return match ($this->type) {
-            self::TYPE_FEATURE_IMPROVEMENT => __('ticket_type.feature.improvement'),
-            self::TYPE_FEATURE_BUG => __('ticket_type.feature.bug'),
-            self::TYPE_FEATURE_DEVELOPMENT => __('ticket_type.feature.development'),
-            self::TYPE_FEATURE_MAINTENANCE_TASK => __('ticket_type.feature.maintenance_task'),
+            self::TYPE_CHANGE_REQUEST => __('ticket_type.improvement'),
+            self::TYPE_BUG => __('ticket_type.bug'),
+            self::TYPE_DEVELOPMENT => __('ticket_type.development'),
+            self::TYPE_MAINTENANCE => __('ticket_type.maintenance_task'),
             default => '-'
         };
     }
@@ -49,23 +77,6 @@ class Ticket extends Model
         return Attribute::make(
             get: fn() => $this->created_at ? $this->created_at->format('m/d/Y') : '',
         );
-    }
-
-    public static function getTypeFeatureImprovement()
-    {
-        return self::TYPE_FEATURE_IMPROVEMENT;
-    }
-    public static function getTypeFeatureBug()
-    {
-        return self::TYPE_FEATURE_BUG;
-    }
-    public static function getTypeFeatureDevelopment()
-    {
-        return self::TYPE_FEATURE_DEVELOPMENT;
-    }
-    public static function getTypeFeatureMaintenanceTask()
-    {
-        return self::TYPE_FEATURE_MAINTENANCE_TASK;
     }
 
     public function functionality(): BelongsTo

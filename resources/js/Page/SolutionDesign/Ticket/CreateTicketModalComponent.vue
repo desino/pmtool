@@ -21,9 +21,23 @@
                         </div>
                     </div>
                     <div class="mb-3">
+                        <label class="form-label" for="type">{{ $t('create_ticket_modal_select_type') }} <strong
+                                class="text-danger">*</strong></label>
+                        <select v-model="formData.type" :class="{ 'is-invalid': errors.type }" id="type"
+                            class="form-select">
+                            <option value="">{{ $t('create_initiative_modal_select_type_placeholder') }}</option>
+                            <option v-for="type in ticketTypes" :key="type.id" :value="type.id">{{
+                                type.name }}
+                            </option>
+                        </select>
+                        <div v-if="errors.type" class="invalid-feedback">
+                            <span v-for="(error, index) in errors.type" :key="index">{{ error }}</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label" for="client_id">{{
                             $t('create_ticket_modal_select_functionality_id')
-                        }}
+                            }}
                             <strong class="text-danger">*</strong></label>
                         <multiselect v-model="formData.functionality_id"
                             :class="{ 'is-invalid': errors.functionality_id }" :options="sectionsFunctionalitiesList"
@@ -37,7 +51,7 @@
                     <div class="mb-3">
                         <label class="form-label" for="initial_estimation_development_time">{{
                             $t('create_ticket_modal_modal_input_initial_estimation_development_time')
-                        }} <strong class="text-danger">*</strong>
+                            }} <strong class="text-danger">*</strong>
                         </label>
                         <input id="initial_estimation_development_time"
                             v-model="formData.initial_estimation_development_time"
@@ -99,6 +113,7 @@ export default {
                 type: "",
                 initial_estimation_development_time: "",
             },
+            ticketTypes: [],
             submitButtonClicked: '',
             errors: {},
             showMessage: true,
@@ -116,6 +131,10 @@ export default {
             }
             const response = await TicketService.getInitiativeSectionFunctionality(credentials);
             this.sectionsFunctionalitiesList = response.content;
+
+            const { content } = await TicketService.getTicketTypes(credentials);
+            this.ticketTypes = content;
+            console.log('this.ticketTypes :: ', this.ticketTypes);
             this.setLoading(false);
         },
         async storeTicket() {
@@ -136,11 +155,6 @@ export default {
                             '_blank'
                         );
                     }
-                    // this.hideModal();
-                    // this.$router.push({
-                    //     name: 'task.detail',
-                    //     params: { initiative_id: this.formData.initiative_id, ticket_id: response.content.ticket.id }
-                    // });
                 }
                 this.setLoading(false);
 
