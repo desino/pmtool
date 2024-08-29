@@ -25,7 +25,7 @@
             <div class="col-12 col-md-3 mb-2 mb-md-0">
                 <select id="client_id" v-model="filter.task_type" class="form-select" @change="fetchAllTasks">
                     <option value="">{{ $t('ticket.filter.task_type_placeholder') }}</option>
-                    <option v-for="(name, id) in filterTaskTypes" :key="id" :value="id">{{ name }}
+                    <option v-for="type in filterTaskTypes" :key="type.id" :value="type.id">{{ type.name }}
                     </option>
                 </select>
             </div>
