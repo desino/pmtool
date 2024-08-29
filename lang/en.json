@@ -260,6 +260,7 @@
     "initiative.status.closed": "Closed",
     "initiative.status.lost": "Lost",
     "header.initiative_list.placeholder": "Please select",
+    "home.breadcrumb": "Home",
     "header.menu.home": "Home",
     "header.menu.create_client": "Create Client",
     "header.menu.create_initiative": "Create Initiative",
@@ -350,5 +351,8 @@
     "project.list.actions_change_status_modal_text": "Are you sure you want to change status?",
     "project.list.edit.modal_title": "Edit Project",
     "project.list.edit.modal_submit_but_text": "Update Project",
-    "project.list.edit.modal.form.project_name": "Project Name"
+    "project.list.edit.modal.form.project_name": "Project Name",
+    "footer.copyright_text": "Copyright © Desino. All rights reserved.",
+    "footer.site_name": "Desino",
+    "footer.right_reserved_text": "All rights reserved."
 }

@@ -6,7 +6,7 @@ export default new Vuex.Store({
         token: localStorage.getItem('token') || null,
         user: null,
         loading: false,
-        currentInitiative:{},
+        currentInitiative: {},
         serverError: {}
     },
     mutations: {
@@ -65,19 +65,18 @@ export default new Vuex.Store({
          * @param {Object} state - The Vuex state object.
          * @param {Object} initiative - The initiative to set.
          */
-        setCurrentInitiative(state,initiative){
-            state.currentInitiative=initiative;
+        setCurrentInitiative(state, initiative) {
+            state.currentInitiative = initiative;
         }
     },
     actions: {
         setLoading({ commit }, status) {
             commit('setLoading', status);
         },
-        setCurrentInitiative({commit},initiative){
+        setCurrentInitiative({ commit }, initiative) {
             commit('setCurrentInitiative', initiative);
         },
         setServerError({ commit }, error) {
-            console.log(error);
             commit('setServerError', error);
         }
     },
@@ -87,7 +86,7 @@ export default new Vuex.Store({
         isAuthenticated: state => state.isAuthenticated,
         user: state => state.user,
         loading: state => state.loading,
-        currentInitiative: state=>state.currentInitiative
+        currentInitiative: state => state.currentInitiative
     },
 });
 

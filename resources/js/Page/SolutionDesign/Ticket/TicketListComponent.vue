@@ -8,7 +8,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-end">
                         <li class="breadcrumb-item"><a class="text-decoration-none" href="javascript:void(0)">{{
-                            $t('Dashboard')
+                            $t('home.breadcrumb')
                                 }}</a></li>
                     </ol>
                 </div>
@@ -243,7 +243,11 @@ export default {
                 showCancelButton: true,
                 confirmButtonColor: '#1e6abf',
                 cancelButtonColor: '#d33',
-                confirmButtonText: this.$t('ticket.assign_or_remove.project.conformation_popup_confirm_button_text'),
+                confirmButtonText: '<i class="bi bi-check-lg"></i>',
+                cancelButtonText: '<i class="bi bi-x-lg"></i>',
+                customClass: {
+                    confirmButton: 'bg-desino',
+                },
                 didClose: () => {
                     this.closeDropdown(index);
                 }

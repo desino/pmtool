@@ -18,7 +18,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-end">
                         <li class="breadcrumb-item"><a class="text-decoration-none" href="javascript:void(0)">{{
-                            $t('Dashboard') }}</a></li>
+                            $t('home.breadcrumb') }}</a></li>
                     </ol>
                 </div>
             </div>
@@ -350,7 +350,11 @@ export default {
                 showCancelButton: true,
                 confirmButtonColor: '#1e6abf',
                 cancelButtonColor: '#d33',
-                confirmButtonText: this.$t('opportunity_list_table.actions_lost_status_modal_confirm_button_text')
+                confirmButtonText: '<i class="bi bi-check-lg"></i>',
+                cancelButtonText: '<i class="bi bi-x-lg"></i>',
+                customClass: {
+                    confirmButton: 'bg-desino',
+                }
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
@@ -385,7 +389,11 @@ export default {
                 showCancelButton: true,
                 confirmButtonColor: '#1e6abf',
                 cancelButtonColor: '#d33',
-                confirmButtonText: this.$t('opportunity_list_table.actions_lost_status_modal_confirm_button_text')
+                confirmButtonText: '<i class="bi bi-check-lg"></i>',
+                cancelButtonText: '<i class="bi bi-x-lg"></i>',
+                customClass: {
+                    confirmButton: 'bg-desino',
+                }
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
