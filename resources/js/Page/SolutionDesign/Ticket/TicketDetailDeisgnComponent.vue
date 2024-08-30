@@ -312,7 +312,7 @@ export default {
             this.ticketData.composed_name = content.composed_name;
             this.ticketData.initial_dev_time = content.initial_estimation_development_time;
             this.ticketData.task_type = content.type_label;
-            this.ticketData.functionality_name = content.functionality.name;
+            this.ticketData.functionality_name = content?.functionality?.name;
             this.releaseNoteForm.release_note = content.release_note;
         },
         onTaskSelect() {

@@ -77,6 +77,14 @@
                                 }}</span>
                         </div>
                     </div>
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h6 class="mb-0">{{ $t('create_ticket_modal_card_header_task_actions_text') }}</h6>
+                        </div>
+                        <div class="card-body">
+
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-desino bg-desino text-light" type="submit"

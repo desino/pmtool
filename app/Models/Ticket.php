@@ -15,7 +15,8 @@ class Ticket extends Model
 
     protected $appends = [
         'type_label',
-        'display_created_at'
+        'display_created_at',
+        'asana_task_link'
     ];
 
     public const TYPE_CHANGE_REQUEST = 1;
@@ -79,6 +80,13 @@ class Ticket extends Model
         );
     }
 
+    protected function asanaTaskLink(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->initiative_id ? "https://app.asana.com/0/" . $this->initiative->asana_project_id . '/' . $this->asana_task_id . '/f' : null,
+        );
+    }
+
     public function functionality(): BelongsTo
     {
         return $this->belongsTo(Functionality::class);
@@ -87,5 +95,10 @@ class Ticket extends Model
     public function project()
     {
         return $this->belongsTo(Project::class);
+    }
+
+    public function initiative()
+    {
+        return $this->belongsTo(Initiative::class);
     }
 }

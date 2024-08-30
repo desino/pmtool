@@ -15,10 +15,7 @@ class TicketService
         $currentYear = Carbon::now()->year;
         $currentMonth = Carbon::now()->format('m');
         $ticketCount = 0;
-
-        $lastTicket = Ticket::whereHas('functionality.section.initiative', function ($q) use ($initiative) {
-            $q->where('id', $initiative->id);
-        })
+        $lastTicket = Ticket::where('initiative_id', $initiativeId)
             ->orderBy('created_at', 'desc')
             ->first();
         if (!$lastTicket) {

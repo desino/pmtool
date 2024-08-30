@@ -124,6 +124,7 @@ class TicketController extends Controller
             'created_at',
             'asana_task_id',
             'functionality_id',
+            'initiative_id',
             'composed_name',
         )
             ->with(['project' => function ($q) {
@@ -151,9 +152,9 @@ class TicketController extends Controller
                     }]);
                 }]);
             }])
-            ->whereHas('functionality.section', function ($query) use ($initiative_id) {
-                $query->where('initiative_id', $initiative_id);
-            })->when($filters['task_name'] != '', function (Builder $query) use ($filters) {
+            ->with('initiative')
+            ->where('initiative_id', $initiative_id)
+            ->when($filters['task_name'] != '', function (Builder $query) use ($filters) {
                 $query->whereLike('composed_name', '%' . $filters['task_name'] . '%');
             })->when($filters['task_type'] != '', function (Builder $query) use ($filters) {
                 $query->where('type', $filters['task_type']);
@@ -179,18 +180,15 @@ class TicketController extends Controller
     {
         $ticket = Ticket::with('functionality')
             ->where('id', $ticket_id)
-            ->whereHas('functionality.section', function ($query) use ($initiative_id) {
-                $query->where('initiative_id', $initiative_id);
-            })
+            ->where('initiative_id', $initiative_id)
             ->get()->first();
 
         if (!$ticket) {
             return ApiHelper::response('false', __('messages.ticket.not_found'), [], 404);
         }
 
-        $meta_data['all_tickets'] = Ticket::query()->whereHas('functionality.section', function ($query) use ($initiative_id) {
-            $query->where('initiative_id', $initiative_id);
-        })->get(['id', 'name', 'composed_name']);
+        $meta_data['all_tickets'] = Ticket::query()->where('initiative_id', $initiative_id)
+            ->get(['id', 'name', 'composed_name']);
 
         return ApiHelper::response(true, __('messages.ticket.fetched'), $ticket, 200, $meta_data);
     }

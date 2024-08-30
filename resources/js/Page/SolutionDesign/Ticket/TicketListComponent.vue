@@ -107,10 +107,8 @@
                             class="text-success me-2">
                             <i class="bi bi-box-arrow-up-right fw-bold"></i>
                         </router-link>
-                        <a v-if="task?.functionality?.section?.initiative?.asana_project_id && task.asana_task_id"
-                            class="text-warning me-2" target="_blank"
-                            :href="'https://app.asana.com/0/' + task?.functionality?.section?.initiative?.asana_project_id + '/' + task.asana_task_id + '/f'"
-                            title="Assana Task Detail Link">
+                        <a v-if="task.asana_task_link" class="text-warning me-2" target="_blank"
+                            :href="task.asana_task_link" title="Assana Task Detail Link">
                             <i class="bi bi-link-45deg fw-bold"></i>
                         </a>
                     </div>

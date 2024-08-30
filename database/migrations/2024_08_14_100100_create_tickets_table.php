@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
             $table->string('asana_task_id')->nullable();
-            $table->bigInteger('functionality_id');
+            $table->bigInteger('initiative_id')->nullable();
+            $table->bigInteger('functionality_id')->nullable();
             $table->bigInteger('project_id')->nullable();
             $table->string('name');
             $table->longText('composed_name')->nullable();

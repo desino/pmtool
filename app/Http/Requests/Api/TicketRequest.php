@@ -25,7 +25,7 @@ class TicketRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'functionality_id' => 'required|exists:functionalities,id',
+            'functionality_id' => 'nullable|exists:functionalities,id',
             'initial_estimation_development_time' => 'required|numeric|min:0',
             'initiative_id' => 'nullable',
             'type' => 'required',
@@ -36,8 +36,7 @@ class TicketRequest extends FormRequest
     public function all($keys = null)
     {
         $data = parent::all($keys);
-        $data['functionality_id'] = $data['functionality_id']['id'] ?? "";
-        // $data['type'] = Ticket::getTypeChangeRequest();
+        $data['functionality_id'] = $data['functionality_id']['id'] ?? null;
         return $data;
     }
 }

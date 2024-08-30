@@ -255,6 +255,7 @@
     "create_ticket_modal_modal_input_initial_estimation_development_time": "Initial Estimation Development Time",
     "create_ticket_modal_checkbox_auto_wait_for_client_approval": "Auto wait for client approval",
     "ticket_type.change_request": "Change request",
+    "create_ticket_modal_card_header_task_actions_text": "Task Actions",
     "ticket_type.bug": "Bug",
     "ticket_type.development": "Development",
     "ticket_type.maintenance": "Maintenance",
