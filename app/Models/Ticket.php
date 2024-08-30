@@ -36,10 +36,10 @@ class Ticket extends Model
     public static function getTypeOfCode($typeId)
     {
         return match ($typeId) {
-            self::TYPE_CHANGE_REQUEST => __('ticket_type.improvement.code'),
+            self::TYPE_CHANGE_REQUEST => __('ticket_type.change_request.code'),
             self::TYPE_BUG => __('ticket_type.bug.code'),
             self::TYPE_DEVELOPMENT => __('ticket_type.development.code'),
-            self::TYPE_MAINTENANCE => __('ticket_type.maintenance_task.code'),
+            self::TYPE_MAINTENANCE => __('ticket_type.maintenance.code'),
             default => '-'
         };
     }

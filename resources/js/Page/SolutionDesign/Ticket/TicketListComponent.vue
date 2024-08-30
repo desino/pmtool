@@ -82,7 +82,7 @@
                                 v-model="task.isChecked" @change="handleSelectTasks(task)">
                         </div>
                         <div class="mx-2">
-                            {{ task.name }}
+                            {{ task.composed_name }}
                         </div>
                     </div>
                     <div class="col-lg-2 col-md-6 col-6">{{ task.type_label }}</div>

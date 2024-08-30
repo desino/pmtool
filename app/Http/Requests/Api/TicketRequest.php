@@ -6,7 +6,7 @@ use App\Models\Ticket;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class TitcketRequest extends FormRequest
+class TicketRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,7 +26,7 @@ class TitcketRequest extends FormRequest
         return [
             'name' => 'required|string',
             'functionality_id' => 'required|exists:functionalities,id',
-            'initial_estimation_development_time' => 'required|numeric',
+            'initial_estimation_development_time' => 'required|numeric|min:0',
             'initiative_id' => 'nullable',
             'type' => 'required',
         ];

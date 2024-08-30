@@ -134,7 +134,6 @@ export default {
 
             const { content } = await TicketService.getTicketTypes(credentials);
             this.ticketTypes = content;
-            console.log('this.ticketTypes :: ', this.ticketTypes);
             this.setLoading(false);
         },
         async storeTicket() {

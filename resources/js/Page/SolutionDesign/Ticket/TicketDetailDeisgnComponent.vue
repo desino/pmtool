@@ -3,10 +3,10 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6">
-                    <h3 class="m-0">Task Name - {{ ticketData.name }}</h3>
+                    <h3 class="m-0">Task Name - {{ ticketData.composed_name }}</h3>
                     <div class="col-md-12 py-2">
                         <multiselect v-model="selectedTaskObject" :multiple="false" :options="tasksForDropdown"
-                            :searchable="true" deselect-label="Can't remove this value" label="name"
+                            :searchable="true" deselect-label="Can't remove this value" label="composed_name"
                             placeholder="Search & Select Task" track-by="id" @input="onTaskSelect">
                         </multiselect>
                     </div>
@@ -284,6 +284,7 @@ export default {
                 } else {
                     this.setData(response.content);
                     this.tasksForDropdown = response.meta_data.all_tickets;
+                    console.log('this.tasksForDropdown :: ', this.tasksForDropdown);
                 }
                 this.setLoading(false);
             } catch (error) {
@@ -309,6 +310,7 @@ export default {
         },
         setData(content) {
             this.ticketData.name = content.name;
+            this.ticketData.composed_name = content.composed_name;
             this.ticketData.initial_dev_time = content.initial_estimation_development_time;
             this.ticketData.task_type = content.type_label;
             this.ticketData.functionality_name = content.functionality.name;

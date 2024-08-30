@@ -26,7 +26,7 @@ class ClientRequest extends FormRequest
         return [
             'name' => 'required|string',
             'initiative_name' => 'required|string',
-            'ballpark_development_hours' => 'required|numeric',
+            'ballpark_development_hours' => 'required|numeric|min:0',
             'is_sold' => 'nullable',
             'status' => 'nullable',
         ];

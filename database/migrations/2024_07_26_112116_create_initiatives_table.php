@@ -22,6 +22,7 @@ return new class extends Migration
             $table->bigInteger('functional_owner_id')->nullable();
             $table->bigInteger('technical_owner_id')->nullable();
             $table->bigInteger('quality_owner_id')->nullable();
+            $table->bigInteger('ticket_composed_name_count')->default(0);
             $table->integer('created_by');
             $table->integer('updated_by')->default(0);
             $table->timestamps();

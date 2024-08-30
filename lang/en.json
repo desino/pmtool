@@ -258,7 +258,7 @@
     "ticket_type.development": "Development",
     "ticket_type.maintenance": "Maintenance",
     "ticket_type.change_request.code": "CR",
-    "ticket_type.bug.code": "GUG",
+    "ticket_type.bug.code": "BUG",
     "ticket_type.development.code": "DEV",
     "ticket_type.maintenance.code": "MNT",
     "initiative.status.opportunity": "Opportunity",

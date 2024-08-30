@@ -17,6 +17,7 @@ return new class extends Migration
             $table->bigInteger('functionality_id');
             $table->bigInteger('project_id')->nullable();
             $table->string('name');
+            $table->longText('composed_name')->nullable();
             $table->integer('type');
             $table->bigInteger('initial_estimation_development_time');
             $table->longText('release_note')->nullable();

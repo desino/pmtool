@@ -3,12 +3,16 @@
 namespace App\Observers;
 
 use App\Models\Ticket;
+use App\Services\TicketService;
 use Illuminate\Support\Facades\Auth;
 
 class TicketObserver
 {
     public function creating(Ticket $ticket)
     {
+        $requestData = request()->all();
+        $generateTicketComposedNameData = TicketService::generateTicketComposedName($requestData['initiative_id'], $ticket->name, $ticket->type);
+        $ticket->composed_name = $generateTicketComposedNameData['composed_name'];
         $ticket->created_by = Auth::id();
         $ticket->updated_at = null;
     }
@@ -22,7 +26,8 @@ class TicketObserver
      */
     public function created(Ticket $ticket): void
     {
-        //
+        $requestData = request()->all();
+        TicketService::incrementInitiativeTicketCount($requestData['initiative_id']);
     }
 
     /**

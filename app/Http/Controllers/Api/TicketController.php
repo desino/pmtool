@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\AssignProjectRequest;
-use App\Http\Requests\Api\TitcketRequest;
+use App\Http\Requests\Api\TicketRequest;
 use App\Http\Requests\UpdateReleaseNoteRequest;
 use App\Models\Functionality;
 use App\Models\Project;
@@ -51,7 +51,7 @@ class TicketController extends Controller
         return ApiHelper::response(true, '', $ticketTypes, 200);
     }
 
-    public function store(TitcketRequest $request)
+    public function store(TicketRequest $request)
     {
         $validateData = $request->validated();
         $status = false;
@@ -120,6 +120,7 @@ class TicketController extends Controller
             'created_at',
             'asana_task_id',
             'functionality_id',
+            'composed_name',
         )
             ->with(['project' => function ($q) {
                 $q->select(
@@ -149,7 +150,7 @@ class TicketController extends Controller
             ->whereHas('functionality.section', function ($query) use ($initiative_id) {
                 $query->where('initiative_id', $initiative_id);
             })->when($filters['task_name'] != '', function (Builder $query) use ($filters) {
-                $query->whereLike('name', '%' . $filters['task_name'] . '%');
+                $query->whereLike('composed_name', '%' . $filters['task_name'] . '%');
             })->when($filters['task_type'] != '', function (Builder $query) use ($filters) {
                 $query->where('type', $filters['task_type']);
             })
@@ -183,7 +184,9 @@ class TicketController extends Controller
             return ApiHelper::response('false', __('messages.ticket.not_found'), [], 404);
         }
 
-        $meta_data['all_tickets'] = Ticket::query()->get(['id', 'name']);
+        $meta_data['all_tickets'] = Ticket::query()->whereHas('functionality.section', function ($query) use ($initiative_id) {
+            $query->where('initiative_id', $initiative_id);
+        })->get(['id', 'name', 'composed_name']);
 
         return ApiHelper::response(true, __('messages.ticket.fetched'), $ticket, 200, $meta_data);
     }
