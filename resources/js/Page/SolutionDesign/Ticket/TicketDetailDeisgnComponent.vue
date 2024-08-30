@@ -284,7 +284,6 @@ export default {
                 } else {
                     this.setData(response.content);
                     this.tasksForDropdown = response.meta_data.all_tickets;
-                    console.log('this.tasksForDropdown :: ', this.tasksForDropdown);
                 }
                 this.setLoading(false);
             } catch (error) {
