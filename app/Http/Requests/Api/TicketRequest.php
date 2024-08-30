@@ -29,6 +29,7 @@ class TicketRequest extends FormRequest
             'initial_estimation_development_time' => 'required|numeric|min:0',
             'initiative_id' => 'nullable',
             'type' => 'required',
+            'auto_wait_for_client_approval' => 'nullable'
         ];
     }
 

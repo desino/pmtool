@@ -25,7 +25,7 @@
                                 class="text-danger">*</strong></label>
                         <select v-model="formData.type" :class="{ 'is-invalid': errors.type }" id="type"
                             class="form-select">
-                            <option value="">{{ $t('create_initiative_modal_select_type_placeholder') }}</option>
+                            <option value="">{{ $t('create_ticket_modal_select_type_placeholder') }}</option>
                             <option v-for="type in ticketTypes" :key="type.id" :value="type.id">{{
                                 type.name }}
                             </option>
@@ -61,6 +61,20 @@
                             <span v-for="(error, index) in errors.initial_estimation_development_time" :key="index">
                                 {{ error }}
                             </span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" v-model="formData.auto_wait_for_client_approval"
+                                :class="{ 'is-invalid': errors.auto_wait_for_client_approval }" type="checkbox"
+                                id="auto_wait_for_client_approval">
+                            <label class="form-check-label" for="auto_wait_for_client_approval">
+                                {{ $t('create_ticket_modal_checkbox_auto_wait_for_client_approval') }}
+                            </label>
+                        </div>
+                        <div v-if="errors.auto_wait_for_client_approval" class="invalid-feedback">
+                            <span v-for="(error, index) in errors.auto_wait_for_client_approval" :key="index">{{ error
+                                }}</span>
                         </div>
                     </div>
                 </div>
@@ -112,6 +126,7 @@ export default {
                 functionality_id: "",
                 type: "",
                 initial_estimation_development_time: "",
+                auto_wait_for_client_approval: false
             },
             ticketTypes: [],
             submitButtonClicked: '',

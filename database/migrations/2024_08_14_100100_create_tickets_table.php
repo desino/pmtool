@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('type');
             $table->bigInteger('initial_estimation_development_time');
             $table->longText('release_note')->nullable();
+            $table->boolean('auto_wait_for_client_approval')->default(0);
             $table->integer('created_by');
             $table->integer('updated_by')->default(0);
             $table->timestamps();
