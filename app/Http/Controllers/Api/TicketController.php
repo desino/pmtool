@@ -14,6 +14,7 @@ use App\Models\Ticket;
 use App\Services\AsanaService;
 use App\Services\InitiativeService;
 use App\Services\ProjectService;
+use App\Services\TicketService;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -73,9 +74,12 @@ class TicketController extends Controller
         }
 
         $ticketTypes = Ticket::getAllTypes();
-        $projectId = $initiative->asana_project_id; // from getProject api
+        $projectId = $initiative->asana_project_id;
+        $generateTicketComposedNameData = TicketService::generateTicketComposedName($validateData['initiative_id'], $validateData['name'], $validateData['type']);
+        $ticketComposedName = $generateTicketComposedNameData['composed_name'];
+        $validateData['composed_name'] = $ticketComposedName;
         $data = [
-            'name' => $validateData['name'],
+            'name' => $validateData['composed_name'],
             'resource_type' => 'task',
             'resource_subtype' => 'default_task',
             // 'resource_subtype' => $ticketTypes[$validateData['type']],
