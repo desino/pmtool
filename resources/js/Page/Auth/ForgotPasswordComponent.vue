@@ -4,7 +4,11 @@
             <GlobalMessage v-if="showMessage" />
             <div class="card w-100">
                 <div class="card-body">
-                    <h5 class="card-title text-center">{{ $t('forgot_password_page_title') }}</h5>
+                    <div class="sidebar-brand mb-3">
+                        <img alt="Brand Image" class="brand-image"
+                             src="https://www.desino.be/wp-content/uploads/2024/01/Logo_Finaloriginal-black.png"/>
+                    </div>
+                    <h5 class="text-center">{{ $t('forgot_password_page_title') }}</h5>
                     <form @submit.prevent="forgotPassword">
                         <div class="input-group mb-3">
                             <input v-model="email" :class="{ 'is-invalid': errors.email }" class="form-control"
