@@ -102,15 +102,8 @@ class TicketService
                 'user_id' => $ticketAction['user_id'],
                 'status' => Self::getTicketActionStatus($ticketActionKey, $ticketAction, $autoWaitForClientApproval),
             ];
-            // print('<pre>');
-            // print_r($createdArray);
-            // print('</pre>');
             $ticketAction = TicketAction::create($createdArray);
-            // if ($ticketActionKey == 0) {
-            //     $retAction = $ticketAction;
-            // }
         }
-        exit;
         return $retAction;
     }
 
