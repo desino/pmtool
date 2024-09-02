@@ -35,10 +35,9 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" for="client_id">{{
-                            $t('create_ticket_modal_select_functionality_id')
-                        }}
-                            <strong class="text-danger">*</strong></label>
+                        <label class="form-label" for="client_id">
+                            {{ $t('create_ticket_modal_select_functionality_id') }}
+                        </label>
                         <multiselect v-model="formData.functionality_id"
                             :class="{ 'is-invalid': errors.functionality_id }" :options="sectionsFunctionalitiesList"
                             :placeholder="$t('create_ticket_modal_select_functionality_placeholder')" group-label="name"
