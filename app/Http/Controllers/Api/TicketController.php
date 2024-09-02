@@ -11,6 +11,7 @@ use App\Models\Functionality;
 use App\Models\Project;
 use App\Models\Section;
 use App\Models\Ticket;
+use App\Models\TicketAction;
 use App\Services\AsanaService;
 use App\Services\InitiativeService;
 use App\Services\ProjectService;
@@ -35,10 +36,16 @@ class TicketController extends Controller
         $sectionFunctionality = TicketService::getSectionFunctionality($initiative_id);
         $ticketTypes = TicketService::getTicketTypes();
         $projects = TicketService::getInitiativeProject($initiative_id);
+        $users = TicketService::getUsers();
+        $actions = TicketAction::getAllActions();
+        $initiative = TicketService::getInitiative($initiative_id);
         $retData = [
             'sectionFunctionality' => $sectionFunctionality,
             'ticketTypes' => $ticketTypes,
             'projects' => $projects,
+            'users' => $users,
+            'actions' => $actions,
+            'initiative' => $initiative,
         ];
         return ApiHelper::response(true, '', $retData, 200);
     }
@@ -85,6 +92,11 @@ class TicketController extends Controller
         DB::beginTransaction();
         try {
             $ticket = Ticket::create($validateData);
+            $ticketActions = TicketService::insertTicketActions($ticket->id, $validateData['ticket_actions'], $validateData['auto_wait_for_client_approval']);
+            print('<pre>');
+            print_r($ticketActions);
+            print('</pre>');
+            exit;
             $status = true;
             $message = __('messages.create_ticket.store_success');
             $statusCode = 200;

@@ -6,7 +6,10 @@ use App\Models\Initiative;
 use App\Models\Project;
 use App\Models\Section;
 use App\Models\Ticket;
+use App\Models\TicketAction;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
 
 class TicketService
 {
@@ -72,5 +75,55 @@ class TicketService
     {
         $projects = Project::where('initiative_id', $initiative_id)->get();
         return $projects;
+    }
+
+    public static function getUsers()
+    {
+        $user = User::get();
+        return $user;
+    }
+
+    public static function getInitiative(int $initiative_id)
+    {
+        $initiative = Initiative::find($initiative_id);
+        return $initiative;
+    }
+
+    public static function insertTicketActions(int $ticketId, array $ticketActions, bool $autoWaitForClientApproval)
+    {
+        $actions = array_column($ticketActions, 'action');
+        array_multisort($actions, SORT_ASC, $ticketActions);
+
+        $retAction = "";
+        foreach ($ticketActions as $ticketActionKey => $ticketAction) {
+            $createdArray = [
+                'ticket_id' => $ticketId,
+                'action' => $ticketAction['action'],
+                'user_id' => $ticketAction['user_id'],
+                'status' => Self::getTicketActionStatus($ticketActionKey, $ticketAction, $autoWaitForClientApproval),
+            ];
+            // print('<pre>');
+            // print_r($createdArray);
+            // print('</pre>');
+            $ticketAction = TicketAction::create($createdArray);
+            // if ($ticketActionKey == 0) {
+            //     $retAction = $ticketAction;
+            // }
+        }
+        exit;
+        return $retAction;
+    }
+
+    public static function  getTicketActionStatus($index, $ticketAction, $autoWaitForClientApproval)
+    {
+        if ($autoWaitForClientApproval && $index == 0 && ($ticketAction['action'] == 1 || $ticketAction['action'] == 2)) {
+            return TicketAction::getStatusActionable();
+        }
+
+        if (!$autoWaitForClientApproval && $index == 0) {
+            return TicketAction::getStatusActionable();
+        }
+
+        return TicketAction::getStatusWaitingForDependantAction();
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Api;
 
 use App\Models\Ticket;
+use App\Models\TicketAction;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,13 +32,25 @@ class TicketRequest extends FormRequest
             'type' => 'required',
             'auto_wait_for_client_approval' => 'nullable',
             'project_id' => 'nullable',
+            'ticket_actions.*.user_id' => 'required|exists:users,id',
+            'ticket_actions.*.action' => 'required',
         ];
+    }
+
+    public function messages(): array
+    {
+        $messages = [
+            'ticket_actions.*.user_id.required' => __('validation.ticket_actions.user_id.required'),
+            'ticket_actions.*.exists.required' => __('validation.ticket_actions.user_id.exists'),
+        ];
+        return $messages;
     }
 
     public function all($keys = null)
     {
         $data = parent::all($keys);
         $data['functionality_id'] = $data['functionality_id']['id'] ?? null;
+        $data['ticket_actions'] = array_column($data['ticket_actions'], null, 'action');
         return $data;
     }
 }

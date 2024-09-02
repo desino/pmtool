@@ -9,12 +9,14 @@ use App\Models\InitiativeEnvironment;
 use App\Models\Project;
 use App\Models\Section;
 use App\Models\Ticket;
+use App\Models\TicketAction;
 use App\Observers\ClientObserver;
 use App\Observers\FunctionalityObserver;
 use App\Observers\InitiativeEnvironmentObserver;
 use App\Observers\InitiativeObserver;
 use App\Observers\ProjectObserver;
 use App\Observers\SectionObserver;
+use App\Observers\TicketActionObserver;
 use App\Observers\TicketObserver;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema;
@@ -45,6 +47,7 @@ class AppServiceProvider extends ServiceProvider
         Ticket::observe(TicketObserver::class);
         InitiativeEnvironment::observe(InitiativeEnvironmentObserver::class);
         Project::observe(ProjectObserver::class);
+        TicketAction::observe(TicketActionObserver::class);
         Event::listen(
             SocialiteWasCalled::class,
             GraphExtendSocialite::class . '@handle',

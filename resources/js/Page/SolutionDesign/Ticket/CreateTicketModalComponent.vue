@@ -95,7 +95,46 @@
                             <h6 class="mb-0">{{ $t('create_ticket_modal_card_header_task_actions_text') }}</h6>
                         </div>
                         <div class="card-body">
-
+                            <div v-for="action in actions" :key="action.id">
+                                <div class="row align-items-center">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" :class="{ 'is-invalid': errors.actions }"
+                                                type="checkbox" :id="'ticket_action_' + action.id" :value="action.id"
+                                                v-model="selectedActions" @change="handleActionChange(action.id)">
+                                            <label class="form-check-label" :for="'ticket_action_' + action.id">
+                                                {{ action.name }}
+                                            </label>
+                                        </div>
+                                        <div v-if="errors.actions" class="invalid-feedback">
+                                            <span v-for="(error, index) in errors.actions" :key="index">{{ error
+                                                }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <select v-if="isActionSelected(action.id)"
+                                            :class="{ 'is-invalid': errors[`ticket_actions.${action.id}.user_id`] }"
+                                            :id="'user_id' + action.id" class="form-select"
+                                            :value="getSelectedUserId(action.id)"
+                                            @change="updateUser(action.id, $event.target.value)">
+                                            <option value="">{{ $t('create_ticket_modal_select_action_user_placeholder')
+                                                }}</option>
+                                            <option v-for="user in users" :key="user.id" :value="user.id">
+                                                {{ user.name }}
+                                            </option>
+                                        </select>
+                                        <div v-if="errors[`ticket_actions.${action.id}.user_id`]"
+                                            class="invalid-feedback">
+                                            <span
+                                                v-for="(error, index) in errors[`ticket_actions.${action.id}.user_id`]"
+                                                :key="index">{{
+                                                    error
+                                                }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -148,14 +187,19 @@ export default {
                 project_id: "",
                 type: "",
                 initial_estimation_development_time: "",
-                auto_wait_for_client_approval: false
+                auto_wait_for_client_approval: false,
+                ticket_actions: []
             },
+            selectedActions: [],
             ticketTypes: [],
             initiativeProjects: [],
+            users: [],
+            actions: [],
+            initiative: [],
             submitButtonClicked: '',
             errors: {},
             showMessage: true,
-            sectionsFunctionalitiesList: []
+            sectionsFunctionalitiesList: [],
         };
     },
     methods: {
@@ -167,10 +211,14 @@ export default {
             const credentials = {
                 initiative_id: this.selectedInitiativeId
             }
-            const { content: { sectionFunctionality, ticketTypes, projects } } = await TicketService.getInitialDataForCreateOrEditTicket(credentials);
+            const { content: { sectionFunctionality, ticketTypes, projects, users, actions, initiative } } = await TicketService.getInitialDataForCreateOrEditTicket(credentials);
             this.sectionsFunctionalitiesList = sectionFunctionality;
             this.ticketTypes = ticketTypes;
             this.initiativeProjects = projects;
+            this.users = users;
+            this.actions = actions;
+            this.initiative = initiative;
+            this.ticket_actions = this.actions;
             this.setLoading(false);
         },
         async storeTicket() {
@@ -179,6 +227,7 @@ export default {
                 this.setLoading(true);
 
                 this.formData.initiative_id = this.selectedInitiativeId;
+                console.log('this.formData :: ', this.formData);
                 const response = await TicketService.storeTicket(this.formData);
                 // messageService.setMessage(response.data.message, 'success');
                 if (this.submitButtonClicked === 'create_close') {
@@ -206,6 +255,47 @@ export default {
         handleSubmitButtonClick(buttonValue) {
             this.submitButtonClicked = buttonValue;
         },
+        handleActionChange(actionId) {
+            let selectedUserId = "";
+            switch (actionId) {
+                case 1:
+                    selectedUserId = this.initiative.functional_owner_id ?? "";
+                    break;
+                case 2:
+                case 3:
+                    selectedUserId = this.initiative.technical_owner_id ?? "";
+                    break;
+                case 4:
+                    selectedUserId = this.initiative.quality_owner_id ?? "";
+                    break;
+                case 5:
+                    selectedUserId = this.initiative.functional_owner_id ?? "";
+                    break;
+                default:
+                    selectedUserId = "";
+            }
+            if (this.isActionSelected(actionId)) {
+                this.formData.ticket_actions.push({
+                    action: actionId,
+                    user_id: selectedUserId
+                });
+            } else {
+                this.formData.ticket_actions = this.formData.ticket_actions.filter(a => a.action !== actionId);
+            }
+        },
+        updateUser(actionId, userId) {
+            const action = this.formData.ticket_actions.find(a => a.action === actionId);
+            if (action) {
+                action.user_id = userId;
+            }
+        },
+        getSelectedUserId(actionId) {
+            const action = this.formData.ticket_actions.find(a => a.action === actionId);
+            return action ? action.user_id : "";
+        },
+        isActionSelected(actionId) {
+            return this.selectedActions.includes(actionId);
+        },
         hideModal() {
             const modalElement = document.getElementById('createTicketModal');
             if (modalElement) {
@@ -230,7 +320,10 @@ export default {
                 type: "",
                 project_id: "",
                 initial_estimation_development_time: "",
+                auto_wait_for_client_approval: false,
+                ticket_actions: []
             };
+            this.selectedActions = [];
             this.errors = {};
         },
         clearMessages() {
