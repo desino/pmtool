@@ -93,10 +93,6 @@ class TicketController extends Controller
         try {
             $ticket = Ticket::create($validateData);
             $ticketActions = TicketService::insertTicketActions($ticket->id, $validateData['ticket_actions'], $validateData['auto_wait_for_client_approval']);
-            print('<pre>');
-            print_r($ticketActions);
-            print('</pre>');
-            exit;
             $status = true;
             $message = __('messages.create_ticket.store_success');
             $statusCode = 200;
