@@ -30,26 +30,17 @@ class TicketController extends Controller
         $this->asanaService = $asanaService;
     }
 
-    public function getSectionFunctionality(int $initiative_id)
+    public function getInitialDataForCreateOrEditTicket(int $initiative_id)
     {
-        $sectionFunctionalities = Section::select(['id', 'name',])
-            ->with(['functionalities' => function ($q) {
-                $q->select(
-                    'id',
-                    'section_id',
-                    'name',
-                    'id'
-                );
-            }])
-            ->where('initiative_id', $initiative_id)
-            ->get();
-        return ApiHelper::response(true, '', $sectionFunctionalities, 200);
-    }
-
-    public function getTicketTypes()
-    {
-        $ticketTypes = Ticket::getAllTypes();
-        return ApiHelper::response(true, '', $ticketTypes, 200);
+        $sectionFunctionality = TicketService::getSectionFunctionality($initiative_id);
+        $ticketTypes = TicketService::getTicketTypes();
+        $projects = TicketService::getInitiativeProject($initiative_id);
+        $retData = [
+            'sectionFunctionality' => $sectionFunctionality,
+            'ticketTypes' => $ticketTypes,
+            'projects' => $projects,
+        ];
+        return ApiHelper::response(true, '', $retData, 200);
     }
 
     public function store(TicketRequest $request)

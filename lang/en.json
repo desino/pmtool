@@ -250,6 +250,8 @@
     "create_ticket_modal_select_type_placeholder": "Select Type",
     "create_ticket_modal_input_name": "Ticket Name",
     "create_ticket_modal_select_type": "Ticket Type",
+    "create_ticket_modal_select_project": "Project",
+    "create_ticket_modal_select_project_placeholder": "Select Project",
     "create_ticket_modal_select_functionality_id": "Feature",
     "create_ticket_modal_select_functionality_placeholder": "Type to search",
     "create_ticket_modal_modal_input_initial_estimation_development_time": "Initial Estimation Development Time",

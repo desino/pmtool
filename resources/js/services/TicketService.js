@@ -8,7 +8,6 @@ import { APP_VARIABLES } from "../constants.js";
 const defaultPath = `${APP_VARIABLES.DEFAULT_API_PATH}/solution-design/:initiative_id/ticket`;
 
 const endpoints = {
-    getSectionFunctionalityForCreateTicketModal: `${defaultPath}/get-section-functionality`,
     getAllTickets: `${defaultPath}/all`,
     storeTicket: `${defaultPath}/store`,
     fetchTicket: `${defaultPath}/show/:ticket_id`,
@@ -17,28 +16,10 @@ const endpoints = {
     getInitiativeProjectList: `${defaultPath}/get-initiative-project-list`,
     assignProject: `${defaultPath}/assign-project`,
     assignOrRemoveProjectForTask: `${defaultPath}/assign-or-remove-project-for-task`,
-    getTicketTypes: `${defaultPath}/get-ticket-types`,
+    getInitialDataForCreateOrEditTicket: `${defaultPath}/get-initial-data-for-create-or-edit-ticket`,
 }
 
 const SolutionDesignService = {
-    async getInitiativeSectionFunctionality(data) {
-        try {
-            const endpoint = endpoints.getSectionFunctionalityForCreateTicketModal.replace(':initiative_id', data.initiative_id);
-            const response = await axiosRequest.get(endpoint);
-            return response.data;
-        } catch (error) {
-            throw handleError(error);
-        }
-    },
-    async getTicketTypes(data) {
-        try {
-            const endpoint = endpoints.getTicketTypes.replace(':initiative_id', data.initiative_id);
-            const response = await axiosRequest.get(endpoint);
-            return response.data;
-        } catch (error) {
-            throw handleError(error);
-        }
-    },
     async fetchAllTickets(initiative_id, data) {
         try {
             const endpoint = endpoints.getAllTickets.replace(':initiative_id', initiative_id);
@@ -110,7 +91,17 @@ const SolutionDesignService = {
         } catch (error) {
             throw handleError(error);
         }
-    }
+    },
+
+    async getInitialDataForCreateOrEditTicket(data) {
+        try {
+            const endpoint = endpoints.getInitialDataForCreateOrEditTicket.replace(':initiative_id', data.initiative_id);
+            const response = await axiosRequest.get(endpoint, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
 
 }
 

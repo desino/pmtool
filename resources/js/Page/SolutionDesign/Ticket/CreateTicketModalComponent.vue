@@ -37,7 +37,7 @@
                     <div class="mb-3">
                         <label class="form-label" for="client_id">{{
                             $t('create_ticket_modal_select_functionality_id')
-                            }}
+                        }}
                             <strong class="text-danger">*</strong></label>
                         <multiselect v-model="formData.functionality_id"
                             :class="{ 'is-invalid': errors.functionality_id }" :options="sectionsFunctionalitiesList"
@@ -51,7 +51,7 @@
                     <div class="mb-3">
                         <label class="form-label" for="initial_estimation_development_time">{{
                             $t('create_ticket_modal_modal_input_initial_estimation_development_time')
-                            }} <strong class="text-danger">*</strong>
+                        }} <strong class="text-danger">*</strong>
                         </label>
                         <input id="initial_estimation_development_time"
                             v-model="formData.initial_estimation_development_time"
@@ -61,6 +61,20 @@
                             <span v-for="(error, index) in errors.initial_estimation_development_time" :key="index">
                                 {{ error }}
                             </span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="project_id">{{ $t('create_ticket_modal_select_project') }}
+                        </label>
+                        <select v-model="formData.project_id" :class="{ 'is-invalid': errors.project_id }"
+                            id="project_id" class="form-select">
+                            <option value="">{{ $t('create_ticket_modal_select_project_placeholder') }}</option>
+                            <option v-for="project in initiativeProjects" :key="project.id" :value="project.id">{{
+                                project.name }}
+                            </option>
+                        </select>
+                        <div v-if="errors.project_id" class="invalid-feedback">
+                            <span v-for="(error, index) in errors.project_id" :key="index">{{ error }}</span>
                         </div>
                     </div>
                     <div class="mb-3">
@@ -132,11 +146,13 @@ export default {
             formData: {
                 initiative_id: "",
                 functionality_id: "",
+                project_id: "",
                 type: "",
                 initial_estimation_development_time: "",
                 auto_wait_for_client_approval: false
             },
             ticketTypes: [],
+            initiativeProjects: [],
             submitButtonClicked: '',
             errors: {},
             showMessage: true,
@@ -152,11 +168,10 @@ export default {
             const credentials = {
                 initiative_id: this.selectedInitiativeId
             }
-            const response = await TicketService.getInitiativeSectionFunctionality(credentials);
-            this.sectionsFunctionalitiesList = response.content;
-
-            const { content } = await TicketService.getTicketTypes(credentials);
-            this.ticketTypes = content;
+            const { content: { sectionFunctionality, ticketTypes, projects } } = await TicketService.getInitialDataForCreateOrEditTicket(credentials);
+            this.sectionsFunctionalitiesList = sectionFunctionality;
+            this.ticketTypes = ticketTypes;
+            this.initiativeProjects = projects;
             this.setLoading(false);
         },
         async storeTicket() {
@@ -214,6 +229,7 @@ export default {
             this.formData = {
                 functionality_id: "",
                 type: "",
+                project_id: "",
                 initial_estimation_development_time: "",
             };
             this.errors = {};

@@ -49,8 +49,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/update-section-order-no', 'updateSectionOrderNo');
 
         Route::controller(TicketController::class)->prefix('{initiative_id}/ticket')->group(function () {
-            Route::get('get-section-functionality', 'getSectionFunctionality');
-            Route::get('get-ticket-types', 'getTicketTypes');
             Route::get('all', 'index');
             Route::post('store', 'store');
             Route::get('show/{ticket_id}', 'show');
@@ -59,6 +57,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('get-initiative-project-list', 'getInitiativeProjectList');
             Route::post('assign-project', 'assignProject');
             Route::post('assign-or-remove-project-for-task', 'assignOrRemoveProjectForTask');
+            Route::get('get-initial-data-for-create-or-edit-ticket', 'getInitialDataForCreateOrEditTicket');
         });
 
         Route::controller(ProjectController::class)->prefix('{initiative_id}/project')->group(function () {
