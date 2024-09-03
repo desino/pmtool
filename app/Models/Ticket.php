@@ -148,7 +148,7 @@ class Ticket extends Model
     }
     public function doneActions()
     {
-        return $this->hasOne(TicketAction::class)->where('status', TicketAction::getStatusDone())->orderBy('status');
+        return $this->hasOne(TicketAction::class)->where('status', TicketAction::getStatusDone())->orderBy('action');
     }
 
     public function currentAction()
