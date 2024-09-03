@@ -24,6 +24,13 @@ class Ticket extends Model
     public const TYPE_DEVELOPMENT = 3;
     public const TYPE_MAINTENANCE = 4;
 
+    public const STATUS_ONGOING = 1;
+    public const STATUS_WAIT_FOR_CLIENT = 2;
+    public const STATUS_READY_FOR_TEST = 3;
+    public const STATUS_READY_FOR_ACC = 4;
+    public const STATUS_READY_FOR_PRD = 5;
+    public const STATUS_DONE = 6;
+
     public static function getAllTypes()
     {
         return [
@@ -45,21 +52,41 @@ class Ticket extends Model
         };
     }
 
-    public static function getTypeChangeRequest()
+    public static function getAllStatus()
     {
-        return self::TYPE_CHANGE_REQUEST;
+        return [
+            ['id' => self::STATUS_ONGOING, 'name' => __('ticket_status.ongoing')],
+            ['id' => self::STATUS_WAIT_FOR_CLIENT, 'name' => __('ticket_status.wait_for_client')],
+            ['id' => self::STATUS_READY_FOR_TEST, 'name' => __('ticket_status.ready_for_test')],
+            ['id' => self::STATUS_READY_FOR_ACC, 'name' => __('ticket_status.ready_for_acc')],
+            ['id' => self::STATUS_READY_FOR_PRD, 'name' => __('ticket_status.ready_for_prd')],
+            ['id' => self::STATUS_DONE, 'name' => __('ticket_status.done')],
+        ];
     }
-    public static function getTypeBug()
+
+    public static function getStatusOngoing()
     {
-        return self::TYPE_BUG;
+        return self::STATUS_ONGOING;
     }
-    public static function getTypeDevelopment()
+    public static function getStatusWaitForClient()
     {
-        return self::TYPE_DEVELOPMENT;
+        return self::STATUS_WAIT_FOR_CLIENT;
     }
-    public static function getTypeMaintenanceTask()
+    public static function getStatusReadyForTest()
     {
-        return self::TYPE_MAINTENANCE;
+        return self::STATUS_READY_FOR_TEST;
+    }
+    public static function getStatusReadyForACC()
+    {
+        return self::STATUS_READY_FOR_ACC;
+    }
+    public static function getStatusReadyForPRD()
+    {
+        return self::STATUS_READY_FOR_PRD;
+    }
+    public static function getStatusDone()
+    {
+        return self::STATUS_DONE;
     }
 
     public function getTypeLabelAttribute()

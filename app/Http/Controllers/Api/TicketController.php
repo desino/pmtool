@@ -52,6 +52,12 @@ class TicketController extends Controller
 
     public function store(TicketRequest $request)
     {
+        // $ticket = Ticket::find(10);
+        // TicketService::updateTicketStatus($ticket);
+        // print('<pre>');
+        // print_r("devendra");
+        // print('</pre>');
+        // exit;
         $validateData = $request->validated();
         $status = false;
         $retData = [
@@ -92,7 +98,10 @@ class TicketController extends Controller
         DB::beginTransaction();
         try {
             $ticket = Ticket::create($validateData);
-            $ticketActions = TicketService::insertTicketActions($ticket->id, $validateData['ticket_actions'], $validateData['auto_wait_for_client_approval']);
+            if (!empty($validateData['ticket_actions'])) {
+                TicketService::insertTicketActions($ticket->id, $validateData['ticket_actions'], $validateData['auto_wait_for_client_approval']);
+                TicketService::updateTicketStatus($ticket);
+            }
             $status = true;
             $message = __('messages.create_ticket.store_success');
             $statusCode = 200;
