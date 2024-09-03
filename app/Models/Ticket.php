@@ -15,6 +15,7 @@ class Ticket extends Model
 
     protected $appends = [
         'type_label',
+        'status_label',
         'display_created_at',
         'asana_task_link'
     ];
@@ -99,6 +100,18 @@ class Ticket extends Model
             default => '-'
         };
     }
+    public function getStatusLabelAttribute()
+    {
+        return match ($this->status) {
+            self::STATUS_ONGOING => __('ticket_status.ongoing'),
+            self::STATUS_WAIT_FOR_CLIENT => __('ticket_status.wait_for_client'),
+            self::STATUS_READY_FOR_TEST => __('ticket_status.ready_for_test'),
+            self::STATUS_READY_FOR_ACC => __('ticket_status.ready_for_acc'),
+            self::STATUS_READY_FOR_PRD => __('ticket_status.ready_for_prd'),
+            self::STATUS_DONE => __('ticket_status.done'),
+            default => '-'
+        };
+    }
 
     protected function displayCreatedAt(): Attribute
     {
@@ -127,5 +140,19 @@ class Ticket extends Model
     public function initiative()
     {
         return $this->belongsTo(Initiative::class);
+    }
+
+    public function actions()
+    {
+        return $this->hasMany(TicketAction::class);
+    }
+    public function doneActions()
+    {
+        return $this->hasOne(TicketAction::class)->where('status', TicketAction::getStatusDone())->orderBy('status');
+    }
+
+    public function currentAction()
+    {
+        return $this->hasOne(TicketAction::class)->with('user')->orderBy('status');
     }
 }

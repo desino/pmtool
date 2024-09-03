@@ -113,4 +113,9 @@ class TicketAction extends Model
             default => '-'
         };
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

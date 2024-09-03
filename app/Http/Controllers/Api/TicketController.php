@@ -134,6 +134,7 @@ class TicketController extends Controller
             'functionality_id',
             'initiative_id',
             'composed_name',
+            'status'
         )
             ->with(['project' => function ($q) {
                 $q->select(
@@ -161,6 +162,9 @@ class TicketController extends Controller
                 }]);
             }])
             ->with('initiative')
+            ->with('currentAction')
+            ->withCount('actions')
+            ->withCount('doneActions')
             ->where('initiative_id', $initiative_id)
             ->when($filters['task_name'] != '', function (Builder $query) use ($filters) {
                 $query->whereLike('composed_name', '%' . $filters['task_name'] . '%');
@@ -173,6 +177,11 @@ class TicketController extends Controller
             ->when(!empty($filters['projects']) != '', function (Builder $query) use ($filters) {
                 $query->whereIn('project_id', array_column($filters['projects'], 'id'));
             })
+            ->when(!empty($filters['action_owner']) != '', function (Builder $query) use ($filters) {
+                $query->whereHas('currentAction.user', function ($q) use ($filters) {
+                    $q->where('id', $filters['action_owner']);
+                });
+            })
             ->paginate(10);
 
         $meta['task_type'] = Ticket::getAllTypes();
@@ -180,6 +189,7 @@ class TicketController extends Controller
             $query->where('initiative_id', $initiative_id);
         })->get(['id', 'display_name']);
         $meta['projects'] = ProjectService::getInitiativeProjects($initiative_id);
+        $meta['users'] = TicketService::getUsers();
 
         return ApiHelper::response('false', __('messages.ticket.fetched'), $tickets, 200, $meta);
     }

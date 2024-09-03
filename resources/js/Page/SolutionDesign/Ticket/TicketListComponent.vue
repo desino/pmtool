@@ -7,9 +7,11 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-end">
-                        <li class="breadcrumb-item"><a class="text-decoration-none" href="javascript:void(0)">{{
-                            $t('home.breadcrumb')
-                                }}</a></li>
+                        <li class="breadcrumb-item">
+                            <a class="text-decoration-none" href="javascript:void(0)">
+                                {{ $t('home.breadcrumb') }}
+                            </a>
+                        </li>
                     </ol>
                 </div>
             </div>
@@ -18,25 +20,47 @@
     <GlobalMessage v-if="showMessage" />
     <div class="app-content">
         <div class="row mb-3">
-            <div class="col-12 col-md-3 mb-2 mb-md-0">
+            <div class="col-12 col-md-2 mb-2 mb-md-0">
+                <label for="" class="form-label">{{ $t('ticket.filter.label.task_name') }}</label>
                 <input v-model="filter.task_name" :placeholder="$t('ticket.filter.task_name')" class="form-control"
                     type="text" @keyup="fetchAllTasks">
             </div>
-            <div class="col-12 col-md-3 mb-2 mb-md-0">
+            <div class="col-12 col-md-2 mb-2 mb-md-0">
+                <label for="" class="form-label">{{ $t('ticket.filter.label.task_type') }}</label>
                 <select id="client_id" v-model="filter.task_type" class="form-select" @change="fetchAllTasks">
                     <option value="">{{ $t('ticket.filter.task_type_placeholder') }}</option>
                     <option v-for="type in filterTaskTypes" :key="type.id" :value="type.id">{{ type.name }}
                     </option>
                 </select>
             </div>
-            <div class="col-12 col-md-3 mb-2 mb-md-0">
+            <div class="col-12 col-md-2 mb-2 mb-md-0">
+                <label for="" class="form-label">{{ $t('ticket.filter.label.action_owner') }}</label>
+                <select id="client_id" v-model="filter.action_owner" class="form-select" @change="fetchAllTasks">
+                    <option value="">{{ $t('ticket.filter.action_owner_placeholder') }}</option>
+                    <option v-for="actionOwner in actionOwners" :key="actionOwner.id" :value="actionOwner.id">{{
+                        actionOwner.name }}
+                    </option>
+                </select>
+            </div>
+            <div class="col-12 col-md-2 mb-2 mb-md-0">
+                <label for="" class="form-label">{{ $t('ticket.filter.label.next_action_owner') }}</label>
+                <select id="client_id" v-model="filter.next_action_owner" class="form-select" @change="fetchAllTasks">
+                    <option value="">{{ $t('ticket.filter.next_action_owner_placeholder') }}</option>
+                    <option v-for="nextActionOwner in nextActionOwners" :key="nextActionOwner.id"
+                        :value="nextActionOwner.id">{{ nextActionOwner.name }}
+                    </option>
+                </select>
+            </div>
+            <div class="col-12 col-md-2 mb-2 mb-md-0">
+                <label for="" class="form-label">{{ $t('ticket.filter.label.functionalities') }}</label>
                 <multiselect v-model="filter.functionalities" ref="multiselect" :multiple="true"
                     :options="functionalities" :searchable="true" deselect-label="" label="display_name"
                     :placeholder="$t('ticket.filter.functionalities_placeholder')" track-by="id" @select="fetchAllTasks"
                     @Remove="fetchAllTasks">
                 </multiselect>
             </div>
-            <div class="col-12 col-md-3 mb-2 mb-md-0">
+            <div class="col-12 col-md-2 mb-2 mb-md-0">
+                <label for="" class="form-label">{{ $t('ticket.filter.label.projects') }}</label>
                 <multiselect v-model="filter.projects" :multiple="true" :options="projects" :searchable="true"
                     deselect-label="" label="name" :placeholder="$t('ticket.filter.projects_placeholder')" track-by="id"
                     @select="fetchAllTasks" @Remove="fetchAllTasks">
@@ -60,15 +84,21 @@
                         {{ $t('ticket.list.column_task_name') }}
                     </div>
                     <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
-                        {{ $t('ticket.list.column_task_type') }}
+                        {{ $t('ticket.list.column_task_status') }}
                     </div>
-                    <div class="col-lg-3 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
+                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
                         {{ $t('ticket.list.column_project') }}
                     </div>
-                    <div class="col-lg-3 col-md-6 col-6 fw-bold py-2 d-none d-lg-block text-center">
+                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
+                        {{ $t('ticket.list.current_action') }}
+                    </div>
+                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
+                        {{ $t('ticket.list.current_owner') }}
+                    </div>
+                    <div class="col-lg-1 col-md-6 col-6 fw-bold py-2 d-none d-lg-block text-center">
                         {{ $t('ticket.list.column_task_created_at') }}
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2 d-none d-lg-block text-lg-end">
+                    <div class="col-lg-1 col-md-6 col-6 fw-bold py-2 d-none d-lg-block text-lg-end">
                         {{ $t('ticket.list.column_action') }}
                     </div>
                 </div>
@@ -76,7 +106,7 @@
             <li v-for="(task, index) in tasks" v-if="tasks.length > 0" :key="task.id"
                 class="border-desino border list-group-item">
                 <div class="row align-items-center">
-                    <div class="col-lg-2 col-md-6 col-6 d-flex">
+                    <div class="col-lg-2 col-md-6 col-6 d-flex align-items-center">
                         <div class="mx-2">
                             <input class="form-check-input" type="checkbox" :id="'chk_ticket_' + task.id"
                                 v-model="task.isChecked" @change="handleSelectTasks(task)">
@@ -85,8 +115,8 @@
                             {{ task.composed_name }}
                         </div>
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6">{{ task.type_label }}</div>
-                    <div class="col-lg-3 col-md-6 col-6">
+                    <div class="col-lg-2 col-md-6 col-6">{{ task.status_label }}</div>
+                    <div class="col-lg-2 col-md-6 col-6">
                         <span class="d-block d-lg-none fw-bold bg-desino mt-2 p-0 text-white text-center rounded-top">
                             {{ $t('ticket.list.column_project') }} </span>
                         <multiselect v-model="task.project" :options="projects" :searchable="true" deselect-label=""
@@ -96,12 +126,32 @@
                             @Remove="assignOrRemoveProjectForTask(task.id, 'remove', index, $event)">
                         </multiselect>
                     </div>
-                    <div class="col-lg-3 col-md-6 col-6 justify-content-center text-center">
+                    <div class="col-lg-2 col-md-6 col-6">
+                        <span class="d-block d-lg-none fw-bold bg-desino mt-2 p-0 text-white text-center rounded-top">
+                            {{ $t('ticket.list.current_action') }} </span>
+                        <span v-if="task?.actions_count != task?.done_actions_count">
+                            {{ task?.current_action?.action_name }}
+                        </span>
+                        <span v-if="task?.actions_count == task?.done_actions_count">
+                            -
+                        </span>
+                    </div>
+                    <div class="col-lg-2 col-md-6 col-6">
+                        <span class="d-block d-lg-none fw-bold bg-desino mt-2 p-0 text-white text-center rounded-top">
+                            {{ $t('ticket.list.current_owner') }} </span>
+                        <span v-if="task?.actions_count != task?.done_actions_count">
+                            {{ task?.current_action?.user?.name }}
+                        </span>
+                        <span v-if="task?.actions_count == task?.done_actions_count">
+                            -
+                        </span>
+                    </div>
+                    <div class="col-lg-1 col-md-6 col-6 justify-content-center text-center">
                         <span class="d-block d-lg-none fw-bold bg-desino mt-2 p-0 text-white text-center rounded-top">
                             {{ $t('ticket.list.column_task_created_at') }} </span>
                         {{ task.display_created_at }}
                     </div>
-                    <div class="col-lg-2 col-md-12 col-12 justify-content-end text-end">
+                    <div class="col-lg-1 col-md-12 col-12 justify-content-end text-end">
                         <router-link
                             :to="{ name: 'task.detail', params: { initiative_id: this.initiative_id, ticket_id: task.id } }"
                             class="text-success me-2">
@@ -161,9 +211,13 @@ export default {
             filterTaskTypes: [],
             functionalities: [],
             projects: [],
+            actionOwners: [],
+            nextActionOwners: [],
             filter: {
                 task_name: "",
                 task_type: "",
+                action_owner: "",
+                next_action_owner: "",
                 functionalities: [],
                 projects: [],
             },
@@ -191,6 +245,8 @@ export default {
                 this.filterTaskTypes = response.meta_data.task_type;
                 this.functionalities = response.meta_data.functionalities;
                 this.projects = response.meta_data.projects;
+                this.actionOwners = response.meta_data.users;
+                this.nextActionOwners = response.meta_data.users;
                 this.tasks = response.content.data.map(task => ({
                     ...task,
                     isChecked: false,
