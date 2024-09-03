@@ -61,6 +61,27 @@ class TicketAction extends Model
         return self::ACTION_STATUS_DONE;
     }
 
+    public static function getActionDetailTicket()
+    {
+        return self::ACTION_DETAIL_TICKET;
+    }
+    public static function getActionClarifyAndEstimate()
+    {
+        return self::ACTION_CLARIFY_AND_ESTIMATE;
+    }
+    public static function getActionDevelop()
+    {
+        return self::ACTION_DEVELOP;
+    }
+    public static function getActionTest()
+    {
+        return self::ACTION_TEST;
+    }
+    public static function getActionValidate()
+    {
+        return self::ACTION_VALIDATE;
+    }
+
     public static function getActionStatusNameById($id)
     {
         return match ($id) {

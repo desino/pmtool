@@ -120,100 +120,53 @@ class TicketService
 
     public static function updateTicketStatus($ticket)
     {
-        // $ticketAction = TicketAction::where('ticket_id', $ticket->id)
-        //     ->where('status', '!=', 2)
-        //     ->orderBy('action')
-        //     ->first();
-
-        // switch ($ticketAction->action) {
-        //     case 1:
-        //         $ticket->status = Ticket::getStatusOngoing();
-        //         break;
-        //     case 2:
-        //         $ticket->status = Ticket::getStatusOngoing();
-        //         break;
-        //     case 3:
-        //         $ticket->status = Ticket::getStatusOngoing();
-        //         if ($ticket->auto_wait_for_client_approval && $ticketAction->status === 0) {
-        //             $ticket->status = Ticket::getStatusWaitForClient();
-        //         }
-        //         break;
-        //     case 4:
-        //         $ticket->status = Ticket::getStatusOngoing();
-        //         if ($ticket->auto_wait_for_client_approval && $ticketAction->action === 0) {
-        //             $ticket->status = Ticket::getStatusWaitForClient();
-        //         }
-        //         break;
-        //     case 5:
-        //         $ticket->status = Ticket::getStatusOngoing();
-        //         if ($ticket->auto_wait_for_client_approval && $ticketAction->action === 0) {
-        //             $ticket->status = Ticket::getStatusWaitForClient();
-        //         }
-        //         break;
-        // }
-
         $ticketActions = TicketAction::where('ticket_id', $ticket->id)
             ->orderBy('action')
             ->get();
+
         $taskStatus = "";
-        $isThirdActionStatusDone = false;
-        $isFourthActionStatusDone = false;
-        $isFifthActionStatusDone = false;
         foreach ($ticketActions as $ticketAction) {
             switch ($ticketAction->action) {
-                case 1:
+                case TicketAction::getActionDetailTicket():
                     if ($ticketAction->status === 1) {
                         $taskStatus = Ticket::getStatusOngoing();
                     }
                     break;
-                case 2:
+                case TicketAction::getActionClarifyAndEstimate():
                     if ($ticketAction->status === 1) {
                         $taskStatus = Ticket::getStatusOngoing();
                     }
                     break;
-                case 3:
+                case TicketAction::getActionDevelop():
                     if ($ticket->auto_wait_for_client_approval && $ticketAction->status === 0) {
                         $taskStatus = Ticket::getStatusWaitForClient();
                     }
                     if (!$ticket->auto_wait_for_client_approval && $ticketAction->status === 1) {
                         $taskStatus = Ticket::getStatusOngoing();
                     }
-                    if ($ticketAction->status === 2) {
-                        $isThirdActionStatusDone = true;
-                    }
                     break;
-                case 4:
+                case TicketAction::getActionTest():
                     if ($ticket->auto_wait_for_client_approval && $ticketAction->status === 0) {
                         $taskStatus = Ticket::getStatusWaitForClient();
                     }
                     if (!$ticket->auto_wait_for_client_approval && $ticketAction->status === 1) {
-                        $taskStatus = Ticket::getStatusOngoing();
-                    }
-                    if ($isThirdActionStatusDone && $ticketAction->status === 1) {
                         $taskStatus = Ticket::getStatusReadyForTest();
                     }
-                    if ($ticketAction->status === 2) {
-                        $isFourthActionStatusDone = true;
-                    }
                     break;
-                case 5:
+                case TicketAction::getActionValidate():
                     if ($ticket->auto_wait_for_client_approval && $ticketAction->status === 0) {
                         $taskStatus = Ticket::getStatusWaitForClient();
                     }
                     if (!$ticket->auto_wait_for_client_approval && $ticketAction->status === 1) {
-                        $taskStatus = Ticket::getStatusOngoing();
-                    }
-                    if ($isFourthActionStatusDone && $ticketAction->status === 1) {
                         $taskStatus = Ticket::getStatusReadyForACC();
-                    }
-                    if ($ticketAction->status === 2) {
-                        $isFifthActionStatusDone = true;
-                    }
-                    if ($isThirdActionStatusDone && $isFourthActionStatusDone && $isFifthActionStatusDone) {
-                        $taskStatus = Ticket::getStatusReadyForPRD();
                     }
                     break;
             }
+        }
+
+        $ticketActionsDoneCount = $ticketActions->where('status', 2)->count();
+        if ($ticketActionsDoneCount && $ticketActions->count()) {
+            $taskStatus = Ticket::getStatusReadyForPRD();
         }
         $ticket->status = $taskStatus;
         $ticket->save();
