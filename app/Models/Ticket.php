@@ -153,6 +153,6 @@ class Ticket extends Model
 
     public function currentAction()
     {
-        return $this->hasOne(TicketAction::class)->with('user')->orderBy('action');
+        return $this->hasOne(TicketAction::class)->with('user')->orderBy('action')->first();
     }
 }
