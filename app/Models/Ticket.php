@@ -153,6 +153,10 @@ class Ticket extends Model
 
     public function currentAction()
     {
-        return $this->hasOne(TicketAction::class)->with('user')->orderBy('action')->latest();
+        return $this->hasOne(TicketAction::class)
+            ->with('user')
+            ->where('status', '!=', TicketAction::getStatusDone())
+            // ->where('status', '!=', TicketAction::getStatusWaitingForDependantAction())
+            ->orderBy('action')->latest();
     }
 }

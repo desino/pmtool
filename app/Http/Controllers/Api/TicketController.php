@@ -178,12 +178,33 @@ class TicketController extends Controller
                 $query->whereIn('project_id', array_column($filters['projects'], 'id'));
             })
             ->when(!empty($filters['action_owner']) != '', function (Builder $query) use ($filters) {
-                $query->whereHas('currentAction', function ($q) use ($filters) {
-                    $q->where('user_id', $filters['action_owner']);
+                $query->whereHas('actions', function ($query) use ($filters) {
+                    $query->where('user_id', $filters['action_owner'])
+                        ->where('action', function ($subQuery) {
+                            $subQuery->selectRaw('MIN(action)')
+                                ->from('ticket_actions as ta_inner')
+                                ->whereColumn('ta_inner.ticket_id', 'ticket_actions.ticket_id')
+                                ->where('status', '!=', TicketAction::getStatusDone())
+                                ->orderBy('action', 'ASC')
+                                ->limit(1);
+                        });
+                });
+            })
+            ->when(!empty($filters['next_action_owner']) != '', function (Builder $query) use ($filters) {
+                $query->whereHas('actions', function ($query) use ($filters) {
+                    $query->where('user_id', $filters['next_action_owner'])
+                        ->where('action', function ($subQuery) {
+                            $subQuery->selectRaw('action')
+                                ->from('ticket_actions as ta_inner')
+                                ->whereColumn('ta_inner.ticket_id', 'ticket_actions.ticket_id')
+                                ->where('status', '!=', TicketAction::getStatusDone())
+                                ->orderBy('action', 'ASC')
+                                ->skip(1)
+                                ->take(1);
+                        });
                 });
             })
             ->paginate(10);
-
         $meta['task_type'] = Ticket::getAllTypes();
         $meta['functionalities'] = Functionality::whereHas('section', function ($query) use ($initiative_id) {
             $query->where('initiative_id', $initiative_id);
