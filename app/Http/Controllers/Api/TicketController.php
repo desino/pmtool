@@ -52,12 +52,12 @@ class TicketController extends Controller
 
     public function store(TicketRequest $request)
     {
-        $ticket = Ticket::find(2);
-        TicketService::updateTicketStatus($ticket);
-        print('<pre>');
-        print_r("devendra");
-        print('</pre>');
-        exit;
+        // $ticket = Ticket::find(2);
+        // TicketService::updateTicketStatus($ticket);
+        // print('<pre>');
+        // print_r("devendra");
+        // print('</pre>');
+        // exit;
         $validateData = $request->validated();
         $status = false;
         $retData = [
