@@ -52,12 +52,12 @@ class TicketController extends Controller
 
     public function store(TicketRequest $request)
     {
-        // $ticket = Ticket::find(10);
-        // TicketService::updateTicketStatus($ticket);
-        // print('<pre>');
-        // print_r("devendra");
-        // print('</pre>');
-        // exit;
+        $ticket = Ticket::find(2);
+        TicketService::updateTicketStatus($ticket);
+        print('<pre>');
+        print_r("devendra");
+        print('</pre>');
+        exit;
         $validateData = $request->validated();
         $status = false;
         $retData = [
@@ -178,8 +178,8 @@ class TicketController extends Controller
                 $query->whereIn('project_id', array_column($filters['projects'], 'id'));
             })
             ->when(!empty($filters['action_owner']) != '', function (Builder $query) use ($filters) {
-                $query->whereHas('currentAction.user', function ($q) use ($filters) {
-                    $q->where('id', $filters['action_owner']);
+                $query->whereHas('currentAction', function ($q) use ($filters) {
+                    $q->where('user_id', $filters['action_owner']);
                 });
             })
             ->paginate(10);

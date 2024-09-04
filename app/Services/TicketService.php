@@ -128,36 +128,36 @@ class TicketService
         foreach ($ticketActions as $ticketAction) {
             switch ($ticketAction->action) {
                 case TicketAction::getActionDetailTicket():
-                    if ($ticketAction->status === 1) {
+                    if ($ticketAction->status === 1 && $taskStatus == "") {
                         $taskStatus = Ticket::getStatusOngoing();
                     }
                     break;
                 case TicketAction::getActionClarifyAndEstimate():
-                    if ($ticketAction->status === 1) {
+                    if ($ticketAction->status === 1 && $taskStatus == "") {
                         $taskStatus = Ticket::getStatusOngoing();
                     }
                     break;
                 case TicketAction::getActionDevelop():
-                    if ($ticket->auto_wait_for_client_approval && $ticketAction->status === 0) {
+                    if ($ticket->auto_wait_for_client_approval && $ticketAction->status === 0  && $taskStatus == "") {
                         $taskStatus = Ticket::getStatusWaitForClient();
                     }
-                    if (!$ticket->auto_wait_for_client_approval && $ticketAction->status === 1) {
+                    if (!$ticket->auto_wait_for_client_approval && $ticketAction->status === 1  && $taskStatus == "") {
                         $taskStatus = Ticket::getStatusOngoing();
                     }
                     break;
                 case TicketAction::getActionTest():
-                    if ($ticket->auto_wait_for_client_approval && $ticketAction->status === 0) {
+                    if ($ticket->auto_wait_for_client_approval && $ticketAction->status === 0 && $taskStatus == "") {
                         $taskStatus = Ticket::getStatusWaitForClient();
                     }
-                    if (!$ticket->auto_wait_for_client_approval && $ticketAction->status === 1) {
+                    if (!$ticket->auto_wait_for_client_approval && $ticketAction->status === 1 && $taskStatus == "") {
                         $taskStatus = Ticket::getStatusReadyForTest();
                     }
                     break;
                 case TicketAction::getActionValidate():
-                    if ($ticket->auto_wait_for_client_approval && $ticketAction->status === 0) {
+                    if ($ticket->auto_wait_for_client_approval && $ticketAction->status === 0 && $taskStatus == "") {
                         $taskStatus = Ticket::getStatusWaitForClient();
                     }
-                    if (!$ticket->auto_wait_for_client_approval && $ticketAction->status === 1) {
+                    if (!$ticket->auto_wait_for_client_approval && $ticketAction->status === 1 && $taskStatus == "") {
                         $taskStatus = Ticket::getStatusReadyForACC();
                     }
                     break;
@@ -165,7 +165,7 @@ class TicketService
         }
 
         $ticketActionsDoneCount = $ticketActions->where('status', 2)->count();
-        if ($ticketActionsDoneCount && $ticketActions->count()) {
+        if ($ticketActionsDoneCount == $ticketActions->count()) {
             $taskStatus = Ticket::getStatusReadyForPRD();
         }
         $ticket->status = $taskStatus;
