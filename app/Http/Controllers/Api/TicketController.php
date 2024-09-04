@@ -181,7 +181,8 @@ class TicketController extends Controller
                 $query->whereHas('actions', function ($query) use ($filters) {
                     $query->where('user_id', $filters['action_owner'])
                         ->where('action', function ($subQuery) {
-                            $subQuery->selectRaw('MIN(action)')
+                            // $subQuery->selectRaw('MIN(action)')
+                            $subQuery->select(DB::RAW('MIN(action)'))
                                 ->from('ticket_actions as ta_inner')
                                 ->whereColumn('ta_inner.ticket_id', 'ticket_actions.ticket_id')
                                 ->where('status', '!=', TicketAction::getStatusDone())
