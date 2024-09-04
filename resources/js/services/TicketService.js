@@ -17,6 +17,7 @@ const endpoints = {
     assignProject: `${defaultPath}/assign-project`,
     assignOrRemoveProjectForTask: `${defaultPath}/assign-or-remove-project-for-task`,
     getInitialDataForCreateOrEditTicket: `${defaultPath}/get-initial-data-for-create-or-edit-ticket`,
+    editTicket: `${defaultPath}/edit-ticket/:ticket_id`,
 }
 
 const SolutionDesignService = {
@@ -96,6 +97,15 @@ const SolutionDesignService = {
     async getInitialDataForCreateOrEditTicket(data) {
         try {
             const endpoint = endpoints.getInitialDataForCreateOrEditTicket.replace(':initiative_id', data.initiative_id);
+            const response = await axiosRequest.get(endpoint, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async getEditTicket(data) {
+        try {
+            const endpoint = endpoints.editTicket.replace(':initiative_id', data.initiative_id).replace(':ticket_id', data.id);
             const response = await axiosRequest.get(endpoint, data);
             return response.data;
         } catch (error) {

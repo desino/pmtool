@@ -58,6 +58,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('assign-project', 'assignProject');
             Route::post('assign-or-remove-project-for-task', 'assignOrRemoveProjectForTask');
             Route::get('get-initial-data-for-create-or-edit-ticket', 'getInitialDataForCreateOrEditTicket');
+            Route::get('edit-ticket/{ticket_id}', 'editTicket');
         });
 
         Route::controller(ProjectController::class)->prefix('{initiative_id}/project')->group(function () {

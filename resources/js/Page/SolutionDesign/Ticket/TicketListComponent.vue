@@ -157,8 +157,12 @@
                             class="text-success me-2">
                             <i class="bi bi-box-arrow-up-right fw-bold"></i>
                         </router-link>
+                        <a :title="$t('ticket.list.column.action.edit_text')" class="text-desino me-2"
+                            href="javascript:" @click="editTaskPopup(task)">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
                         <a v-if="task.asana_task_link" class="text-warning me-2" target="_blank"
-                            :href="task.asana_task_link" title="Assana Task Detail Link">
+                            :href="task.asana_task_link" :title="$t('ticket.list.column.action.asana_task_link_text')">
                             <i class="bi bi-link-45deg fw-bold"></i>
                         </a>
                     </div>
@@ -176,6 +180,10 @@
             tabindex="-1">
             <AssignProjectModalComponent ref="assignProjectModalComponent" @refreshTickets="fetchAllTasks" />
         </div>
+        <div id="editTicketFromListModal" aria-hidden="true" aria-labelledby="editTicketFromListModalLabel"
+            class="modal fade" tabindex="-1">
+            <EditTicketModalComponent ref="editTicketFromListModalComponent" @refreshTickets="fetchAllTasks" />
+        </div>
     </div>
 </template>
 
@@ -191,6 +199,7 @@ import AssignProjectModalComponent from "./AssignProjectModalComponent.vue";
 import { Modal } from 'bootstrap';
 import showToast from '../../../utils/toasts';
 import eventBus from "@/eventBus.js";
+import EditTicketModalComponent from './EditTicketModalComponent.vue';
 
 export default {
     name: 'TicketListComponent',
@@ -199,7 +208,8 @@ export default {
         Multiselect,
         GlobalMessage,
         PaginationComponent,
-        AssignProjectModalComponent
+        AssignProjectModalComponent,
+        EditTicketModalComponent
     },
     props: ['id'],
     data() {
@@ -337,6 +347,18 @@ export default {
         },
         storePreviousProject(previousValue, index) {
             this.previousProject = previousValue;
+        },
+        editTaskPopup(task) {
+            const passData = {
+                task_id: task.id,
+                initiative_id: this.initiative_id
+            }
+            this.$refs.editTicketFromListModalComponent.getSelectedTasksData(passData);
+            const editTicketFromListModalElement = document.getElementById('editTicketFromListModal');
+            if (editTicketFromListModalElement) {
+                const editTicketFromListModal = new Modal(editTicketFromListModalElement);
+                editTicketFromListModal.show();
+            }
         },
         handleError(error) {
             if (error.type === 'validation') {

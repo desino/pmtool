@@ -1,16 +1,15 @@
 <template>
     <div class="modal-dialog modal-lg">
-        <form @submit.prevent="storeTicket">
+        <form @submit.prevent="updateTicket">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 id="createTicketModalLabel" class="modal-title">{{ $t('create_ticket_modal_title') }}
+                    <h5 id="createTicketModalLabel" class="modal-title">{{ $t('ticket.edit.modal_title') }}
                     </h5>
                     <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
                 </div>
                 <div class="modal-body">
                     <GlobalMessage v-if="showMessage" />
                     <input v-model="formData.initiative_id" name="initiative_id" type="hidden">
-                    <input v-model="formData.type" name="type" type="hidden">
                     <div class="mb-3">
                         <label class="form-label" for="name">{{ $t('create_ticket_modal_input_name') }} <strong
                                 class="text-danger">*</strong></label>
@@ -50,7 +49,7 @@
                     <div class="mb-3">
                         <label class="form-label" for="initial_estimation_development_time">{{
                             $t('create_ticket_modal_modal_input_initial_estimation_development_time')
-                        }} <strong class="text-danger">*</strong>
+                            }} <strong class="text-danger">*</strong>
                         </label>
                         <input id="initial_estimation_development_time"
                             v-model="formData.initial_estimation_development_time"
@@ -139,20 +138,11 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-desino bg-desino text-light" type="submit"
-                        @click="handleSubmitButtonClick('create_close')">
-                        {{ $t('create_ticket_modal_submit_but_create_close_text') }}
+                    <button class="btn btn-desino bg-desino text-light" type="submit">
+                        {{ $t('ticket.edit.modal_submit_but_text') }}
                     </button>
-                    <button class="btn btn-desino bg-desino text-light" type="submit"
-                        @click="handleSubmitButtonClick('create_new')">
-                        {{ $t('create_ticket_modal_submit_but_create_add_new_text') }}
-                    </button>
-                    <button class="btn btn-desino bg-desino text-light" type="submit"
-                        @click="handleSubmitButtonClick('create_detail')">
-                        {{ $t('create_ticket_modal_submit_but_create_detail_text') }}
-                    </button>
-                    <button class="btn btn-secondary" @click="hideModal" data-bs-dismiss="modal"
-                        type="button">Close</button>
+                    <button class="btn btn-secondary" @click="hideModal" data-bs-dismiss="modal" type="button">{{
+                        $t('ticket.edit.modal_close_but_text') }}</button>
                 </div>
             </div>
         </form>
@@ -160,27 +150,22 @@
 </template>
 
 <script>
-import GlobalMessage from './../../../components/GlobalMessage.vue';
+import globalMixin from '@/globalMixin';
+import GlobalMessage from '../../../components/GlobalMessage.vue';
+import { mapActions } from "vuex";
+import { Modal } from 'bootstrap';
 import messageService from '../../../services/messageService';
 import TicketService from '../../../services/TicketService';
-import { Modal } from 'bootstrap';
-import showToast from '../../../utils/toasts';
 import Multiselect from 'vue-multiselect';
-import { mapActions } from "vuex";
-import eventBus from "@/eventBus.js";
-
 export default {
-    name: 'CreateTicketModalComponent',
+    name: 'EditTicketModalComponent',
+    mixins: [globalMixin],
     components: {
         GlobalMessage,
         Multiselect
     },
-    props: {
-        selected_initiative_id: Number,
-    },
     data() {
         return {
-            selectedInitiativeId: null,
             formData: {
                 initiative_id: "",
                 functionality_id: "",
@@ -190,69 +175,66 @@ export default {
                 auto_wait_for_client_approval: false,
                 ticket_actions: []
             },
-            selectedActions: [],
             ticketTypes: [],
+            sectionsFunctionalitiesList: [],
             initiativeProjects: [],
             users: [],
             actions: [],
             initiative: [],
-            submitButtonClicked: '',
+            selectedActions: [],
+            selectedTicketActions: [],
             errors: {},
-            showMessage: true,
-            sectionsFunctionalitiesList: [],
-        };
+            showMessage: true
+        }
     },
     methods: {
         ...mapActions(['setLoading']),
-        async fetchData() {
-            this.setLoading(true);
-            this.selectedInitiativeId = this.$route.params.id ?? this.$route.params.initiative_id;
-            this.formData.initiative_id = this.selectedInitiativeId;
-            const credentials = {
-                initiative_id: this.selectedInitiativeId
-            }
-            const { content: { sectionFunctionality, ticketTypes, projects, users, actions, initiative } } = await TicketService.getInitialDataForCreateOrEditTicket(credentials);
-            this.sectionsFunctionalitiesList = sectionFunctionality;
-            this.ticketTypes = ticketTypes;
-            this.initiativeProjects = projects;
-            this.users = users;
-            this.actions = actions;
-            this.initiative = initiative;
-            this.ticket_actions = this.actions;
-            this.setLoading(false);
+        getSelectedTasksData(data) {
+            this.getEditData(data);
         },
-        async storeTicket() {
+
+        async getEditData(data) {
             this.clearMessages();
             try {
+                const passData = {
+                    id: data.task_id,
+                    initiative_id: data.initiative_id
+                }
                 this.setLoading(true);
-
-                this.formData.initiative_id = this.selectedInitiativeId;
-                const response = await TicketService.storeTicket(this.formData);
-                // messageService.setMessage(response.data.message, 'success');
-                if (this.submitButtonClicked === 'create_close') {
-                    this.hideModal();
-                }
-                if (this.submitButtonClicked === 'create_detail') {
-                    if (response.content?.asanaTaskData?.permalink_url) {
-                        window.open(
-                            response.content.asanaTaskData.permalink_url + '/f',
-                            '_blank'
-                        );
-                    }
-                }
+                const { content: { sectionFunctionality, ticketTypes, projects, users, actions, initiative, ticket, selectedTicketActions } } = await TicketService.getEditTicket(passData);
+                this.sectionsFunctionalitiesList = sectionFunctionality;
+                this.ticketTypes = ticketTypes;
+                this.initiativeProjects = projects;
+                this.users = users;
+                this.actions = actions;
+                this.initiative = initiative;
+                this.ticket_actions = this.actions;
+                this.selectedTicketActions = selectedTicketActions;
+                this.setFormData(ticket);
                 this.setLoading(false);
-
-                showToast(response.message, 'success');
-                this.resetForm();
-                if (this.$route.name === 'tasks') {
-                    eventBus.$emit('refreshTickets');
-                }
             } catch (error) {
                 this.handleError(error);
             }
         },
-        handleSubmitButtonClick(buttonValue) {
-            this.submitButtonClicked = buttonValue;
+        setFormData(ticket) {
+            this.formData = {
+                initiative_id: ticket.initiative_id,
+                name: ticket.name,
+                type: ticket.type,
+                functionality_id: ticket.functionality,
+                initial_estimation_development_time: ticket.initial_estimation_development_time,
+                project_id: ticket.project_id,
+                auto_wait_for_client_approval: ticket.auto_wait_for_client_approval == 1 ?? false,
+                ticket_actions: []
+            };
+            const ticketActionsArray = Object.values(this.selectedTicketActions);
+            this.selectedActions = ticketActionsArray.map(action => action.action);
+            ticketActionsArray.forEach(ticketAction => {
+                this.formData.ticket_actions.push({
+                    action: ticketAction.action,
+                    user_id: ticketAction.user_id
+                });
+            });
         },
         handleActionChange(actionId) {
             let selectedUserId = "";
@@ -295,24 +277,6 @@ export default {
         isActionSelected(actionId) {
             return this.selectedActions.includes(actionId);
         },
-        hideModal() {
-            const modalElement = document.getElementById('createTicketModal');
-            if (modalElement) {
-                const modal = Modal.getInstance(modalElement);
-                if (modal) {
-                    this.setLoading(false);
-                    modal.hide();
-                }
-            }
-        },
-        handleError(error) {
-            if (error.type === 'validation') {
-                this.errors = error.errors;
-            } else {
-                messageService.setMessage(error.message, 'danger');
-            }
-            this.setLoading(false);
-        },
         resetForm() {
             this.formData = {
                 functionality_id: "",
@@ -325,6 +289,14 @@ export default {
             this.selectedActions = [];
             this.errors = {};
         },
+        handleError(error) {
+            if (error.type === 'validation') {
+                this.errors = error.errors;
+            } else {
+                messageService.setMessage(error.message, 'danger');
+            }
+            this.setLoading(false);
+        },
         clearMessages() {
             this.errors = {};
             messageService.clearMessage();
@@ -332,6 +304,7 @@ export default {
     },
     mounted() {
         this.clearMessages();
+        this.setLoading(false);
     },
     beforeUnmount() {
         this.showMessage = false;

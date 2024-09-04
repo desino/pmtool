@@ -217,6 +217,43 @@ class TicketController extends Controller
         return ApiHelper::response('false', __('messages.ticket.fetched'), $tickets, 200, $meta);
     }
 
+    public function editTicket(Request $request, $initiative_id, $ticket_id)
+    {
+        $status = false;
+        $initiative = InitiativeService::getInitiative($request, $initiative_id);
+        if (!$initiative) {
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
+        }
+        $ticket = Ticket::with('functionality', 'actions')->find($ticket_id);
+        $selectedTicketActions = $ticket->actions->map(function ($item) {
+            return [
+                'action' => $item['action'],
+                'user_id' => $item['user_id']
+            ];
+        });
+        if (!$ticket) {
+            return ApiHelper::response($status, __('messages.ticket.not_found'), [], 404);
+        }
+
+        $sectionFunctionality = TicketService::getSectionFunctionality($initiative_id);
+        $ticketTypes = TicketService::getTicketTypes();
+        $projects = TicketService::getInitiativeProject($initiative_id);
+        $users = TicketService::getUsers();
+        $actions = TicketAction::getAllActions();
+        $initiative = TicketService::getInitiative($initiative_id);
+        $retData = [
+            'ticket' => $ticket,
+            'sectionFunctionality' => $sectionFunctionality,
+            'ticketTypes' => $ticketTypes,
+            'projects' => $projects,
+            'users' => $users,
+            'actions' => $actions,
+            'initiative' => $initiative,
+            'selectedTicketActions' => $selectedTicketActions
+        ];
+        return ApiHelper::response($status, __('messages.ticket.fetched'), $retData, 200);
+    }
+
     public function show($initiative_id, $ticket_id)
     {
         $ticket = Ticket::with('functionality')
