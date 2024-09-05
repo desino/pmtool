@@ -18,6 +18,7 @@ use App\Services\ProjectService;
 use App\Services\TicketService;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -254,22 +255,40 @@ class TicketController extends Controller
         return ApiHelper::response($status, __('messages.ticket.fetched'), $retData, 200);
     }
 
-    public function show($initiative_id, $ticket_id)
+    /**
+     * Display the specified ticket for the given initiative.
+     *
+     * @param  int  $initiative_id
+     * @param  int  $ticket_id
+     * @return JsonResponse
+     */
+    public function show(int $initiative_id, int $ticket_id): JsonResponse
     {
-        $ticket = Ticket::with('functionality')
-            ->where('id', $ticket_id)
-            ->where('initiative_id', $initiative_id)
-            ->get()->first();
+        // Fetch ticket with related models using eager loading
+        $ticket = Ticket::with([
+            'functionality',
+            'initiative',
+            'initiative.functionalOwner',
+            'initiative.qualityOwner',
+            'initiative.technicalOwner'
+        ])->where([
+            ['id', '=', $ticket_id],
+            ['initiative_id', '=', $initiative_id]
+        ])->first();
 
+        // If the ticket is not found, return a 404 response
         if (!$ticket) {
-            return ApiHelper::response('false', __('messages.ticket.not_found'), [], 404);
+            return ApiHelper::response(false, __('messages.ticket.not_found'), [], 404);
         }
 
-        $meta_data['all_tickets'] = Ticket::query()->where('initiative_id', $initiative_id)
+        // Fetch all tickets for the given initiative
+        $meta_data['all_tickets'] = Ticket::where('initiative_id', $initiative_id)
             ->get(['id', 'name', 'composed_name']);
 
+        // Return the ticket and related meta data in a success response
         return ApiHelper::response(true, __('messages.ticket.fetched'), $ticket, 200, $meta_data);
     }
+
 
     public function updateReleaseNote($ticket_id, UpdateReleaseNoteRequest $request)
     {
