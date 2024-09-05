@@ -3,7 +3,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6">
-                    <h3 class="m-0">Task Name - {{ ticketData.composed_name }}</h3>
+                    <h3 class="m-0">{{ ticketData.composed_name }}</h3>
                     <div class="col-md-12 py-2">
                         <multiselect v-model="selectedTaskObject" :multiple="false" :options="tasksForDropdown"
                             :searchable="true" deselect-label="Can't remove this value" label="composed_name"
@@ -12,8 +12,8 @@
                     </div>
                 </div>
                 <div class="col-sm-6">
-                    <div class="float-sm-end">
-                        <a class="btn btn-desino bg-desino text-white mt-2" href="www.asana.com">Open Task Details in
+                    <div class="float-sm-end" v-if="ticketData.asana_task_link">
+                        <a class="btn btn-desino bg-desino text-white mt-2"  target="_blank" :href="ticketData.asana_task_link">Open Task Details in
                             Asana</a>
                     </div>
                 </div>
@@ -32,8 +32,8 @@
                 <div class="card border-0 h-100">
                     <div class="card-body p-2 px-4 text-left d-flex align-items-center">
                         <div class="w-100 lh-1">
-                            <h6 class="fw-bold mx-1">Task Type</h6>
-                            <span class="badge rounded-3 bg-danger-subtle text-danger">{{ ticketData.task_type }}</span>
+                            <h6 class="fw-bold mx-1">Task Status</h6>
+                            <span class="badge rounded-3 bg-danger-subtle text-danger">{{ ticketData.status_label }}</span>
                         </div>
                     </div>
                 </div>
@@ -53,7 +53,7 @@
                     <div class="card-body p-2 px-4 text-left d-flex align-items-center">
                         <div class="w-100 lh-1">
                             <h6 class="fw-bold mx-1">Functional Owner</h6>
-                            <span class="badge rounded-3 bg-desino text-white">Joren M.</span>
+                            <span class="badge rounded-3 bg-desino text-white">{{ticketData.functional_owner}}</span>
                         </div>
                     </div>
                 </div>
@@ -63,7 +63,7 @@
                     <div class="card-body p-2 px-4 text-left d-flex align-items-center">
                         <div class="w-100 lh-1">
                             <h6 class="fw-bold mx-1">Technical Owner</h6>
-                            <span class="badge rounded-3 bg-info-subtle text-info">Mrunal P.</span>
+                            <span class="badge rounded-3 bg-info-subtle text-info">{{ticketData.technical_owner}}</span>
                         </div>
                     </div>
                 </div>
@@ -73,7 +73,7 @@
                     <div class="card-body p-2 px-4 text-left d-flex align-items-center">
                         <div class="w-100 lh-1">
                             <h6 class="fw-bold mx-1">Testing Owner</h6>
-                            <span class="badge rounded-3 bg-primary-subtle text-primary">Kalyani D.</span>
+                            <span class="badge rounded-3 bg-primary-subtle text-primary">{{ticketData.quality_owner}}</span>
                         </div>
                     </div>
                 </div>
@@ -83,8 +83,7 @@
                     <div class="card-body p-2 px-4 text-left d-flex align-items-center">
                         <div class="w-100 lh-1">
                             <h6 class="fw-bold mx-1">Task Estimation</h6>
-                            <span class="badge rounded-3 bg-success-subtle text-success">{{ ticketData.initial_dev_time
-                                }} hrs</span>
+                            <span class="badge rounded-3 bg-success-subtle text-success">{{ ticketData.initial_dev_time }} hrs</span>
                         </div>
                     </div>
                 </div>
@@ -237,6 +236,11 @@ export default {
                 initial_dev_time: '',
                 task_type: '',
                 functionality_name: '',
+                asana_task_link: '',
+                status_label: '',
+                functional_owner: '',
+                quality_owner: '',
+                technical_owner: '',
             },
             releaseNoteForm: {
                 'release_note': '',
@@ -278,6 +282,7 @@ export default {
                     ticket_id: id
                 }
                 const response = await ticketService.fetchTicket(data);
+                console.log(response.content);
                 if (!response.content) {
                     messageService.setMessage(response.message, 'danger');
                     this.$router.push({ name: 'home' });
@@ -312,7 +317,12 @@ export default {
             this.ticketData.composed_name = content.composed_name;
             this.ticketData.initial_dev_time = content.initial_estimation_development_time;
             this.ticketData.task_type = content.type_label;
-            this.ticketData.functionality_name = content?.functionality?.name;
+            this.ticketData.status_label = content.status_label;
+            this.ticketData.functionality_name = content?.functionality?.name.length > 0 ? content.initiative?.name + ' - ' + content?.functionality?.name : content.initiative?.name;
+            this.ticketData.functional_owner = content.initiative?.functional_owner?.name;
+            this.ticketData.quality_owner = content.initiative?.quality_owner?.name;
+            this.ticketData.technical_owner = content.initiative?.technical_owner?.name;
+            this.ticketData.asana_task_link = content.asana_task_link;
             this.releaseNoteForm.release_note = content.release_note;
         },
         onTaskSelect() {

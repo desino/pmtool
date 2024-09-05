@@ -120,7 +120,7 @@ class Ticket extends Model
         );
     }
 
-    protected function asanaTaskLink(): Attribute
+    public function asanaTaskLink(): Attribute
     {
         return Attribute::make(
             get: fn() => $this->initiative_id ? "https://app.asana.com/0/" . $this->initiative->asana_project_id . '/' . $this->asana_task_id . '/f' : null,

@@ -70,6 +70,20 @@ class Initiative extends Model
         return self::STATUS_LOST;
     }
 
+    public function functionalOwner()
+    {
+        return $this->belongsTo(User::class, 'functional_owner_id');
+    }
+
+    public function qualityOwner()
+    {
+        return $this->belongsTo(User::class, 'quality_owner_id');
+    }
+
+    public function technicalOwner(){
+        return $this->belongsTo(User::class, 'technical_owner_id');
+    }
+
     public function scopeStatus($query, int|array $status)
     {
         if (is_array($status)) {
