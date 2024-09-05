@@ -111,16 +111,23 @@ class TicketService
     public static function insertTicketActions(int $ticketId, array $ticketActions, bool $autoWaitForClientApproval)
     {
         $actions = array_column($ticketActions, 'action');
+
         array_multisort($actions, SORT_ASC, $ticketActions);
 
+        $insertedOrUpdateIds = [];
         foreach ($ticketActions as $ticketActionKey => $ticketAction) {
-            $createdArray = [
+            $condition = ['ticket_id' => $ticketId, 'action' => $ticketAction['action']];
+            $fieldsToUpdateOrCreate = [
                 'ticket_id' => $ticketId,
                 'action' => $ticketAction['action'],
                 'user_id' => $ticketAction['user_id'],
-                'status' => Self::getTicketActionStatus($ticketActionKey, $ticketAction, $autoWaitForClientApproval),
+                'status' => $ticketAction['status'] ?? Self::getTicketActionStatus($ticketActionKey, $ticketAction, $autoWaitForClientApproval),
             ];
-            TicketAction::create($createdArray);
+            $ticketAction = TicketAction::updateOrCreate($condition, $fieldsToUpdateOrCreate);
+            $insertedOrUpdateIds[] = $ticketAction->id;
+        }
+        if (!empty($insertedOrUpdateIds)) {
+            TicketAction::whereNotIn('id', $insertedOrUpdateIds)->delete();
         }
     }
 
@@ -150,10 +157,16 @@ class TicketService
                     if ($ticketAction->status === 1 && $taskStatus == "") {
                         $taskStatus = Ticket::getStatusOngoing();
                     }
+                    if ($ticketAction->status === 0 && $taskStatus == "") {
+                        $taskStatus = Ticket::getStatusWaitForClient();
+                    }
                     break;
                 case TicketAction::getActionClarifyAndEstimate():
                     if ($ticketAction->status === 1 && $taskStatus == "") {
                         $taskStatus = Ticket::getStatusOngoing();
+                    }
+                    if ($ticketAction->status === 0 && $taskStatus == "") {
+                        $taskStatus = Ticket::getStatusWaitForClient();
                     }
                     break;
                 case TicketAction::getActionDevelop():

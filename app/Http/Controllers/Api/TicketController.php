@@ -168,7 +168,7 @@ class TicketController extends Controller
             $ticket->update($validateData);
 
             if (!empty($validateData['ticket_actions'])) {
-                TicketService::deleteActions($ticket->id);
+                // TicketService::deleteActions($ticket->id);
                 TicketService::insertTicketActions($ticket->id, $validateData['ticket_actions'], $validateData['auto_wait_for_client_approval']);
                 TicketService::updateTicketStatus($ticket);
             }

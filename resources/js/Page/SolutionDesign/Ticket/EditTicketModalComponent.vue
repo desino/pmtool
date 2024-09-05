@@ -94,7 +94,7 @@
                             <h6 class="mb-0">{{ $t('create_ticket_modal_card_header_task_actions_text') }}</h6>
                         </div>
                         <div class="card-body">
-                            <div v-for="action in actions" :key="action.id">
+                            <div class="w-100" v-for="action in actions" :key="action.id">
                                 <div class="row align-items-center">
                                     <div class="col-md-6 mb-3">
                                         <div class="form-check">
@@ -111,9 +111,8 @@
                                                 }}</span>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 mb-3">
-                                        <select v-if="isActionSelected(action.id)"
-                                            :class="{ 'is-invalid': errors[`ticket_actions.${action.id}.user_id`] }"
+                                    <div class="col-md-6 mb-3" v-if="isActionSelected(action.id)">
+                                        <select :class="{ 'is-invalid': errors[`ticket_actions.${action.id}.user_id`] }"
                                             :id="'user_id' + action.id" class="form-select"
                                             :disabled="disableActionInput(action.id)"
                                             :value="getSelectedUserId(action.id)"
@@ -267,8 +266,8 @@ export default {
                 const selectedTicketAction = this.selectedTicketActions.filter(a => a.action === actionId);
                 this.formData.ticket_actions.push({
                     action: actionId,
-                    user_id: selectedTicketAction[0].user_id ?? selectedUserId,
-                    status: selectedTicketAction[0].status
+                    user_id: selectedTicketAction[0]?.user_id ?? selectedUserId,
+                    status: selectedTicketAction[0]?.status
                 });
             } else {
                 this.formData.ticket_actions = this.formData.ticket_actions.filter(a => a.action !== actionId);

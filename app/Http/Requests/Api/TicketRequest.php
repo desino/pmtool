@@ -34,6 +34,7 @@ class TicketRequest extends FormRequest
             'project_id' => 'nullable',
             'ticket_actions.*.user_id' => 'required|exists:users,id',
             'ticket_actions.*.action' => 'required',
+            'ticket_actions.*.status' => 'nullable',
         ];
     }
 
