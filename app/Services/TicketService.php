@@ -42,6 +42,25 @@ class TicketService
         return $retData;
     }
 
+    public static function updateTicketComposedName($ticket, string $name, int $type)
+    {
+        $existComposedName = $ticket->composed_name;
+        $existName = $ticket->name;
+        $composedName = $existComposedName;
+        if (!str_contains($existComposedName, $name)) {
+            $composedName = str_replace($existName, $name, $composedName);
+        }
+        $existTypeCode = Ticket::getTypeOfCode($ticket->type);
+        $newTypeCode = Ticket::getTypeOfCode($type);
+        if (!str_contains($existComposedName, $newTypeCode)) {
+            $composedName = str_replace($existTypeCode, $newTypeCode, $composedName);
+        }
+        $retData = [
+            'composed_name' => $composedName,
+        ];
+        return $retData;
+    }
+
     public static function incrementInitiativeTicketCount(int $initiativeId)
     {
         $initiative = Initiative::find($initiativeId);
@@ -170,5 +189,10 @@ class TicketService
         }
         $ticket->status = $taskStatus;
         $ticket->save();
+    }
+
+    public static function deleteActions($id)
+    {
+        TicketAction::where('ticket_id', $id)->delete();
     }
 }

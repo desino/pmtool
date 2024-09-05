@@ -90,14 +90,23 @@ class AsanaService
      */
     public function updateTask($taskId, $data)
     {
-        $payload = [
-            'data' => $data
-        ];
 
-        $response = $this->client->put("tasks/{$taskId}", [
-            'json' => $payload
-        ]);
-        return json_decode($response->getBody()->getContents(), true);
+        $isErrorFromAsana = false;
+        try {
+            $payload = [
+                'data' => $data
+            ];
+
+            $this->response = $this->client->put("tasks/{$taskId}", [
+                'json' => $payload
+            ]);
+        } catch (ClientException $e) {
+            Log::error('Asana API Error', [
+                'error' => $e->getMessage(),
+            ]);
+            $isErrorFromAsana = true;
+        }
+        return $this->parsResponse($this->response, isError: $isErrorFromAsana);
     }
 
     public function deleteTask($taskId)

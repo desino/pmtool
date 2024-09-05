@@ -79,8 +79,8 @@
                         <div class="form-check">
                             <input class="form-check-input" v-model="formData.auto_wait_for_client_approval"
                                 :class="{ 'is-invalid': errors.auto_wait_for_client_approval }" type="checkbox"
-                                id="auto_wait_for_client_approval">
-                            <label class="form-check-label" for="auto_wait_for_client_approval">
+                                id="auto_wait_for_client_approval_edit">
+                            <label class="form-check-label" for="auto_wait_for_client_approval_edit">
                                 {{ $t('create_ticket_modal_checkbox_auto_wait_for_client_approval') }}
                             </label>
                         </div>
@@ -100,7 +100,8 @@
                                         <div class="form-check">
                                             <input class="form-check-input" :class="{ 'is-invalid': errors.actions }"
                                                 type="checkbox" :id="'ticket_action_' + action.id" :value="action.id"
-                                                v-model="selectedActions" @change="handleActionChange(action.id)">
+                                                v-model="selectedActions" @change="handleActionChange(action.id)"
+                                                :disabled="disableActionInput(action.id)">
                                             <label class="form-check-label" :for="'ticket_action_' + action.id">
                                                 {{ action.name }}
                                             </label>
@@ -114,8 +115,9 @@
                                         <select v-if="isActionSelected(action.id)"
                                             :class="{ 'is-invalid': errors[`ticket_actions.${action.id}.user_id`] }"
                                             :id="'user_id' + action.id" class="form-select"
+                                            :disabled="disableActionInput(action.id)"
                                             :value="getSelectedUserId(action.id)"
-                                            @change="updateUser(action.id, $event.target.value)">
+                                            @change="updateUser(action.id, $event.target.value)" disabled>
                                             <option value="">{{ $t('create_ticket_modal_select_action_user_placeholder')
                                                 }}</option>
                                             <option v-for="user in users" :key="user.id" :value="user.id">
@@ -157,6 +159,8 @@ import { Modal } from 'bootstrap';
 import messageService from '../../../services/messageService';
 import TicketService from '../../../services/TicketService';
 import Multiselect from 'vue-multiselect';
+import showToast from '../../../utils/toasts';
+import eventBus from '../../../eventBus';
 export default {
     name: 'EditTicketModalComponent',
     mixins: [globalMixin],
@@ -167,6 +171,8 @@ export default {
     data() {
         return {
             formData: {
+                id: "",
+                name: "",
                 initiative_id: "",
                 functionality_id: "",
                 project_id: "",
@@ -209,7 +215,8 @@ export default {
                 this.actions = actions;
                 this.initiative = initiative;
                 this.ticket_actions = this.actions;
-                this.selectedTicketActions = selectedTicketActions;
+                // this.selectedTicketActions = selectedTicketActions;
+                this.selectedTicketActions = Object.values(selectedTicketActions);
                 this.setFormData(ticket);
                 this.setLoading(false);
             } catch (error) {
@@ -218,6 +225,7 @@ export default {
         },
         setFormData(ticket) {
             this.formData = {
+                id: ticket.id,
                 initiative_id: ticket.initiative_id,
                 name: ticket.name,
                 type: ticket.type,
@@ -227,12 +235,12 @@ export default {
                 auto_wait_for_client_approval: ticket.auto_wait_for_client_approval == 1 ?? false,
                 ticket_actions: []
             };
-            const ticketActionsArray = Object.values(this.selectedTicketActions);
-            this.selectedActions = ticketActionsArray.map(action => action.action);
-            ticketActionsArray.forEach(ticketAction => {
+            this.selectedActions = this.selectedTicketActions.map(action => action.action);
+            this.selectedTicketActions.forEach(ticketAction => {
                 this.formData.ticket_actions.push({
                     action: ticketAction.action,
-                    user_id: ticketAction.user_id
+                    user_id: ticketAction.user_id,
+                    status: ticketAction.status
                 });
             });
         },
@@ -256,9 +264,11 @@ export default {
                     selectedUserId = "";
             }
             if (this.isActionSelected(actionId)) {
+                const selectedTicketAction = this.selectedTicketActions.filter(a => a.action === actionId);
                 this.formData.ticket_actions.push({
                     action: actionId,
-                    user_id: selectedUserId
+                    user_id: selectedTicketAction[0].user_id ?? selectedUserId,
+                    status: selectedTicketAction[0].status
                 });
             } else {
                 this.formData.ticket_actions = this.formData.ticket_actions.filter(a => a.action !== actionId);
@@ -277,6 +287,13 @@ export default {
         isActionSelected(actionId) {
             return this.selectedActions.includes(actionId);
         },
+        disableActionInput(actionId) {
+            const action = this.selectedTicketActions.filter(a => a.action === actionId);
+            if (action.length) {
+                return action[0].status == 2 ?? false;
+            }
+            return false;
+        },
         resetForm() {
             this.formData = {
                 functionality_id: "",
@@ -288,6 +305,33 @@ export default {
             };
             this.selectedActions = [];
             this.errors = {};
+        },
+        async updateTicket() {
+            this.clearMessages();
+            try {
+                this.setLoading(true);
+                // this.formData.initiative_id = this.selectedInitiativeId;
+                const response = await TicketService.updateTicket(this.formData);
+                this.hideModal();
+                this.setLoading(false);
+                showToast(response.message, 'success');
+                this.resetForm();
+                if (this.$route.name === 'tasks') {
+                    eventBus.$emit('refreshTickets');
+                }
+            } catch (error) {
+                this.handleError(error);
+            }
+        },
+        hideModal() {
+            const modalElement = document.getElementById('editTicketFromListModal');
+            if (modalElement) {
+                const modal = Modal.getInstance(modalElement);
+                if (modal) {
+                    this.setLoading(false);
+                    modal.hide();
+                }
+            }
         },
         handleError(error) {
             if (error.type === 'validation') {
