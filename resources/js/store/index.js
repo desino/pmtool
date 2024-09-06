@@ -56,6 +56,8 @@ export default new Vuex.Store({
          * @param {Object} error - The error to set.
          */
         setServerError(state, error) {
+            console.log(error);
+
             state.serverError = error;
         },
 

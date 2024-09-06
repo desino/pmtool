@@ -51,9 +51,9 @@
                 <div class="row row-cols-xl-3 row-cols-lg-3 row-cols-md-2 row-cols-2 g-2 g-lg-3">
                     <div class="col">
                         <div class="card border-0 h-100">
-                            <div class="card-body p-2 px-4 text-left d-flex align-items-center">
+                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
                                 <div class="w-100 lh-1">
-                                    <h6 class="fw-bold mx-1">Task Status</h6>
+                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.task_status') }}</h6>
                                     <span class="badge rounded-3 bg-danger-subtle text-danger">{{
                                         ticketData.status_label
                                         }}</span>
@@ -63,9 +63,9 @@
                     </div>
                     <div class="col">
                         <div class="card border-0 h-100">
-                            <div class="card-body p-2 px-4 text-left d-flex align-items-center">
+                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
                                 <div class="w-100 lh-1">
-                                    <h6 class="fw-bold mx-1">Functional Owner</h6>
+                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.functional_owner') }}</h6>
                                     <span class="badge rounded-3 bg-desino text-white">{{
                                         ticketData.functional_owner
                                         }}</span>
@@ -75,9 +75,9 @@
                     </div>
                     <div class="col">
                         <div class="card border-0 h-100">
-                            <div class="card-body p-2 px-4 text-left d-flex align-items-center">
+                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
                                 <div class="w-100 lh-1">
-                                    <h6 class="fw-bold mx-1">Technical Owner</h6>
+                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.technical_owner') }}</h6>
                                     <span class="badge rounded-3 bg-info-subtle text-info">{{
                                         ticketData.technical_owner
                                         }}</span>
@@ -87,9 +87,9 @@
                     </div>
                     <div class="col">
                         <div class="card border-0 h-100">
-                            <div class="card-body p-2 px-4 text-left d-flex align-items-center">
+                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
                                 <div class="w-100 lh-1">
-                                    <h6 class="fw-bold mx-1">Testing Owner</h6>
+                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.testing_owner') }}</h6>
                                     <span class="badge rounded-3 bg-primary-subtle text-primary">{{
                                         ticketData.quality_owner
                                         }}</span>
@@ -99,9 +99,9 @@
                     </div>
                     <div class="col">
                         <div class="card border-0 h-100">
-                            <div class="card-body p-2 px-4 text-left d-flex align-items-center">
+                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
                                 <div class="w-100 lh-1">
-                                    <h6 class="fw-bold mx-1">Task Estimation</h6>
+                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.task_estimation') }}</h6>
                                     <span class="badge rounded-3 bg-success-subtle text-success">{{
                                         ticketData.initial_dev_time
                                         }} hrs</span>
@@ -112,60 +112,88 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <div v-if="currentAction" class="row row-cols-xl-3 row-cols-lg-3 row-cols-md-2 row-cols-2 g-2 g-lg-3">
+                <div class="row row-cols-xl-3 row-cols-lg-3 row-cols-md-1 row-cols-1 g-2 g-lg-3">
                     <div class="col">
-                        <strong>Current Action Name</strong>
-                        <div class="mb-3">
-                            <label for="">{{ currentAction.action_name }}</label>
+                        <div class="card border-0 h-100">
+                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
+                                <div class="w-100 lh-1">
+                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.current_action') }}</h6>
+                                    <span class="badge rounded-3 bg-success-subtle text-success" v-if="currentAction">{{
+                                        currentAction.action_name }}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col">
-                        <strong>Current Action User</strong>
-                        <div class="mb-3">
-                            <select v-model="currentActionFormData.user_id" :disabled="disableActionUser()"
-                                class="form-select" @change="handleCurrentActionChangeUser($event.target.value)">
-                                <option value="">Select User</option>
-                                <option v-for="user in users" :key="user.id" :value="user.id">
-                                    {{ user.name }}
-                                </option>
-                            </select>
+                        <div class="card border-0 h-100">
+                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
+                                <div class="w-100 lh-1">
+                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.current_action_user') }}</h6>
+                                    <select v-if="currentAction" v-model="currentActionFormData.user_id"
+                                        :disabled="disableActionUser()" class="form-select"
+                                        @change="handleCurrentActionChangeUser($event.target.value)">
+                                        <option value="">Select User</option>
+                                        <option v-for="user in users" :key="user.id" :value="user.id">
+                                            {{ user.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col">
-                        <strong>Current Action Status</strong>
-                        <div class="mb-3">
-                            <!-- <pre>{{ JSON.stringify(currentAction, null, 2) }}</pre> -->
-                            <span class="badge bg-warning" role="button" @click="handleCurrentActionChangeStatus()">{{
-                                currentAction.action_status }}</span>
+                        <div class="card border-0 h-100">
+                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
+                                <div class="w-100 lh-1">
+                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.current_action_status') }}</h6>
+                                    <span v-if="currentAction" class="badge bg-warning" role="button"
+                                        @click="handleCurrentActionChangeStatus()">{{
+                                            currentAction.action_status }}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div v-if="nextAction" class="row row-cols-xl-3 row-cols-lg-3 row-cols-md-2 row-cols-2 g-2 g-lg-3">
+
                     <div class="col">
-                        <strong>Next Action Name</strong>
-                        <div class="mb-3">
-                            <label for="">{{ nextAction.action_name }}</label>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <strong>Next Action User</strong>
-                        <div class="mb-3">
-                            <select v-model="nextActionFormData.user_id" :disabled="disableActionUser()"
-                                class="form-select" @change="handleNextActionChangeUser($event.target.value)">
-                                <option value="">Select User</option>
-                                <option v-for="user in users" :key="user.id" :value="user.id">
-                                    {{ user.name }}
-                                </option>
-                            </select>
+                        <div class="card border-0 h-100">
+                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
+                                <div class="w-100 lh-1">
+                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.next_action') }}</h6>
+                                    <span v-if="nextAction" class="badge rounded-3 bg-primary-subtle text-primary">{{
+                                        nextAction.action_name }}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col">
-                        <strong>Next Action Status</strong>
-                        <div class="mb-3">
-                            <span class="badge bg-warning" role="button" @click="handleCurrentActionChangeStatus()">{{
-                                nextAction.action_status }}</span>
+                        <div class="card border-0 h-100">
+                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
+                                <div class="w-100 lh-1">
+                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.next_action_user') }}</h6>
+                                    <select v-if="nextAction" v-model="nextActionFormData.user_id"
+                                        :disabled="disableActionUser()" class="form-select"
+                                        @change="handleNextActionChangeUser($event.target.value)">
+                                        <option value="">Select User</option>
+                                        <option v-for="user in users" :key="user.id" :value="user.id">
+                                            {{ user.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    <div class="col">
+                        <div class="card border-0 h-100">
+                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
+                                <div class="w-100 lh-1">
+                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.next_action_status') }}</h6>
+                                    <span v-if="nextAction" class="badge bg-warning" role="button">{{
+                                        nextAction.action_status }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -175,11 +203,12 @@
                 <li class="nav-item">
                     <a id="ticket_detail_tab" aria-controls="ticket_detail_tab" aria-selected="true"
                         class="nav-link border active" data-bs-toggle="pill" href="#ticket_detail_tab_body"
-                        role="tab">Task Details</a>
+                        role="tab">{{ $t('ticket_details.task_details') }}</a>
                 </li>
                 <li class="nav-item">
                     <a id="test_cases_tab" aria-controls="test_cases_tab" aria-selected="false" class="nav-link border"
-                        data-bs-toggle="pill" href="#test_cases_tab_body" role="tab">Test Cases</a>
+                        data-bs-toggle="pill" href="#test_cases_tab_body" role="tab">{{ $t('ticket_details.test_cases')
+                        }}</a>
                 </li>
             </ul>
             <div id="custom-tabs-five-tabContent" class="tab-content">
@@ -274,14 +303,12 @@
                             </div>
                         </div>
                         <div class="col-md-6 my-2">
-                            <div class="card h-100">
+                            <div class="card">
                                 <div class="card-header">
-                                    Release Notes For Client
+                                    {{ $t('ticket_details.client_release_notes') }}
                                 </div>
                                 <div class="card-body">
-                                    <p> Describe & Document the change done for the client. Use print-screen so that
-                                        the client
-                                        has clarity on how the functionality has changed</p>
+                                    <p> {{ $t('ticket_details.client_release_notes_description') }}</p>
                                     <TinyMceEditor v-model="releaseNoteForm.release_note" />
                                     <div v-if="errors.release_note" class="text-danger mt-2">
                                         <span v-for="(error, index) in errors.release_note" :key="index">{{
@@ -289,7 +316,8 @@
                                             }}</span>
                                     </div>
                                     <button class="btn w-100 bg-desino text-white fw-bold m-2 rounded"
-                                        @click="updateReleaseNote"> Update
+                                        @click="updateReleaseNote">
+                                        {{ $t('ticket_details.update') }}
                                     </button>
                                 </div>
                             </div>
@@ -420,8 +448,9 @@ export default {
         }
     },
     methods: {
-        ...mapActions(['setLoading']),
+        ...mapActions(['setLoading', 'setServerError']),
         async fetchTicketData(id) {
+            this.setServerError({ message: 'dsakdnk' });
             try {
                 this.setLoading(true);
                 let data = {
