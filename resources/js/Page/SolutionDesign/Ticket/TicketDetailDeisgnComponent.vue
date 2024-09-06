@@ -33,8 +33,10 @@
                 <div class="col-md-4">
                     <strong>Current Action User</strong>
                     <div class="mb-3">
-                        <select class="form-select" :value="getSelectedCurrentActionUserId(currentAction?.user?.id)"
-                            @change="handleCurrentActionChangeUser($event.target.value)">
+                        <!-- :value="getSelectedActionUserId(currentAction?.user?.id)" -->
+                        <select class="form-select" v-model="currentActionFormData.user_id"
+                            @change="handleCurrentActionChangeUser($event.target.value)"
+                            :disabled="disableActionUser()">
                             <option value="">Select User</option>
                             <option v-for="user in users" :key="user.id" :value="user.id">
                                 {{ user.name }}
@@ -45,8 +47,42 @@
                 <div class="col-md-4">
                     <strong>Current Action Status</strong>
                     <div class="mb-3">
-                        <select class="form-select" :value="getSelectedCurrentActionStatus(currentAction?.status)"
-                            @change="updateUser(action.id, $event.target.value)">
+                        <select class="form-select" v-model="currentActionFormData.status"
+                            @change="handleCurrentActionChangeStatus(action.id, $event.target.value)"
+                            :disabled="disableActionStatus(currentAction?.user?.id)">
+                            <option value="">Select Status</option>
+                            <option v-for="action in actionStatus" :key="action.id" :value="action.id">
+                                {{ action.name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <strong>Next Action Name</strong>
+                    <div class="mb-3">
+                        <label for="">{{ nextAction.action_name }}</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <strong>Next Action User</strong>
+                    <div class="mb-3">
+                        <select class="form-select" v-model="nextActionFormData.user_id"
+                            @change="handleNextActionChangeUser($event.target.value)" :disabled="disableActionUser()">
+                            <option value="">Select User</option>
+                            <option v-for="user in users" :key="user.id" :value="user.id">
+                                {{ user.name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <strong>Next Action Status</strong>
+                    <div class="mb-3">
+                        <select class="form-select" v-model="nextActionFormData.status"
+                            @change="handleNextActionChangeStatus(action.id, $event.target.value)"
+                            :disabled="disableActionStatus(nextAction?.user?.id)">
                             <option value="">Select Status</option>
                             <option v-for="action in actionStatus" :key="action.id" :value="action.id">
                                 {{ action.name }}
@@ -253,7 +289,7 @@ import TinyMceEditor from "./../../../components/TinyMceEditor.vue";
 import ticketService from "../../../services/TicketService.js";
 import messageService from "../../../services/messageService.js";
 import showToast from "./../../../utils/toasts.js";
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
     name: 'SolutionDesignComponent',
@@ -276,10 +312,26 @@ export default {
                 asana_task_link: '',
                 status_label: '',
                 functional_owner: '',
+                functional_owner_id: '',
                 quality_owner: '',
+                quality_owner_id: '',
                 technical_owner: '',
+                technical_owner_id: '',
+            },
+            currentActionFormData: {
+                ticket_id: '',
+                user_id: '',
+                action: '',
+                status: '',
+            },
+            nextActionFormData: {
+                ticket_id: '',
+                user_id: '',
+                action: '',
+                status: '',
             },
             currentAction: '',
+            nextAction: '',
             users: [],
             actionStatus: [],
             releaseNoteForm: {
@@ -291,6 +343,7 @@ export default {
         };
     },
     computed: {
+        ...mapGetters(['user']),
         selectedTaskObject: {
             get() {
                 return this.tasksForDropdown.find(task => task.id == this.selectedTask) || null;
@@ -361,10 +414,18 @@ export default {
             this.ticketData.status_label = content.status_label;
             this.ticketData.functionality_name = content?.functionality?.name.length > 0 ? content.initiative?.name + ' - ' + content?.functionality?.name : content.initiative?.name;
             this.ticketData.functional_owner = content.initiative?.functional_owner?.name;
+            this.ticketData.functional_owner_id = content.initiative?.functional_owner?.id;
             this.ticketData.quality_owner = content.initiative?.quality_owner?.name;
+            this.ticketData.quality_owner_id = content.initiative?.quality_owner?.id;
             this.ticketData.technical_owner = content.initiative?.technical_owner?.name;
+            this.ticketData.technical_owner_id = content.initiative?.technical_owner?.id;
             this.ticketData.asana_task_link = content.asana_task_link;
             this.currentAction = content.current_action;
+            this.currentActionFormData.user_id = content.current_action.user_id;
+            this.currentActionFormData.status = content.current_action.status;
+            this.nextAction = content.next_action;
+            this.nextActionFormData.user_id = content.next_action.user_id;
+            this.nextActionFormData.status = content.next_action.status;
             this.releaseNoteForm.release_note = content.release_note;
         },
         onTaskSelect() {
@@ -375,20 +436,79 @@ export default {
                 }
             });
         },
-        getSelectedCurrentActionUserId(userId) {
-            const user = this.users?.find(a => a.id === userId);
-            return user ? user.id : "";
-        },
+        // getSelectedActionUserId(userId) {
+        //     const user = this.users?.find(a => a.id === userId);
+        //     return user ? user.id : "";
+        // },
+        // getSelectedActionStatus(statusId) {
+        //     const actionStatus = this.actionStatus?.find(a => a.id === statusId);
+        //     return actionStatus ? actionStatus.id : "";
+        // },
         handleCurrentActionChangeUser(userId) {
-
+            const previousUserId = this.currentAction?.user?.id;
+            this.$swal({
+                title: 'Change User',
+                text: "Are you sure you want to change user?",
+                showCancelButton: true,
+                confirmButtonColor: '#1e6abf',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '<i class="bi bi-check-lg"></i>',
+                cancelButtonText: '<i class="bi bi-x-lg"></i>',
+                customClass: {
+                    confirmButton: 'bg-desino',
+                },
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    this.currentActionFormData = {
+                        user_id: userId,
+                        action: this.currentAction.id,
+                        ticket_id: this.localTicketId,
+                        status: this.currentActionFormData.status,
+                        initiative_id: this.localInitiativeId,
+                        action_text: 'current_action',
+                    }
+                    this.changeActionUser(this.currentActionFormData);
+                } else {
+                    this.currentActionFormData.user_id = previousUserId;
+                }
+            }).catch(() => {
+                this.currentActionFormData.user_id = previousUserId;
+            });
         },
-        getSelectedCurrentActionStatus(statusId) {
-            const actionStatus = this.actionStatus?.find(a => a.id === statusId);
-            return actionStatus ? actionStatus.id : "";
+        handleNextActionChangeUser(userId) {
+            console.log('handleNextActionChangeUser :: ', userId);
         },
         handleCurrentActionChangeStatus(statusId) {
-
+            console.log('handleCurrentActionChangeStatus :: ', statusId);
         },
+        handleNextActionChangeStatus(statusId) {
+            console.log('handleNextActionChangeStatus :: ', statusId);
+        },
+        async changeActionUser(passData) {
+            try {
+                await this.setLoading(true);
+                const { message } = await ticketService.changeActionUser(passData);
+                showToast(message, 'success');
+                await this.setLoading(false);
+                this.fetchTicketData(this.localTicketId);
+            } catch (error) {
+                this.handleError(error);
+                this.tasks[index].project = this.previousProject;
+            }
+        },
+        disableActionUser() {
+            if (this.user?.id === this.ticketData.functional_owner_id || this.user?.id === this.ticketData.technical_owner_id) {
+                return false;
+            }
+            return true;
+        },
+        disableActionStatus(userId) {
+            if (this.user?.id === userId) {
+                return false;
+            }
+            return true;
+        },
+
         resetForm() {
             this.releaseNoteForm = {
                 release_note: "",

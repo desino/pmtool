@@ -49,14 +49,14 @@
                                 <li class="nav-item" v-if="currentInitiative.id">
                                     <router-link class="nav-link text-dark"
                                         :to="{ name: 'tasks', params: { id: currentInitiative.id } }">
-                                        <i class="bi bi-list-ol mx-2"></i>
+                                        <i class="bi bi-card-checklist mx-2"></i>
                                         {{ $t('header.menu.all_ticket') }}
                                     </router-link>
                                 </li>
                                 <li class="nav-item" v-if="currentInitiative.id">
                                     <router-link class="nav-link text-dark"
                                         :to="{ name: 'projects', params: { id: currentInitiative.id } }">
-                                        <i class="bi bi-list-ul mx-2"></i>
+                                        <i class="bi bi-boxes mx-2"></i>
                                         {{ $t('header.menu.projects') }}
                                     </router-link>
                                 </li>

@@ -20,6 +20,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -471,6 +472,37 @@ class TicketController extends Controller
                 $message = __('messages.project.remove_success');
             }
             $status = true;
+            $statusCode = 200;
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $statusCode = 500;
+            Log::info($e->getMessage());
+        }
+        return ApiHelper::response($status, $message, '', $statusCode);
+    }
+
+    public function changeActionUser(Request $request, $initiativeId, $ticketId)
+    {
+        $status = false;
+        $request->merge(['initiative_id' => $initiativeId]);
+        $initiative = InitiativeService::getInitiative($request);
+        if (!$initiative) {
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
+        }
+        if (Auth::id() != $initiative->functional_owner_id && Auth::id() != $initiative->technical_owner_id) {
+            return ApiHelper::response($status, __('messages.ticket.change_action_user_not_allowed'), '', 400);
+        }
+        $ticket = Ticket::find($ticketId);
+        if (!$ticket) {
+            return ApiHelper::response($status, __('messages.ticket.ticket_not_exist'), '', 400);
+        }
+        DB::beginTransaction();
+        try {
+            TicketAction::where('ticket_id', $ticketId)->where('action', $request->input('action'))->update(['user_id' => $request->input('user_id')]);
+            $status = true;
+            $message = __('messages.ticket.change_action_user_success');
             $statusCode = 200;
             DB::commit();
         } catch (\Exception $e) {

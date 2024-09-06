@@ -49,7 +49,7 @@
                     <div class="mb-3">
                         <label class="form-label" for="initial_estimation_development_time">{{
                             $t('create_ticket_modal_modal_input_initial_estimation_development_time')
-                        }} <strong class="text-danger">*</strong>
+                            }} <strong class="text-danger">*</strong>
                         </label>
                         <input id="initial_estimation_development_time"
                             v-model="formData.initial_estimation_development_time"
@@ -318,6 +318,9 @@ export default {
                 if (this.$route.name === 'tasks') {
                     eventBus.$emit('refreshTickets');
                 }
+                // if (this.$route.name === 'task.detail') {
+                //     eventBus.$emit('refreshTicketDetail');
+                // }
             } catch (error) {
                 this.handleError(error);
             }

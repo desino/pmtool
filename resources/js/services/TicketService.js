@@ -19,6 +19,7 @@ const endpoints = {
     getInitialDataForCreateOrEditTicket: `${defaultPath}/get-initial-data-for-create-or-edit-ticket`,
     editTicket: `${defaultPath}/edit-ticket/:ticket_id`,
     updateTicket: `${defaultPath}/update-ticket/:ticket_id`,
+    changeActionUser: `${defaultPath}/change-action-user/:ticket_id`,
 }
 
 const SolutionDesignService = {
@@ -116,6 +117,15 @@ const SolutionDesignService = {
     async updateTicket(data) {
         try {
             const endpoint = endpoints.updateTicket.replace(':initiative_id', data.initiative_id).replace(':ticket_id', data.id);
+            const response = await axiosRequest.post(endpoint, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async changeActionUser(data) {
+        try {
+            const endpoint = endpoints.changeActionUser.replace(':initiative_id', data.initiative_id).replace(':ticket_id', data.ticket_id);
             const response = await axiosRequest.post(endpoint, data);
             return response.data;
         } catch (error) {

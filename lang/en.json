@@ -198,6 +198,8 @@
     "messages.ticket.fetched": "Ticket fetched successfully",
     "messages.ticket.update_success": "Release Note updated successfully",
     "messages.ticket.update_failed": "Release Note was not updated.",
+    "messages.ticket.change_action_user_not_allowed": "You are not allowed to change the action user.",
+    "messages.ticket.change_action_user_success": "Action user changed successfully.",
     "messages.project.get_list_success": "Projects fetched successfully.",
     "messages.project.not_found": "Project not found.",
     "messages.project.update_status_success": "Project status updated successfully.",

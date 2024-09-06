@@ -60,6 +60,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('get-initial-data-for-create-or-edit-ticket', 'getInitialDataForCreateOrEditTicket');
             Route::get('edit-ticket/{ticket_id}', 'editTicket');
             Route::post('update-ticket/{ticket_id}', 'updateTicket');
+            Route::post('change-action-user/{ticket_id}', 'changeActionUser');
         });
 
         Route::controller(ProjectController::class)->prefix('{initiative_id}/project')->group(function () {
