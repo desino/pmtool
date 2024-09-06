@@ -144,7 +144,7 @@ class Ticket extends Model
 
     public function actions()
     {
-        return $this->hasMany(TicketAction::class);
+        return $this->hasMany(TicketAction::class)->orderBy('action');
     }
     public function doneActions()
     {

@@ -7,6 +7,7 @@ const axiosRequest = axios.create({
 
 const serverErrorNotShowStatusCode = [
     422,
+    400
 ];
 
 axiosRequest.interceptors.request.use(
