@@ -13,19 +13,52 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="float-sm-end" v-if="ticketData.asana_task_link">
-                        <a class="btn btn-desino bg-desino text-white mt-2"  target="_blank" :href="ticketData.asana_task_link">Open Task Details in
+                        <a class="btn btn-desino bg-desino text-white mt-2" target="_blank"
+                            :href="ticketData.asana_task_link">Open Task Details in
                             Asana</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
+    <div class="app-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-4">
+                    <strong>Current Action Name</strong>
+                    <div class="mb-3">
+                        <label for="">{{ currentAction.action_name }}</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <strong>Current Action User</strong>
+                    <div class="mb-3">
+                        <select class="form-select" :value="getSelectedCurrentActionUserId(currentAction?.user?.id)"
+                            @change="handleCurrentActionChangeUser($event.target.value)">
+                            <option value="">Select User</option>
+                            <option v-for="user in users" :key="user.id" :value="user.id">
+                                {{ user.name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <strong>Current Action Status</strong>
+                    <div class="mb-3">
+                        <select class="form-select" :value="getSelectedCurrentActionStatus(currentAction?.status)"
+                            @change="updateUser(action.id, $event.target.value)">
+                            <option value="">Select Status</option>
+                            <option v-for="action in actionStatus" :key="action.id" :value="action.id">
+                                {{ action.name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <hr>
-
     <GlobalMessage v-if="showMessage" />
-
-
     <div class="app-content mt-2">
         <div class="row row-cols-xl-6 row-cols-lg-3 row-cols-md-3 row-cols-2 g-2 g-lg-3">
             <div class="col">
@@ -33,7 +66,8 @@
                     <div class="card-body p-2 px-4 text-left d-flex align-items-center">
                         <div class="w-100 lh-1">
                             <h6 class="fw-bold mx-1">Task Status</h6>
-                            <span class="badge rounded-3 bg-danger-subtle text-danger">{{ ticketData.status_label }}</span>
+                            <span class="badge rounded-3 bg-danger-subtle text-danger">{{ ticketData.status_label
+                                }}</span>
                         </div>
                     </div>
                 </div>
@@ -53,7 +87,7 @@
                     <div class="card-body p-2 px-4 text-left d-flex align-items-center">
                         <div class="w-100 lh-1">
                             <h6 class="fw-bold mx-1">Functional Owner</h6>
-                            <span class="badge rounded-3 bg-desino text-white">{{ticketData.functional_owner}}</span>
+                            <span class="badge rounded-3 bg-desino text-white">{{ ticketData.functional_owner }}</span>
                         </div>
                     </div>
                 </div>
@@ -63,7 +97,8 @@
                     <div class="card-body p-2 px-4 text-left d-flex align-items-center">
                         <div class="w-100 lh-1">
                             <h6 class="fw-bold mx-1">Technical Owner</h6>
-                            <span class="badge rounded-3 bg-info-subtle text-info">{{ticketData.technical_owner}}</span>
+                            <span class="badge rounded-3 bg-info-subtle text-info">{{ ticketData.technical_owner
+                                }}</span>
                         </div>
                     </div>
                 </div>
@@ -73,7 +108,8 @@
                     <div class="card-body p-2 px-4 text-left d-flex align-items-center">
                         <div class="w-100 lh-1">
                             <h6 class="fw-bold mx-1">Testing Owner</h6>
-                            <span class="badge rounded-3 bg-primary-subtle text-primary">{{ticketData.quality_owner}}</span>
+                            <span class="badge rounded-3 bg-primary-subtle text-primary">{{ ticketData.quality_owner
+                                }}</span>
                         </div>
                     </div>
                 </div>
@@ -83,7 +119,8 @@
                     <div class="card-body p-2 px-4 text-left d-flex align-items-center">
                         <div class="w-100 lh-1">
                             <h6 class="fw-bold mx-1">Task Estimation</h6>
-                            <span class="badge rounded-3 bg-success-subtle text-success">{{ ticketData.initial_dev_time }} hrs</span>
+                            <span class="badge rounded-3 bg-success-subtle text-success">{{ ticketData.initial_dev_time
+                                }} hrs</span>
                         </div>
                     </div>
                 </div>
@@ -242,6 +279,9 @@ export default {
                 quality_owner: '',
                 technical_owner: '',
             },
+            currentAction: '',
+            users: [],
+            actionStatus: [],
             releaseNoteForm: {
                 'release_note': '',
             },
@@ -282,13 +322,14 @@ export default {
                     ticket_id: id
                 }
                 const response = await ticketService.fetchTicket(data);
-                console.log(response.content);
                 if (!response.content) {
                     messageService.setMessage(response.message, 'danger');
                     this.$router.push({ name: 'home' });
                 } else {
                     this.setData(response.content);
                     this.tasksForDropdown = response.meta_data.all_tickets;
+                    this.users = response.meta_data.users;
+                    this.actionStatus = response.meta_data.action_status;
                 }
                 this.setLoading(false);
             } catch (error) {
@@ -323,6 +364,7 @@ export default {
             this.ticketData.quality_owner = content.initiative?.quality_owner?.name;
             this.ticketData.technical_owner = content.initiative?.technical_owner?.name;
             this.ticketData.asana_task_link = content.asana_task_link;
+            this.currentAction = content.current_action;
             this.releaseNoteForm.release_note = content.release_note;
         },
         onTaskSelect() {
@@ -332,6 +374,20 @@ export default {
                     this.selectedTask = this.selectedTaskObject.id;
                 }
             });
+        },
+        getSelectedCurrentActionUserId(userId) {
+            const user = this.users?.find(a => a.id === userId);
+            return user ? user.id : "";
+        },
+        handleCurrentActionChangeUser(userId) {
+
+        },
+        getSelectedCurrentActionStatus(statusId) {
+            const actionStatus = this.actionStatus?.find(a => a.id === statusId);
+            return actionStatus ? actionStatus.id : "";
+        },
+        handleCurrentActionChangeStatus(statusId) {
+
         },
         resetForm() {
             this.releaseNoteForm = {

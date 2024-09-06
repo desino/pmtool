@@ -339,7 +339,9 @@ class TicketController extends Controller
             'initiative',
             'initiative.functionalOwner',
             'initiative.qualityOwner',
-            'initiative.technicalOwner'
+            'initiative.technicalOwner',
+            'currentAction',
+            'nextAction',
         ])->where([
             ['id', '=', $ticket_id],
             ['initiative_id', '=', $initiative_id]
@@ -353,6 +355,8 @@ class TicketController extends Controller
         // Fetch all tickets for the given initiative
         $meta_data['all_tickets'] = Ticket::where('initiative_id', $initiative_id)
             ->get(['id', 'name', 'composed_name']);
+        $meta_data['users'] = TicketService::getUsers();
+        $meta_data['action_status'] = TicketAction::getAllActionStatus();
 
         // Return the ticket and related meta data in a success response
         return ApiHelper::response(true, __('messages.ticket.fetched'), $ticket, 200, $meta_data);

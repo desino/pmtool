@@ -49,7 +49,7 @@
                     <div class="mb-3">
                         <label class="form-label" for="initial_estimation_development_time">{{
                             $t('create_ticket_modal_modal_input_initial_estimation_development_time')
-                            }} <strong class="text-danger">*</strong>
+                        }} <strong class="text-danger">*</strong>
                         </label>
                         <input id="initial_estimation_development_time"
                             v-model="formData.initial_estimation_development_time"
@@ -116,7 +116,7 @@
                                             :id="'user_id' + action.id" class="form-select"
                                             :disabled="disableActionInput(action.id)"
                                             :value="getSelectedUserId(action.id)"
-                                            @change="updateUser(action.id, $event.target.value)" disabled>
+                                            @change="updateUser(action.id, $event.target.value)">
                                             <option value="">{{ $t('create_ticket_modal_select_action_user_placeholder')
                                                 }}</option>
                                             <option v-for="user in users" :key="user.id" :value="user.id">
