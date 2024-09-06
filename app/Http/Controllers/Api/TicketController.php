@@ -343,6 +343,7 @@ class TicketController extends Controller
             'initiative.technicalOwner',
             'currentAction',
             'nextAction',
+            'testCases'
         ])->where([
             ['id', '=', $ticket_id],
             ['initiative_id', '=', $initiative_id]

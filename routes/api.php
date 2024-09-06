@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\InitiativeController;
 use App\Http\Controllers\Api\OpportunityController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\SolutionDesignController;
+use App\Http\Controllers\Api\TestCaseController;
 use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
@@ -68,6 +69,11 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/change-status', 'changeStatus');
             Route::post('/update', 'update');
         });
+    });
+
+    Route::controller(TestCaseController::class)->prefix('ticket/{ticket_id}/test-case')->group(function () {
+        Route::post('/store', 'store');
+        Route::post('/update/{text_case_id}', 'update');
     });
 
 

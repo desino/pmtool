@@ -146,6 +146,12 @@ class Ticket extends Model
     {
         return $this->hasMany(TicketAction::class);
     }
+
+    public function testCases()
+    {
+        return $this->hasMany(TestCase::class);
+    }
+
     public function doneActions()
     {
         return $this->hasOne(TicketAction::class)->where('status', TicketAction::getStatusDone())->orderBy('action');

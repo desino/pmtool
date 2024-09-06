@@ -284,6 +284,11 @@
     "ticket_action.clarify_and_estimate": "Clarify & Estimate",
     "ticket_action.develop": "Develop",
     "ticket_action.test": "Test",
+    "ticket_action.assess": "Assess",
+    "task_detail.create_testcase_heading": "Create Test Case",
+    "task_details.create_testcase_input_name": "Test Case",
+    "task_detail.create_testcase_submit_btn_text": "Create",
+    "task_detail.create_testcase_close_btn_text": "Close",
 
     "ticket_details.task_status": "Task Status",
     "ticket_details.functional_owner": "Functional Owner",

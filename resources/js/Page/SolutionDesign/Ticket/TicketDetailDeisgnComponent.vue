@@ -53,7 +53,7 @@
                         <div class="card border-0 h-100">
                             <div class="card-body p-2 px-2 text-left d-flex align-items-center">
                                 <div class="w-100 lh-1">
-                                    <h6 class="fw-bold mx-1">{{$t('ticket_details.task_status')}}</h6>
+                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.task_status') }}</h6>
                                     <span class="badge rounded-3 bg-danger-subtle text-danger">{{
                                             ticketData.status_label
                                         }}</span>
@@ -65,7 +65,7 @@
                         <div class="card border-0 h-100">
                             <div class="card-body p-2 px-2 text-left d-flex align-items-center">
                                 <div class="w-100 lh-1">
-                                    <h6 class="fw-bold mx-1">{{$t('ticket_details.functional_owner')}}</h6>
+                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.functional_owner') }}</h6>
                                     <span class="badge rounded-3 bg-desino text-white">{{
                                             ticketData.functional_owner
                                         }}</span>
@@ -77,7 +77,7 @@
                         <div class="card border-0 h-100">
                             <div class="card-body p-2 px-2 text-left d-flex align-items-center">
                                 <div class="w-100 lh-1">
-                                    <h6 class="fw-bold mx-1">{{$t('ticket_details.technical_owner')}}</h6>
+                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.technical_owner') }}</h6>
                                     <span class="badge rounded-3 bg-info-subtle text-info">{{
                                             ticketData.technical_owner
                                         }}</span>
@@ -89,7 +89,7 @@
                         <div class="card border-0 h-100">
                             <div class="card-body p-2 px-2 text-left d-flex align-items-center">
                                 <div class="w-100 lh-1">
-                                    <h6 class="fw-bold mx-1">{{$t('ticket_details.testing_owner')}}</h6>
+                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.testing_owner') }}</h6>
                                     <span class="badge rounded-3 bg-primary-subtle text-primary">{{
                                             ticketData.quality_owner
                                         }}</span>
@@ -101,7 +101,7 @@
                         <div class="card border-0 h-100">
                             <div class="card-body p-2 px-2 text-left d-flex align-items-center">
                                 <div class="w-100 lh-1">
-                                    <h6 class="fw-bold mx-1">{{$t('ticket_details.task_estimation')}}</h6>
+                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.task_estimation') }}</h6>
                                     <span class="badge rounded-3 bg-success-subtle text-success">{{
                                             ticketData.initial_dev_time
                                         }} hrs</span>
@@ -117,8 +117,10 @@
                         <div class="card border-0 h-100">
                             <div class="card-body p-2 px-2 text-left d-flex align-items-center">
                                 <div class="w-100 lh-1">
-                                    <h6 class="fw-bold mx-1">{{$t('ticket_details.current_action')}}</h6>
-                                    <span class="badge rounded-3 bg-success-subtle text-success">{{ currentAction.action_name }}</span>
+                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.current_action') }}</h6>
+                                    <span class="badge rounded-3 bg-success-subtle text-success">{{
+                                            currentAction.action_name
+                                        }}</span>
                                 </div>
                             </div>
                         </div>
@@ -127,7 +129,7 @@
                         <div class="card border-0 h-100">
                             <div class="card-body p-2 px-2 text-left d-flex align-items-center">
                                 <div class="w-100 lh-1">
-                                    <h6 class="fw-bold mx-1">{{$t('ticket_details.current_action_user')}}</h6>
+                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.current_action_user') }}</h6>
                                     <select v-model="currentActionFormData.user_id" :disabled="disableActionUser()"
                                             class="form-select"
                                             @change="handleCurrentActionChangeUser($event.target.value)">
@@ -144,7 +146,7 @@
                         <div class="card border-0 h-100">
                             <div class="card-body p-2 px-2 text-left d-flex align-items-center">
                                 <div class="w-100 lh-1">
-                                    <h6 class="fw-bold mx-1">{{$t('ticket_details.current_action_status')}}</h6>
+                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.current_action_status') }}</h6>
                                     <select v-model="currentActionFormData.status"
                                             :disabled="disableActionStatus(currentAction?.user?.id)"
                                             class="form-select"
@@ -162,8 +164,10 @@
                         <div class="card border-0 h-100">
                             <div class="card-body p-2 px-2 text-left d-flex align-items-center">
                                 <div class="w-100 lh-1">
-                                    <h6 class="fw-bold mx-1">{{$t('ticket_details.next_action')}}</h6>
-                                    <span class="badge rounded-3 bg-primary-subtle text-primary">{{ nextAction.action_name }}</span>
+                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.next_action') }}</h6>
+                                    <span class="badge rounded-3 bg-primary-subtle text-primary">{{
+                                            nextAction.action_name
+                                        }}</span>
                                 </div>
                             </div>
                         </div>
@@ -172,7 +176,7 @@
                         <div class="card border-0 h-100">
                             <div class="card-body p-2 px-2 text-left d-flex align-items-center">
                                 <div class="w-100 lh-1">
-                                    <h6 class="fw-bold mx-1">{{$t('ticket_details.next_action_user')}}</h6>
+                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.next_action_user') }}</h6>
                                     <select v-model="nextActionFormData.user_id" :disabled="disableActionUser()"
                                             class="form-select"
                                             @change="handleNextActionChangeUser($event.target.value)">
@@ -189,7 +193,7 @@
                         <div class="card border-0 h-100">
                             <div class="card-body p-2 px-2 text-left d-flex align-items-center">
                                 <div class="w-100 lh-1">
-                                    <h6 class="fw-bold mx-1">{{$t('ticket_details.next_action_status')}}</h6>
+                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.next_action_status') }}</h6>
                                     <select v-model="nextActionFormData.status"
                                             :disabled="disableActionStatus(nextAction?.user?.id)"
                                             class="form-select"
@@ -213,13 +217,13 @@
                     <a id="ticket_detail_tab"
                        aria-controls="ticket_detail_tab" aria-selected="true" class="nav-link border active"
                        data-bs-toggle="pill" href="#ticket_detail_tab_body"
-                       role="tab">{{$t('ticket_details.task_details')}}</a>
+                       role="tab">{{ $t('ticket_details.task_details') }}</a>
                 </li>
                 <li class="nav-item">
                     <a id="test_cases_tab"
                        aria-controls="test_cases_tab" aria-selected="false" class="nav-link border"
                        data-bs-toggle="pill" href="#test_cases_tab_body"
-                       role="tab">{{$t('ticket_details.test_cases')}}</a>
+                       role="tab">{{ $t('ticket_details.test_cases') }}</a>
                 </li>
             </ul>
             <div id="custom-tabs-five-tabContent" class="tab-content">
@@ -316,10 +320,10 @@
                         <div class="col-md-6 my-2">
                             <div class="card">
                                 <div class="card-header">
-                                    {{$t('ticket_details.client_release_notes')}}
+                                    {{ $t('ticket_details.client_release_notes') }}
                                 </div>
                                 <div class="card-body">
-                                    <p> {{$t('ticket_details.client_release_notes_description')}}</p>
+                                    <p> {{ $t('ticket_details.client_release_notes_description') }}</p>
                                     <TinyMceEditor v-model="releaseNoteForm.release_note"/>
                                     <div v-if="errors.release_note" class="text-danger mt-2">
                                             <span v-for="(error, index) in errors.release_note" :key="index">{{
@@ -328,7 +332,7 @@
                                     </div>
                                     <button class="btn w-100 bg-desino text-white fw-bold m-2 rounded"
                                             @click="updateReleaseNote">
-                                        {{$t('ticket_details.update')}}
+                                        {{ $t('ticket_details.update') }}
                                     </button>
                                 </div>
                             </div>
@@ -341,31 +345,48 @@
                         <div class="card">
                             <div class="card-header fw-bold">
                                 <label class="mt-2">Define Test</label>
-                                <button class="float-end btn btn-primary"> Add Test Section</button>
+                                <div id="createTestCaseModal" aria-hidden="true"
+                                     aria-labelledby="createTestCaseModalLabel" class="modal fade"
+                                     tabindex="-1">
+                                    <CreateTestCaseModalComponent ref="createTestCaseModalComponent"
+                                                                  :ticket_id="selectedTask"/>
+                                </div>
+                                <button class="float-end btn btn-primary" @click="showTestCaseModal"> Add Test Section
+                                </button>
                             </div>
-                            <div class="card-body pt-0">
-                                <div class="border-bottom py-3">
-                                    <label class="fw-bold h6"> Test 1 </label> <br>
-                                    <small class="mt-2 fw-bold">Expected Behaviour </small> <br>
-                                    <small>
-                                        When Exporting File The file should be happy not sad.
-                                    </small>
-                                </div>
-                                <div class="border-bottom py-3">
-                                    <label class="fw-bold h6"> Test 2 </label> <br>
-                                    <small class="mt-2 fw-bold">Expected Behaviour </small> <br>
-                                    <small>
-                                        When Exporting File The file should be crying not sad.
-                                    </small>
-                                </div>
-                                <div class="border-bottom py-3">
-                                    <label class="fw-bold h6"> Test 3 </label> <br>
-                                    <small class="mt-2 fw-bold">Expected Behaviour </small> <br>
-                                    <small>
-                                        When Exporting File The file should be flying not sad.
-                                    </small>
+                            <div v-if="test_cases.length > 0" class="card-body pt-0">
+                                <div
+                                    v-for="(test_case, index) in test_cases"
+                                    :key="index"
+                                    :class="{'py-3': true, 'border-bottom': index !== test_cases.length - 1}"
+                                >
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            <label class="fw-bold h6"> Test {{ index + 1 }}
+                                                ({{
+                                                    test_case.status !== -1 ? (test_case.status === 1 ? 'success' : 'failed') : 'pending'
+                                                }})</label> <br>
+                                            <small class="mt-2 fw-bold">Expected Behaviour</small> <br>
+                                            <small>
+                                                {{ test_case.test_case }}
+                                            </small>
+                                        </div>
+                                        <div class="col-md-2 d-flex justify-content-end align-items-center">
+                                            <button class="btn btn-success btn-sm">
+                                                <i class="bi-check-lg text-white"
+                                                   @click="handleTestCaseAction(test_case.id,'success')"></i>
+                                            </button>
+
+                                            <button class="btn btn-danger btn-sm ms-2">
+                                                <i class="bi-x-lg text-white"
+                                                   @click="handleTestCaseAction(test_case.id,'failed')"></i>
+                                            </button>
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -382,10 +403,14 @@ import ticketService from "../../../services/TicketService.js";
 import messageService from "../../../services/messageService.js";
 import showToast from "./../../../utils/toasts.js";
 import {mapActions, mapGetters} from 'vuex';
+import {Modal} from "bootstrap";
+import CreateTestCaseModalComponent from "./../Ticket/TestCase/CreateTestCaseModalComponent.vue";
+import testCaseService from "./../../../services/TestCaseService.js";
 
 export default {
     name: 'SolutionDesignComponent',
     components: {
+        CreateTestCaseModalComponent,
         TinyMceEditor,
         GlobalMessage,
         Multiselect,
@@ -430,6 +455,7 @@ export default {
             releaseNoteForm: {
                 'release_note': '',
             },
+            test_cases: [],
             tasksForDropdown: [],
             errors: {},
             showMessage: true,
@@ -459,7 +485,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions(['setLoading','setServerError']),
+        ...mapActions(['setLoading', 'setServerError']),
         async fetchTicketData(id) {
             this.setServerError({message: 'dsakdnk'});
             try {
@@ -500,6 +526,14 @@ export default {
                 this.handleError(error);
             }
         },
+        showTestCaseModal() {
+            this.$refs.createTestCaseModalComponent.resetForm();
+            const modalElement = document.getElementById('createTestCaseModal');
+            if (modalElement) {
+                const modal = new Modal(modalElement);
+                modal.show();
+            }
+        },
         setData(content) {
             this.ticketData.name = content.name;
             this.ticketData.composed_name = content.composed_name;
@@ -521,6 +555,7 @@ export default {
             this.nextActionFormData.user_id = content.next_action.user_id;
             this.nextActionFormData.status = content.next_action.status;
             this.releaseNoteForm.release_note = content.release_note;
+            this.test_cases = content.test_cases;
         },
         onTaskSelect() {
             // Ensure the selected task is synced with the dropdown
@@ -529,6 +564,25 @@ export default {
                     this.selectedTask = this.selectedTaskObject.id;
                 }
             });
+        },
+        async handleTestCaseAction(testCaseId,type) {
+            const data = {
+                ticket_id: this.localTicketId,
+                test_case_id: testCaseId,
+                status: 1
+            }
+            if(type === 'failed')
+            {
+                this.showTestCaseModal();
+                return true;
+            }
+            try {
+                const response = await testCaseService.updateTestCase(data);
+                await this.setLoading(false);
+                showToast(response.message, 'success');
+            } catch (error) {
+                this.handleError(error);
+            }
         },
         // getSelectedActionUserId(userId) {
         //     const user = this.users?.find(a => a.id === userId);
