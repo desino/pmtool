@@ -467,19 +467,11 @@ export default {
                 }
             });
         },
-        // getSelectedActionUserId(userId) {
-        //     const user = this.users?.find(a => a.id === userId);
-        //     return user ? user.id : "";
-        // },
-        // getSelectedActionStatus(statusId) {
-        //     const actionStatus = this.actionStatus?.find(a => a.id === statusId);
-        //     return actionStatus ? actionStatus.id : "";
-        // },
         handleCurrentActionChangeUser(userId) {
             const previousUserId = this.currentAction?.user?.id;
             this.$swal({
                 title: 'Change User',
-                text: "Are you sure you want to change user?",
+                text: "Are you sure you want to change current user?",
                 showCancelButton: true,
                 confirmButtonColor: '#1e6abf',
                 cancelButtonColor: '#d33',
@@ -492,7 +484,8 @@ export default {
                 if (result.isConfirmed) {
                     this.currentActionFormData = {
                         user_id: userId,
-                        action: this.currentAction.id,
+                        action_id: this.currentAction.id,
+                        action: this.currentAction.action,
                         ticket_id: this.localTicketId,
                         status: this.currentActionFormData.status,
                         initiative_id: this.localInitiativeId,
@@ -507,10 +500,10 @@ export default {
             });
         },
         handleNextActionChangeUser(userId) {
-            const previousUserId = this.currentAction?.user?.id;
+            const previousUserId = this.nextAction?.user?.id;
             this.$swal({
                 title: 'Change User',
-                text: "Are you sure you want to change user?",
+                text: "Are you sure you want to change next user?",
                 showCancelButton: true,
                 confirmButtonColor: '#1e6abf',
                 cancelButtonColor: '#d33',
@@ -523,7 +516,8 @@ export default {
                 if (result.isConfirmed) {
                     this.nextActionFormData = {
                         user_id: userId,
-                        action: this.nextAction.id,
+                        action_id: this.nextAction.id,
+                        action: this.nextAction.action,
                         ticket_id: this.localTicketId,
                         status: this.nextActionFormData.status,
                         initiative_id: this.localInitiativeId,
@@ -538,7 +532,36 @@ export default {
             });
         },
         handleCurrentActionChangeStatus(statusId) {
-            console.log('handleCurrentActionChangeStatus :: ', statusId);
+            const previousUserId = this.currentAction?.user?.id;
+            this.$swal({
+                title: 'Change User',
+                text: "Are you sure you want to change current user?",
+                showCancelButton: true,
+                confirmButtonColor: '#1e6abf',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '<i class="bi bi-check-lg"></i>',
+                cancelButtonText: '<i class="bi bi-x-lg"></i>',
+                customClass: {
+                    confirmButton: 'bg-desino',
+                },
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    this.currentActionFormData = {
+                        user_id: userId,
+                        action_id: this.currentAction.id,
+                        action: this.currentAction.action,
+                        ticket_id: this.localTicketId,
+                        status: this.currentActionFormData.status,
+                        initiative_id: this.localInitiativeId,
+                        action_text: 'current_action',
+                    }
+                    this.changeActionUser(this.currentActionFormData);
+                } else {
+                    this.currentActionFormData.user_id = previousUserId;
+                }
+            }).catch(() => {
+                this.currentActionFormData.user_id = previousUserId;
+            });
         },
         handleNextActionChangeStatus(statusId) {
             console.log('handleNextActionChangeStatus :: ', statusId);

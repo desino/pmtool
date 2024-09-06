@@ -500,7 +500,10 @@ class TicketController extends Controller
         }
         DB::beginTransaction();
         try {
-            TicketAction::where('ticket_id', $ticketId)->where('action', $request->input('action'))->update(['user_id' => $request->input('user_id')]);
+            TicketAction::where('id', $request->input('action_id'))
+                ->where('ticket_id', $ticketId)
+                ->where('action', $request->input('action'))
+                ->update(['user_id' => $request->input('user_id')]);
             $status = true;
             $message = __('messages.ticket.change_action_user_success');
             $statusCode = 200;
