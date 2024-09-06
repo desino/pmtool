@@ -507,7 +507,35 @@ export default {
             });
         },
         handleNextActionChangeUser(userId) {
-            console.log('handleNextActionChangeUser :: ', userId);
+            const previousUserId = this.currentAction?.user?.id;
+            this.$swal({
+                title: 'Change User',
+                text: "Are you sure you want to change user?",
+                showCancelButton: true,
+                confirmButtonColor: '#1e6abf',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '<i class="bi bi-check-lg"></i>',
+                cancelButtonText: '<i class="bi bi-x-lg"></i>',
+                customClass: {
+                    confirmButton: 'bg-desino',
+                },
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    this.nextActionFormData = {
+                        user_id: userId,
+                        action: this.nextAction.id,
+                        ticket_id: this.localTicketId,
+                        status: this.nextActionFormData.status,
+                        initiative_id: this.localInitiativeId,
+                        action_text: 'next_action',
+                    }
+                    this.changeActionUser(this.nextActionFormData);
+                } else {
+                    this.nextActionFormData.user_id = previousUserId;
+                }
+            }).catch(() => {
+                this.nextActionFormData.user_id = previousUserId;
+            });
         },
         handleCurrentActionChangeStatus(statusId) {
             console.log('handleCurrentActionChangeStatus :: ', statusId);
