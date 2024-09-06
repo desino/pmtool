@@ -112,73 +112,95 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="row row-cols-xl-3 row-cols-lg-3 row-cols-md-2 row-cols-2 g-2 g-lg-3">
+                <div class="row row-cols-xl-3 row-cols-lg-3 row-cols-md-1 row-cols-1 g-2 g-lg-3">
                     <div class="col">
-                        <strong>Current Action Name</strong>
-                        <div class="mb-3">
-                            <label for="">{{ currentAction.action_name }}</label>
+                        <div class="card border-0 h-100">
+                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
+                                <div class="w-100 lh-1">
+                                    <h6 class="fw-bold mx-1">Current Action Name</h6>
+                                    <span class="badge rounded-3 bg-success-subtle text-success">{{ currentAction.action_name }}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col">
-                        <strong>Current Action User</strong>
-                        <div class="mb-3">
-                            <select v-model="currentActionFormData.user_id" :disabled="disableActionUser()"
-                                    class="form-select"
-                                    @change="handleCurrentActionChangeUser($event.target.value)">
-                                <option value="">Select User</option>
-                                <option v-for="user in users" :key="user.id" :value="user.id">
-                                    {{ user.name }}
-                                </option>
-                            </select>
+                        <div class="card border-0 h-100">
+                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
+                                <div class="w-100 lh-1">
+                                    <h6 class="fw-bold mx-1">Current Action User</h6>
+                                    <select v-model="currentActionFormData.user_id" :disabled="disableActionUser()"
+                                            class="form-select"
+                                            @change="handleCurrentActionChangeUser($event.target.value)">
+                                        <option value="">Select User</option>
+                                        <option v-for="user in users" :key="user.id" :value="user.id">
+                                            {{ user.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col">
-                        <strong>Current Action Status</strong>
-                        <div class="mb-3">
-                            <select v-model="currentActionFormData.status"
-                                    :disabled="disableActionStatus(currentAction?.user?.id)"
-                                    class="form-select"
-                                    @change="handleCurrentActionChangeStatus(action.id, $event.target.value)">
-                                <option value="">Select Status</option>
-                                <option v-for="action in actionStatus" :key="action.id" :value="action.id">
-                                    {{ action.name }}
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="row row-cols-xl-3 row-cols-lg-3 row-cols-md-2 row-cols-2 g-2 g-lg-3">
-                    <div class="col">
-                        <strong>Next Action Name</strong>
-                        <div class="mb-3">
-                            <label for="">{{ nextAction.action_name }}</label>
+                        <div class="card border-0 h-100">
+                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
+                                <div class="w-100 lh-1">
+                                    <h6 class="fw-bold mx-1">Current Action Status</h6>
+                                    <select v-model="currentActionFormData.status"
+                                            :disabled="disableActionStatus(currentAction?.user?.id)"
+                                            class="form-select"
+                                            @change="handleCurrentActionChangeStatus(action.id, $event.target.value)">
+                                        <option value="">Select Status</option>
+                                        <option v-for="action in actionStatus" :key="action.id" :value="action.id">
+                                            {{ action.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col">
-                        <strong>Next Action User</strong>
-                        <div class="mb-3">
-                            <select v-model="nextActionFormData.user_id" :disabled="disableActionUser()"
-                                    class="form-select"
-                                    @change="handleNextActionChangeUser($event.target.value)">
-                                <option value="">Select User</option>
-                                <option v-for="user in users" :key="user.id" :value="user.id">
-                                    {{ user.name }}
-                                </option>
-                            </select>
+                        <div class="card border-0 h-100">
+                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
+                                <div class="w-100 lh-1">
+                                    <h6 class="fw-bold mx-1">Next Action Name</h6>
+                                    <span class="badge rounded-3 bg-primary-subtle text-primary">{{ nextAction.action_name }}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col">
-                        <strong>Next Action Status</strong>
-                        <div class="mb-3">
-                            <select v-model="nextActionFormData.status"
-                                    :disabled="disableActionStatus(nextAction?.user?.id)"
-                                    class="form-select"
-                                    @change="handleNextActionChangeStatus(action.id, $event.target.value)">
-                                <option value="">Select Status</option>
-                                <option v-for="action in actionStatus" :key="action.id" :value="action.id">
-                                    {{ action.name }}
-                                </option>
-                            </select>
+                        <div class="card border-0 h-100">
+                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
+                                <div class="w-100 lh-1">
+                                    <h6 class="fw-bold mx-1">Next Action User</h6>
+                                    <select v-model="nextActionFormData.user_id" :disabled="disableActionUser()"
+                                            class="form-select"
+                                            @change="handleNextActionChangeUser($event.target.value)">
+                                        <option value="">Select User</option>
+                                        <option v-for="user in users" :key="user.id" :value="user.id">
+                                            {{ user.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card border-0 h-100">
+                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
+                                <div class="w-100 lh-1">
+                                    <h6 class="fw-bold mx-1">Next Action Status</h6>
+                                    <select v-model="nextActionFormData.status"
+                                            :disabled="disableActionStatus(nextAction?.user?.id)"
+                                            class="form-select"
+                                            @change="handleNextActionChangeStatus(action.id, $event.target.value)">
+                                        <option value="">Select Status</option>
+                                        <option v-for="action in actionStatus" :key="action.id" :value="action.id">
+                                            {{ action.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
