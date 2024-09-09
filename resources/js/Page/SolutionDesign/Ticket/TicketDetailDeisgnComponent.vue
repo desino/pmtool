@@ -349,7 +349,7 @@
                                      aria-labelledby="createTestCaseModalLabel" class="modal fade"
                                      tabindex="-1">
                                     <CreateTestCaseModalComponent ref="createTestCaseModalComponent"
-                                                                  :ticket_id="selectedTask"/>
+                                                  @stored-testcase="updateTestCaseList" :ticket_id="selectedTask"/>
                                 </div>
                                 <button class="float-end btn btn-primary" @click="showTestCaseModal"> Add Test Section
                                 </button>
@@ -385,6 +385,9 @@
 
                                     </div>
                                 </div>
+                            </div>
+                            <div v-else class="p-5 text-center fw-bold">
+                                No Test Case found !
                             </div>
 
                         </div>
@@ -565,6 +568,9 @@ export default {
                 }
             });
         },
+        updateTestCaseList(response) {
+            this.test_cases = response.content;
+        },
         async handleTestCaseAction(testCaseId,type) {
             const data = {
                 ticket_id: this.localTicketId,
@@ -573,11 +579,12 @@ export default {
             }
             if(type === 'failed')
             {
-                this.showTestCaseModal();
+                this.showTestCaseModal(testCaseId);
                 return true;
             }
             try {
                 const response = await testCaseService.updateTestCase(data);
+                this.test_cases = response.content;
                 await this.setLoading(false);
                 showToast(response.message, 'success');
             } catch (error) {

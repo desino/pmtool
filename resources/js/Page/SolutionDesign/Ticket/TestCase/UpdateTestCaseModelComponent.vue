@@ -1,6 +1,6 @@
 <template>
     <div class="modal-dialog modal-lg">
-        <form @submit.prevent="storeTestCase">
+        <form @submit.prevent="updateTestCase">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 id="createTestCaseModalLabel" class="modal-title">{{ $t('task_detail.create_testcase_heading') }}
@@ -13,7 +13,7 @@
                         <label class="form-label" for="name">{{ $t('task_details.create_testcase_input_name') }} <strong
                             class="text-danger">*</strong></label>
                         <textarea id="name" v-model="formData.test_case" :class="{ 'is-invalid': errors.test_case }"
-                               class="form-control" type="text">
+                                  class="form-control" type="text">
                         </textarea>
                         <div v-if="errors.test_case" class="invalid-feedback">
                             <span v-for="(error, index) in errors.test_case" :key="index">{{ error }}</span>
