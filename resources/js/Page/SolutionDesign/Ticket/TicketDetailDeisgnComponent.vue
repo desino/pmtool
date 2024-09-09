@@ -56,7 +56,7 @@
                                     <h6 class="fw-bold mx-1">{{ $t('ticket_details.task_status') }}</h6>
                                     <span class="badge rounded-3 bg-danger-subtle text-danger">{{
                                         ticketData.status_label
-                                    }}</span>
+                                        }}</span>
                                 </div>
                             </div>
                         </div>
@@ -68,7 +68,7 @@
                                     <h6 class="fw-bold mx-1">{{ $t('ticket_details.functional_owner') }}</h6>
                                     <span class="badge rounded-3 bg-desino text-white">{{
                                         ticketData.functional_owner
-                                    }}</span>
+                                        }}</span>
                                 </div>
                             </div>
                         </div>
@@ -80,7 +80,7 @@
                                     <h6 class="fw-bold mx-1">{{ $t('ticket_details.technical_owner') }}</h6>
                                     <span class="badge rounded-3 bg-info-subtle text-info">{{
                                         ticketData.technical_owner
-                                    }}</span>
+                                        }}</span>
                                 </div>
                             </div>
                         </div>
@@ -92,7 +92,7 @@
                                     <h6 class="fw-bold mx-1">{{ $t('ticket_details.testing_owner') }}</h6>
                                     <span class="badge rounded-3 bg-primary-subtle text-primary">{{
                                         ticketData.quality_owner
-                                    }}</span>
+                                        }}</span>
                                 </div>
                             </div>
                         </div>
@@ -104,7 +104,7 @@
                                     <h6 class="fw-bold mx-1">{{ $t('ticket_details.task_estimation') }}</h6>
                                     <span class="badge rounded-3 bg-success-subtle text-success">{{
                                         ticketData.initial_dev_time
-                                    }} hrs</span>
+                                        }} hrs</span>
                                 </div>
                             </div>
                         </div>
@@ -316,7 +316,7 @@
                                     <div v-if="errors.release_note" class="text-danger mt-2">
                                         <span v-for="(error, index) in errors.release_note" :key="index">{{
                                             error
-                                        }}</span>
+                                            }}</span>
                                     </div>
                                     <button class="btn w-100 bg-desino text-white fw-bold m-2 rounded"
                                         @click="updateReleaseNote">
@@ -374,6 +374,7 @@ import ticketService from "../../../services/TicketService.js";
 import messageService from "../../../services/messageService.js";
 import showToast from "./../../../utils/toasts.js";
 import { mapActions, mapGetters } from 'vuex';
+import eventBus from '../../../eventBus.js';
 
 export default {
     name: 'SolutionDesignComponent',
@@ -668,9 +669,13 @@ export default {
             }
             this.setLoading(false);
         },
+        refreshTicketDetail() {
+            this.fetchTicketData(this.localTicketId);
+        }
     },
     mounted() {
         this.fetchTicketData(this.localTicketId);
+        eventBus.$on('refreshTicketDetail', this.refreshTicketDetail);
     }
 }
 </script>
