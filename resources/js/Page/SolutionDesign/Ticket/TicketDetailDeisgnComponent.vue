@@ -144,12 +144,10 @@
                     </div>
                     <div class="col" v-if="currentAction">
                         <div class="card border-0 h-100">
-                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
-                                <div class="w-100 lh-1">
-                                    <!-- <h6 class="fw-bold mx-1">{{ $t('ticket_details.current_action_status') }}</h6> -->
-                                    <span class="badge bg-warning mb-4" role="button"
-                                        @click="handleCurrentActionChangeStatus()">{{
-                                            currentAction.action_status }}</span>
+                            <div class="card-body p-2 px-2 text-left align-items-center">
+                                <div class=" lh-1 align-items-center">
+                                    <span class="badge bg-warning mt-4" role="button" title="Click here to change status"
+                                        @click="handleCurrentActionChangeStatus()">{{currentAction.action_status }}</span>
                                 </div>
                             </div>
                         </div>
@@ -394,6 +392,7 @@ import {mapActions, mapGetters} from 'vuex';
 import {Modal} from "bootstrap";
 import CreateTestCaseModalComponent from "./../Ticket/TestCase/CreateTestCaseModalComponent.vue";
 import testCaseService from "./../../../services/TestCaseService.js";
+import eventBus from "./../../../eventBus.js";
 
 export default {
     name: 'SolutionDesignComponent',
