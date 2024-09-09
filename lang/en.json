@@ -293,10 +293,10 @@
     "ticket_details.technical_owner": "Technical Owner",
     "ticket_details.testing_owner": "Testing Owner",
     "ticket_details.task_estimation": "Task Estimation",
-    "ticket_details.current_and_next_action_title": "Current and Next Actions",
+    "ticket_details.current_action_title": "Current Actions",
     "ticket_details.current_action_user": "Current Action User",
     "ticket_details.current_action_status": "Current Action Status",
-    "ticket_details.next_action": "Next Action Name",
+    "ticket_details.next_action_title": "Next Actions",
     "ticket_details.next_action_user": "Next Action User",
     "ticket_details.next_action_status": "Next Action Status",
     "ticket_details.task_details": "Task Details",
@@ -426,5 +426,5 @@
     "ticket_detail.confirm_alert.next_action_change_user_title": "Change User",
     "ticket_detail.confirm_alert.next_action_change_user_text": "Are you sure you want to change the next action user?",
     "ticket_detail.confirm_alert.current_action_change_status_title": "Change Status",
-    "ticket_detail.confirm_alert.current_action_change_status_text": "Are you sure you want to change the current action status?"
+    "ticket_detail.confirm_alert.current_action_change_status_text": "Are you sure you want to mark this status as done?"
 }
