@@ -131,6 +131,39 @@ class TicketService
         }
     }
 
+    public static function updateTicketActions($ticket, $actionId, $status)
+    {
+        $ticketActions = $ticket->actions;
+        $nextTicketAction = "";
+        foreach ($ticketActions as $key => $ticketAction) {
+            if ($ticketAction->id == $actionId) {
+                $ticketAction->status = $status;
+                $ticketAction->save();
+                if (isset($ticketActions[$key + 1])) {
+                    $nextTicketAction = $ticketActions[$key + 1];
+                }
+                break;
+            }
+        }
+
+        if ($nextTicketAction) {
+            if ($ticket->auto_wait_for_client_approval) {
+                if (
+                    ($nextTicketAction->action == TicketAction::getActionDetailTicket() || $nextTicketAction->action == TicketAction::getActionClarifyAndEstimate())
+                    && $nextTicketAction->status == TicketAction::getStatusWaitingForDependantAction()
+                ) {
+                    $nextTicketAction->status = TicketAction::getStatusActionable();
+                    $nextTicketAction->save();
+                }
+            } else {
+                if ($nextTicketAction->status == TicketAction::getStatusWaitingForDependantAction()) {
+                    $nextTicketAction->status = TicketAction::getStatusActionable();
+                    $nextTicketAction->save();
+                }
+            }
+        }
+    }
+
     public static function  getTicketActionStatus($index, $ticketAction, $autoWaitForClientApproval)
     {
         if ($autoWaitForClientApproval && $index == 0 && ($ticketAction['action'] == 1 || $ticketAction['action'] == 2)) {

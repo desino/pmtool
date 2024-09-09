@@ -501,9 +501,53 @@ class TicketController extends Controller
         }
         DB::beginTransaction();
         try {
-            TicketAction::where('ticket_id', $ticketId)->where('action', $request->input('action'))->update(['user_id' => $request->input('user_id')]);
+            TicketAction::where('id', $request->input('action_id'))
+                ->where('ticket_id', $ticketId)
+                ->where('action', $request->input('action'))
+                ->update(['user_id' => $request->input('user_id')]);
             $status = true;
             $message = __('messages.ticket.change_action_user_success');
+            $statusCode = 200;
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $statusCode = 500;
+            Log::info($e->getMessage());
+        }
+        return ApiHelper::response($status, $message, '', $statusCode);
+    }
+
+    public function changeActionStatus(Request $request, $initiativeId, $ticketId)
+    {
+        $status = false;
+        $request->merge(['initiative_id' => $initiativeId]);
+        $initiative = InitiativeService::getInitiative($request);
+        if (!$initiative) {
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
+        }
+        if (Auth::id() != $request->input('user_id')) {
+            return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed'), '', 400);
+        }
+        $ticket = Ticket::find($ticketId);
+        if (!$ticket) {
+            return ApiHelper::response($status, __('messages.ticket.ticket_not_exist'), '', 400);
+        }
+
+        if ($request->input('status') == 0) {
+            return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed_du_to_waiting_for_dependant'), '', 400);
+        }
+
+        if ($request->input('status') == 2) {
+            return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed_du_to_done'), '', 400);
+        }
+
+        DB::beginTransaction();
+        try {
+            TicketService::updateTicketActions($ticket, $request->input('action_id'), TicketAction::getStatusDone());
+            TicketService::updateTicketStatus($ticket);
+            $status = true;
+            $message = __('messages.ticket.change_action_status_success');
             $statusCode = 200;
             DB::commit();
         } catch (\Exception $e) {
