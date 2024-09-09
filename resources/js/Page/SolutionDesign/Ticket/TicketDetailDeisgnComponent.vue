@@ -146,8 +146,11 @@
                         <div class="card border-0 h-100">
                             <div class="card-body p-2 px-2 text-left align-items-center">
                                 <div class=" lh-1 align-items-center">
-                                    <span class="badge bg-warning mt-4" role="button" title="Click here to change status"
-                                        @click="handleCurrentActionChangeStatus()">{{currentAction.action_status }}</span>
+                                    <span class="badge bg-warning mt-4"
+                                        :role="user.id == currentAction?.user?.id ? 'button' : ''"
+                                        :title="user.id == currentAction?.user?.id ? $t('ticket_details.current_action_change_status_title') : ''"
+                                        @click="handleCurrentActionChangeStatus()">{{ currentAction.action_status
+                                        }}</span>
                                 </div>
                             </div>
                         </div>
@@ -329,25 +332,22 @@
                             <div class="card-header fw-bold">
                                 <label class="mt-2">Define Test</label>
                                 <div id="createTestCaseModal" aria-hidden="true"
-                                     aria-labelledby="createTestCaseModalLabel" class="modal fade"
-                                     tabindex="-1">
+                                    aria-labelledby="createTestCaseModalLabel" class="modal fade" tabindex="-1">
                                     <CreateTestCaseModalComponent ref="createTestCaseModalComponent"
-                                                  @stored-testcase="updateTestCaseList" :ticket_id="selectedTask"/>
+                                        @stored-testcase="updateTestCaseList" :ticket_id="selectedTask" />
                                 </div>
                                 <button class="float-end btn btn-primary" @click="showTestCaseModal"> Add Test Section
                                 </button>
                             </div>
                             <div v-if="test_cases.length > 0" class="card-body pt-0">
-                                <div
-                                    v-for="(test_case, index) in test_cases"
-                                    :key="index"
-                                    :class="{'py-3': true, 'border-bottom': index !== test_cases.length - 1}"
-                                >
+                                <div v-for="(test_case, index) in test_cases" :key="index"
+                                    :class="{ 'py-3': true, 'border-bottom': index !== test_cases.length - 1 }">
                                     <div class="row">
                                         <div class="col-md-10">
                                             <label class="fw-bold h6"> Test {{ index + 1 }}
                                                 ({{
-                                                    test_case.status !== -1 ? (test_case.status === 1 ? 'success' : 'failed') : 'pending'
+                                                    test_case.status !== -1 ? (test_case.status === 1 ? 'success' :
+                                                        'failed') : 'pending'
                                                 }})</label> <br>
                                             <small class="mt-2 fw-bold">Expected Behaviour</small> <br>
                                             <small>
@@ -357,12 +357,12 @@
                                         <div class="col-md-2 d-flex justify-content-end align-items-center">
                                             <button class="btn btn-success btn-sm">
                                                 <i class="bi-check-lg text-white"
-                                                   @click="handleTestCaseAction(test_case.id,'success')"></i>
+                                                    @click="handleTestCaseAction(test_case.id, 'success')"></i>
                                             </button>
 
                                             <button class="btn btn-danger btn-sm ms-2">
                                                 <i class="bi-x-lg text-white"
-                                                   @click="handleTestCaseAction(test_case.id,'failed')"></i>
+                                                    @click="handleTestCaseAction(test_case.id, 'failed')"></i>
                                             </button>
                                         </div>
 
@@ -388,8 +388,8 @@ import TinyMceEditor from "./../../../components/TinyMceEditor.vue";
 import ticketService from "../../../services/TicketService.js";
 import messageService from "../../../services/messageService.js";
 import showToast from "./../../../utils/toasts.js";
-import {mapActions, mapGetters} from 'vuex';
-import {Modal} from "bootstrap";
+import { mapActions, mapGetters } from 'vuex';
+import { Modal } from "bootstrap";
 import CreateTestCaseModalComponent from "./../Ticket/TestCase/CreateTestCaseModalComponent.vue";
 import testCaseService from "./../../../services/TestCaseService.js";
 import eventBus from "./../../../eventBus.js";
@@ -555,14 +555,13 @@ export default {
         updateTestCaseList(response) {
             this.test_cases = response.content;
         },
-        async handleTestCaseAction(testCaseId,type) {
+        async handleTestCaseAction(testCaseId, type) {
             const data = {
                 ticket_id: this.localTicketId,
                 test_case_id: testCaseId,
                 status: 1
             }
-            if(type === 'failed')
-            {
+            if (type === 'failed') {
                 this.showTestCaseModal(testCaseId);
                 return true;
             }

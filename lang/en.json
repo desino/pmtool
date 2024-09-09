@@ -293,7 +293,7 @@
     "task_details.create_testcase_input_name": "Test Case",
     "task_detail.create_testcase_submit_btn_text": "Create",
     "task_detail.create_testcase_close_btn_text": "Close",
-
+    "ticket_details.current_action_change_status_title": "Click here to change status",
     "ticket_details.task_status": "Task Status",
     "ticket_details.functional_owner": "Functional Owner",
     "ticket_details.technical_owner": "Technical Owner",
