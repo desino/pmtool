@@ -3,29 +3,32 @@
         <form @submit.prevent="updateTestCase">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 id="createTestCaseModalLabel" class="modal-title">{{ $t('task_detail.create_testcase_heading') }}
+                    <h5 id="updateTestCaseModalLabel" class="modal-title">{{ $t('task_detail.update_testcase_heading') }}
                     </h5>
                     <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
                 </div>
                 <div class="modal-body">
                     <GlobalMessage v-if="showMessage" />
+                    <label>Test Case </label>
+                    <p class="text-muted">{{testCase}}</p>
+                    <hr>
                     <div class="mb-3">
-                        <label class="form-label" for="name">{{ $t('task_details.create_testcase_input_name') }} <strong
+                        <label class="form-label" for="name">{{ $t('task_details.update_comments_input_name') }} <strong
                             class="text-danger">*</strong></label>
-                        <textarea id="name" v-model="formData.test_case" :class="{ 'is-invalid': errors.test_case }"
+                        <textarea id="name" v-model="formData.comment" :class="{ 'is-invalid': errors.comment }"
                                   class="form-control" type="text">
                         </textarea>
-                        <div v-if="errors.test_case" class="invalid-feedback">
-                            <span v-for="(error, index) in errors.test_case" :key="index">{{ error }}</span>
+                        <div v-if="errors.comment" class="invalid-feedback">
+                            <span v-for="(error, index) in errors.comment" :key="index">{{ error }}</span>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-desino bg-desino text-light" type="submit">
-                        {{ $t('task_detail.create_testcase_submit_btn_text') }}
+                        {{ $t('task_detail.update_testcase_submit_btn_text') }}
                     </button>
                     <button class="btn btn-secondary" @click="hideModal" data-bs-dismiss="modal"
-                            type="button">{{$t('task_detail.create_testcase_close_btn_text')}}</button>
+                            type="button">{{$t('task_detail.update_testcase_close_btn_text')}}</button>
                 </div>
             </div>
         </form>
@@ -41,7 +44,7 @@ import { mapActions } from "vuex";
 import testCaseService from "../../../../services/TestCaseService.js";
 
 export default {
-    name: 'CreateTestCaseModalComponent',
+    name: 'UpdateTestCaseModalComponent',
     components: {
         GlobalMessage,
     },
@@ -50,9 +53,11 @@ export default {
     },
     data() {
         return {
+            testCase: '',
             ticket_id: this.$props.ticket_id,
+            test_case_id: null,
             formData: {
-                test_case: "",
+                comment: "",
             },
             errors: {},
             showMessage: true,
@@ -60,12 +65,27 @@ export default {
     },
     methods: {
         ...mapActions(['setLoading']),
-        async storeTestCase() {
+        async getTestCaseData(testCaseId)
+        {
+            this.test_case_id = testCaseId;
+            this.clearMessages();
+            try {
+                await this.setLoading(true);
+                const response = await testCaseService.getTestCase(this.ticket_id, testCaseId);
+                this.testCase = response.content.test_case;
+                this.formData.comment = response.content.comment;
+                await this.setLoading(false);
+            } catch (error) {
+                this.handleError(error);
+            }
+        },
+        async updateTestCase() {
             this.clearMessages();
             try {
                 await this.setLoading(true);
                 this.formData.ticket_id = this.ticket_id;
-                const response = await testCaseService.storeTestCase(this.formData);
+                this.formData.test_case_id = this.test_case_id;
+                const response = await testCaseService.updateTestCase(this.formData);
                 await this.setLoading(false);
                 this.$emit('stored-testcase',response);
                 showToast(response.message, 'success');
@@ -76,7 +96,7 @@ export default {
             }
         },
         hideModal() {
-            const modalElement = document.getElementById('createTestCaseModal');
+            const modalElement = document.getElementById('updateTestCaseModal');
             if (modalElement) {
                 const modal = Modal.getInstance(modalElement);
                 if (modal) {
@@ -95,7 +115,7 @@ export default {
         },
         resetForm() {
             this.formData = {
-                test_case: "",
+                comment: "",
             };
             this.errors = {};
         },

@@ -74,10 +74,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::controller(TestCaseController::class)->prefix('ticket/{ticket_id}/test-case')->group(function () {
         Route::post('/store', 'store');
-        Route::post('/update/{text_case_id}', 'update');
+        Route::post('/update/{test_case_id}', 'update');
+        Route::get('/show/{test_case_id}', 'show');
     });
-
-
 
     Route::controller(HeaderController::class)->prefix('header')->group(function () {
         Route::get('/get-initiatives', 'getInitiatives');

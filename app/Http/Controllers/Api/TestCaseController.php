@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\StoreTestCaseRequest;
 use App\Models\TestCase;
 use App\Models\Ticket;
 use Illuminate\Http\JsonResponse;
@@ -20,7 +21,7 @@ class TestCaseController extends Controller
      * @param int $ticket_id
      * @return JsonResponse
      */
-    public function store(Request $request, int $ticket_id): JsonResponse
+    public function store(StoreTestCaseRequest $request, int $ticket_id): JsonResponse
     {
         // Check if the ticket exists
         $ticketData = Ticket::find($ticket_id);
@@ -29,7 +30,7 @@ class TestCaseController extends Controller
         }
 
         try {
-            $insertData = $request->all();
+            $insertData = $request->validated();
             $insertData['owner_id'] = Auth::id();
             $insertData['status'] = -1;
             $insertData['created_by'] = Auth::id();
@@ -46,6 +47,21 @@ class TestCaseController extends Controller
         }
     }
 
+    public function show(int $ticket_id, int $test_case_id): JsonResponse
+    {
+        // Check if the ticket exists
+        $ticketData = Ticket::find($ticket_id);
+        if (!$ticketData) {
+            return ApiHelper::response(false, __('messages.ticket.not_found'), null, 404);
+        }
+
+        $data = $ticketData->testCases()->where('id', $test_case_id)->first();
+        if (!$data) {
+            return ApiHelper::response(false, __('messages.test_case.not_found'), null, 404);
+        }
+        return ApiHelper::response(true, __('messages.test_case.get_success'), $data, 200);
+    }
+
     /**
      * Update an existing TestCase for the given ticket.
      *
@@ -54,7 +70,7 @@ class TestCaseController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function update(int $ticket_id, int $test_case_id, Request $request): JsonResponse
+    public function update(int $ticket_id, int $test_case_id, StoreTestCaseRequest $request): JsonResponse
     {
         // Check if the ticket exists
         $ticketData = Ticket::find($ticket_id);
@@ -63,8 +79,13 @@ class TestCaseController extends Controller
         }
 
         try {
-            $updateData = $request->except(['ticket_id', 'test_case_id']);
+            $updateData = $request->validated();
             $updateData['updated_by'] = Auth::id();
+
+            if(isset($updateData['comment']))
+            {
+                $updateData['status'] = 0;
+            }
 
             DB::beginTransaction();
             $updated = $ticketData->testCases()->where('id', $test_case_id)->update($updateData);
