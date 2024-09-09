@@ -63,6 +63,12 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('update-ticket/{ticket_id}', 'updateTicket');
             Route::post('change-action-user/{ticket_id}', 'changeActionUser');
             Route::post('change-action-status/{ticket_id}', 'changeActionStatus');
+
+            Route::controller(TestCaseController::class)->prefix('{ticket_id}/test-case')->group(function () {
+                Route::post('/store', 'store');
+                Route::post('/update/{test_case_id}', 'update');
+                Route::get('/show/{test_case_id}', 'show');
+            });
         });
 
         Route::controller(ProjectController::class)->prefix('{initiative_id}/project')->group(function () {
@@ -70,12 +76,9 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/change-status', 'changeStatus');
             Route::post('/update', 'update');
         });
-    });
 
-    Route::controller(TestCaseController::class)->prefix('ticket/{ticket_id}/test-case')->group(function () {
-        Route::post('/store', 'store');
-        Route::post('/update/{test_case_id}', 'update');
-        Route::get('/show/{test_case_id}', 'show');
+
+
     });
 
     Route::controller(HeaderController::class)->prefix('header')->group(function () {

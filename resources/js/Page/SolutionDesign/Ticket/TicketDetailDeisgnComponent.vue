@@ -337,12 +337,12 @@
                                 <div id="createTestCaseModal" aria-hidden="true"
                                     aria-labelledby="createTestCaseModalLabel" class="modal fade" tabindex="-1">
                                     <CreateTestCaseModalComponent ref="createTestCaseModalComponent"
-                                        @stored-testcase="updateTestCaseList" :ticket_id="selectedTask" />
+                                        @stored-testcase="updateTestCaseList" :ticket_id="selectedTask" :initiative_id="localInitiativeId" />
                                 </div>
                                 <div id="updateTestCaseModal" aria-hidden="true"
                                     aria-labelledby="updateTestCaseModalLabel" class="modal fade" tabindex="-1">
                                     <UpdateTestCaseModalComponent ref="updateTestCaseModalComponent"
-                                        :ticket_id="selectedTask" @stored-testcase="updateTestCaseList" />
+                                        :ticket_id="selectedTask" :initiative_id="localInitiativeId"  @stored-testcase="updateTestCaseList" />
                                 </div>
 
                                 <button class="float-end btn btn-primary" @click="showTestCaseModal"
@@ -584,6 +584,7 @@ export default {
         },
         async handleTestCaseAction(testCaseId, type) {
             const data = {
+                initiative_id: this.localInitiativeId,
                 ticket_id: this.localTicketId,
                 test_case_id: testCaseId,
                 status: 1
@@ -750,11 +751,11 @@ export default {
             return isTestSectionBut;
         },
         showHideProcessingButton() {
-            let isTestSectionBut = false;
+            let allowProcessTestCase = false;
             if (this.user?.id === this.ticketData.quality_owner_id && this.currentAction.action == 4 && this.currentAction.status == 1) {
-                isTestSectionBut = true;
+                allowProcessTestCase = true;
             }
-            return isTestSectionBut;
+            return allowProcessTestCase;
         },
         resetForm() {
             this.releaseNoteForm = {

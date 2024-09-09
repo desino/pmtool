@@ -49,12 +49,14 @@ export default {
         GlobalMessage,
     },
     props: {
-        ticket_id: Number,
+        ticket_id: String,
+        initiative_id: String,
     },
     data() {
         return {
             testCase: '',
-            ticket_id: this.$props.ticket_id,
+            localTicketId: this.$props.ticket_id,
+            localInitiativeId: this.$props.initiative_id,
             test_case_id: null,
             formData: {
                 comment: "",
@@ -71,7 +73,7 @@ export default {
             this.clearMessages();
             try {
                 await this.setLoading(true);
-                const response = await testCaseService.getTestCase(this.ticket_id, testCaseId);
+                const response = await testCaseService.getTestCase(this.localInitiativeId,this.localTicketId, testCaseId);
                 this.testCase = response.content.test_case;
                 this.formData.comment = response.content.comment;
                 await this.setLoading(false);
@@ -83,8 +85,9 @@ export default {
             this.clearMessages();
             try {
                 await this.setLoading(true);
-                this.formData.ticket_id = this.ticket_id;
+                this.formData.ticket_id = this.localTicketId;
                 this.formData.test_case_id = this.test_case_id;
+                this.formData.initiative_id = this.localInitiativeId;
                 const response = await testCaseService.updateTestCase(this.formData);
                 await this.setLoading(false);
                 this.$emit('stored-testcase',response);

@@ -32,7 +32,6 @@ export default defineComponent({
                 height: 375,
                 width: '100%',
                 menubar: 'format table',
-                language: navigator.language || 'en',
                 contextmenu: 'paste | link image inserttable | cell row column deletetable',
                 extended_valid_elements: 'img[!src|border:0|alt|title|width|height|style]a[name|href|target|title|onclick]',
                 plugins: [
