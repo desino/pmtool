@@ -539,8 +539,7 @@ class TicketController extends Controller
         if ($request->input('action') > 2 && $ticket->auto_wait_for_client_approval) {
             return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed_du_to_waiting_for_client_approval'), '', 400);
         }
-        echo "sdfsdfs";
-        exit;
+
         DB::beginTransaction();
         try {
             TicketService::updateTicketActions($ticket, $request->input('action_id'), TicketAction::getStatusDone());
