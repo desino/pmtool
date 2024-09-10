@@ -13,13 +13,11 @@
                     <p class="text-muted">{{testCase}}</p>
                     <hr>
                     <div class="mb-3">
-                        <label class="form-label" for="name">{{ $t('task_details.update_comments_input_name') }} <strong
+                        <label class="form-label" for="name">{{ $t('task_details.update_observations_input_name') }} <strong
                             class="text-danger">*</strong></label>
-                        <textarea id="name" v-model="formData.comment" :class="{ 'is-invalid': errors.comment }"
-                                  class="form-control" type="text">
-                        </textarea>
-                        <div v-if="errors.comment" class="invalid-feedback">
-                            <span v-for="(error, index) in errors.comment" :key="index">{{ error }}</span>
+                        <TinyMceEditor v-model="formData.observations" :class="{ 'is-invalid': errors.observations }" />
+                        <div v-if="errors.observations" class="invalid-feedback">
+                            <span v-for="(error, index) in errors.observations" :key="index">{{ error }}</span>
                         </div>
                     </div>
                 </div>
@@ -42,10 +40,12 @@ import { Modal } from 'bootstrap';
 import showToast from '../../../../utils/toasts';
 import { mapActions } from "vuex";
 import testCaseService from "../../../../services/TestCaseService.js";
+import TinyMceEditor from "./../../../../components/TinyMceEditor.vue";
 
 export default {
     name: 'UpdateTestCaseModalComponent',
     components: {
+        TinyMceEditor,
         GlobalMessage,
     },
     props: {
@@ -59,7 +59,8 @@ export default {
             localInitiativeId: this.$props.initiative_id,
             test_case_id: null,
             formData: {
-                comment: "",
+                observations: "",
+                status:""
             },
             errors: {},
             showMessage: true,
@@ -67,15 +68,16 @@ export default {
     },
     methods: {
         ...mapActions(['setLoading']),
-        async getTestCaseData(testCaseId)
+        async getTestCaseData(testCaseId,status=false)
         {
             this.test_case_id = testCaseId;
             this.clearMessages();
             try {
                 await this.setLoading(true);
                 const response = await testCaseService.getTestCase(this.localInitiativeId,this.localTicketId, testCaseId);
-                this.testCase = response.content.test_case;
-                this.formData.comment = response.content.comment;
+                this.testCase = response.content.expected_behaviour;
+                this.formData.observations = response.content.observations;
+                this.formData.status = status;
                 await this.setLoading(false);
             } catch (error) {
                 this.handleError(error);
@@ -118,7 +120,7 @@ export default {
         },
         resetForm() {
             this.formData = {
-                comment: "",
+                observations: "",
             };
             this.errors = {};
         },
