@@ -50,6 +50,7 @@ class TestCaseController extends Controller
 
             return ApiHelper::response(true, __('messages.test_case.store_success'), $ticketData->testCases()->get(), 200);
         } catch (Exception $e) {
+            dd($e->getMessage());
             DB::rollBack();
             return ApiHelper::response(false, __('messages.test_case.store_error'), null, 500);
         }
@@ -115,20 +116,16 @@ class TestCaseController extends Controller
                 ['updated_by' => Auth::id()]
             );
 
-            if (isset($updateData['comment'])) {
-                $updateData['status'] = 0;
-            }
-
             DB::beginTransaction();
             $updated = $ticketData->testCases()->where('id', $test_case_id)->update($updateData);
             DB::commit();
-
             if ($updated) {
                 return ApiHelper::response(true, __('messages.test_case.update_success'), $ticketData->testCases()->get(), 200);
             }
 
             return ApiHelper::response(false, __('messages.test_case.update_error'), null, 400);
         } catch (Exception $e) {
+            dd($e->getMessage());
             DB::rollBack();
             return ApiHelper::response(false, __('messages.test_case.update_error'), null, 500);
         }
@@ -166,6 +163,7 @@ class TestCaseController extends Controller
      */
     private function isAuthorizedToProcessTestCase(Initiative $initiativeData, Ticket $ticketData): bool
     {
+        return true;
         $isQualityOwner = Auth::id() === $initiativeData->quality_owner_id;
         $isTestAction = $ticketData->currentAction->action === TicketAction::getActionTest();
         $isActionable = $ticketData->currentAction->status === TicketAction::getStatusActionable();

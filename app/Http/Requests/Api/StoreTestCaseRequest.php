@@ -22,9 +22,9 @@ class StoreTestCaseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'test_case' => 'required_without_all:comment,status|string',
-            'comment' => 'required_without_all:test_case,status|string',
-            'status' => 'required_without_all:test_case,comment|integer',
+            'expected_behaviour' => 'required_without_all:observations,status|string',
+            'observations' => 'required_without_all:expected_behaviour,status|string',
+            'status' => 'nullable',
         ];
 
     }

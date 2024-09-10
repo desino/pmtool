@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('test_cases', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('ticket_id');
-            $table->text('test_case');
+            $table->longText('expected_behaviour');
             $table->bigInteger('owner_id');
             $table->integer('status');
-            $table->text('comment')->nullable();
+            $table->longText('observations')->nullable();
             $table->bigInteger('created_by');
             $table->bigInteger('updated_by')->nullable();
             $table->timestamps();
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('test_case');
+        Schema::dropIfExists('test_cases');
     }
 };

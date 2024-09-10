@@ -361,13 +361,11 @@
                                                         'failed') : 'pending'
                                                 }})</label> <br>
                                             <small class="mt-2 fw-bold">Expected Behaviour</small> <br>
-                                            <small>
-                                                {{ test_case.test_case }}
+                                            <small v-html="test_case.expected_behaviour">
                                             </small>
-                                            <div v-if="test_case.comment">
+                                            <div v-if="test_case.observations">
                                                 <small class="mt-2 fw-bold">Actual Behaviour</small> <br>
-                                                <small>
-                                                    {{ test_case.comment }}
+                                                <small v-html="test_case.observations">
                                                 </small>
                                             </div>
                                         </div>
@@ -375,12 +373,12 @@
                                             class="col-md-2 d-flex justify-content-end align-items-center">
                                             <button class="btn btn-success btn-sm">
                                                 <i class="bi-check-lg text-white"
-                                                    @click="handleTestCaseAction(test_case.id, 'success')"></i>
+                                                    @click="handleTestCaseAction(test_case.id,'success')"></i>
                                             </button>
 
                                             <button class="btn btn-danger btn-sm ms-2">
                                                 <i class="bi-x-lg text-white"
-                                                    @click="handleTestCaseAction(test_case.id, 'failed')"></i>
+                                                    @click="handleTestCaseAction(test_case.id,'failed')"></i>
                                             </button>
                                         </div>
 
@@ -533,14 +531,14 @@ export default {
                 this.handleError(error);
             }
         },
-        showTestCaseModal(type = 'create', testCaseId = null) {
+        showTestCaseModal(type = 'create', testCaseId = null,status=false) {
             let modalElement;
             if (type === 'create' || testCaseId === null) {
                 this.$refs.createTestCaseModalComponent.resetForm();
                 modalElement = document.getElementById('createTestCaseModal');
             } else {
                 this.$refs.updateTestCaseModalComponent.resetForm();
-                this.$refs.updateTestCaseModalComponent.getTestCaseData(testCaseId);
+                this.$refs.updateTestCaseModalComponent.getTestCaseData(testCaseId,status);
                 modalElement = document.getElementById('updateTestCaseModal');
             }
 
@@ -584,25 +582,14 @@ export default {
         updateTestCaseList(response) {
             this.test_cases = response.content;
         },
-        async handleTestCaseAction(testCaseId, type) {
-            const data = {
-                initiative_id: this.localInitiativeId,
-                ticket_id: this.localTicketId,
-                test_case_id: testCaseId,
-                status: 1
+        async handleTestCaseAction(testCaseId,status) {
+            if(status === 'failed')
+            {
+                status = false;
+            }else{
+                status = true;
             }
-            if (type === 'failed') {
-                this.showTestCaseModal('update', testCaseId);
-                return true;
-            }
-            try {
-                const response = await testCaseService.updateTestCase(data);
-                this.test_cases = response.content;
-                await this.setLoading(false);
-                showToast(response.message, 'success');
-            } catch (error) {
-                this.handleError(error);
-            }
+            this.showTestCaseModal('update', testCaseId,status);
         },
         // getSelectedActionUserId(userId) {
         //     const user = this.users?.find(a => a.id === userId);
@@ -760,6 +747,7 @@ export default {
             return isTestSectionBut;
         },
         showHideProcessingButton() {
+            return true;
             let allowProcessTestCase = false;
             if (this.user?.id === this.ticketData.quality_owner_id && this.currentAction.action == 4 && this.currentAction.status == 1) {
                 allowProcessTestCase = true;

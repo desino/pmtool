@@ -12,11 +12,9 @@
                     <div class="mb-3">
                         <label class="form-label" for="name">{{ $t('task_details.create_testcase_input_name') }} <strong
                             class="text-danger">*</strong></label>
-                        <textarea id="name" v-model="formData.test_case" :class="{ 'is-invalid': errors.test_case }"
-                               class="form-control" type="text">
-                        </textarea>
-                        <div v-if="errors.test_case" class="invalid-feedback">
-                            <span v-for="(error, index) in errors.test_case" :key="index">{{ error }}</span>
+                        <TinyMceEditor v-model="formData.expected_behaviour" :class="{ 'is-invalid': errors.expected_behaviour }" />
+                        <div v-if="errors.expected_behaviour" class="invalid-feedback">
+                            <span v-for="(error, index) in errors.expected_behaviour" :key="index">{{ error }}</span>
                         </div>
                     </div>
                 </div>
@@ -39,10 +37,12 @@ import { Modal } from 'bootstrap';
 import showToast from '../../../../utils/toasts';
 import { mapActions } from "vuex";
 import testCaseService from "../../../../services/TestCaseService.js";
+import TinyMceEditor from "./../../../../components/TinyMceEditor.vue";
 
 export default {
     name: 'CreateTestCaseModalComponent',
     components: {
+        TinyMceEditor,
         GlobalMessage,
     },
     props: {
@@ -54,7 +54,7 @@ export default {
             localTicketId: this.$props.ticket_id,
             localInitiativeId: this.$props.initiative_id,
             formData: {
-                test_case: "",
+                expected_behaviour: "",
             },
             errors: {},
             showMessage: true,
@@ -98,7 +98,7 @@ export default {
         },
         resetForm() {
             this.formData = {
-                test_case: "",
+                expected_behaviour: "",
             };
             this.errors = {};
         },
