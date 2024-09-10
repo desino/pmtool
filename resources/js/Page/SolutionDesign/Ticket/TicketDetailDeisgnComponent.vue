@@ -56,7 +56,7 @@
                                     <h6 class="fw-bold mx-1">{{ $t('ticket_details.task_status') }}</h6>
                                     <span class="badge rounded-3 bg-danger-subtle text-danger">{{
                                         ticketData.status_label
-                                    }}</span>
+                                        }}</span>
                                 </div>
                             </div>
                         </div>
@@ -68,7 +68,7 @@
                                     <h6 class="fw-bold mx-1">{{ $t('ticket_details.functional_owner') }}</h6>
                                     <span class="badge rounded-3 bg-desino text-white">{{
                                         ticketData.functional_owner
-                                    }}</span>
+                                        }}</span>
                                 </div>
                             </div>
                         </div>
@@ -80,7 +80,7 @@
                                     <h6 class="fw-bold mx-1">{{ $t('ticket_details.technical_owner') }}</h6>
                                     <span class="badge rounded-3 bg-info-subtle text-info">{{
                                         ticketData.technical_owner
-                                    }}</span>
+                                        }}</span>
                                 </div>
                             </div>
                         </div>
@@ -92,7 +92,7 @@
                                     <h6 class="fw-bold mx-1">{{ $t('ticket_details.testing_owner') }}</h6>
                                     <span class="badge rounded-3 bg-primary-subtle text-primary">{{
                                         ticketData.quality_owner
-                                    }}</span>
+                                        }}</span>
                                 </div>
                             </div>
                         </div>
@@ -104,7 +104,7 @@
                                     <h6 class="fw-bold mx-1">{{ $t('ticket_details.task_estimation') }}</h6>
                                     <span class="badge rounded-3 bg-success-subtle text-success">{{
                                         ticketData.initial_dev_time
-                                    }} hrs</span>
+                                        }} hrs</span>
                                 </div>
                             </div>
                         </div>
@@ -121,7 +121,7 @@
                                     </h6>
                                     <span class="badge rounded-3 bg-success-subtle text-success mb-3">{{
                                         currentAction.action_name
-                                    }}</span>
+                                        }}</span>
                                 </div>
                             </div>
                         </div>
@@ -147,9 +147,8 @@
                         <div class="card border-0 h-100">
                             <div class="card-body p-2 px-2 text-left align-items-center">
                                 <div class=" lh-1 align-items-center">
-                                    <span class="badge bg-warning mt-4"
-                                        :role="user.id == currentAction?.user?.id ? 'button' : ''"
-                                        :title="user.id == currentAction?.user?.id ? $t('ticket_details.current_action_change_status_title') : ''"
+                                    <span class="badge bg-warning mt-4" :role="actionAllowOrNot() ? 'button' : ''"
+                                        :title="actionAllowOrNot() ? $t('ticket_details.current_action_change_status_title') : ''"
                                         @click="handleCurrentActionChangeStatus()">{{ currentAction.action_status
                                         }}</span>
                                 </div>
@@ -164,7 +163,7 @@
                                     <h6 class="fw-bold mx-1">{{ $t('ticket_details.next_action_title') }}</h6>
                                     <span class="badge rounded-3 bg-primary-subtle text-primary">{{
                                         nextAction.action_name
-                                    }}</span>
+                                        }}</span>
                                 </div>
                             </div>
                         </div>
@@ -317,7 +316,7 @@
                                     <div v-if="errors.release_note" class="text-danger mt-2">
                                         <span v-for="(error, index) in errors.release_note" :key="index">{{
                                             error
-                                        }}</span>
+                                            }}</span>
                                     </div>
                                     <button class="btn w-100 bg-desino text-white fw-bold m-2 rounded"
                                         @click="updateReleaseNote">
@@ -337,12 +336,14 @@
                                 <div id="createTestCaseModal" aria-hidden="true"
                                     aria-labelledby="createTestCaseModalLabel" class="modal fade" tabindex="-1">
                                     <CreateTestCaseModalComponent ref="createTestCaseModalComponent"
-                                        @stored-testcase="updateTestCaseList" :ticket_id="selectedTask" :initiative_id="localInitiativeId" />
+                                        @stored-testcase="updateTestCaseList" :ticket_id="selectedTask"
+                                        :initiative_id="localInitiativeId" />
                                 </div>
                                 <div id="updateTestCaseModal" aria-hidden="true"
                                     aria-labelledby="updateTestCaseModalLabel" class="modal fade" tabindex="-1">
                                     <UpdateTestCaseModalComponent ref="updateTestCaseModalComponent"
-                                        :ticket_id="selectedTask" :initiative_id="localInitiativeId"  @stored-testcase="updateTestCaseList" />
+                                        :ticket_id="selectedTask" :initiative_id="localInitiativeId"
+                                        @stored-testcase="updateTestCaseList" />
                                 </div>
 
                                 <button class="float-end btn btn-primary" @click="showTestCaseModal"
@@ -562,6 +563,7 @@ export default {
             this.ticketData.technical_owner = content.initiative?.technical_owner?.name;
             this.ticketData.technical_owner_id = content.initiative?.technical_owner?.id;
             this.ticketData.asana_task_link = content.asana_task_link;
+            this.ticketData.auto_wait_for_client_approval = content.auto_wait_for_client_approval == 1 ? true : false;
             this.currentAction = content.current_action;
             this.currentActionFormData.user_id = content.current_action?.user_id;
             this.currentActionFormData.status = content.current_action?.status;
@@ -674,13 +676,20 @@ export default {
                 this.nextActionFormData.user_id = previousUserId;
             });
         },
+        actionAllowOrNot() {
+            if (this.user.id != this.currentAction?.user?.id || (this.ticketData.auto_wait_for_client_approval && this.currentAction?.action > 2)) {
+                return false;
+            }
+            return true;
+        },
         handleCurrentActionChangeStatus() {
-            if (this.user.id != this.currentAction?.user?.id) {
+            const actionAllowOrNot = this.actionAllowOrNot();
+            if (!actionAllowOrNot) {
                 return false;
             }
             this.$swal({
-                title: this.$t('ticket_detail.confirm_alert.current_action_change_status_title'),
-                text: this.$t('ticket_detail.confirm_alert.current_action_change_status_text'),
+                // title: this.$t('ticket_detail.confirm_alert.current_action_change_status_title'),
+                title: this.$t('ticket_detail.confirm_alert.current_action_change_status_text'),
                 showCancelButton: true,
                 confirmButtonColor: '#1e6abf',
                 cancelButtonColor: '#d33',
@@ -742,10 +751,10 @@ export default {
             if (this.user?.id === this.ticketData.functional_owner_id || this.user?.id === this.ticketData.technical_owner_id) {
                 isTestSectionBut = true;
             }
-            if (this.user?.id === this.ticketData.quality_owner_id || (this.currentAction.action == 4 && this.user?.id === this.currentAction?.user?.id && this.currentAction.status == 1)) {
+            if (this.user?.id === this.ticketData.quality_owner_id || (this.currentAction?.action == 4 && this.user?.id === this.currentAction?.user?.id && this.currentAction.status == 1)) {
                 isTestSectionBut = true;
             }
-            if ((this.currentAction.action == 3 && this.user?.id === this.currentAction?.user?.id && this.currentAction.status == 1)) {
+            if ((this.currentAction?.action == 3 && this.user?.id === this.currentAction?.user?.id && this.currentAction.status == 1)) {
                 isTestSectionBut = true;
             }
             return isTestSectionBut;

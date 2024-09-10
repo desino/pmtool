@@ -204,6 +204,7 @@
     "messages.ticket.change_action_status_success": "Action status changed successfully.",
     "messages.ticket.change_action_status_not_allowed_du_to_waiting_for_dependant": "This task is waiting for dependents, so you can't change the waiting for dependent action.",
     "messages.ticket.change_action_status_not_allowed_du_to_done": "You are not allowed to change the Done action because this task is a done.",
+    "messages.ticket.change_action_status_not_allowed_du_to_waiting_for_client_approval": "This task is waiting for client approval, so you can't change the waiting for client approval action.",
     "messages.project.get_list_success": "Projects fetched successfully.",
     "messages.project.not_found": "Project not found.",
     "messages.project.update_status_success": "Project status updated successfully.",
@@ -437,5 +438,5 @@
     "ticket_detail.confirm_alert.next_action_change_user_title": "Change User",
     "ticket_detail.confirm_alert.next_action_change_user_text": "Are you sure you want to change the next action user?",
     "ticket_detail.confirm_alert.current_action_change_status_title": "Change Status",
-    "ticket_detail.confirm_alert.current_action_change_status_text": "Are you sure you want to mark this status as done?"
+    "ticket_detail.confirm_alert.current_action_change_status_text": "Are you sure you want to mark this action as done?"
 }

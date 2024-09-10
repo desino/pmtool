@@ -54,12 +54,6 @@ class TicketController extends Controller
 
     public function store(TicketRequest $request)
     {
-        // $ticket = Ticket::find(2);
-        // TicketService::updateTicketStatus($ticket);
-        // print('<pre>');
-        // print_r("devendra");
-        // print('</pre>');
-        // exit;
         $validateData = $request->validated();
         $status = false;
         $retData = [
@@ -542,6 +536,11 @@ class TicketController extends Controller
             return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed_du_to_done'), '', 400);
         }
 
+        if ($request->input('action') > 2 && $ticket->auto_wait_for_client_approval) {
+            return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed_du_to_waiting_for_client_approval'), '', 400);
+        }
+        echo "sdfsdfs";
+        exit;
         DB::beginTransaction();
         try {
             TicketService::updateTicketActions($ticket, $request->input('action_id'), TicketAction::getStatusDone());

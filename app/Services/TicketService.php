@@ -127,7 +127,10 @@ class TicketService
             $insertedOrUpdateIds[] = $ticketAction->id;
         }
         if (!empty($insertedOrUpdateIds)) {
-            TicketAction::whereNotIn('id', $insertedOrUpdateIds)->delete();
+            TicketAction::whereNotIn('id', $insertedOrUpdateIds)
+                ->where('ticket_id', $ticketId)
+                // ->where('action', $ticketAction['action'])
+                ->delete();
         }
     }
 
@@ -147,19 +150,24 @@ class TicketService
         }
 
         if ($nextTicketAction) {
-            if ($ticket->auto_wait_for_client_approval) {
-                if (
-                    ($nextTicketAction->action == TicketAction::getActionDetailTicket() || $nextTicketAction->action == TicketAction::getActionClarifyAndEstimate())
-                    && $nextTicketAction->status == TicketAction::getStatusWaitingForDependantAction()
-                ) {
-                    $nextTicketAction->status = TicketAction::getStatusActionable();
-                    $nextTicketAction->save();
-                }
-            } else {
-                if ($nextTicketAction->status == TicketAction::getStatusWaitingForDependantAction()) {
-                    $nextTicketAction->status = TicketAction::getStatusActionable();
-                    $nextTicketAction->save();
-                }
+            // if ($ticket->auto_wait_for_client_approval) {
+            //     if (
+            //         ($nextTicketAction->action == TicketAction::getActionDetailTicket() || $nextTicketAction->action == TicketAction::getActionClarifyAndEstimate())
+            //         && $nextTicketAction->status == TicketAction::getStatusWaitingForDependantAction()
+            //     ) {
+            //         $nextTicketAction->status = TicketAction::getStatusActionable();
+            //         $nextTicketAction->save();
+            //     }
+            // } else {
+            //     if ($nextTicketAction->status == TicketAction::getStatusWaitingForDependantAction()) {
+            //         $nextTicketAction->status = TicketAction::getStatusActionable();
+            //         $nextTicketAction->save();
+            //     }
+            // }
+
+            if ($nextTicketAction->status == TicketAction::getStatusWaitingForDependantAction()) {
+                $nextTicketAction->status = TicketAction::getStatusActionable();
+                $nextTicketAction->save();
             }
         }
     }
