@@ -56,7 +56,7 @@
                                     <h6 class="fw-bold mx-1">{{ $t('ticket_details.task_status') }}</h6>
                                     <span class="badge rounded-3 bg-danger-subtle text-danger">{{
                                         ticketData.status_label
-                                        }}</span>
+                                    }}</span>
                                 </div>
                             </div>
                         </div>
@@ -68,7 +68,7 @@
                                     <h6 class="fw-bold mx-1">{{ $t('ticket_details.functional_owner') }}</h6>
                                     <span class="badge rounded-3 bg-desino text-white">{{
                                         ticketData.functional_owner
-                                        }}</span>
+                                    }}</span>
                                 </div>
                             </div>
                         </div>
@@ -80,7 +80,7 @@
                                     <h6 class="fw-bold mx-1">{{ $t('ticket_details.technical_owner') }}</h6>
                                     <span class="badge rounded-3 bg-info-subtle text-info">{{
                                         ticketData.technical_owner
-                                        }}</span>
+                                    }}</span>
                                 </div>
                             </div>
                         </div>
@@ -92,7 +92,7 @@
                                     <h6 class="fw-bold mx-1">{{ $t('ticket_details.testing_owner') }}</h6>
                                     <span class="badge rounded-3 bg-primary-subtle text-primary">{{
                                         ticketData.quality_owner
-                                        }}</span>
+                                    }}</span>
                                 </div>
                             </div>
                         </div>
@@ -104,7 +104,7 @@
                                     <h6 class="fw-bold mx-1">{{ $t('ticket_details.task_estimation') }}</h6>
                                     <span class="badge rounded-3 bg-success-subtle text-success">{{
                                         ticketData.initial_dev_time
-                                        }} hrs</span>
+                                    }} hrs</span>
                                 </div>
                             </div>
                         </div>
@@ -113,7 +113,7 @@
             </div>
             <div v-if="currentAction" class="col-md-6">
                 <div class="row row-cols-xl-3 row-cols-lg-3 row-cols-md-1 row-cols-1 g-2 g-lg-3">
-                    <div class="col">
+                    <div v-if="currentAction" class="col">
                         <div class="card border-0 h-100">
                             <div class="card-body p-2 px-2 text-left d-flex align-items-center">
                                 <div class="w-100 lh-1">
@@ -121,7 +121,7 @@
                                     </h6>
                                     <span class="badge rounded-3 bg-success-subtle text-success mb-3">{{
                                         currentAction.action_name
-                                        }}</span>
+                                    }}</span>
                                 </div>
                             </div>
                         </div>
@@ -146,11 +146,16 @@
                     <div v-if="currentAction" class="col">
                         <div class="card border-0 h-100">
                             <div class="card-body p-2 px-2 text-left align-items-center">
-                                <div class=" lh-1 align-items-center">
-                                    <span class="badge bg-warning mt-4" :role="actionAllowOrNot() ? 'button' : ''"
-                                        :title="actionAllowOrNot() ? $t('ticket_details.current_action_change_status_title') : ''"
+                                <div class="lh-1 align-items-center">
+                                    <span class="badge bg-warning mt-4"
+                                        :role="currentActionAllowOrNot() ? 'button' : ''"
+                                        :title="currentActionAllowOrNot() ? $t('ticket_details.current_action_change_status_title') : ''"
                                         @click="handleCurrentActionChangeStatus()">{{ currentAction.action_status
                                         }}</span>
+                                    <button v-if="previousAction && previousActionAllowOrNot()"
+                                        class="btn btn-sm bg-desino text-light mx-2"
+                                        @click="handlePreviousActionStatus()">{{
+                                            $t('ticket_action.move_to_previous_action') }}</button>
                                 </div>
                             </div>
                         </div>
@@ -163,7 +168,7 @@
                                     <h6 class="fw-bold mx-1">{{ $t('ticket_details.next_action_title') }}</h6>
                                     <span class="badge rounded-3 bg-primary-subtle text-primary">{{
                                         nextAction.action_name
-                                        }}</span>
+                                    }}</span>
                                 </div>
                             </div>
                         </div>
@@ -316,7 +321,7 @@
                                     <div v-if="errors.release_note" class="text-danger mt-2">
                                         <span v-for="(error, index) in errors.release_note" :key="index">{{
                                             error
-                                            }}</span>
+                                        }}</span>
                                     </div>
                                     <button class="btn w-100 bg-desino text-white fw-bold m-2 rounded"
                                         @click="updateReleaseNote">
@@ -373,12 +378,12 @@
                                             class="col-md-2 d-flex justify-content-end align-items-center">
                                             <button class="btn btn-success btn-sm">
                                                 <i class="bi-check-lg text-white"
-                                                    @click="handleTestCaseAction(test_case.id,'success')"></i>
+                                                    @click="handleTestCaseAction(test_case.id, 'success')"></i>
                                             </button>
 
                                             <button class="btn btn-danger btn-sm ms-2">
                                                 <i class="bi-x-lg text-white"
-                                                    @click="handleTestCaseAction(test_case.id,'failed')"></i>
+                                                    @click="handleTestCaseAction(test_case.id, 'failed')"></i>
                                             </button>
                                         </div>
 
@@ -453,8 +458,15 @@ export default {
                 action: '',
                 status: '',
             },
+            previousActionFormData: {
+                ticket_id: '',
+                user_id: '',
+                action: '',
+                status: '',
+            },
             currentAction: '',
             nextAction: '',
+            previousAction: '',
             users: [],
             actionStatus: [],
             releaseNoteForm: {
@@ -492,7 +504,7 @@ export default {
     methods: {
         ...mapActions(['setLoading', 'setServerError']),
         async fetchTicketData(id) {
-            this.setServerError({ message: 'dsakdnk' });
+            // this.setServerError({ message: 'dsakdnk' });
             try {
                 this.setLoading(true);
                 let data = {
@@ -531,14 +543,14 @@ export default {
                 this.handleError(error);
             }
         },
-        showTestCaseModal(type = 'create', testCaseId = null,status=false) {
+        showTestCaseModal(type = 'create', testCaseId = null, status = false) {
             let modalElement;
             if (type === 'create' || testCaseId === null) {
                 this.$refs.createTestCaseModalComponent.resetForm();
                 modalElement = document.getElementById('createTestCaseModal');
             } else {
                 this.$refs.updateTestCaseModalComponent.resetForm();
-                this.$refs.updateTestCaseModalComponent.getTestCaseData(testCaseId,status);
+                this.$refs.updateTestCaseModalComponent.getTestCaseData(testCaseId, status);
                 modalElement = document.getElementById('updateTestCaseModal');
             }
 
@@ -568,6 +580,9 @@ export default {
             this.nextAction = content.next_action;
             this.nextActionFormData.user_id = content.next_action?.user_id;
             this.nextActionFormData.status = content.next_action?.status;
+            this.previousAction = content.previous_action;
+            this.previousActionFormData.user_id = content?.previous_action?.user_id;
+            this.previousActionFormData.status = content.previous_action?.status;
             this.releaseNoteForm.release_note = content.release_note;
             this.test_cases = content.test_cases;
         },
@@ -582,23 +597,14 @@ export default {
         updateTestCaseList(response) {
             this.test_cases = response.content;
         },
-        async handleTestCaseAction(testCaseId,status) {
-            if(status === 'failed')
-            {
+        async handleTestCaseAction(testCaseId, status) {
+            if (status === 'failed') {
                 status = false;
-            }else{
+            } else {
                 status = true;
             }
-            this.showTestCaseModal('update', testCaseId,status);
+            this.showTestCaseModal('update', testCaseId, status);
         },
-        // getSelectedActionUserId(userId) {
-        //     const user = this.users?.find(a => a.id === userId);
-        //     return user ? user.id : "";
-        // },
-        // getSelectedActionStatus(statusId) {
-        //     const actionStatus = this.actionStatus?.find(a => a.id === statusId);
-        //     return actionStatus ? actionStatus.id : "";
-        // },
         handleCurrentActionChangeUser(userId) {
             const previousUserId = this.currentAction?.user?.id;
             this.$swal({
@@ -663,15 +669,15 @@ export default {
                 this.nextActionFormData.user_id = previousUserId;
             });
         },
-        actionAllowOrNot() {
+        currentActionAllowOrNot() {
             if (this.user.id != this.currentAction?.user?.id || (this.ticketData.auto_wait_for_client_approval && this.currentAction?.action > 2)) {
                 return false;
             }
             return true;
         },
         handleCurrentActionChangeStatus() {
-            const actionAllowOrNot = this.actionAllowOrNot();
-            if (!actionAllowOrNot) {
+            const currentActionAllowOrNot = this.currentActionAllowOrNot();
+            if (!currentActionAllowOrNot) {
                 return false;
             }
             this.$swal({
@@ -701,6 +707,18 @@ export default {
                 }
             }).catch(() => {
             });
+        },
+        previousActionAllowOrNot() {
+            if (this.user.id == this.ticketData.functional_owner_id || this.user.id == this.currentAction?.user?.id) {
+                return true;
+            }
+            return false;
+        },
+        handlePreviousActionStatus() {
+            const previousActionAllowOrNot = this.previousActionAllowOrNot();
+            if (!previousActionAllowOrNot) {
+                return false;
+            }
         },
         async changeActionUser(passData) {
             try {

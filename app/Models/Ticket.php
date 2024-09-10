@@ -172,4 +172,12 @@ class Ticket extends Model
             ->where('status', '!=', TicketAction::getStatusDone())
             ->orderBy('action')->skip(1)->take(1);
     }
+
+    public function previousAction()
+    {
+        return $this->hasOne(TicketAction::class)
+            ->with('user')
+            ->where('status', '>', TicketAction::getStatusActionable())
+            ->orderBy('action', 'desc')->latest();
+    }
 }

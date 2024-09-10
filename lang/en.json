@@ -316,6 +316,7 @@
     "ticket_details.client_release_notes": "Release Notes For Client",
     "ticket_details.client_release_notes_description": "Describe & Document the change done for the client. Use print-screen so that\n                                        the client has clarity on how the functionality has changed",
     "ticket_details.update": "Update",
+    "ticket_action.move_to_previous_action": "Move to Previous Action",
     "ticket_action.validate": "Validate",
     "create_ticket_modal_select_action_user_placeholder": "Select Action User",
     "initiative.status.opportunity": "Opportunity",
