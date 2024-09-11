@@ -1,5 +1,5 @@
 <template>
-    <DeploymentCentreComponent></DeploymentCentreComponent>
+    <DeploymentCentreComponent />
 </template>
 
 <script>
@@ -13,9 +13,7 @@ export default {
         DeploymentCentreComponent
     },
     methods: {
-        logout() {
-            AuthService.logout();
-        }
+
     },
     computed: {
         ...mapGetters(['user'])

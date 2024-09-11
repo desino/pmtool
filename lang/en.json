@@ -447,5 +447,5 @@
     "home.deployment_center.test_deployment.title": "Test Deployment",
     "home.deployment_center.test_deployment.tickets.text": "tickets",
     "home.deployment_center.test_deployment.ticket_modal.title": "Test Deployment Tickets",
-    "home.deployment_center.test_deployment.ticket_modal.submit_but.text": "Pushed to TEST(/ACC/PRD)"
+    "home.deployment_center.test_deployment.ticket_modal.submit_but.text": "Deployed at TEST"
 }

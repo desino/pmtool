@@ -63,8 +63,7 @@
         </div>
         <div id="testDeploymentTicketsModal" aria-hidden="true" aria-labelledby="testDeploymentTicketsModalLabel"
             class="modal fade" tabindex="-1">
-            <TestDeploymentTicketsModalComponent ref="testDeploymentTicketsModalComponent"
-                @pageUpdated="getDeploymentCenterData" />
+            <TestDeploymentTicketsModalComponent ref="testDeploymentTicketsModalComponent" />
         </div>
     </div>
 </template>
@@ -131,5 +130,8 @@ export default {
         this.clearMessages();
         this.getDeploymentCenterData();
     },
+    beforeUnmount() {
+        this.showMessage = false;
+    }
 }
 </script>
