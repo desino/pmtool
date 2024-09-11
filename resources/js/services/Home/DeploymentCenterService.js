@@ -8,7 +8,7 @@ import { APP_VARIABLES } from "../../constants.js";
 const defaultPath = `${APP_VARIABLES.DEFAULT_API_PATH}/deployment-center`;
 
 const endpoints = {
-    index: `${defaultPath}/`,
+    index: `${defaultPath}`,
     getTestDeploymentTicketsModalData: `${defaultPath}/get-test-deployment-tickets-modal-data/:initiative_id`,
 }
 
