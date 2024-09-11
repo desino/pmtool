@@ -440,5 +440,12 @@
     "ticket_detail.confirm_alert.next_action_change_user_text": "Are you sure you want to change the next action user?",
     "ticket_detail.confirm_alert.current_action_change_status_title": "Change Status",
     "ticket_detail.confirm_alert.current_action_change_status_text": "Are you sure you want to mark this action as done?",
-    "ticket_detail.confirm_alert.current_previous_action_status_text": "Are you sure you want to mark this action as actionable?"
+    "ticket_detail.confirm_alert.current_previous_action_status_text": "Are you sure you want to mark this action as actionable?",
+    "home.deployment_center.title": "deployment Center",
+    "home.deployment_center.production_deployment.title": "Production Deployment",
+    "home.deployment_center.acceptance_deployment.title": "Acceptance Deployment",
+    "home.deployment_center.test_deployment.title": "Test Deployment",
+    "home.deployment_center.test_deployment.tickets.text": "tickets",
+    "home.deployment_center.test_deployment.ticket_modal.title": "Test Deployment Tickets",
+    "home.deployment_center.test_deployment.ticket_modal.submit_but.text": "Pushed to TEST(/ACC/PRD)"
 }

@@ -180,4 +180,9 @@ class Ticket extends Model
             ->where('status', '>', TicketAction::getStatusActionable())
             ->orderBy('action', 'desc')->latest();
     }
+
+    public function scopeReadyForTestStatus($query)
+    {
+        return $query->where('status', Self::getStatusReadyForTest());
+    }
 }

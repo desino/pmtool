@@ -40,6 +40,11 @@ class Initiative extends Model
         return $this->hasOne(Project::class);
     }
 
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
+
     public static function statuses()
     {
         return [
@@ -80,7 +85,8 @@ class Initiative extends Model
         return $this->belongsTo(User::class, 'quality_owner_id');
     }
 
-    public function technicalOwner(){
+    public function technicalOwner()
+    {
         return $this->belongsTo(User::class, 'technical_owner_id');
     }
 

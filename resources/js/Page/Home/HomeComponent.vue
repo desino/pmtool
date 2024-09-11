@@ -1,17 +1,17 @@
 <template>
-    <div class="d-flex">
-        <div class="m-auto text-center">
-            <h1 v-if="user" class="mb-4"><span class="text-desino">{{ user?.name }}</span> is logged in! </h1>
-            <button class="btn btn-danger btn-block" @click="logout">{{ $t('logout_but_text') }}</button>
-        </div>
-    </div>
+    <DeploymentCentreComponent></DeploymentCentreComponent>
 </template>
 
 <script>
 import AuthService from '../../services/AuthService.js';
 import { mapState, mapGetters } from 'vuex';
+import DeploymentCentreComponent from './DeploymentCenter/DeploymentCentreComponent.vue';
 
 export default {
+    name: 'HomeComponent',
+    components: {
+        DeploymentCentreComponent
+    },
     methods: {
         logout() {
             AuthService.logout();

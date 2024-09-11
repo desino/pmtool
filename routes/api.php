@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\SocialiteController;
 use App\Http\Controllers\Api\ClientController;
+use App\Http\Controllers\Api\DeploymentCenterController;
 use App\Http\Controllers\Api\HeaderController;
 use App\Http\Controllers\Api\InitiativeController;
 use App\Http\Controllers\Api\OpportunityController;
@@ -17,6 +18,11 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->group(function () {
     Route::controller(AuthController::class)->group(function () {
         Route::get('/user', 'user');
+    });
+
+    Route::controller(DeploymentCenterController::class)->prefix('deployment-center')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/get-test-deployment-tickets-modal-data/{initiative_id}', 'getTestDeploymentTicketsModalData');
     });
 
     Route::controller(ClientController::class)->prefix('client')->group(function () {
