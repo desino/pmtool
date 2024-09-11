@@ -21,6 +21,7 @@ const endpoints = {
     updateTicket: `${defaultPath}/update-ticket/:ticket_id`,
     changeActionUser: `${defaultPath}/change-action-user/:ticket_id`,
     changeActionStatus: `${defaultPath}/change-action-status/:ticket_id`,
+    changePreviousActionStatus: `${defaultPath}/change-previous-action-status/:ticket_id`,
 }
 
 const SolutionDesignService = {
@@ -136,6 +137,15 @@ const SolutionDesignService = {
     async changeActionStatus(data) {
         try {
             const endpoint = endpoints.changeActionStatus.replace(':initiative_id', data.initiative_id).replace(':ticket_id', data.ticket_id);
+            const response = await axiosRequest.post(endpoint, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async changePreviousActionStatus(data) {
+        try {
+            const endpoint = endpoints.changePreviousActionStatus.replace(':initiative_id', data.initiative_id).replace(':ticket_id', data.ticket_id);
             const response = await axiosRequest.post(endpoint, data);
             return response.data;
         } catch (error) {

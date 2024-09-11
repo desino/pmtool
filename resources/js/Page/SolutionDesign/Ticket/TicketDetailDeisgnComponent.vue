@@ -56,7 +56,7 @@
                                     <h6 class="fw-bold mx-1">{{ $t('ticket_details.task_status') }}</h6>
                                     <span class="badge rounded-3 bg-danger-subtle text-danger">{{
                                         ticketData.status_label
-                                    }}</span>
+                                        }}</span>
                                 </div>
                             </div>
                         </div>
@@ -68,7 +68,7 @@
                                     <h6 class="fw-bold mx-1">{{ $t('ticket_details.functional_owner') }}</h6>
                                     <span class="badge rounded-3 bg-desino text-white">{{
                                         ticketData.functional_owner
-                                    }}</span>
+                                        }}</span>
                                 </div>
                             </div>
                         </div>
@@ -80,7 +80,7 @@
                                     <h6 class="fw-bold mx-1">{{ $t('ticket_details.technical_owner') }}</h6>
                                     <span class="badge rounded-3 bg-info-subtle text-info">{{
                                         ticketData.technical_owner
-                                    }}</span>
+                                        }}</span>
                                 </div>
                             </div>
                         </div>
@@ -92,7 +92,7 @@
                                     <h6 class="fw-bold mx-1">{{ $t('ticket_details.testing_owner') }}</h6>
                                     <span class="badge rounded-3 bg-primary-subtle text-primary">{{
                                         ticketData.quality_owner
-                                    }}</span>
+                                        }}</span>
                                 </div>
                             </div>
                         </div>
@@ -104,7 +104,7 @@
                                     <h6 class="fw-bold mx-1">{{ $t('ticket_details.task_estimation') }}</h6>
                                     <span class="badge rounded-3 bg-success-subtle text-success">{{
                                         ticketData.initial_dev_time
-                                    }} hrs</span>
+                                        }} hrs</span>
                                 </div>
                             </div>
                         </div>
@@ -121,7 +121,7 @@
                                     </h6>
                                     <span class="badge rounded-3 bg-success-subtle text-success mb-3">{{
                                         currentAction.action_name
-                                    }}</span>
+                                        }}</span>
                                 </div>
                             </div>
                         </div>
@@ -154,8 +154,10 @@
                                         }}</span>
                                     <button v-if="previousAction && previousActionAllowOrNot()"
                                         class="btn btn-sm bg-desino text-light mx-2"
-                                        @click="handlePreviousActionStatus()">{{
-                                            $t('ticket_action.move_to_previous_action') }}</button>
+                                        @click="handlePreviousActionStatus()"
+                                        :title="$t('ticket_action.move_to_previous_action')"><i
+                                            class="bi bi-arrow-counterclockwise"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -168,7 +170,7 @@
                                     <h6 class="fw-bold mx-1">{{ $t('ticket_details.next_action_title') }}</h6>
                                     <span class="badge rounded-3 bg-primary-subtle text-primary">{{
                                         nextAction.action_name
-                                    }}</span>
+                                        }}</span>
                                 </div>
                             </div>
                         </div>
@@ -321,7 +323,7 @@
                                     <div v-if="errors.release_note" class="text-danger mt-2">
                                         <span v-for="(error, index) in errors.release_note" :key="index">{{
                                             error
-                                        }}</span>
+                                            }}</span>
                                     </div>
                                     <button class="btn w-100 bg-desino text-white fw-bold m-2 rounded"
                                         @click="updateReleaseNote">
@@ -709,16 +711,46 @@ export default {
             });
         },
         previousActionAllowOrNot() {
-            if (this.user.id == this.ticketData.functional_owner_id || this.user.id == this.currentAction?.user?.id) {
-                return true;
+            if (this.user.id != this.ticketData.functional_owner_id && this.user.id != this.currentAction?.user?.id) {
+                return false;
             }
-            return false;
+            if (this.ticketData.auto_wait_for_client_approval) {
+                return false;
+            }
+            return true;
         },
         handlePreviousActionStatus() {
             const previousActionAllowOrNot = this.previousActionAllowOrNot();
             if (!previousActionAllowOrNot) {
                 return false;
             }
+            this.$swal({
+                // title: this.$t('ticket_detail.confirm_alert.current_action_change_status_title'),
+                title: this.$t('ticket_detail.confirm_alert.current_previous_action_status_text'),
+                showCancelButton: true,
+                confirmButtonColor: '#1e6abf',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '<i class="bi bi-check-lg"></i>',
+                cancelButtonText: '<i class="bi bi-x-lg"></i>',
+                customClass: {
+                    confirmButton: 'bg-desino',
+                },
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    this.previousActionFormData = {
+                        user_id: this.currentAction?.user?.id,
+                        action_id: this.currentAction.id,
+                        action: this.currentAction.action,
+                        ticket_id: this.localTicketId,
+                        status: this.currentAction.status,
+                        initiative_id: this.localInitiativeId,
+                        action_text: 'previous_action',
+                    }
+                    this.changePreviousActionStatus(this.previousActionFormData);
+                } else {
+                }
+            }).catch(() => {
+            });
         },
         async changeActionUser(passData) {
             try {
@@ -737,6 +769,18 @@ export default {
             try {
                 await this.setLoading(true);
                 const { message } = await ticketService.changeActionStatus(passData);
+                showToast(message, 'success');
+                await this.setLoading(false);
+                this.fetchTicketData(this.localTicketId);
+            } catch (error) {
+                this.handleError(error);
+                this.tasks[index].project = this.previousProject;
+            }
+        },
+        async changePreviousActionStatus(passData) {
+            try {
+                await this.setLoading(true);
+                const { message } = await ticketService.changePreviousActionStatus(passData);
                 showToast(message, 'success');
                 await this.setLoading(false);
                 this.fetchTicketData(this.localTicketId);

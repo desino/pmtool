@@ -172,6 +172,29 @@ class TicketService
         }
     }
 
+    public static function updateTicketPreviousActions($ticket, $actionId, $status)
+    {
+        $ticketActions = $ticket->actions;
+        $previousTicketAction = null;
+        foreach ($ticketActions as $key => $ticketAction) {
+            if ($ticketAction->id == $actionId) {
+                $ticketAction->status = $status;
+                $ticketAction->save();
+                if ($key > 0) {
+                    $previousTicketAction = $ticketActions[$key - 1];
+                }
+                break;
+            }
+        }
+
+        if ($previousTicketAction) {
+            if ($previousTicketAction->status == TicketAction::getStatusDone()) {
+                $previousTicketAction->status = TicketAction::getStatusActionable();
+                $previousTicketAction->save();
+            }
+        }
+    }
+
     public static function  getTicketActionStatus($index, $ticketAction, $autoWaitForClientApproval)
     {
         if ($autoWaitForClientApproval && $index == 0 && ($ticketAction['action'] == 1 || $ticketAction['action'] == 2)) {

@@ -529,11 +529,11 @@ class TicketController extends Controller
             return ApiHelper::response($status, __('messages.ticket.ticket_not_exist'), '', 400);
         }
 
-        if ($request->input('status') == 0) {
+        if ($request->input('status') == TicketAction::getStatusWaitingForDependantAction()) {
             return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed_du_to_waiting_for_dependant'), '', 400);
         }
 
-        if ($request->input('status') == 2) {
+        if ($request->input('status') == TicketAction::getStatusDone()) {
             return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed_du_to_done'), '', 400);
         }
 
@@ -544,6 +544,51 @@ class TicketController extends Controller
         DB::beginTransaction();
         try {
             TicketService::updateTicketActions($ticket, $request->input('action_id'), TicketAction::getStatusDone());
+            TicketService::updateTicketStatus($ticket);
+            $status = true;
+            $message = __('messages.ticket.change_action_status_success');
+            $statusCode = 200;
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $statusCode = 500;
+            Log::info($e->getMessage());
+        }
+        return ApiHelper::response($status, $message, '', $statusCode);
+    }
+
+    public function changePreviousActionStatus(Request $request, $initiativeId, $ticketId)
+    {
+        $status = false;
+        $request->merge(['initiative_id' => $initiativeId]);
+        $initiative = InitiativeService::getInitiative($request);
+        if (!$initiative) {
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
+        }
+        if (Auth::id() != $request->input('user_id') && Auth::id() != $initiative->functional_owner_id) {
+            return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed'), '', 400);
+        }
+        $ticket = Ticket::find($ticketId);
+        if (!$ticket) {
+            return ApiHelper::response($status, __('messages.ticket.ticket_not_exist'), '', 400);
+        }
+
+        if ($request->input('status') == TicketAction::getStatusWaitingForDependantAction()) {
+            return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed_du_to_waiting_for_dependant'), '', 400);
+        }
+
+        if ($request->input('status') == TicketAction::getStatusDone()) {
+            return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed_du_to_done'), '', 400);
+        }
+
+        if ($ticket->auto_wait_for_client_approval) {
+            return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed_du_to_waiting_for_client_approval'), '', 400);
+        }
+
+        DB::beginTransaction();
+        try {
+            TicketService::updateTicketPreviousActions($ticket, $request->input('action_id'), TicketAction::getStatusWaitingForDependantAction());
             TicketService::updateTicketStatus($ticket);
             $status = true;
             $message = __('messages.ticket.change_action_status_success');

@@ -439,5 +439,6 @@
     "ticket_detail.confirm_alert.next_action_change_user_title": "Change User",
     "ticket_detail.confirm_alert.next_action_change_user_text": "Are you sure you want to change the next action user?",
     "ticket_detail.confirm_alert.current_action_change_status_title": "Change Status",
-    "ticket_detail.confirm_alert.current_action_change_status_text": "Are you sure you want to mark this action as done?"
+    "ticket_detail.confirm_alert.current_action_change_status_text": "Are you sure you want to mark this action as done?",
+    "ticket_detail.confirm_alert.current_previous_action_status_text": "Are you sure you want to mark this action as actionable?"
 }

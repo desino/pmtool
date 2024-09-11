@@ -63,6 +63,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('update-ticket/{ticket_id}', 'updateTicket');
             Route::post('change-action-user/{ticket_id}', 'changeActionUser');
             Route::post('change-action-status/{ticket_id}', 'changeActionStatus');
+            Route::post('change-previous-action-status/{ticket_id}', 'changePreviousActionStatus');
 
             Route::controller(TestCaseController::class)->prefix('{ticket_id}/test-case')->group(function () {
                 Route::post('/store', 'store');
@@ -76,9 +77,6 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/change-status', 'changeStatus');
             Route::post('/update', 'update');
         });
-
-
-
     });
 
     Route::controller(HeaderController::class)->prefix('header')->group(function () {
