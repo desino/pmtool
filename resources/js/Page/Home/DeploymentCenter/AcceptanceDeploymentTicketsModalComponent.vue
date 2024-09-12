@@ -1,11 +1,11 @@
 <template>
     <div class="modal-dialog">
-        <form @submit.prevent="submitTestDeploymentTicket">
+        <form @submit.prevent="submitAcceptanceDeploymentTicket">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="testDeploymentTicketsModalLabel">{{
-                        $t('home.deployment_center.test_deployment.ticket_modal.title')
-                    }}</h5>
+                    <h5 class="modal-title" id="acceptanceDeploymentTicketsModalLabel">{{
+                        $t('home.deployment_center.acceptance_deployment.ticket_modal.title')
+                        }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -15,11 +15,11 @@
                             <div class="row">
                                 <div class="col-md-1">
                                     <input class="form-check-input" type="checkbox" id="chk_all_tickets"
-                                        v-model="isChkAllTestDeploymentTickets"
-                                        @change="handleSelectAllTestDeploymentTickets">
+                                        v-model="isChkAllAcceptanceDeploymentTickets"
+                                        @change="handleSelectAllAcceptanceDeploymentTickets">
                                 </div>
                                 <div class="col-md-8">
-                                    {{ $t('home.deployment_center.test_deployment.ticket_modal.li.name.text') }}
+                                    {{ $t('home.deployment_center.acceptance_deployment.ticket_modal.li.name.text') }}
                                 </div>
                             </div>
                         </li>
@@ -27,10 +27,10 @@
                             <div class="row">
                                 <div class="col-md-1">
                                     <input class="form-check-input" type="checkbox"
-                                        :id="'chk_test_deployment_ticket_' + ticket.id" v-model="ticket.isChecked"
-                                        @change="handleSelectTestDeploymentTicket(ticket)">
+                                        :id="'chk_acceptance_deployment_ticket_' + ticket.id" v-model="ticket.isChecked"
+                                        @change="handleSelectAcceptanceDeploymentTicket(ticket)">
                                 </div>
-                                <div class="col-md-8" :for="'chk_test_deployment_ticket_' + ticket.id">
+                                <div class="col-md-8" :for="'chk_acceptance_deployment_ticket_' + ticket.id">
                                     {{ ticket?.name }}
                                 </div>
                             </div>
@@ -40,8 +40,8 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-desino bg-desino text-light"
-                        :disabled="selectedTestDeploymentTickets.length > 0 ? false : true">{{
-                            $t('home.deployment_center.test_deployment.ticket_modal.submit_but.text') }}</button>
+                        :disabled="selectedAcceptanceDeploymentTickets.length > 0 ? false : true">{{
+                            $t('home.deployment_center.acceptance_deployment.ticket_modal.submit_but.text') }}</button>
                 </div>
             </div>
         </form>
@@ -63,9 +63,9 @@ export default {
     },
     data() {
         return {
-            isChkAllTestDeploymentTickets: false,
+            isChkAllAcceptanceDeploymentTickets: false,
             ticketList: [],
-            selectedTestDeploymentTickets: [],
+            selectedAcceptanceDeploymentTickets: [],
             initiativeId: "",
             errors: {},
             showMessage: true
@@ -73,26 +73,26 @@ export default {
     },
     methods: {
         ...mapActions(['setLoading']),
-        async getTestDeploymentTicketsModalData(testDeployment) {
-            this.selectedTestDeploymentTickets = [];
-            this.isChkAllTestDeploymentTickets = false;
-            this.initiativeId = testDeployment.id;
+        async getAcceptanceDeploymentTicketsModalData(acceptanceDeployment) {
+            this.selectedAcceptanceDeploymentTickets = [];
+            this.isChkAllAcceptanceDeploymentTickets = false;
+            this.initiativeId = acceptanceDeployment.id;
             const passData = {
-                initiative_id: testDeployment.id,
+                initiative_id: acceptanceDeployment.id,
             }
-            const { content: { tickets } } = await DeploymentCenterService.getTestDeploymentTicketsModalData(passData);
+            const { content: { tickets } } = await DeploymentCenterService.getAcceptanceDeploymentTicketsModalData(passData);
             this.ticketList = tickets.map(ticket => ({
                 ...ticket,
                 isChecked: false,
             }));
         },
-        async submitTestDeploymentTicket() {
+        async submitAcceptanceDeploymentTicket() {
             this.clearMessages();
-            if (this.selectedTestDeploymentTickets.length == 0) {
+            if (this.selectedAcceptanceDeploymentTickets.length == 0) {
                 return false;
             }
             this.$swal({
-                title: this.$t('home.deployment_center.test_deployment.ticket_modal.submit.alert.text'),
+                title: this.$t('home.deployment_center.acceptance_deployment.ticket_modal.submit.alert.text'),
                 showCancelButton: true,
                 confirmButtonColor: '#1e6abf',
                 cancelButtonColor: '#d33',
@@ -106,55 +106,55 @@ export default {
                     try {
                         const params = {
                             initiative_id: this.initiativeId,
-                            ticketIds: this.selectedTestDeploymentTickets,
+                            ticketIds: this.selectedAcceptanceDeploymentTickets,
                         }
                         await this.setLoading(true);
-                        const { message } = await DeploymentCenterService.submitTestDeploymentTicket(params);
-                        this.hideTestDeploymentModal();
+                        const { message } = await DeploymentCenterService.submitAcceptanceDeploymentTicket(params);
+                        this.hideAcceptanceDeploymentModal();
                         showToast(message, 'success');
                         await this.setLoading(false);
                         this.$emit('pageUpdated');
                     } catch (error) {
                         this.handleError(error);
-                        this.resetTestDeploymentTicketList();
+                        this.resetAcceptanceDeploymentTicketList();
                     }
                 } else {
-                    this.resetTestDeploymentTicketList();
+                    this.resetAcceptanceDeploymentTicketList();
                 }
             }).catch(() => {
-                this.resetTestDeploymentTicketList();
+                this.resetAcceptanceDeploymentTicketList();
             });
         },
-        handleSelectAllTestDeploymentTickets() {
-            this.selectedTestDeploymentTickets = [];
+        handleSelectAllAcceptanceDeploymentTickets() {
+            this.selectedAcceptanceDeploymentTickets = [];
             this.ticketList = this.ticketList.map(ticket => {
-                ticket.isChecked = this.isChkAllTestDeploymentTickets;
-                if (this.isChkAllTestDeploymentTickets) {
-                    this.selectedTestDeploymentTickets.push(ticket.id);
+                ticket.isChecked = this.isChkAllAcceptanceDeploymentTickets;
+                if (this.isChkAllAcceptanceDeploymentTickets) {
+                    this.selectedAcceptanceDeploymentTickets.push(ticket.id);
                 }
                 return ticket;
             });
         },
-        handleSelectTestDeploymentTicket(ticket) {
+        handleSelectAcceptanceDeploymentTicket(ticket) {
             if (ticket.isChecked) {
-                if (!this.selectedTestDeploymentTickets.includes(ticket.id)) {
-                    this.selectedTestDeploymentTickets.push(ticket.id);
+                if (!this.selectedAcceptanceDeploymentTickets.includes(ticket.id)) {
+                    this.selectedAcceptanceDeploymentTickets.push(ticket.id);
                 }
             } else {
-                this.selectedTestDeploymentTickets = this.selectedTestDeploymentTickets.filter(id => id !== ticket.id);
+                this.selectedAcceptanceDeploymentTickets = this.selectedAcceptanceDeploymentTickets.filter(id => id !== ticket.id);
             }
-            this.isChkAllTestDeploymentTickets = this.ticketList.every(ticket => ticket.isChecked);
+            this.isChkAllAcceptanceDeploymentTickets = this.ticketList.every(ticket => ticket.isChecked);
         },
-        resetTestDeploymentTicketList() {
-            this.selectedTestDeploymentTickets = [];
+        resetAcceptanceDeploymentTicketList() {
+            this.selectedAcceptanceDeploymentTickets = [];
             this.ticketList = this.ticketList.map(ticket => ({
                 ...ticket,
                 isChecked: false,
             }));
-            this.isChkAllTestDeploymentTickets = false;
+            this.isChkAllAcceptanceDeploymentTickets = false;
         },
-        hideTestDeploymentModal() {
-            const modalElement = document.getElementById('testDeploymentTicketsModal');
+        hideAcceptanceDeploymentModal() {
+            const modalElement = document.getElementById('acceptanceDeploymentTicketsModal');
             if (modalElement) {
                 const modal = Modal.getInstance(modalElement);
                 if (modal) {

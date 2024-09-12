@@ -212,6 +212,7 @@
     "messages.project.project_not_exist": "Project does not exist.",
     "messages.project.assign_success": "Project assigned successfully.",
     "messages.project.remove_success": "Project removed successfully from task.",
+    "message.home.deployment_center.test_deployment.update_status_success": "Ticket status updated successfully.",
     "home": "Home",
     "login_title": "Login",
     "login_page_title": "Login",
@@ -447,5 +448,12 @@
     "home.deployment_center.test_deployment.title": "Test Deployment",
     "home.deployment_center.test_deployment.tickets.text": "tickets",
     "home.deployment_center.test_deployment.ticket_modal.title": "Test Deployment Tickets",
-    "home.deployment_center.test_deployment.ticket_modal.submit_but.text": "Deployed at TEST"
+    "home.deployment_center.test_deployment.ticket_modal.submit_but.text": "Deployed at TEST",
+    "home.deployment_center.test_deployment.ticket_modal.submit.alert.text": "Are you sure you want update ticket status to <b>Ongoing</b> from <b>Ready to deploy at TEST</b>?",
+    "home.deployment_center.test_deployment.ticket_modal.li.name.text": "Name",
+    "home.deployment_center.test_deployment.record_does_not_exist": "Record does not exist.",
+    "home.deployment_center.acceptance_deployment.ticket_modal.title": "Acceptance Deployment Tickets",
+    "home.deployment_center.acceptance_deployment.ticket_modal.li.name.text": "Name",
+    "home.deployment_center.acceptance_deployment.ticket_modal.submit_but.text": "Deployed at ACCEPTANCE",
+    "home.deployment_center.acceptance_deployment.ticket_modal.submit.alert.text": "Are you sure you want update ticket status to <b>Ongoing</b> from <b>Ready to deploy at ACCEPTANCE</b>?"
 }

@@ -23,6 +23,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(DeploymentCenterController::class)->prefix('deployment-center')->group(function () {
         Route::get('/', 'index');
         Route::get('/get-test-deployment-tickets-modal-data/{initiative_id}', 'getTestDeploymentTicketsModalData');
+        Route::post('submit-test-deployment-ticket/{initiative_id}', 'submitTestDeploymentTicket');
+        Route::get('get-acceptance-deployment-tickets-modal-data/{initiative_id}', 'getAcceptanceDeploymentTicketsModalData');
+        Route::post('submit-acceptance-deployment-ticket/{initiative_id}', 'submitAcceptanceDeploymentTicket');
     });
 
     Route::controller(ClientController::class)->prefix('client')->group(function () {

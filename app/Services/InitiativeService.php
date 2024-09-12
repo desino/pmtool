@@ -37,4 +37,44 @@ class InitiativeService
     {
         return Initiative::with('client')->orderBy('id', 'desc')->get();
     }
+
+    public static function getInitiativeWithTestDeploymentTickets()
+    {
+        $testDeploymentInitiative = Initiative::select(
+            'id',
+            'name',
+            'client_id'
+        )
+            ->with(['client' => function ($query) {
+                $query->select('id', 'name');
+            }])
+            ->withCount(['tickets' => function ($query) {
+                $query->readyForTestStatus();
+            }])
+            ->whereHas('tickets', function ($query) {
+                $query->readyForTestStatus();
+            })
+            ->get();
+        return $testDeploymentInitiative;
+    }
+
+    public static function getInitiativeWithAcceptanceDeploymentTickets()
+    {
+        $acceptanceDeploymentInitiative = Initiative::select(
+            'id',
+            'name',
+            'client_id'
+        )
+            ->with(['client' => function ($query) {
+                $query->select('id', 'name');
+            }])
+            ->withCount(['tickets' => function ($query) {
+                $query->readyForAcceptanceStatus();
+            }])
+            ->whereHas('tickets', function ($query) {
+                $query->readyForAcceptanceStatus();
+            })
+            ->get();
+        return $acceptanceDeploymentInitiative;
+    }
 }

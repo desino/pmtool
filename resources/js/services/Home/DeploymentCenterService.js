@@ -10,6 +10,9 @@ const defaultPath = `${APP_VARIABLES.DEFAULT_API_PATH}/deployment-center`;
 const endpoints = {
     index: `${defaultPath}`,
     getTestDeploymentTicketsModalData: `${defaultPath}/get-test-deployment-tickets-modal-data/:initiative_id`,
+    submitTestDeploymentTicket: `${defaultPath}/submit-test-deployment-ticket/:initiative_id`,
+    getAcceptanceDeploymentTicketsModalData: `${defaultPath}/get-acceptance-deployment-tickets-modal-data/:initiative_id`,
+    submitAcceptanceDeploymentTicket: `${defaultPath}/submit-acceptance-deployment-ticket/:initiative_id`,
 }
 
 const DeploymentCenterService = {
@@ -25,6 +28,33 @@ const DeploymentCenterService = {
         try {
             const endpoint = endpoints.getTestDeploymentTicketsModalData.replace(':initiative_id', data.initiative_id);
             const response = await axiosRequest.get(endpoint);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async getAcceptanceDeploymentTicketsModalData(data) {
+        try {
+            const endpoint = endpoints.getAcceptanceDeploymentTicketsModalData.replace(':initiative_id', data.initiative_id);
+            const response = await axiosRequest.get(endpoint);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async submitTestDeploymentTicket(data) {
+        try {
+            const endpoint = endpoints.submitTestDeploymentTicket.replace(':initiative_id', data.initiative_id);
+            const response = await axiosRequest.post(endpoint, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async submitAcceptanceDeploymentTicket(data) {
+        try {
+            const endpoint = endpoints.submitAcceptanceDeploymentTicket.replace(':initiative_id', data.initiative_id);
+            const response = await axiosRequest.post(endpoint, data);
             return response.data;
         } catch (error) {
             throw handleError(error);

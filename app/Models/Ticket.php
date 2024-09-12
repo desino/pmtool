@@ -185,4 +185,9 @@ class Ticket extends Model
     {
         return $query->where('status', Self::getStatusReadyForTest());
     }
+
+    public function scopeReadyForAcceptanceStatus($query)
+    {
+        return $query->where('status', Self::getStatusReadyForACC());
+    }
 }
