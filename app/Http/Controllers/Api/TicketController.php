@@ -5,16 +5,19 @@ namespace App\Http\Controllers\Api;
 use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\AssignProjectRequest;
+use App\Http\Requests\Api\CreateReleaseRequest;
 use App\Http\Requests\Api\TicketRequest;
 use App\Http\Requests\UpdateReleaseNoteRequest;
 use App\Models\Functionality;
 use App\Models\Project;
+use App\Models\Release;
 use App\Models\Section;
 use App\Models\Ticket;
 use App\Models\TicketAction;
 use App\Services\AsanaService;
 use App\Services\InitiativeService;
 use App\Services\ProjectService;
+use App\Services\ReleaseService;
 use App\Services\TicketService;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
@@ -277,6 +280,7 @@ class TicketController extends Controller
         })->get(['id', 'display_name']);
         $meta['projects'] = ProjectService::getInitiativeProjects($initiative_id);
         $meta['users'] = TicketService::getUsers();
+        $meta['initiative'] = TicketService::getInitiative($initiative_id);
 
         return ApiHelper::response('false', __('messages.ticket.fetched'), $tickets, 200, $meta);
     }
@@ -592,6 +596,52 @@ class TicketController extends Controller
             TicketService::updateTicketStatus($ticket);
             $status = true;
             $message = __('messages.ticket.change_action_status_success');
+            $statusCode = 200;
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $statusCode = 500;
+            Log::info($e->getMessage());
+        }
+        return ApiHelper::response($status, $message, '', $statusCode);
+    }
+
+    public function getCreateReleaseData(Request $request, $initiativeId)
+    {
+        $retData = [
+            'unprocessedRelease' => ReleaseService::getUnprocessedRelease(),
+        ];
+        return ApiHelper::response(true, '', $retData, 200);
+    }
+
+    public function createRelease(CreateReleaseRequest $request, $initiativeId)
+    {
+        $requestData = $request->all();
+        $status = false;
+        $request->merge(['initiative_id' => $initiativeId]);
+        $initiative = InitiativeService::getInitiative($request);
+
+        if (!$initiative) {
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
+        }
+        if (Auth::id() != $initiative->functional_owner_id) {
+            return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed'), '', 400);
+        }
+
+        if ($initiative->unprocessedRelease) {
+            if ($initiative->unprocessedRelease->id != $request->input('release_id')) {
+                return ApiHelper::response($status, __('messages.release.please_select_valid_release'), '', 400);
+            }
+            if ($request->input('tags') != "") {
+                return ApiHelper::response($status, __('messages.release.your_release_has_already_been_created'), '', 400);
+            }
+        }
+        DB::beginTransaction();
+        try {
+            Release::create($requestData);
+            $status = true;
+            $message = __('messages.release.create_success');
             $statusCode = 200;
             DB::commit();
         } catch (\Exception $e) {

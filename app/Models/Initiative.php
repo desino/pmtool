@@ -45,6 +45,11 @@ class Initiative extends Model
         return $this->hasMany(Ticket::class);
     }
 
+    public function unprocessedRelease()
+    {
+        return $this->hasOne(Release::class)->where('status', Release::UNPROCESSED_RELEASE);
+    }
+
     public static function statuses()
     {
         return [

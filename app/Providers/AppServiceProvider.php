@@ -7,6 +7,8 @@ use App\Models\Functionality;
 use App\Models\Initiative;
 use App\Models\InitiativeEnvironment;
 use App\Models\Project;
+use App\Models\Release;
+use App\Models\ReleaseTicket;
 use App\Models\Section;
 use App\Models\Ticket;
 use App\Models\TicketAction;
@@ -15,6 +17,8 @@ use App\Observers\FunctionalityObserver;
 use App\Observers\InitiativeEnvironmentObserver;
 use App\Observers\InitiativeObserver;
 use App\Observers\ProjectObserver;
+use App\Observers\ReleaseObserver;
+use App\Observers\ReleaseTicketObserver;
 use App\Observers\SectionObserver;
 use App\Observers\TicketActionObserver;
 use App\Observers\TicketObserver;
@@ -48,6 +52,8 @@ class AppServiceProvider extends ServiceProvider
         InitiativeEnvironment::observe(InitiativeEnvironmentObserver::class);
         Project::observe(ProjectObserver::class);
         TicketAction::observe(TicketActionObserver::class);
+        Release::observe(ReleaseObserver::class);
+        ReleaseTicket::observe(ReleaseTicketObserver::class);
         Event::listen(
             SocialiteWasCalled::class,
             GraphExtendSocialite::class . '@handle',

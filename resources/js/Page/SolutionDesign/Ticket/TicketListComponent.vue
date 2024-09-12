@@ -73,6 +73,10 @@
                     @click="openAssignProjectModal">
                     {{ $t('ticket.assign.project.button_text') }}
                 </button>
+                <button v-if="createReleaseAllowOrNot()" class="btn btn-desino bg-desino text-light mx-2"
+                    :disabled="selectedTasks.length === 0" type="button" @click="openCreateReleaseModal">
+                    {{ $t('ticket.release.create.button_text') }}
+                </button>
             </div>
         </div>
         <ul class="list-group list-group-flush mb-3 mt-2">
@@ -184,6 +188,10 @@
             class="modal fade" tabindex="-1">
             <EditTicketModalComponent ref="editTicketFromListModalComponent" @refreshTickets="fetchAllTasks" />
         </div>
+        <div id="createReleaseModal" aria-hidden="true" aria-labelledby="createReleaseModalLabel" class="modal fade"
+            tabindex="-1">
+            <CreateReleaseModalComponent ref="createReleaseModalComponent" @refreshTickets="fetchAllTasks" />
+        </div>
     </div>
 </template>
 
@@ -192,7 +200,7 @@ import globalMixin from '@/globalMixin';
 import PaginationComponent from '../../../components/PaginationComponent.vue';
 import messageService from '../../../services/messageService';
 import GlobalMessage from '../../../components/GlobalMessage.vue';
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import ticketService from "../../../services/TicketService";
 import Multiselect from "vue-multiselect";
 import AssignProjectModalComponent from "./AssignProjectModalComponent.vue";
@@ -200,6 +208,7 @@ import { Modal } from 'bootstrap';
 import showToast from '../../../utils/toasts';
 import eventBus from "@/eventBus.js";
 import EditTicketModalComponent from './EditTicketModalComponent.vue';
+import CreateReleaseModalComponent from './CreateReleaseModalComponent.vue';
 
 export default {
     name: 'TicketListComponent',
@@ -209,7 +218,8 @@ export default {
         GlobalMessage,
         PaginationComponent,
         AssignProjectModalComponent,
-        EditTicketModalComponent
+        EditTicketModalComponent,
+        CreateReleaseModalComponent
     },
     props: ['id'],
     data() {
@@ -234,13 +244,18 @@ export default {
             isChkAllTickets: false,
             selectedTasks: [],
             previousProject: null,
+            initiative: {},
             errors: {},
             showMessage: true
         }
     },
+    computed: {
+        ...mapGetters(['user']),
+    },
     methods: {
         ...mapActions(['setLoading']),
         async fetchAllTasks(page = 1) {
+            this.isChkAllTickets = false;
             this.clearMessages();
             this.selectedTasks = [];
             try {
@@ -257,6 +272,7 @@ export default {
                 this.projects = response.meta_data.projects;
                 this.actionOwners = response.meta_data.users;
                 this.nextActionOwners = response.meta_data.users;
+                this.initiative = response.meta_data.initiative;
                 this.tasks = response.content.data.map(task => ({
                     ...task,
                     isChecked: false,
@@ -293,6 +309,18 @@ export default {
             }
             this.$refs.assignProjectModalComponent.getSelectedTasksData(passData);
             const modalElement = document.getElementById('assignProjectModal');
+            if (modalElement) {
+                const modal = new Modal(modalElement);
+                modal.show();
+            }
+        },
+        openCreateReleaseModal() {
+            const passData = {
+                tasks: this.selectedTasks,
+                initiative_id: this.initiative_id
+            }
+            this.$refs.createReleaseModalComponent.getSelectedTasksData(passData);
+            const modalElement = document.getElementById('createReleaseModal');
             if (modalElement) {
                 const modal = new Modal(modalElement);
                 modal.show();
@@ -359,6 +387,12 @@ export default {
                 const editTicketFromListModal = new Modal(editTicketFromListModalElement);
                 editTicketFromListModal.show();
             }
+        },
+        createReleaseAllowOrNot() {
+            if (this.user?.id != this.initiative.functional_owner_id) {
+                return false;
+            }
+            return true;
         },
         handleError(error) {
             if (error.type === 'validation') {

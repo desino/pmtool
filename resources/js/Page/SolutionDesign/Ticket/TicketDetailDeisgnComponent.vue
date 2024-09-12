@@ -191,18 +191,6 @@
                             </div>
                         </div>
                     </div>
-                    <!-- <div class="col" v-if="nextAction">
-                        <div class="card border-0 h-100">
-                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
-                                <div class="w-100 lh-1">
-                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.next_action_status') }}</h6>
-                                    <span class="badge bg-warning" role="button">{{
-                                        nextAction.action_status }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div> -->
-
                 </div>
             </div>
         </div>
@@ -841,6 +829,7 @@ export default {
     mounted() {
         this.fetchTicketData(this.localTicketId);
         eventBus.$on('refreshTicketDetail', this.refreshTicketDetail);
+        console.log('detailuser :: ', this.user);
     }
 }
 </script>

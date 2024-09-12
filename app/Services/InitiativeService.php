@@ -30,7 +30,7 @@ class InitiativeService
         if ($id == null) {
             $id = $request->post('initiative_id', null);
         }
-        return Initiative::with('client', 'initiativeEnvironments')->find($id);
+        return Initiative::with('client', 'initiativeEnvironments', 'unprocessedRelease')->find($id);
     }
 
     public static function getInitiativesForHeaderSelectBox($request)

@@ -22,6 +22,8 @@ const endpoints = {
     changeActionUser: `${defaultPath}/change-action-user/:ticket_id`,
     changeActionStatus: `${defaultPath}/change-action-status/:ticket_id`,
     changePreviousActionStatus: `${defaultPath}/change-previous-action-status/:ticket_id`,
+    getCreateReleaseData: `${defaultPath}/get-create-release-data`,
+    submitCreateRelease: `${defaultPath}/create-release`,
 }
 
 const SolutionDesignService = {
@@ -152,7 +154,24 @@ const SolutionDesignService = {
             throw handleError(error);
         }
     },
-
+    async getCreateReleaseModelData(initiative_id) {
+        try {
+            const endpoint = endpoints.getCreateReleaseData.replace(':initiative_id', initiative_id);
+            const response = await axiosRequest.get(endpoint);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async submitCreateRelease(data) {
+        try {
+            const endpoint = endpoints.submitCreateRelease.replace(':initiative_id', data.initiative_id);
+            const response = await axiosRequest.post(endpoint, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
 }
 
 function handleError(error) {
