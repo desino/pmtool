@@ -106,6 +106,8 @@ export default {
     methods: {
         ...mapActions(['setLoading']),
         getSelectedTasksData(data) {
+            this.clearMessages();
+            this.resetForm();
             this.formData.selectedTasks = data.tasks;
             this.formData.initiative_id = data.initiative_id;
             this.getCreateReleaseModelData();
