@@ -11,6 +11,7 @@ use App\Http\Requests\UpdateReleaseNoteRequest;
 use App\Models\Functionality;
 use App\Models\Project;
 use App\Models\Release;
+use App\Models\ReleaseTicket;
 use App\Models\Section;
 use App\Models\Ticket;
 use App\Models\TicketAction;
@@ -629,20 +630,51 @@ class TicketController extends Controller
             return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed'), '', 400);
         }
 
-        if ($initiative->unprocessedRelease) {
-            if ($initiative->unprocessedRelease->id != $request->input('release_id')) {
+        $release = $initiative->unprocessedRelease;
+        if ($release) {
+            if ($request->input('release_id') == "") {
+                return ApiHelper::response($status, __('messages.release.please_select_valid_release'), '', 400);
+            }
+            if ($release->id != $request->input('release_id')) {
                 return ApiHelper::response($status, __('messages.release.please_select_valid_release'), '', 400);
             }
             if ($request->input('tags') != "") {
                 return ApiHelper::response($status, __('messages.release.your_release_has_already_been_created'), '', 400);
             }
         }
+
+
+        $ticketIds = $requestData['selectedTasks'];
+        if (count($ticketIds) == 0) {
+            return ApiHelper::response($status, __('messages.release.please_select_tasks'), '', 400);
+        }
+        $ticketCount = TicketService::getTicketCountCanNotMatchWithStatus($ticketIds, Ticket::getStatusReadyForPRD());
+        if ($ticketCount > 0) {
+            return ApiHelper::response($status, __('messages.release.please_select_tasks_only_ready_for_PRD'), '', 400);
+        }
+
+        $status = true;
+        $message = __('messages.release.create_success');
+        $statusCode = 200;
         DB::beginTransaction();
         try {
-            Release::create($requestData);
-            $status = true;
-            $message = __('messages.release.create_success');
-            $statusCode = 200;
+            if ($request->input('release_id') == "") {
+                $releaseVersion = TicketService::createReleaseVersion($requestData['is_major']);
+                $releaseName = TicketService::createReleaseName($releaseVersion, $requestData);
+                $requestData['name'] = $releaseName;
+                $requestData['version'] = $releaseVersion;
+                $release = Release::create($requestData);
+            }
+            foreach ($ticketIds as $ticketId) {
+                $condition = [
+                    'release_id' => $release->id,
+                    'ticket_id' => $ticketId
+                ];
+                $updateOrCreateData = [
+                    'ticket_id' => $ticketId
+                ];
+                ReleaseTicket::updateOrCreate($condition, $updateOrCreateData);
+            }
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();

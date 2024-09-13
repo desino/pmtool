@@ -16,7 +16,7 @@ return new class extends Migration
             $table->bigInteger('initiative_id');
             $table->string('name')->nullable();
             $table->boolean('is_major')->default(0);
-            $table->float('version')->default(0);
+            $table->float('version', 3, 1)->default(0);
             $table->boolean('status')->default(0);
             $table->string('tags');
             $table->bigInteger('created_by');

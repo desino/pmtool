@@ -43,4 +43,9 @@ class Release extends Model
             default => '-'
         };
     }
+
+    public function releaseTickets()
+    {
+        return $this->hasMany(ReleaseTicket::class);
+    }
 }

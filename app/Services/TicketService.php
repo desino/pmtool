@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Initiative;
 use App\Models\Project;
+use App\Models\Release;
 use App\Models\Section;
 use App\Models\Ticket;
 use App\Models\TicketAction;
@@ -271,5 +272,33 @@ class TicketService
     public static function deleteActions($id)
     {
         TicketAction::where('ticket_id', $id)->delete();
+    }
+
+    public static function getTicketCountCanNotMatchWithStatus($ids, $status)
+    {
+        $ticketsCount = Ticket::whereIn('id', $ids)->where('status', '!=', $status)->get();
+        return $ticketsCount->count();
+    }
+
+    public static function createReleaseVersion($isMajor)
+    {
+        $releaseCount = Release::get()->count();
+        if ($releaseCount == 0) {
+            return 1;
+        }
+        $release = Release::where('status', Release::PROCESSED_RELEASE)->orderBy('id', 'desc')->first();
+        if ($isMajor) {
+            $releaseVersion = round($release->version + 1);
+        } else {
+            $releaseVersion = round($release->version + 0.1, 1);
+        }
+        return $releaseVersion;
+    }
+
+    public static function createReleaseName($releaseVersion)
+    {
+        $defaultName = __('messages.release.default_name');
+        $releaseName = $defaultName . " " . $releaseVersion;
+        return $releaseName;
     }
 }

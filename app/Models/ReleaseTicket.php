@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class ReleaseTicket extends Model
 {
     use HasFactory;
+
+    protected $guarded = ['id'];
+
+    public function release()
+    {
+        return $this->belongsTo(Release::class);
+    }
 }

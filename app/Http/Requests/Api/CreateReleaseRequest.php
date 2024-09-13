@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api;
 
+use App\Services\InitiativeService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,6 +23,13 @@ class CreateReleaseRequest extends FormRequest
      */
     public function rules(): array
     {
+        $initiative = InitiativeService::getInitiative(request(), $this->initiative_id);
+        if ($initiative->unprocessedRelease) {
+            return [
+                // 'release_id' => 'required',
+                'tags' => 'nullable',
+            ];
+        }
         return [
             'release_id' => 'nullable',
             'tags' => 'required_without:release_id',
