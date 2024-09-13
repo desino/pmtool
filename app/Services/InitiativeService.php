@@ -99,6 +99,7 @@ class InitiativeService
                     ->where('tickets.status', Ticket::getStatusReadyForPRD());
             })
             ->groupBy('initiatives.id')
+            ->groupBy('initiatives.name')
             ->having('tickets_count', '>', 0)
             ->get();
         return $productionDeploymentInitiative;
