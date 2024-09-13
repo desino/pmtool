@@ -122,7 +122,8 @@ class TicketService
                 'ticket_id' => $ticketId,
                 'action' => $ticketAction['action'],
                 'user_id' => $ticketAction['user_id'],
-                'status' => $ticketAction['status'] ?? Self::getTicketActionStatus($ticketActionKey, $ticketAction, $autoWaitForClientApproval),
+                // 'status' => $ticketAction['status'] ?? Self::getTicketActionStatus($ticketActionKey, $ticketAction, $autoWaitForClientApproval),
+                'status' => Self::getTicketActionStatus($ticketActionKey, $ticketAction, $autoWaitForClientApproval),
             ];
             $ticketAction = TicketAction::updateOrCreate($condition, $fieldsToUpdateOrCreate);
             $insertedOrUpdateIds[] = $ticketAction->id;
@@ -266,6 +267,36 @@ class TicketService
             $taskStatus = Ticket::getStatusReadyForPRD();
         }
         $ticket->status = $taskStatus;
+        $ticket->save();
+    }
+
+    public static function createMacroStatusAndUpdateTicket($ticket)
+    {
+        $ticketStatus = $ticket->status;
+        $ticketCurrentAction = $ticket->currentAction->action ?? 0;
+        $macroStatus = 0;
+        if ($ticketCurrentAction == TicketAction::getActionDetailTicket() && $ticketStatus == Ticket::getStatusOngoing()) {
+            $macroStatus = Ticket::MACRO_STATUS_DETAIL_TICKET;
+        } else if ($ticketCurrentAction == TicketAction::getActionClarifyAndEstimate() && $ticketStatus == Ticket::getStatusOngoing()) {
+            $macroStatus = Ticket::MACRO_STATUS_CLARIFY_AND_ESTIMATE;
+        } else if ($ticketCurrentAction == TicketAction::getActionDevelop() && $ticketStatus == Ticket::getStatusWaitForClient()) {
+            $macroStatus = Ticket::MACRO_STATUS_DEVELOP_WAIT_FOR_CLIENT;
+        } else if ($ticketCurrentAction == TicketAction::getActionDevelop() && $ticketStatus == Ticket::getStatusOngoing()) {
+            $macroStatus = Ticket::MACRO_STATUS_DEVELOP;
+        } else if ($ticketCurrentAction == TicketAction::getActionTest() && $ticketStatus == Ticket::getStatusWaitForClient()) {
+            $macroStatus = Ticket::MACRO_STATUS_TEST_WAIT_FOR_DEPLOYMENT_TO_TEST;
+        } else if ($ticketCurrentAction == TicketAction::getActionTest() && $ticketStatus == Ticket::getStatusReadyForTest()) {
+            $macroStatus = Ticket::MACRO_STATUS_TEST;
+        } else if ($ticketCurrentAction == TicketAction::getActionValidate() && $ticketStatus == Ticket::getStatusWaitForClient()) {
+            $macroStatus = Ticket::MACRO_STATUS_VALIDATE_WAITING_FOR_DEPLOYMENT_TO_ACC;
+        } else if ($ticketCurrentAction == TicketAction::getActionValidate() && $ticketStatus == Ticket::getStatusReadyForACC()) {
+            $macroStatus = Ticket::MACRO_STATUS_VALIDATE;
+        } else if ($ticketStatus == Ticket::getStatusReadyForPRD()) {
+            $macroStatus = Ticket::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_TEST;
+        } else if ($ticketStatus == Ticket::getStatusDone()) {
+            $macroStatus = Ticket::MACRO_STATUS_DONE;
+        }
+        $ticket->macro_status = $macroStatus;
         $ticket->save();
     }
 

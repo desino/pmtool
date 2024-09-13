@@ -101,6 +101,7 @@ class TicketController extends Controller
             if (!empty($validateData['ticket_actions'])) {
                 TicketService::insertTicketActions($ticket->id, $validateData['ticket_actions'], $validateData['auto_wait_for_client_approval']);
                 TicketService::updateTicketStatus($ticket);
+                TicketService::createMacroStatusAndUpdateTicket($ticket);
             }
             $status = true;
             $message = __('messages.create_ticket.store_success');
@@ -170,6 +171,7 @@ class TicketController extends Controller
                 // TicketService::deleteActions($ticket->id);
                 TicketService::insertTicketActions($ticket->id, $validateData['ticket_actions'], $validateData['auto_wait_for_client_approval']);
                 TicketService::updateTicketStatus($ticket);
+                TicketService::createMacroStatusAndUpdateTicket($ticket);
             }
             $status = true;
             $message = __('messages.create_ticket.update_success');
@@ -550,6 +552,7 @@ class TicketController extends Controller
         try {
             TicketService::updateTicketActions($ticket, $request->input('action_id'), TicketAction::getStatusDone());
             TicketService::updateTicketStatus($ticket);
+            TicketService::createMacroStatusAndUpdateTicket($ticket);
             $status = true;
             $message = __('messages.ticket.change_action_status_success');
             $statusCode = 200;
@@ -595,6 +598,7 @@ class TicketController extends Controller
         try {
             TicketService::updateTicketPreviousActions($ticket, $request->input('action_id'), TicketAction::getStatusWaitingForDependantAction());
             TicketService::updateTicketStatus($ticket);
+            TicketService::createMacroStatusAndUpdateTicket($ticket);
             $status = true;
             $message = __('messages.ticket.change_action_status_success');
             $statusCode = 200;

@@ -24,6 +24,7 @@ return new class extends Migration
             $table->longText('release_note')->nullable();
             $table->boolean('auto_wait_for_client_approval')->default(0);
             $table->integer('status')->nullable();
+            $table->integer('macro_status')->nullable();
             $table->integer('created_by');
             $table->integer('updated_by')->default(0);
             $table->timestamps();

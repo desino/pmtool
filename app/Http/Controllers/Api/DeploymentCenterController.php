@@ -9,6 +9,7 @@ use App\Models\Release;
 use App\Models\ReleaseTicket;
 use App\Models\Ticket;
 use App\Services\InitiativeService;
+use App\Services\TicketService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -166,6 +167,10 @@ class DeploymentCenterController extends Controller
         try {
             Ticket::whereIn('id', $request->input('ticketIds'))->update(['status' => Ticket::getStatusDone()]);
             $release->update(['status' => Release::PROCESSED_RELEASE]);
+            foreach ($request->input('ticketIds') as $ticketId) {
+                $ticket = Ticket::find($ticketId);
+                TicketService::createMacroStatusAndUpdateTicket($ticket);
+            }
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
