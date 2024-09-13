@@ -50,6 +50,11 @@ class Initiative extends Model
         return $this->hasOne(Release::class)->where('status', Release::UNPROCESSED_RELEASE);
     }
 
+    public function releases()
+    {
+        return $this->hasMany(Release::class);
+    }
+
     public static function statuses()
     {
         return [

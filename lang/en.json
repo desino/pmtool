@@ -219,6 +219,8 @@
     "messages.release.please_select_tasks": "Please select tasks.",
     "messages.release.please_select_tasks_only_ready_for_PRD": "Please select tasks only ready for PRD.",
     "messages.release.default_name": "Release",
+    "message.home.deployment_center.production_deployment.update_status_success": "Ticket status updated successfully.",
+    "messages.solution_design.section.release_not_exist": "Release does not exist.",
     "home": "Home",
     "login_title": "Login",
     "login_page_title": "Login",
@@ -469,5 +471,9 @@
     "home.deployment_center.acceptance_deployment.ticket_modal.title": "Acceptance Deployment Tickets",
     "home.deployment_center.acceptance_deployment.ticket_modal.li.name.text": "Name",
     "home.deployment_center.acceptance_deployment.ticket_modal.submit_but.text": "Deployed at ACCEPTANCE",
-    "home.deployment_center.acceptance_deployment.ticket_modal.submit.alert.text": "Are you sure you want update ticket status to <b>Ongoing</b> from <b>Ready to deploy at ACCEPTANCE</b>?"
+    "home.deployment_center.acceptance_deployment.ticket_modal.submit.alert.text": "Are you sure you want update ticket status to <b>Ongoing</b> from <b>Ready to deploy at ACCEPTANCE</b>?",
+    "home.deployment_center.production_deployment.ticket_modal.title": "Production Deployment Tickets",
+    "home.deployment_center.production_deployment.ticket_modal.li.name.text": "Name",
+    "home.deployment_center.production_deployment.ticket_modal.submit_but.text": "Deployed at PRODUCTION",
+    "home.deployment_center.production_deployment.ticket_modal.submit.alert.text": "Are you sure you want update ticket status to <b>Done</b> from <b>Ready to deploy at PRD</b>?"
 }

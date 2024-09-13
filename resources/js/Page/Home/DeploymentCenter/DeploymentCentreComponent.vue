@@ -13,7 +13,34 @@
                                 {{ $t('home.deployment_center.production_deployment.title') }}
                             </div>
                             <div class="card-body">
-
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item" v-if="productionDeployments.length > 0"
+                                        v-for="productionDeployment in productionDeployments"
+                                        :key="productionDeployment.id"
+                                        @click="openProductionDeploymentModal(productionDeployment)" role="button">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                {{ productionDeployment?.client?.name }} -
+                                                {{ productionDeployment?.name }}
+                                            </div>
+                                            <div class="col-md-4">
+                                                <h6>
+                                                    <span class="badge bg-desino">{{ productionDeployment?.tickets_count
+                                                        }}
+                                                        <span class="small">{{
+                                                            $t('home.deployment_center.test_deployment.tickets.text')
+                                                        }}</span>
+                                                    </span>
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li v-else class="list-group-item">
+                                        <div class="row col-md-12">
+                                            {{ $t('home.deployment_center.test_deployment.record_does_not_exist') }}
+                                        </div>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                         <div class="card mb-3">
@@ -103,6 +130,11 @@
             <AcceptanceDeploymentTicketsModalComponent ref="acceptanceDeploymentTicketsModalComponent"
                 @pageUpdated="getDeploymentCenterData()" />
         </div>
+        <div id="productionDeploymentTicketsModal" aria-hidden="true"
+            aria-labelledby="productionDeploymentTicketsModalLabel" class="modal fade" tabindex="-1">
+            <ProductionDeploymentTicketsModalComponent ref="productionDeploymentTicketsModalComponent"
+                @pageUpdated="getDeploymentCenterData()" />
+        </div>
     </div>
 </template>
 
@@ -117,16 +149,19 @@ import DeploymentCenterService from '../../../services/Home/DeploymentCenterServ
 import TestDeploymentTicketsModalComponent from './TestDeploymentTicketsModalComponent.vue';
 import { Modal } from 'bootstrap';
 import AcceptanceDeploymentTicketsModalComponent from './AcceptanceDeploymentTicketsModalComponent.vue';
+import ProductionDeploymentTicketsModalComponent from './ProductionDeploymentTicketsModalComponent.vue';
 export default {
     name: 'DeploymentCentreComponent',
     mixins: [globalMixin],
     components: {
         GlobalMessage,
         TestDeploymentTicketsModalComponent,
-        AcceptanceDeploymentTicketsModalComponent
+        AcceptanceDeploymentTicketsModalComponent,
+        ProductionDeploymentTicketsModalComponent
     },
     data() {
         return {
+            productionDeployments: [],
             testDeployments: [],
             acceptanceDeployments: [],
             errors: {},
@@ -139,12 +174,21 @@ export default {
             this.clearMessages();
             try {
                 this.setLoading(true);
-                const { content: { testDeploymentInitiatives, acceptanceDeploymentInitiative } } = await DeploymentCenterService.getDeploymentCenterData();
+                const { content: { testDeploymentInitiatives, acceptanceDeploymentInitiative, productionDeploymentInitiatives } } = await DeploymentCenterService.getDeploymentCenterData();
                 this.testDeployments = testDeploymentInitiatives;
                 this.acceptanceDeployments = acceptanceDeploymentInitiative;
+                this.productionDeployments = productionDeploymentInitiatives;
                 this.setLoading(false);
             } catch (error) {
                 this.handleError(error);
+            }
+        },
+        openProductionDeploymentModal(productionDeployment) {
+            this.$refs.productionDeploymentTicketsModalComponent.getProductionDeploymentTicketsModalData(productionDeployment);
+            const modalElement = document.getElementById('productionDeploymentTicketsModal');
+            if (modalElement) {
+                const modal = new Modal(modalElement);
+                modal.show();
             }
         },
         openAcceptanceDeploymentModal(acceptanceDeployment) {

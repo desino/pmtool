@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\Initiative;
+use App\Models\Ticket;
+use Illuminate\Support\Facades\DB;
 
 class InitiativeService
 {
@@ -76,5 +78,29 @@ class InitiativeService
             })
             ->get();
         return $acceptanceDeploymentInitiative;
+    }
+
+    public static function getInitiativeWithProductionDeploymentTickets()
+    {
+
+        $productionDeploymentInitiative = Initiative::select(
+            'initiatives.id',
+            'initiatives.name',
+            'initiatives.client_id',
+            DB::raw('COUNT(tickets.id) as tickets_count')
+        )
+            ->with(['client' => function ($query) {
+                $query->select('id', 'name');
+            }])
+            ->JOIN('releases', 'releases.initiative_id', '=', 'initiatives.id')
+            ->JOIN('release_tickets', 'release_tickets.release_id', '=', 'releases.id')
+            ->JOIN('tickets', function ($query) {
+                $query->on('tickets.id', '=', 'release_tickets.ticket_id')
+                    ->where('tickets.status', Ticket::getStatusReadyForPRD());
+            })
+            ->groupBy('initiatives.id')
+            ->having('tickets_count', '>', 0)
+            ->get();
+        return $productionDeploymentInitiative;
     }
 }

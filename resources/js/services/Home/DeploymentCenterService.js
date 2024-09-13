@@ -13,6 +13,8 @@ const endpoints = {
     submitTestDeploymentTicket: `${defaultPath}/submit-test-deployment-ticket/:initiative_id`,
     getAcceptanceDeploymentTicketsModalData: `${defaultPath}/get-acceptance-deployment-tickets-modal-data/:initiative_id`,
     submitAcceptanceDeploymentTicket: `${defaultPath}/submit-acceptance-deployment-ticket/:initiative_id`,
+    getProductionDeploymentTicketsModalData: `${defaultPath}/get-production-deployment-tickets-modal-data/:initiative_id`,
+    submitProductionDeploymentTicket: `${defaultPath}/submit-production-deployment-ticket/:initiative_id`
 }
 
 const DeploymentCenterService = {
@@ -42,6 +44,15 @@ const DeploymentCenterService = {
             throw handleError(error);
         }
     },
+    async getProductionDeploymentTicketsModalData(data) {
+        try {
+            const endpoint = endpoints.getProductionDeploymentTicketsModalData.replace(':initiative_id', data.initiative_id);
+            const response = await axiosRequest.get(endpoint);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
     async submitTestDeploymentTicket(data) {
         try {
             const endpoint = endpoints.submitTestDeploymentTicket.replace(':initiative_id', data.initiative_id);
@@ -54,6 +65,15 @@ const DeploymentCenterService = {
     async submitAcceptanceDeploymentTicket(data) {
         try {
             const endpoint = endpoints.submitAcceptanceDeploymentTicket.replace(':initiative_id', data.initiative_id);
+            const response = await axiosRequest.post(endpoint, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async submitProductionDeploymentTicket(data) {
+        try {
+            const endpoint = endpoints.submitProductionDeploymentTicket.replace(':initiative_id', data.initiative_id);
             const response = await axiosRequest.post(endpoint, data);
             return response.data;
         } catch (error) {

@@ -15,4 +15,9 @@ class ReleaseTicket extends Model
     {
         return $this->belongsTo(Release::class);
     }
+
+    public function ticket()
+    {
+        return $this->belongsTo(Ticket::class);
+    }
 }

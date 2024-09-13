@@ -26,6 +26,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('submit-test-deployment-ticket/{initiative_id}', 'submitTestDeploymentTicket');
         Route::get('get-acceptance-deployment-tickets-modal-data/{initiative_id}', 'getAcceptanceDeploymentTicketsModalData');
         Route::post('submit-acceptance-deployment-ticket/{initiative_id}', 'submitAcceptanceDeploymentTicket');
+        Route::get('get-production-deployment-tickets-modal-data/{initiative_id}', 'getProductionDeploymentTicketsModalData');
+        Route::post('submit-production-deployment-ticket/{initiative_id}', 'submitProductionDeploymentTicket');
     });
 
     Route::controller(ClientController::class)->prefix('client')->group(function () {

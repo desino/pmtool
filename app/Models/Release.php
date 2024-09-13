@@ -44,7 +44,7 @@ class Release extends Model
         };
     }
 
-    public function releaseTickets()
+    public function tickets()
     {
         return $this->hasMany(ReleaseTicket::class);
     }
