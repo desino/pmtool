@@ -5,7 +5,7 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="productionDeploymentTicketsModalLabel">{{
                         $t('home.deployment_center.production_deployment.ticket_modal.title')
-                    }}</h5>
+                        }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -31,7 +31,7 @@
                                         @change="handleSelectProductionDeploymentTicket(ticket)">
                                 </div> -->
                                 <div class="col-md-8" :for="'chk_production_deployment_ticket_' + ticket.ticket.id">
-                                    {{ ticket?.ticket.name }}
+                                    {{ ticket?.ticket.composed_name }}
                                 </div>
                             </div>
                         </li>

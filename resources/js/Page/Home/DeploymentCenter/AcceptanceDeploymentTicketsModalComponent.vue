@@ -5,7 +5,7 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="acceptanceDeploymentTicketsModalLabel">{{
                         $t('home.deployment_center.acceptance_deployment.ticket_modal.title')
-                        }}</h5>
+                    }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -31,7 +31,7 @@
                                         @change="handleSelectAcceptanceDeploymentTicket(ticket)">
                                 </div>
                                 <div class="col-md-8" :for="'chk_acceptance_deployment_ticket_' + ticket.id">
-                                    {{ ticket?.name }}
+                                    {{ ticket?.composed_name }}
                                 </div>
                             </div>
                         </li>
