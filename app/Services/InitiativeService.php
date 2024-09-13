@@ -100,6 +100,7 @@ class InitiativeService
             })
             ->groupBy('initiatives.id')
             ->groupBy('initiatives.name')
+            ->groupBy('initiatives.client_id')
             ->having('tickets_count', '>', 0)
             ->get();
         return $productionDeploymentInitiative;
