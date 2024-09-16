@@ -156,16 +156,6 @@ class Ticket extends Model
             self::MACRO_STATUS_DONE => ['label' => __('ticket_macro_status.done'), 'color' => 'primary'],
             default => '-'
         };
-        // self::MACRO_STATUS_DETAIL_TICKET => __('ticket_macro_status.detail_ticket'),
-        // self::MACRO_STATUS_CLARIFY_AND_ESTIMATE => __('ticket_macro_status.clarify_and_estimate'),
-        // self::MACRO_STATUS_DEVELOP_WAIT_FOR_CLIENT => __('ticket_macro_status.develop_wait_for_client'),
-        // self::MACRO_STATUS_DEVELOP => __('ticket_macro_status.develop'),
-        // self::MACRO_STATUS_TEST_WAIT_FOR_DEPLOYMENT_TO_TEST => __('ticket_macro_status.test_wait_for_deployment_to_test'),
-        // self::MACRO_STATUS_TEST => __('ticket_macro_status.test'),
-        // self::MACRO_STATUS_VALIDATE_WAITING_FOR_DEPLOYMENT_TO_ACC => __('ticket_macro_status.validate_waiting_for_deployment_to_acc'),
-        // self::MACRO_STATUS_VALIDATE => __('ticket_macro_status.validate'),
-        // self::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_TEST => __('ticket_macro_status.ready_for_deployment_to_test'),
-        // self::MACRO_STATUS_DONE => __('ticket_macro_status.done'),
     }
 
     protected function displayCreatedAt(): Attribute
