@@ -98,7 +98,13 @@
                                         <span><i class="bi bi-grip-vertical handle-functionality me-2"></i></span>
                                         <span>{{ functionality.display_name }}</span>
                                         <span class="ms-auto d-flex align-items-center">
+                                            <a class="nav-link text-dark" href="javascript:"
+                                                :title="$t('solution_design.functionality_form.actions_create_ticket_tooltip')"
+                                                @click.stop="showFunctionalityCreateTicketModal(functionality)">
+                                                <i class="bi bi-plus-circle mx-2"></i>
+                                            </a>
                                             <a class="text-danger me-2" href="javascript:"
+                                                :title="$t('solution_design.functionality_form.actions_delete_tooltip')"
                                                 @click.stop="deleteFunctionality(functionality)">
                                                 <i class="bi bi-trash3"></i>
                                             </a>
@@ -173,9 +179,12 @@
                 </div>
             </form>
         </div>
+
+        <div id="createFunctionalityTicketModal" aria-hidden="true"
+            aria-labelledby="createFunctionalityTicketModalLabel" class="modal fade" tabindex="-1">
+            <CreateTicketModalComponent ref="createFunctionalityTicketModalComponent" @pageUpdated="fetchData" />
+        </div>
     </div>
-
-
 </template>
 
 <script>
@@ -189,6 +198,8 @@ import showToast from '../../utils/toasts';
 import eventBus from '../../eventBus';
 import draggable from 'vuedraggable';
 import { mapActions } from 'vuex';
+import { Modal } from "bootstrap";
+import CreateTicketModalComponent from './../../Page/SolutionDesign/Ticket/CreateTicketModalComponent.vue';
 
 
 export default {
@@ -198,7 +209,8 @@ export default {
         GlobalMessage,
         AddNewSectionComponent,
         TinyMceEditor,
-        draggable
+        draggable,
+        CreateTicketModalComponent,
     },
     data() {
         return {
@@ -228,6 +240,7 @@ export default {
     methods: {
         ...mapActions(['setLoading']),
         async fetchData() {
+            console.log('test :: ',);
             try {
                 await Promise.all([
                     this.getInitiativeData(),
@@ -519,6 +532,16 @@ export default {
             this.errors = {};
             messageService.clearMessage();
         },
+        showFunctionalityCreateTicketModal(functionality) {
+            this.$refs.createFunctionalityTicketModalComponent.resetForm();
+            this.$refs.createFunctionalityTicketModalComponent.fetchData();
+            this.$refs.createFunctionalityTicketModalComponent.selectedFunctionalityFromFunctionalityList(functionality);
+            const modalElement = document.getElementById('createFunctionalityTicketModal');
+            if (modalElement) {
+                const modal = new Modal(modalElement);
+                modal.show();
+            }
+        }
     },
     mounted() {
         this.fetchData();

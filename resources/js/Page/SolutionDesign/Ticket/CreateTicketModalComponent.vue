@@ -50,7 +50,7 @@
                     <div class="mb-3">
                         <label class="form-label" for="initial_estimation_development_time">{{
                             $t('create_ticket_modal_modal_input_initial_estimation_development_time')
-                        }} <strong class="text-danger">*</strong>
+                            }} <strong class="text-danger">*</strong>
                         </label>
                         <input id="initial_estimation_development_time"
                             v-model="formData.initial_estimation_development_time"
@@ -221,6 +221,9 @@ export default {
             this.ticket_actions = this.actions;
             this.setLoading(false);
         },
+        selectedFunctionalityFromFunctionalityList(functionality) {
+            this.formData.functionality_id = functionality;
+        },
         async storeTicket() {
             this.clearMessages();
             try {
@@ -246,6 +249,9 @@ export default {
                 this.resetForm();
                 if (this.$route.name === 'tasks') {
                     eventBus.$emit('refreshTickets');
+                }
+                if (this.$route.name === 'solution-design') {
+                    this.$emit('pageUpdated');
                 }
             } catch (error) {
                 this.handleError(error);
@@ -302,6 +308,14 @@ export default {
                 if (modal) {
                     this.setLoading(false);
                     modal.hide();
+                }
+            }
+            const modalCreateFunctionalityTicketElement = document.getElementById('createFunctionalityTicketModal');
+            if (modalCreateFunctionalityTicketElement) {
+                const modalCreateFunctionalityTicket = Modal.getInstance(modalCreateFunctionalityTicketElement);
+                if (modalCreateFunctionalityTicket) {
+                    this.setLoading(false);
+                    modalCreateFunctionalityTicket.hide();
                 }
             }
         },
