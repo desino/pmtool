@@ -18,6 +18,6 @@ class Functionality extends Model
 
     public function openTickets()
     {
-        return $this->hasMany(Ticket::class)->where('status', '!=', TicketAction::getStatusDone());
+        return $this->hasMany(Ticket::class)->where('status', '!=', Ticket::getStatusDone());
     }
 }

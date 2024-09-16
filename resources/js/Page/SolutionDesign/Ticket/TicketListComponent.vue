@@ -240,6 +240,7 @@ export default {
                 next_action_owner: "",
                 functionalities: [],
                 projects: [],
+                is_open_task: false
             },
             isChkAllTickets: false,
             selectedTasks: [],
@@ -250,15 +251,20 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['user']),
+        ...mapGetters(['user', 'passedData']),
     },
     methods: {
         ...mapActions(['setLoading']),
         async fetchAllTasks(page = 1) {
+            // console.log('passedData :: ', this.passedData.functionality);
             this.isChkAllTickets = false;
             this.clearMessages();
             this.selectedTasks = [];
             try {
+                if (this.passedData.functionality) {
+                    this.filter.functionalities.push(this.passedData.functionality);
+                    this.filter.is_open_task = true;
+                }
                 const params = {
                     page: page,
                     filters: this.filter

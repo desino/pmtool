@@ -244,6 +244,9 @@ class TicketController extends Controller
             ->when(!empty($filters['functionalities']), function (Builder $query) use ($filters) {
                 $query->whereIn('functionality_id', array_column($filters['functionalities'], 'id'));
             })
+            ->when(!empty($filters['is_open_task']) && $filters['is_open_task'] == 'true', function (Builder $query) use ($filters) {
+                $query->where('status', '!=', Ticket::getStatusDone());
+            })
             ->when(!empty($filters['projects']) != '', function (Builder $query) use ($filters) {
                 $query->whereIn('project_id', array_column($filters['projects'], 'id'));
             })

@@ -54,7 +54,7 @@
                                         <div v-if="errors.section_name" class="invalid-feedback ms-4">
                                             <span v-for="(error, index) in errors.section_name" :key="index">{{
                                                 error
-                                                }}</span>
+                                            }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -113,6 +113,7 @@
                                                     functionality?.open_tickets_count
                                                 }}</span>
                                             <a class="text-primary ms-2" href="javascript:"
+                                                @click.stop="showFunctionalityDetailModal(functionality)"
                                                 :title="$t('solution_design.functionality_form.actions_show_open_task_tooltip')">
                                                 <i class="bi bi-eye-fill"></i>
                                             </a>
@@ -135,7 +136,7 @@
                         <div class="mb-3">
                             <label class="form-label" for="functionality_name">{{
                                 $t('solution_design.functionality_form.name')
-                                }} <strong class="text-danger">*</strong>
+                            }} <strong class="text-danger">*</strong>
                             </label>
                             <input id="functionality_name" v-model="functionalityFormData.name"
                                 :class="{ 'is-invalid': errors.name }" class="form-control" placeholder="Enter value"
@@ -149,13 +150,13 @@
                         <div class="mb-3">
                             <label class="form-label" for="section_id">{{
                                 $t('solution_design.functionality_form.section_name_select_box')
-                                }} <strong class="text-danger">*</strong>
+                            }} <strong class="text-danger">*</strong>
                             </label>
                             <select v-model="functionalityFormData.section_id" aria-label="Default select example"
                                 class="form-select" :class="{ 'is-invalid': errors.section_id }">
                                 <option value="">{{
                                     $t('solution_design.functionality_form.section_name_select_box_placeholder')
-                                    }}
+                                }}
                                 </option>
                                 <option v-for="section in sectionsWithFunctionalities" :key="section.id"
                                     :value="section.id">
@@ -171,7 +172,7 @@
                 <div class="mb-3">
                     <label class="form-label" for="functionalityDescription">{{
                         $t('solution_design.functionality_form.description')
-                        }}</label>
+                    }}</label>
                     <TinyMceEditor v-model="functionalityFormData.description" />
                 </div>
                 <div class="mb-3">
@@ -207,6 +208,7 @@ import draggable from 'vuedraggable';
 import { mapActions } from 'vuex';
 import { Modal } from "bootstrap";
 import CreateTicketModalComponent from './../../Page/SolutionDesign/Ticket/CreateTicketModalComponent.vue';
+import store from '../../store';
 
 
 export default {
@@ -547,6 +549,13 @@ export default {
                 const modal = new Modal(modalElement);
                 modal.show();
             }
+        },
+        showFunctionalityDetailModal(functionality) {
+            const data = { functionality: functionality };
+            store.commit("setPassedData", data);
+            this.$router.push({
+                name: 'tasks'
+            });
         }
     },
     mounted() {

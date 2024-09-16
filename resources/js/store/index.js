@@ -7,7 +7,8 @@ export default new Vuex.Store({
         user: null,
         loading: false,
         currentInitiative: {},
-        serverError: {}
+        serverError: {},
+        passedData: {}
     },
     mutations: {
         /**
@@ -67,6 +68,10 @@ export default new Vuex.Store({
          */
         setCurrentInitiative(state, initiative) {
             state.currentInitiative = initiative;
+        },
+
+        setPassedData(state, payload) {
+            state.passedData = payload;
         }
     },
     actions: {
@@ -78,6 +83,9 @@ export default new Vuex.Store({
         },
         setServerError({ commit }, error) {
             commit('setServerError', error);
+        },
+        savePassedData({ commit }, data) {
+            commit('setPassedData', data);
         }
     },
     getters: {
@@ -86,7 +94,8 @@ export default new Vuex.Store({
         isAuthenticated: state => state.isAuthenticated,
         user: state => state.user,
         loading: state => state.loading,
-        currentInitiative: state => state.currentInitiative
+        currentInitiative: state => state.currentInitiative,
+        passedData: state => state.passedData
     },
 });
 
