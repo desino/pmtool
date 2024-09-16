@@ -21,7 +21,7 @@ class Section extends Model
 
     public function functionalities()
     {
-        return $this->hasMany(Functionality::class)->orderBy('order_no', 'asc');
+        return $this->hasMany(Functionality::class)->withCount('openTickets')->orderBy('order_no', 'asc');
     }
 
     public function initiative()

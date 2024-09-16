@@ -10,7 +10,7 @@ use App\Models\Functionality;
 use App\Models\Section;
 use App\Services\ClientService;
 use App\Services\InitiativeService;
-use App\Services\SolutionDesignServicec;
+use App\Services\SolutionDesignService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -19,7 +19,7 @@ class SolutionDesignController extends Controller
 {
     public function index(Request $request)
     {
-        $getSectionsWithFunctionalities = SolutionDesignServicec::getSectionsWithFunctionalities($request);
+        $getSectionsWithFunctionalities = SolutionDesignService::getSectionsWithFunctionalities($request);
         return ApiHelper::response(true, '', $getSectionsWithFunctionalities, 200);
     }
     public function getInitiative(Request $request)
@@ -67,7 +67,7 @@ class SolutionDesignController extends Controller
         $status = false;
         $section = collect([]);
 
-        $section = SolutionDesignServicec::getSection($request->post('section_id'), $request->post('initiative_id'));
+        $section = SolutionDesignService::getSection($request->post('section_id'), $request->post('initiative_id'));
         if (!$section) {
             return ApiHelper::response($status, __('messages.solution_design.section.store.section_not_exist'), '', 400);
         }
@@ -81,7 +81,7 @@ class SolutionDesignController extends Controller
         }
 
         try {
-            $section = SolutionDesignServicec::updateSection($request, $section);
+            $section = SolutionDesignService::updateSection($request, $section);
             $statusCode = 200;
             $message = __('messages.solution_design.section.update_success');
             DB::commit();
@@ -110,7 +110,7 @@ class SolutionDesignController extends Controller
             return ApiHelper::response($status, __('messages.solution_design.sectino.client_not_exist'), '', 400);
         }
 
-        $section = SolutionDesignServicec::getSection($request->post('section_id'), $request->post('initiative_id'));
+        $section = SolutionDesignService::getSection($request->post('section_id'), $request->post('initiative_id'));
         if (!$section) {
             return ApiHelper::response($status, __('messages.solution_design.functionality.section_not_exist'), '', 400);
         }
@@ -127,11 +127,11 @@ class SolutionDesignController extends Controller
             $status = true;
             $transactionType = "";
             if (isset($validateData['functionality_id'])) {
-                $functionality = SolutionDesignServicec::updateFunctionality($request, $validateData);
+                $functionality = SolutionDesignService::updateFunctionality($request, $validateData);
                 $message = __('messages.solution_design.functionality.update_success');
                 $transactionType = "updated";
             } else {
-                $functionality = SolutionDesignServicec::storeFunctionality($request, $validateData);
+                $functionality = SolutionDesignService::storeFunctionality($request, $validateData);
                 $message = __('messages.solution_design.functionality.store_success');
                 $transactionType = "created";
             }
@@ -162,7 +162,7 @@ class SolutionDesignController extends Controller
             return ApiHelper::response($status, __('messages.solution_design.section.client_not_exist'), '', 400);
         }
 
-        $section = SolutionDesignServicec::getSection($request->post('section_id'), $request->post('initiative_id'));
+        $section = SolutionDesignService::getSection($request->post('section_id'), $request->post('initiative_id'));
         if (!$section) {
             return ApiHelper::response($status, __('messages.solution_design.functionality.section_not_exist'), '', 400);
         }
@@ -198,7 +198,7 @@ class SolutionDesignController extends Controller
             return ApiHelper::response($status, __('messages.solution_design.section.client_not_exist'), '', 400);
         }
 
-        $section = SolutionDesignServicec::getSection($request->post('id'), $request->post('initiative_id'));
+        $section = SolutionDesignService::getSection($request->post('id'), $request->post('initiative_id'));
         if (!$section) {
             return ApiHelper::response($status, __('messages.solution_design.functionality.section_not_exist'), '', 400);
         }
@@ -207,7 +207,7 @@ class SolutionDesignController extends Controller
         try {
             $section->functionalities()->delete();
             $section->delete();
-            // SolutionDesignServicec::deleteSection($request);
+            // SolutionDesignService::deleteSection($request);
             $statusCode = 200;
             $message = __('messages.solution_design.section.delete_success');
             DB::commit();
@@ -234,7 +234,7 @@ class SolutionDesignController extends Controller
             return ApiHelper::response($status, __('messages.solution_design.section.client_not_exist'), '', 400);
         }
 
-        $section = SolutionDesignServicec::getSection($request->post('section_id'), $request->post('initiative_id'));
+        $section = SolutionDesignService::getSection($request->post('section_id'), $request->post('initiative_id'));
         if (!$section) {
             return ApiHelper::response($status, __('messages.solution_design.functionality.section_not_exist'), '', 400);
         }
@@ -246,7 +246,7 @@ class SolutionDesignController extends Controller
 
         DB::beginTransaction();
         try {
-            SolutionDesignServicec::updateFunctionalityOrderNo($request);
+            SolutionDesignService::updateFunctionalityOrderNo($request);
 
             DB::commit();
         } catch (\Exception $e) {
@@ -274,12 +274,12 @@ class SolutionDesignController extends Controller
             return ApiHelper::response($status, __('messages.solution_design.section.client_not_exist'), '', 400);
         }
 
-        $section = SolutionDesignServicec::getSection($request->post('id'), $request->post('initiative_id'));
+        $section = SolutionDesignService::getSection($request->post('id'), $request->post('initiative_id'));
         if (!$section) {
             return ApiHelper::response($status, __('messages.solution_design.functionality.section_not_exist'), '', 400);
         }
         try {
-            $retData = SolutionDesignServicec::updateSectionOrderNo($request);
+            $retData = SolutionDesignService::updateSectionOrderNo($request);
             $statusCode = 200;
             $message = __('messages.solution_design.section.update_section_order_no_success');
             DB::commit();

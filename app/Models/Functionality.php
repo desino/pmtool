@@ -15,4 +15,9 @@ class Functionality extends Model
     {
         return $this->belongsTo(Section::class);
     }
+
+    public function openTickets()
+    {
+        return $this->hasMany(Ticket::class)->where('status', '!=', TicketAction::getStatusDone());
+    }
 }

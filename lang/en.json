@@ -446,6 +446,8 @@
     "solution_design.functionality_form.submit_update_but_text": "Update",
     "solution_design.functionality_form.actions_delete_tooltip": "Delete functionality",
     "solution_design.functionality_form.actions_create_ticket_tooltip": "Create Ticket",
+    "solution_design.functionality_form.actions_open_tickets_count_tooltip": "Open Tickets Count",
+    "solution_design.functionality_form.actions_show_open_task_tooltip": "Show open tasks",
     "solution_design.section.option_edit_but_text": "Edit",
     "solution_design.section.option_delete_but_text": "Delete",
     "solution_design.section_delete_actions_modal_title": "Delete Section",
