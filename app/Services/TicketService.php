@@ -111,6 +111,9 @@ class TicketService
 
     public static function insertTicketActions(int $ticketId, array $ticketActions, bool $autoWaitForClientApproval)
     {
+        $ticketActions = Arr::where($ticketActions, function ($value) {
+            return !isset($value['status']) || $value['status'] != TicketAction::getStatusDone();
+        });
         $actions = array_column($ticketActions, 'action');
 
         array_multisort($actions, SORT_ASC, $ticketActions);
@@ -131,6 +134,7 @@ class TicketService
         if (!empty($insertedOrUpdateIds)) {
             TicketAction::whereNotIn('id', $insertedOrUpdateIds)
                 ->where('ticket_id', $ticketId)
+                ->where('status', '!=', TicketAction::getStatusDone())
                 // ->where('action', $ticketAction['action'])
                 ->delete();
         }

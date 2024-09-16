@@ -45,8 +45,72 @@
     </div>
     <hr>
     <GlobalMessage v-if="showMessage" />
-    <div class="app-content mt-2">
+    <div class="app-content">
         <div class="row">
+            <div class="col-md-2 border-end text-light fw-bold align-items-center d-flex justify-content-center"
+                :class="'bg-' + ticketData?.macro_status_label?.color">
+                {{ ticketData?.macro_status_label?.label }}
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-body p-1 align-items-center">
+                                <div class="">
+                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.task_estimation') }}</h6>
+                                    <span class="badge rounded-3 bg-success-subtle text-success">{{
+                                        ticketData.initial_dev_time
+                                    }} hrs</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-body p-1 align-items-center">
+                                <h6 class="fw-bold mx-1">{{
+                                    $t('ticket_details.task_current_action_owner_label_text') }}</h6>
+                                <div v-if="currentAction">
+                                    <select v-model="currentActionFormData.user_id" :disabled="disableActionUser()"
+                                        class="form-select"
+                                        @change="handleCurrentActionChangeUser($event.target.value)">
+                                        <option value="">Select User</option>
+                                        <option v-for="user in users" :key="user.id" :value="user.id">
+                                            {{ user.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card" v-if="nextAction">
+                            <div class="card-body p-2 align-items-center">
+                                <div class="">
+                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.task_next_action_label_text') }}</h6>
+                                    <span class="badge rounded-3 bg-success-subtle text-success">
+                                        {{ nextAction.action_name }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <button class="btn bg-desino text-white" :disabled="!currentActionAllowOrNot()"
+                    @click="handleCurrentActionChangeStatus()">
+                    {{ $t('ticket_details.task_current_action_completed_but_text') }}
+                </button>
+                <button v-if="previousAction && previousActionAllowOrNot()" class="btn bg-desino text-white mx-2"
+                    @click="handlePreviousActionStatus()" :title="$t('ticket_action.move_to_previous_action')">
+                    {{ $t('ticket_details.task_previous_action_completed_but_text') }}
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="app-content mt-2">
+        <!-- <div class="row">
             <div class="col-md-6 border-end">
                 <div class="row row-cols-xl-3 row-cols-lg-3 row-cols-md-2 row-cols-2 g-2 g-lg-3">
                     <div class="col">
@@ -130,7 +194,6 @@
                         <div class="card border-0 h-100">
                             <div class="card-body p-2 px-2 text-left d-flex align-items-center">
                                 <div class="w-100 lh-1">
-                                    <!-- <h6 class="fw-bold mx-1">{{ $t('ticket_details.current_action_user') }}</h6> -->
                                     <select v-model="currentActionFormData.user_id" :disabled="disableActionUser()"
                                         class="form-select"
                                         @change="handleCurrentActionChangeUser($event.target.value)">
@@ -179,7 +242,6 @@
                         <div class="card border-0 h-100">
                             <div class="card-body p-2 px-2 text-left d-flex align-items-center">
                                 <div class="w-100 lh-1">
-                                    <!-- <h6 class="fw-bold mx-1">{{ $t('ticket_details.next_action_user') }}</h6> -->
                                     <select v-model="nextActionFormData.user_id" :disabled="disableActionUser()"
                                         class="form-select" @change="handleNextActionChangeUser($event.target.value)">
                                         <option value="">Select User</option>
@@ -193,7 +255,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
         <hr>
         <div class="col-md-12">
             <ul id="custom-tabs-five-tab" class="nav nav-tabs border-bottom-0" role="tablist">
@@ -311,7 +373,7 @@
                                     <div v-if="errors.release_note" class="text-danger mt-2">
                                         <span v-for="(error, index) in errors.release_note" :key="index">{{
                                             error
-                                            }}</span>
+                                        }}</span>
                                     </div>
                                     <button class="btn w-100 bg-desino text-white fw-bold m-2 rounded"
                                         @click="updateReleaseNote">
@@ -435,6 +497,7 @@ export default {
                 quality_owner_id: '',
                 technical_owner: '',
                 technical_owner_id: '',
+                macro_status_label: {}
             },
             currentActionFormData: {
                 ticket_id: '',
@@ -564,6 +627,7 @@ export default {
             this.ticketData.technical_owner_id = content.initiative?.technical_owner?.id;
             this.ticketData.asana_task_link = content.asana_task_link;
             this.ticketData.auto_wait_for_client_approval = content.auto_wait_for_client_approval == 1 ? true : false;
+            this.ticketData.macro_status_label = content.macro_status_label;
             this.currentAction = content.current_action;
             this.currentActionFormData.user_id = content.current_action?.user_id;
             this.currentActionFormData.status = content.current_action?.status;
@@ -660,7 +724,7 @@ export default {
             });
         },
         currentActionAllowOrNot() {
-            if (this.user.id != this.currentAction?.user?.id || (this.ticketData.auto_wait_for_client_approval && this.currentAction?.action > 2)) {
+            if (this.user?.id != this.currentAction?.user?.id || (this.ticketData.auto_wait_for_client_approval && this.currentAction?.action > 2)) {
                 return false;
             }
             return true;
@@ -829,7 +893,6 @@ export default {
     mounted() {
         this.fetchTicketData(this.localTicketId);
         eventBus.$on('refreshTicketDetail', this.refreshTicketDetail);
-        console.log('detailuser :: ', this.user);
     }
 }
 </script>

@@ -164,29 +164,29 @@ class TicketController extends Controller
         $validateData['asana_task_id'] = $task['data']['data']['gid'];
 
         DB::beginTransaction();
-        try {
-            $ticket->update($validateData);
+        // try {
+        $ticket->update($validateData);
 
-            if (!empty($validateData['ticket_actions'])) {
-                // TicketService::deleteActions($ticket->id);
-                TicketService::insertTicketActions($ticket->id, $validateData['ticket_actions'], $validateData['auto_wait_for_client_approval']);
-                TicketService::updateTicketStatus($ticket);
-                TicketService::createMacroStatusAndUpdateTicket($ticket);
-            }
-            $status = true;
-            $message = __('messages.create_ticket.update_success');
-            $statusCode = 200;
-            $retData = [
-                'ticket' => $ticket,
-                'asanaTaskData' => $task['data']['data'],
-            ];
-            DB::commit();
-        } catch (Exception $e) {
-            DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
-            $statusCode = 500;
-            Log::info($e->getMessage());
+        if (!empty($validateData['ticket_actions'])) {
+            // TicketService::deleteActions($ticket->id);
+            TicketService::insertTicketActions($ticket->id, $validateData['ticket_actions'], $validateData['auto_wait_for_client_approval']);
+            TicketService::updateTicketStatus($ticket);
+            TicketService::createMacroStatusAndUpdateTicket($ticket);
         }
+        $status = true;
+        $message = __('messages.create_ticket.update_success');
+        $statusCode = 200;
+        $retData = [
+            'ticket' => $ticket,
+            'asanaTaskData' => $task['data']['data'],
+        ];
+        DB::commit();
+        // } catch (Exception $e) {
+        //     DB::rollBack();
+        //     $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+        //     $statusCode = 500;
+        //     Log::info($e->getMessage());
+        // }
         return ApiHelper::response($status, $message, $retData, $statusCode);
     }
 
@@ -345,12 +345,11 @@ class TicketController extends Controller
             'currentAction',
             'nextAction',
             'previousAction',
-            'testCases'
+            'testCases',
         ])->where([
             ['id', '=', $ticket_id],
             ['initiative_id', '=', $initiative_id]
         ])->first();
-
         // If the ticket is not found, return a 404 response
         if (!$ticket) {
             return ApiHelper::response(false, __('messages.ticket.not_found'), [], 404);
