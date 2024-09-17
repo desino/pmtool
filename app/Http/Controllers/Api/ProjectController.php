@@ -69,9 +69,13 @@ class ProjectController extends Controller
         $status = false;
         $requestData = $request->all();
 
-        $project = Project::where('initiative_id', $requestData['initiative_id'])->find($requestData['id']);
+        $project = Project::withCount('tickets')->where('initiative_id', $requestData['initiative_id'])->find($requestData['id']);
         if (!$project) {
             return ApiHelper::response($status, __('messages.project.not_found'), '', 400);
+        }
+
+        if ($project->tickets_count > 0 && $requestData['status'] == 0) {
+            return ApiHelper::response($status, __('messages.solution_design.section.tickets_exist'), '', 400);
         }
 
         $initiative = InitiativeService::getInitiative($request);

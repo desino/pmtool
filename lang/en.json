@@ -212,6 +212,7 @@
     "messages.project.project_not_exist": "Project does not exist.",
     "messages.project.assign_success": "Project assigned successfully.",
     "messages.project.remove_success": "Project removed successfully from task.",
+    "messages.solution_design.section.tickets_exist": "You can not change status because it has tickets.",
     "message.home.deployment_center.test_deployment.update_status_success": "Ticket status updated successfully.",
     "messages.release.create_success": "Release created successfully.",
     "messages.release.please_select_valid_release": "Please select valid release.",

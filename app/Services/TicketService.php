@@ -93,7 +93,7 @@ class TicketService
 
     public static function getInitiativeProject(int $initiative_id)
     {
-        $projects = Project::where('initiative_id', $initiative_id)->get();
+        $projects = Project::where('initiative_id', $initiative_id)->where('status', 1)->get();
         return $projects;
     }
 
