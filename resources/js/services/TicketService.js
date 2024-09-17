@@ -24,6 +24,7 @@ const endpoints = {
     changePreviousActionStatus: `${defaultPath}/change-previous-action-status/:ticket_id`,
     getCreateReleaseData: `${defaultPath}/get-create-release-data`,
     submitCreateRelease: `${defaultPath}/create-release`,
+    updateTicketDetailEstimatedHours: `${defaultPath}/update-ticket-detail-estimated-hours/:ticket_id`,
 }
 
 const SolutionDesignService = {
@@ -166,6 +167,15 @@ const SolutionDesignService = {
     async submitCreateRelease(data) {
         try {
             const endpoint = endpoints.submitCreateRelease.replace(':initiative_id', data.initiative_id);
+            const response = await axiosRequest.post(endpoint, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async updateTicketDetailEstimatedHours(data) {
+        try {
+            const endpoint = endpoints.updateTicketDetailEstimatedHours.replace(':initiative_id', data.initiative_id).replace(':ticket_id', data.ticket_id);
             const response = await axiosRequest.post(endpoint, data);
             return response.data;
         } catch (error) {

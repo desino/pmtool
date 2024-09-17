@@ -6,6 +6,7 @@ use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\AssignProjectRequest;
 use App\Http\Requests\Api\CreateReleaseRequest;
+use App\Http\Requests\Api\TicketDetailEstimatedHoursRequest;
 use App\Http\Requests\Api\TicketRequest;
 use App\Http\Requests\UpdateReleaseNoteRequest;
 use App\Models\Functionality;
@@ -689,5 +690,51 @@ class TicketController extends Controller
             Log::info($e->getMessage());
         }
         return ApiHelper::response($status, $message, '', $statusCode);
+    }
+
+    public function updateTicketDetailEstimatedHours(TicketDetailEstimatedHoursRequest $request, $initiativeId, $ticketId)
+    {
+        $requestData = $request->all();
+
+        $status = false;
+        $request->merge(['initiative_id' => $initiativeId]);
+        $initiative = InitiativeService::getInitiative($request);
+
+        if (!$initiative) {
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
+        }
+
+        $ticket = Ticket::with('currentAction')->find($ticketId);
+        if (!$ticket) {
+            return ApiHelper::response($status, __('messages.ticket.ticket_not_exist'), '', 400);
+        }
+        if (!empty($ticket->currentAction)) {
+            if (!empty($ticket->currentAction->user)) {
+                if ($ticket->currentAction->action != TicketAction::getActionClarifyAndEstimate() || Auth::id() != $ticket->currentAction->user->id) {
+                    return ApiHelper::response($status, __('messages.ticket.update_ticket_detail_estimated_hours_not_allowed'), '', 400);
+                }
+            }
+        }
+
+        $status = true;
+        $message = __('messages.ticket_detail.update_ticket_detail_estimated_hours_success');
+        $statusCode = 200;
+        $retData = [
+            'ticket' => ''
+        ];
+        DB::beginTransaction();
+        try {
+            $ticket->update(['initial_estimation_development_time' => $requestData['initial_estimation_development_time']]);
+            DB::commit();
+            $retData = [
+                'ticket' => $ticket
+            ];
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $statusCode = 500;
+            Log::info($e->getMessage());
+        }
+        return ApiHelper::response($status, $message, $retData, $statusCode);
     }
 }

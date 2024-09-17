@@ -60,7 +60,7 @@
                                     <h6 class="fw-bold mx-1">{{ $t('ticket_details.task_estimation') }}</h6>
                                     <span class="badge rounded-3 bg-success-subtle text-success">{{
                                         ticketData.initial_dev_time
-                                    }} hrs</span>
+                                        }} hrs</span>
                                 </div>
                             </div>
                         </div>
@@ -110,152 +110,6 @@
         </div>
     </div>
     <div class="app-content mt-2">
-        <!-- <div class="row">
-            <div class="col-md-6 border-end">
-                <div class="row row-cols-xl-3 row-cols-lg-3 row-cols-md-2 row-cols-2 g-2 g-lg-3">
-                    <div class="col">
-                        <div class="card border-0 h-100">
-                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
-                                <div class="w-100 lh-1">
-                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.task_status') }}</h6>
-                                    <span class="badge rounded-3 bg-danger-subtle text-danger">{{
-                                        ticketData.status_label
-                                        }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card border-0 h-100">
-                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
-                                <div class="w-100 lh-1">
-                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.functional_owner') }}</h6>
-                                    <span class="badge rounded-3 bg-desino text-white">{{
-                                        ticketData.functional_owner
-                                        }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card border-0 h-100">
-                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
-                                <div class="w-100 lh-1">
-                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.technical_owner') }}</h6>
-                                    <span class="badge rounded-3 bg-info-subtle text-info">{{
-                                        ticketData.technical_owner
-                                        }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card border-0 h-100">
-                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
-                                <div class="w-100 lh-1">
-                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.testing_owner') }}</h6>
-                                    <span class="badge rounded-3 bg-primary-subtle text-primary">{{
-                                        ticketData.quality_owner
-                                        }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card border-0 h-100">
-                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
-                                <div class="w-100 lh-1">
-                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.task_estimation') }}</h6>
-                                    <span class="badge rounded-3 bg-success-subtle text-success">{{
-                                        ticketData.initial_dev_time
-                                        }} hrs</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div v-if="currentAction" class="col-md-6">
-                <div class="row row-cols-xl-3 row-cols-lg-3 row-cols-md-1 row-cols-1 g-2 g-lg-3">
-                    <div v-if="currentAction" class="col">
-                        <div class="card border-0 h-100">
-                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
-                                <div class="w-100 lh-1">
-                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.current_action_title') }}
-                                    </h6>
-                                    <span class="badge rounded-3 bg-success-subtle text-success mb-3">{{
-                                        currentAction.action_name
-                                        }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div v-if="currentAction" class="col">
-                        <div class="card border-0 h-100">
-                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
-                                <div class="w-100 lh-1">
-                                    <select v-model="currentActionFormData.user_id" :disabled="disableActionUser()"
-                                        class="form-select"
-                                        @change="handleCurrentActionChangeUser($event.target.value)">
-                                        <option value="">Select User</option>
-                                        <option v-for="user in users" :key="user.id" :value="user.id">
-                                            {{ user.name }}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div v-if="currentAction" class="col">
-                        <div class="card border-0 h-100">
-                            <div class="card-body p-2 px-2 text-left align-items-center">
-                                <div class="lh-1 align-items-center">
-                                    <span class="badge bg-warning mt-4"
-                                        :role="currentActionAllowOrNot() ? 'button' : ''"
-                                        :title="currentActionAllowOrNot() ? $t('ticket_details.current_action_change_status_title') : ''"
-                                        @click="handleCurrentActionChangeStatus()">{{ currentAction.action_status
-                                        }}</span>
-                                    <button v-if="previousAction && previousActionAllowOrNot()"
-                                        class="btn btn-sm bg-desino text-light mx-2"
-                                        @click="handlePreviousActionStatus()"
-                                        :title="$t('ticket_action.move_to_previous_action')"><i
-                                            class="bi bi-arrow-counterclockwise"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div v-if="nextAction" class="col">
-                        <div class="card border-0 h-100">
-                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
-                                <div class="w-100 lh-1">
-                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.next_action_title') }}</h6>
-                                    <span class="badge rounded-3 bg-primary-subtle text-primary">{{
-                                        nextAction.action_name
-                                        }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div v-if="nextAction" class="col">
-                        <div class="card border-0 h-100">
-                            <div class="card-body p-2 px-2 text-left d-flex align-items-center">
-                                <div class="w-100 lh-1">
-                                    <select v-model="nextActionFormData.user_id" :disabled="disableActionUser()"
-                                        class="form-select" @change="handleNextActionChangeUser($event.target.value)">
-                                        <option value="">Select User</option>
-                                        <option v-for="user in users" :key="user.id" :value="user.id">
-                                            {{ user.name }}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> -->
         <hr>
         <div class="col-md-12">
             <ul id="custom-tabs-five-tab" class="nav nav-tabs border-bottom-0" role="tablist">
@@ -373,12 +227,43 @@
                                     <div v-if="errors.release_note" class="text-danger mt-2">
                                         <span v-for="(error, index) in errors.release_note" :key="index">{{
                                             error
-                                        }}</span>
+                                            }}</span>
                                     </div>
                                     <button class="btn w-100 bg-desino text-white fw-bold m-2 rounded"
                                         @click="updateReleaseNote">
                                         {{ $t('ticket_details.update') }}
                                     </button>
+                                </div>
+                            </div>
+                            <div class="card mt-2"
+                                v-if="currentAction?.action == 2 && currentAction?.user.id == user.id">
+                                <div class="card-header">
+                                    {{ $t('ticket_details.estimated_hours') }}
+                                </div>
+                                <div class="card-body">
+                                    <form @submit.prevent="updateTicketDetailEstimatedHours">
+                                        <div class="mb-3">
+                                            <label class="form-label" for="initial_estimation_development_time">{{
+                                                $t('ticket_details_input_initial_estimation_development_time')
+                                            }} <strong class="text-danger">*</strong>
+                                            </label>
+                                            <input v-model="estimatedHoursFormData.initial_estimation_development_time"
+                                                :class="{ 'is-invalid': errors.initial_estimation_development_time }"
+                                                class="form-control" type="number">
+                                            <div v-if="errors.initial_estimation_development_time"
+                                                class="invalid-feedback">
+                                                <span
+                                                    v-for="(error, index) in errors.initial_estimation_development_time"
+                                                    :key="index">
+                                                    {{ error }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <button type="submit"
+                                            class="btn w-100 bg-desino text-white fw-bold m-2 rounded">
+                                            {{ $t('ticket_details.estimated_hours.update_but_text') }}
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -407,7 +292,7 @@
                                     v-if="showHideTestSectionButton()"> Add Test Section
                                 </button>
                             </div>
-                            <div v-if="test_cases.length > 0" class="card-body pt-0">
+                            <div v-if="test_cases?.length > 0" class="card-body pt-0">
                                 <div v-for="(test_case, index) in test_cases" :key="index"
                                     :class="{ 'py-3': true, 'border-bottom': index !== test_cases.length - 1 }">
                                     <div class="row">
@@ -484,6 +369,11 @@ export default {
             localInitiativeId: this.$route.params.initiative_id,
             localTicketId: this.$route.params.ticket_id,
             selectedTask: this.$route.params.ticket_id,
+            estimatedHoursFormData: {
+                initial_estimation_development_time: '',
+                initiative_id: '',
+                ticket_id: '',
+            },
             ticketData: {
                 name: '',
                 initial_dev_time: '',
@@ -557,6 +447,7 @@ export default {
     methods: {
         ...mapActions(['setLoading', 'setServerError']),
         async fetchTicketData(id) {
+            this.resetEstimatedHoursFormData();
             // this.setServerError({ message: 'dsakdnk' });
             try {
                 this.setLoading(true);
@@ -868,9 +759,30 @@ export default {
             }
             return allowProcessTestCase;
         },
+        async updateTicketDetailEstimatedHours() {
+            this.clearMessages();
+            try {
+                this.setLoading(true);
+                this.estimatedHoursFormData.initiative_id = this.localInitiativeId;
+                this.estimatedHoursFormData.ticket_id = this.localTicketId;
+                const { content, message } = await ticketService.updateTicketDetailEstimatedHours(this.estimatedHoursFormData);
+                this.setLoading(false);
+                showToast(message, 'success');
+                this.resetEstimatedHoursFormData();
+                this.fetchTicketData(this.localTicketId);
+            } catch (error) {
+                this.handleError(error);
+            }
+        },
         resetForm() {
             this.releaseNoteForm = {
                 release_note: "",
+            };
+            this.errors = {};
+        },
+        resetEstimatedHoursFormData() {
+            this.estimatedHoursFormData = {
+                initial_estimation_development_time: "",
             };
             this.errors = {};
         },
