@@ -443,6 +443,7 @@
     "solution_design.functionality_form.section_name_select_box_placeholder": "Please select section",
     "solution_design.functionality_form.description": "Functionality description",
     "solution_design.functionality_form.submit_save_but_text": "Save",
+    "solution_design.functionality_form.submit_save_and_add_new_but_text": "Save and add new",
     "solution_design.functionality_form.submit_update_but_text": "Update",
     "solution_design.functionality_form.actions_delete_tooltip": "Delete functionality",
     "solution_design.functionality_form.actions_create_ticket_tooltip": "Create Ticket",

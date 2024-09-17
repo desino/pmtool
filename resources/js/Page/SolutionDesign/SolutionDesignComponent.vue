@@ -54,7 +54,7 @@
                                         <div v-if="errors.section_name" class="invalid-feedback ms-4">
                                             <span v-for="(error, index) in errors.section_name" :key="index">{{
                                                 error
-                                            }}</span>
+                                                }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -136,7 +136,7 @@
                         <div class="mb-3">
                             <label class="form-label" for="functionality_name">{{
                                 $t('solution_design.functionality_form.name')
-                            }} <strong class="text-danger">*</strong>
+                                }} <strong class="text-danger">*</strong>
                             </label>
                             <input id="functionality_name" v-model="functionalityFormData.name"
                                 :class="{ 'is-invalid': errors.name }" class="form-control" placeholder="Enter value"
@@ -150,13 +150,13 @@
                         <div class="mb-3">
                             <label class="form-label" for="section_id">{{
                                 $t('solution_design.functionality_form.section_name_select_box')
-                            }} <strong class="text-danger">*</strong>
+                                }} <strong class="text-danger">*</strong>
                             </label>
                             <select v-model="functionalityFormData.section_id" aria-label="Default select example"
                                 class="form-select" :class="{ 'is-invalid': errors.section_id }">
                                 <option value="">{{
                                     $t('solution_design.functionality_form.section_name_select_box_placeholder')
-                                }}
+                                    }}
                                 </option>
                                 <option v-for="section in sectionsWithFunctionalities" :key="section.id"
                                     :value="section.id">
@@ -172,11 +172,11 @@
                 <div class="mb-3">
                     <label class="form-label" for="functionalityDescription">{{
                         $t('solution_design.functionality_form.description')
-                    }}</label>
+                        }}</label>
                     <TinyMceEditor v-model="functionalityFormData.description" />
                 </div>
-                <div class="mb-3">
-                    <button :disabled="!functionalityFormData.section_id" class="btn bg-desino w-100 text-light"
+                <div class="mb-3 d-flex gap-3">
+                    <button :disabled="!functionalityFormData.section_id" class="btn bg-desino text-light w-100"
                         type="submit">
                         {{
                             functionalityFormData.functionality_id ?
@@ -184,6 +184,10 @@
                                 $t('solution_design.functionality_form.submit_save_but_text')
                         }}
                     </button>
+                    <!-- <button :disabled="!functionalityFormData.section_id" class="btn bg-desino text-light w-50"
+                        type="submit">{{
+                            $t('solution_design.functionality_form.submit_save_and_add_new_but_text') }}
+                    </button> -->
                 </div>
             </form>
         </div>

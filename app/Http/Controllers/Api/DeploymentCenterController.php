@@ -62,6 +62,10 @@ class DeploymentCenterController extends Controller
         DB::beginTransaction();
         try {
             Ticket::whereIn('id', $request->input('ticketIds'))->update(['status' => Ticket::getStatusOngoing()]);
+            $tickets = Ticket::whereIn('id', $request->input('ticketIds'))->get();
+            foreach ($tickets as $ticket) {
+                TicketService::createMacroStatusAndUpdateTicket($ticket);
+            }
             $status = true;
             $message = __('message.home.deployment_center.test_deployment.update_status_success');
             $statusCode = 200;
@@ -111,6 +115,10 @@ class DeploymentCenterController extends Controller
         DB::beginTransaction();
         try {
             Ticket::whereIn('id', $request->input('ticketIds'))->update(['status' => Ticket::getStatusOngoing()]);
+            $tickets = Ticket::whereIn('id', $request->input('ticketIds'))->get();
+            foreach ($tickets as $ticket) {
+                TicketService::createMacroStatusAndUpdateTicket($ticket);
+            }
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -167,8 +175,9 @@ class DeploymentCenterController extends Controller
         try {
             Ticket::whereIn('id', $request->input('ticketIds'))->update(['status' => Ticket::getStatusDone()]);
             $release->update(['status' => Release::PROCESSED_RELEASE]);
-            foreach ($request->input('ticketIds') as $ticketId) {
-                $ticket = Ticket::find($ticketId);
+
+            $tickets = Ticket::whereIn('id', $request->input('ticketIds'))->get();
+            foreach ($tickets as $ticket) {
                 TicketService::createMacroStatusAndUpdateTicket($ticket);
             }
             DB::commit();
