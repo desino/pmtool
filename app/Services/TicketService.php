@@ -287,24 +287,18 @@ class TicketService
             $macroStatus = Ticket::MACRO_STATUS_DEVELOP_WAIT_FOR_CLIENT;
         } else if ($ticketCurrentAction == TicketAction::getActionDevelop() && $ticketStatus == Ticket::getStatusOngoing()) {
             $macroStatus = Ticket::MACRO_STATUS_DEVELOP;
-        }
-        // else if ($ticketCurrentAction == TicketAction::getActionTest() && $ticketStatus == Ticket::getStatusWaitForClient()) {
-        //     $macroStatus = Ticket::MACRO_STATUS_TEST_WAIT_FOR_DEPLOYMENT_TO_TEST;
-        // } 
-        else if ($ticketCurrentAction == TicketAction::getActionTest() && $ticketStatus == Ticket::getStatusReadyForTest()) {
-            // $macroStatus = Ticket::MACRO_STATUS_TEST;
+        } else if ($ticketCurrentAction == TicketAction::getActionTest() && $ticketStatus == Ticket::getStatusReadyForTest()) {
             $macroStatus = Ticket::MACRO_STATUS_TEST_WAIT_FOR_DEPLOYMENT_TO_TEST;
         } else if ($ticketCurrentAction == TicketAction::getActionTest() && $ticketStatus == Ticket::getStatusOngoing()) {
             $macroStatus = Ticket::MACRO_STATUS_TEST;
-        }
-        // else if ($ticketCurrentAction == TicketAction::getActionValidate() && $ticketStatus == Ticket::getStatusWaitForClient()) {
-        //     $macroStatus = Ticket::MACRO_STATUS_VALIDATE_WAITING_FOR_DEPLOYMENT_TO_ACC;
-        // }
-        else if ($ticketCurrentAction == TicketAction::getActionValidate() && $ticketStatus == Ticket::getStatusReadyForACC()) {
-            // $macroStatus = Ticket::MACRO_STATUS_VALIDATE;
+        } else if ($ticketCurrentAction == TicketAction::getActionTest() && $ticketStatus == Ticket::getStatusWaitForClient()) {
+            $macroStatus = Ticket::MACRO_STATUS_TEST_WAIT_FOR_CLIENT;
+        } else if ($ticketCurrentAction == TicketAction::getActionValidate() && $ticketStatus == Ticket::getStatusReadyForACC()) {
             $macroStatus = Ticket::MACRO_STATUS_VALIDATE_WAITING_FOR_DEPLOYMENT_TO_ACC;
         } else if ($ticketCurrentAction == TicketAction::getActionValidate() && $ticketStatus == Ticket::getStatusOngoing()) {
             $macroStatus = Ticket::MACRO_STATUS_VALIDATE;
+        } else if ($ticketCurrentAction == TicketAction::getActionValidate() && $ticketStatus == Ticket::getStatusWaitForClient()) {
+            $macroStatus = Ticket::MACRO_STATUS_VALIDATE_WAIT_FOR_CLIENT;
         } else if ($ticketStatus == Ticket::getStatusReadyForPRD()) {
             $macroStatus = Ticket::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_TEST;
         } else if ($ticketStatus == Ticket::getStatusDone()) {

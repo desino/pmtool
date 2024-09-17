@@ -43,6 +43,8 @@ class Ticket extends Model
     public const MACRO_STATUS_VALIDATE = 8;
     public const MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_TEST = 9;
     public const MACRO_STATUS_DONE = 10;
+    public const MACRO_STATUS_TEST_WAIT_FOR_CLIENT = 11;
+    public const MACRO_STATUS_VALIDATE_WAIT_FOR_CLIENT = 12;
 
 
     public static function getAllTypes()
@@ -91,6 +93,8 @@ class Ticket extends Model
             ['id' => self::MACRO_STATUS_VALIDATE, 'name' => __('ticket_macro_status.validate')],
             ['id' => self::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_TEST, 'name' => __('ticket_macro_status.ready_for_deployment_to_test')],
             ['id' => self::MACRO_STATUS_DONE, 'name' => __('ticket_macro_status.done')],
+            ['id' => self::MACRO_STATUS_TEST_WAIT_FOR_CLIENT, 'name' => __('ticket_macro_status.test_wait_for_client')],
+            ['id' => self::MACRO_STATUS_VALIDATE_WAIT_FOR_CLIENT, 'name' => __('ticket_macro_status.validate_wait_for_client')],
         ];
     }
 
@@ -154,6 +158,8 @@ class Ticket extends Model
             self::MACRO_STATUS_VALIDATE => ['label' => __('ticket_macro_status.validate'), 'color' => 'success'],
             self::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_TEST => ['label' => __('ticket_macro_status.ready_for_deployment_to_test'), 'color' => 'danger'],
             self::MACRO_STATUS_DONE => ['label' => __('ticket_macro_status.done'), 'color' => 'primary'],
+            self::MACRO_STATUS_TEST_WAIT_FOR_CLIENT => ['label' => __('ticket_macro_status.test_wait_for_client'), 'color' => 'danger'],
+            self::MACRO_STATUS_VALIDATE_WAIT_FOR_CLIENT => ['label' => __('ticket_macro_status.validate_wait_for_client'), 'color' => 'danger'],
             default => '-'
         };
     }
