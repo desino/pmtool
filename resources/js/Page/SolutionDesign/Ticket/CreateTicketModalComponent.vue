@@ -40,8 +40,9 @@
                         </label>
                         <multiselect v-model="formData.functionality_id"
                             :class="{ 'is-invalid': errors.functionality_id }" :options="sectionsFunctionalitiesList"
-                            :placeholder="$t('create_ticket_modal_select_functionality_placeholder')" group-label="name"
-                            group-values="functionalities" label="name" track-by="id">
+                            :placeholder="$t('create_ticket_modal_select_functionality_placeholder')"
+                            group-label="display_name" group-values="functionalities" label="display_name"
+                            track-by="id">
                         </multiselect>
                         <div v-if="errors.functionality_id" class="invalid-feedback">
                             <span v-for="(error, index) in errors.functionality_id" :key="index">{{ error }}</span>
@@ -50,7 +51,7 @@
                     <div class="mb-3">
                         <label class="form-label" for="initial_estimation_development_time">{{
                             $t('create_ticket_modal_modal_input_initial_estimation_development_time')
-                            }} <strong class="text-danger">*</strong>
+                        }} <strong class="text-danger">*</strong>
                         </label>
                         <input id="initial_estimation_development_time"
                             v-model="formData.initial_estimation_development_time"

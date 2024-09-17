@@ -71,12 +71,13 @@ class TicketService
 
     public static function getSectionFunctionality(int $initiative_id)
     {
-        $sectionFunctionalities = Section::select(['id', 'name',])
+        $sectionFunctionalities = Section::select(['id', 'name', 'display_name'])
             ->with(['functionalities' => function ($q) {
                 $q->select(
                     'id',
                     'section_id',
                     'name',
+                    'display_name',
                     'id'
                 );
             }])
