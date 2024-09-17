@@ -35,7 +35,9 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" href="javascript:" @click="showSolutionDesign"><i
+                                    <a class="nav-link text-dark"
+                                        :class="{ 'bg-opacity-25 bg-primary': isActive('solution-design') }"
+                                        href="javascript:" @click="showSolutionDesign"><i
                                             class="bi bi-file-pdf-fill mx-2"></i>
                                         {{ $t('header.menu.solution_design') }}
                                     </a>
@@ -48,6 +50,7 @@
                                 </li>
                                 <li class="nav-item" v-if="currentInitiative.id">
                                     <router-link class="nav-link text-dark"
+                                        :class="{ 'bg-opacity-25 bg-primary': isActive('tasks') }"
                                         :to="{ name: 'tasks', params: { id: currentInitiative.id } }">
                                         <i class="bi bi-card-checklist mx-2"></i>
                                         {{ $t('header.menu.all_ticket') }}
@@ -55,6 +58,7 @@
                                 </li>
                                 <li class="nav-item" v-if="currentInitiative.id">
                                     <router-link class="nav-link text-dark"
+                                        :class="{ 'bg-opacity-25 bg-primary': isActive('projects') }"
                                         :to="{ name: 'projects', params: { id: currentInitiative.id } }">
                                         <i class="bi bi-boxes mx-2"></i>
                                         {{ $t('header.menu.projects') }}
@@ -83,14 +87,13 @@
                     </div>
                 </ul>
             </div>
-
         </div>
         <hr>
         <div class="border rounded mx-2 shadow mb-3">
             <nav class="mt-1">
                 <ul class="nav sidebar-menu flex-column">
                     <li class="nav-item">
-                        <router-link :class="{ 'active': isActive('home') }" :to="{ name: 'home' }"
+                        <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('home') }" :to="{ name: 'home' }"
                             class="nav-link text-dark" @click="unselectHeaderInitiative">
                             <i class="bi bi-house mx-2"></i> {{ $t('header.menu.home') }}
                         </router-link>
@@ -108,8 +111,15 @@
                                 }}</a>
                     </li>
                     <li class="nav-item">
-                        <router-link :class="{ active: isActive('opportunities') }" :to="{ name: 'opportunities' }"
+                        <!-- <router-link :class="{ active: isActive('opportunities') }" :to="{ name: 'opportunities' }"
                             class="nav-link text-dark" @click="unselectHeaderInitiative"><i class="bi bi-list mx-2"></i>
+                            {{
+                                $t('header.menu.opportunities')
+                            }}
+                        </router-link> -->
+                        <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('opportunities') }"
+                            :to="{ name: 'opportunities' }" class="nav-link text-dark"
+                            @click="unselectHeaderInitiative"><i class="bi bi-list mx-2"></i>
                             {{
                                 $t('header.menu.opportunities')
                             }}
