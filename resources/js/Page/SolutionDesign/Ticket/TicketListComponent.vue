@@ -209,6 +209,7 @@ import showToast from '../../../utils/toasts';
 import eventBus from "@/eventBus.js";
 import EditTicketModalComponent from './EditTicketModalComponent.vue';
 import CreateReleaseModalComponent from './CreateReleaseModalComponent.vue';
+import store from '../../../store';
 
 export default {
     name: 'TicketListComponent',
@@ -256,7 +257,6 @@ export default {
     methods: {
         ...mapActions(['setLoading']),
         async fetchAllTasks(page = 1) {
-            // console.log('passedData :: ', this.passedData.functionality);
             this.isChkAllTickets = false;
             this.clearMessages();
             this.selectedTasks = [];
@@ -264,6 +264,7 @@ export default {
                 if (this.passedData.functionality) {
                     this.filter.functionalities.push(this.passedData.functionality);
                     this.filter.is_open_task = true;
+                    store.commit("setPassedData", {});
                 }
                 const params = {
                     page: page,
