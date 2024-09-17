@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('name');
             $table->longText('composed_name')->nullable();
             $table->integer('type');
-            $table->bigInteger('initial_estimation_development_time');
+            $table->float('initial_estimation_development_time', 8, 2);
             $table->longText('release_note')->nullable();
             $table->boolean('auto_wait_for_client_approval')->default(0);
             $table->integer('status')->nullable();
