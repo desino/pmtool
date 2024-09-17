@@ -71,9 +71,6 @@
                     <p class="ps-3 text-break mw-100" v-html="functionality.description">
                     </p>
                 </div>
-                <div class="px-4" v-else>
-                    <p>No Functionalities Added!</p>
-                </div>
             </section>
         </div>
     </div>

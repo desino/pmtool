@@ -23,7 +23,7 @@
                 <HeaderInitiativeDropBoxComponent />
             </div>
             <div
-                v-if="isActive('solution-design') || isActive('tasks') || isActive('task.detail') || isActive('projects')">
+                v-if="isActive('solution-design') || isActive('tasks') || isActive('task.detail') || isActive('projects') || isActive('solution-design.detail')">
                 <div class="shadow">
                     <div class="p-2 rounded-bottom">
                         <nav class="mt-1">
@@ -36,7 +36,7 @@
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-dark"
-                                        :class="{ 'bg-opacity-25 bg-primary': isActive('solution-design') }"
+                                        :class="{ 'bg-opacity-25 bg-primary': isActive('solution-design') || isActive('solution-design.detail') }"
                                         href="javascript:" @click="showSolutionDesign"><i
                                             class="bi bi-file-pdf-fill mx-2"></i>
                                         {{ $t('header.menu.solution_design') }}
@@ -50,7 +50,7 @@
                                 </li>
                                 <li class="nav-item" v-if="currentInitiative.id">
                                     <router-link class="nav-link text-dark"
-                                        :class="{ 'bg-opacity-25 bg-primary': isActive('tasks') }"
+                                        :class="{ 'bg-opacity-25 bg-primary': isActive('tasks') || isActive('task.detail') }"
                                         :to="{ name: 'tasks', params: { id: currentInitiative.id } }">
                                         <i class="bi bi-card-checklist mx-2"></i>
                                         {{ $t('header.menu.all_ticket') }}
