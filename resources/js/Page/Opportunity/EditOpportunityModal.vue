@@ -37,7 +37,8 @@
                                 $t('edit_opportunity_modal_input_ballpark_development_hours') }} <strong
                                     class="text-danger">*</strong></label>
                             <input type="number" v-model="formData.ballpark_development_hours"
-                                :class="{ 'is-invalid': errors.ballpark_development_hours }" class="form-control">
+                                :class="{ 'is-invalid': errors.ballpark_development_hours }" class="form-control"
+                                min="0" step="any">
                             <div v-if="errors.ballpark_development_hours" class="invalid-feedback">
                                 <span v-for="(error, index) in errors.ballpark_development_hours" :key="index">{{
                                     error

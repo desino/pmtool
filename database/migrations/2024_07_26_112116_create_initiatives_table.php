@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('asana_project_id')->nullable();
             $table->bigInteger('client_id');
             $table->string('name');
-            $table->bigInteger('ballpark_development_hours');
+            $table->float('ballpark_development_hours', 8, 2);
             $table->integer('status')->default(0);
             $table->text('share_point_url')->nullable();
             $table->bigInteger('functional_owner_id')->nullable();
