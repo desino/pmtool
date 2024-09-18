@@ -46,11 +46,9 @@
                     :placeholder="$t('ticket.filter.macro_status_placeholder')" track-by="id" @select="fetchAllTasks"
                     @Remove="fetchAllTasks">
                     <template #tag="{ option, remove }">
-                        <span class="custom__tag text-white p-1 m-1 mb-8 rounded" :class="'bg-' + option.color">
-                            <span class="mx-1">{{ option.name }}</span>
-                            <span class="macro_status_tags_remove mx-1" @click="remove(option)" role="button">
-                                <i class="bi bi-x"></i>
-                            </span>
+                        <span class="multiselect__tag" :class="'bg-' + option.color">
+                            <span>{{ option.name }}</span>
+                            <i tabindex="1" class="multiselect__tag-icon"></i>
                         </span>
                     </template>
                 </multiselect>

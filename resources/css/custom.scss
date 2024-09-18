@@ -171,12 +171,3 @@ $theme-colors-rgb: map-loop($theme-colors, to-rgb, "$value");
 .form-control:focus {
     box-shadow: none !important;
 }
-
-.macro_status_tags_remove {
-    color: $dark;
-
-    &:hover {
-        color: $white;
-        cursor: pointer;
-    }
-}
