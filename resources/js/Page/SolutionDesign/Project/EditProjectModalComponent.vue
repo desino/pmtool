@@ -11,12 +11,12 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="mb-3">
-                                <label for="name" class="form-label">
+                                <label class="form-label fw-bold">
                                     {{ $t('project.list.edit.modal.form.project_name') }}
                                     <strong class="text-danger">*</strong>
                                 </label>
                                 <input type="text" v-model="formData.name" :class="{ 'is-invalid': errors.name }"
-                                    class="form-control" id="name" name="name">
+                                    class="form-control">
                                 <div v-if="errors.name" class="invalid-feedback">
                                     <span v-for="(error, index) in errors.name" :key="index">{{ error }}</span>
                                 </div>

@@ -10,9 +10,10 @@
                 <div class="modal-body">
                     <GlobalMessage v-if="showMessage" />
                     <div class="mb-3">
-                        <label for="client_id" class="form-label">{{ $t('create_initiative_modal_select_client_name') }}
+                        <label class="form-label fw-bold">{{
+                            $t('create_initiative_modal_select_client_name') }}
                             <strong class="text-danger">*</strong></label>
-                        <select v-model="formData.client_id" :class="{ 'is-invalid': errors.client_id }" id="client_id"
+                        <select v-model="formData.client_id" :class="{ 'is-invalid': errors.client_id }"
                             class="form-select">
                             <option value="">{{ $t('create_initiative_modal_select_client_name_placeholder') }}</option>
                             <option v-for="client in clients" :key="client.id" :value="client.id">{{ client.name }}
@@ -23,21 +24,20 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="name" class="form-label">{{ $t('create_initiative_modal_input_name') }} <strong
+                        <label class="form-label fw-bold">{{ $t('create_initiative_modal_input_name') }} <strong
                                 class="text-danger">*</strong></label>
-                        <input type="text" v-model="formData.name" :class="{ 'is-invalid': errors.name }" id="name"
+                        <input type="text" v-model="formData.name" :class="{ 'is-invalid': errors.name }"
                             class="form-control">
                         <div v-if="errors.name" class="invalid-feedback">
                             <span v-for="(error, index) in errors.name" :key="index">{{ error }}</span>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="ballpark_development_hours" class="form-label">{{
+                        <label class="form-label fw-bold">{{
                             $t('create_initiative_modal_input_ballpark_development_hours') }} <strong
                                 class="text-danger">*</strong></label>
                         <input type="number" v-model="formData.ballpark_development_hours"
-                            :class="{ 'is-invalid': errors.ballpark_development_hours }" id="ballpark_development_hours"
-                            class="form-control">
+                            :class="{ 'is-invalid': errors.ballpark_development_hours }" class="form-control">
                         <div v-if="errors.ballpark_development_hours" class="invalid-feedback">
                             <span v-for="(error, index) in errors.ballpark_development_hours" :key="index">{{ error
                                 }}</span>
@@ -46,8 +46,8 @@
                     <div class="mb-3">
                         <div class="form-check">
                             <input class="form-check-input" v-model="formData.is_sold"
-                                :class="{ 'is-invalid': errors.is_sold }" type="checkbox" id="is_sold">
-                            <label class="form-check-label" for="is_sold">
+                                :class="{ 'is-invalid': errors.is_sold }" type="checkbox" id="initiative_is_sold">
+                            <label class="form-check-label fw-bold" for="initiative_is_sold">
                                 {{ $t('create_initiative_modal_input_is_sold') }}
                             </label>
                         </div>
@@ -61,7 +61,7 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-desino bg-desino text-light">{{
                         $t('create_initiative_modal_submit_but_text')
-                    }}</button>
+                        }}</button>
                 </div>
             </div>
         </form>

@@ -5,7 +5,7 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="testDeploymentTicketsModalLabel">{{
                         $t('home.deployment_center.test_deployment.ticket_modal.title')
-                        }}</h5>
+                    }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -14,7 +14,7 @@
                         <li class="list-group-item fw-bold bg-desino text-white">
                             <div class="row">
                                 <div class="col-md-1">
-                                    <input class="form-check-input" type="checkbox" id="chk_all_tickets"
+                                    <input class="form-check-input" type="checkbox"
                                         v-model="isChkAllTestDeploymentTickets"
                                         @change="handleSelectAllTestDeploymentTickets">
                                 </div>

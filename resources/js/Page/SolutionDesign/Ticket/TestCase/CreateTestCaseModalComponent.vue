@@ -3,16 +3,18 @@
         <form @submit.prevent="storeTestCase">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 id="createTestCaseModalLabel" class="modal-title">{{ $t('task_detail.create_testcase_heading') }}
+                    <h5 id="createTestCaseModalLabel" class="modal-title">{{ $t('task_detail.create_testcase_heading')
+                        }}
                     </h5>
                     <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
                 </div>
                 <div class="modal-body">
                     <GlobalMessage v-if="showMessage" />
                     <div class="mb-3">
-                        <label class="form-label" for="name">{{ $t('task_details.create_testcase_input_name') }} <strong
-                            class="text-danger">*</strong></label>
-                        <TinyMceEditor v-model="formData.expected_behaviour" :class="{ 'is-invalid': errors.expected_behaviour }" />
+                        <label class="form-label fw-bold">{{ $t('task_details.create_testcase_input_name') }}
+                            <strong class="text-danger">*</strong></label>
+                        <TinyMceEditor v-model="formData.expected_behaviour"
+                            :class="{ 'is-invalid': errors.expected_behaviour }" />
                         <div v-if="errors.expected_behaviour" class="invalid-feedback">
                             <span v-for="(error, index) in errors.expected_behaviour" :key="index">{{ error }}</span>
                         </div>
@@ -22,8 +24,8 @@
                     <button class="btn btn-desino bg-desino text-light" type="submit">
                         {{ $t('task_detail.create_testcase_submit_btn_text') }}
                     </button>
-                    <button class="btn btn-secondary" @click="hideModal" data-bs-dismiss="modal"
-                            type="button">{{$t('task_detail.create_testcase_close_btn_text')}}</button>
+                    <button class="btn btn-secondary" @click="hideModal" data-bs-dismiss="modal" type="button">{{
+                        $t('task_detail.create_testcase_close_btn_text') }}</button>
                 </div>
             </div>
         </form>
@@ -70,7 +72,7 @@ export default {
                 this.formData.initiative_id = this.localInitiativeId;
                 const response = await testCaseService.storeTestCase(this.formData);
                 await this.setLoading(false);
-                this.$emit('stored-testcase',response);
+                this.$emit('stored-testcase', response);
                 showToast(response.message, 'success');
                 this.hideModal();
                 this.resetForm();

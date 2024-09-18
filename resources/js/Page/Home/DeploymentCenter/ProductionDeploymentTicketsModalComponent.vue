@@ -13,11 +13,6 @@
                     <ul class="list-group">
                         <li class="list-group-item fw-bold bg-desino text-white">
                             <div class="row">
-                                <!-- <div class="col-md-1">
-                                    <input class="form-check-input" type="checkbox" id="chk_all_tickets"
-                                        v-model="isChkAllProductionDeploymentTickets"
-                                        @change="handleSelectAllProductionDeploymentTickets">
-                                </div> -->
                                 <div class="col-md-8">
                                     {{ $t('home.deployment_center.production_deployment.ticket_modal.li.name.text') }}
                                 </div>
@@ -25,11 +20,6 @@
                         </li>
                         <li class="list-group-item" v-for="ticket in ticketList" :key="ticket.id">
                             <div class="row">
-                                <!-- <div class="col-md-1">
-                                    <input class="form-check-input" type="checkbox"
-                                        :id="'chk_production_deployment_ticket_' + ticket.id" v-model="ticket.isChecked"
-                                        @change="handleSelectProductionDeploymentTicket(ticket)">
-                                </div> -->
                                 <div class="col-md-8" :for="'chk_production_deployment_ticket_' + ticket.ticket.id">
                                     {{ ticket?.ticket.composed_name }}
                                 </div>

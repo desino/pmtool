@@ -12,19 +12,18 @@
                     <input v-model="formData.initiative_id" name="initiative_id" type="hidden">
                     <input v-model="formData.type" name="type" type="hidden">
                     <div class="mb-3">
-                        <label class="form-label" for="name">{{ $t('create_ticket_modal_input_name') }} <strong
+                        <label class="form-label fw-bold">{{ $t('create_ticket_modal_input_name') }} <strong
                                 class="text-danger">*</strong></label>
-                        <input id="name" v-model="formData.name" :class="{ 'is-invalid': errors.name }"
-                            class="form-control" type="text">
+                        <input v-model="formData.name" :class="{ 'is-invalid': errors.name }" class="form-control"
+                            type="text">
                         <div v-if="errors.name" class="invalid-feedback">
                             <span v-for="(error, index) in errors.name" :key="index">{{ error }}</span>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" for="type">{{ $t('create_ticket_modal_select_type') }} <strong
+                        <label class="form-label fw-bold">{{ $t('create_ticket_modal_select_type') }} <strong
                                 class="text-danger">*</strong></label>
-                        <select v-model="formData.type" :class="{ 'is-invalid': errors.type }" id="type"
-                            class="form-select">
+                        <select v-model="formData.type" :class="{ 'is-invalid': errors.type }" class="form-select">
                             <option value="">{{ $t('create_ticket_modal_select_type_placeholder') }}</option>
                             <option v-for="type in ticketTypes" :key="type.id" :value="type.id">{{
                                 type.name }}
@@ -35,7 +34,7 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" for="client_id">
+                        <label class="form-label fw-bold">
                             {{ $t('create_ticket_modal_select_functionality_id') }}
                         </label>
                         <multiselect v-model="formData.functionality_id"
@@ -49,12 +48,11 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" for="initial_estimation_development_time">{{
+                        <label class="form-label fw-bold">{{
                             $t('create_ticket_modal_modal_input_initial_estimation_development_time')
                         }} <strong class="text-danger">*</strong>
                         </label>
-                        <input id="initial_estimation_development_time"
-                            v-model="formData.initial_estimation_development_time"
+                        <input v-model="formData.initial_estimation_development_time"
                             :class="{ 'is-invalid': errors.initial_estimation_development_time }" class="form-control"
                             type="number">
                         <div v-if="errors.initial_estimation_development_time" class="invalid-feedback">
@@ -64,10 +62,10 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" for="project_id">{{ $t('create_ticket_modal_select_project') }}
+                        <label class="form-label fw-bold">{{ $t('create_ticket_modal_select_project') }}
                         </label>
                         <select v-model="formData.project_id" :class="{ 'is-invalid': errors.project_id }"
-                            id="project_id" class="form-select">
+                            class="form-select">
                             <option value="">{{ $t('create_ticket_modal_select_project_placeholder') }}</option>
                             <option v-for="project in initiativeProjects" :key="project.id" :value="project.id">{{
                                 project.name }}
@@ -82,7 +80,7 @@
                             <input class="form-check-input" v-model="formData.auto_wait_for_client_approval"
                                 :class="{ 'is-invalid': errors.auto_wait_for_client_approval }" type="checkbox"
                                 id="auto_wait_for_client_approval">
-                            <label class="form-check-label" for="auto_wait_for_client_approval">
+                            <label class="form-check-label fw-bold" for="auto_wait_for_client_approval">
                                 {{ $t('create_ticket_modal_checkbox_auto_wait_for_client_approval') }}
                             </label>
                         </div>
@@ -103,7 +101,7 @@
                                             <input class="form-check-input" :class="{ 'is-invalid': errors.actions }"
                                                 type="checkbox" :id="'ticket_action_' + action.id" :value="action.id"
                                                 v-model="selectedActions" @change="handleActionChange(action.id)">
-                                            <label class="form-check-label" :for="'ticket_action_' + action.id">
+                                            <label class="form-check-label fw-bold" :for="'ticket_action_' + action.id">
                                                 {{ action.name }}
                                             </label>
                                         </div>
