@@ -40,17 +40,19 @@
             </div>
         </div>
         <div class="row mb-3">
-            <div class="col-12 col-md-3 mb-2 mb-md-0">
+            <div class="col-12 col-md-6 mb-2 mb-md-0">
                 <multiselect v-model="filter.macro_status" ref="multiselect" :multiple="true"
                     :options="filterMacroStatus" :searchable="true" deselect-label="" label="name"
                     :placeholder="$t('ticket.filter.macro_status_placeholder')" track-by="id" @select="fetchAllTasks"
                     @Remove="fetchAllTasks">
-                    <!-- <template #tag="{ option, remove }">
-                        <span class="custom__tag bg-danger">
-                            <span>{{ option.name }}</span>
-                            <span class="custom__remove" @click="remove(option)">X</span>
+                    <template #tag="{ option, remove }">
+                        <span class="custom__tag text-white p-1 m-1 mb-8 rounded" :class="'bg-' + option.color">
+                            <span class="mx-1">{{ option.name }}</span>
+                            <span class="macro_status_tags_remove mx-1" @click="remove(option)" role="button">
+                                <i class="bi bi-x"></i>
+                            </span>
                         </span>
-                    </template> -->
+                    </template>
                 </multiselect>
             </div>
             <div class="col-12 col-md-3 mb-2 mb-md-0">

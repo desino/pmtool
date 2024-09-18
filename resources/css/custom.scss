@@ -26,37 +26,39 @@ $theme-colors-rgb: map-loop($theme-colors, to-rgb, "$value");
     overflow-x: hidden !important;
 }
 
-.active > .page-link, .page-link.active {
+.active>.page-link,
+.page-link.active {
     background-color: $desino !important;
     border-color: $desino !important;
     color: $white !important;
 }
 
-.nav-item > .nav-link.active {
+.nav-item>.nav-link.active {
     background-color: $desino !important;
     color: white !important;
 }
 
-.nav-item.menu-open > .nav-link.active {
+.nav-item.menu-open>.nav-link.active {
     background-color: $white !important;
     color: $dark !important;
 }
 
 .hover-menu,
-.hover-sort{
+.hover-sort {
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
+
 .section-menu {
-     &:hover .hover-menu {
+    &:hover .hover-menu {
         cursor: pointer;
         opacity: 1;
         visibility: visible;
     }
 }
 
-.section-sort{
+.section-sort {
     &:hover .hover-sort {
         cursor: pointer;
         opacity: 1;
@@ -65,7 +67,7 @@ $theme-colors-rgb: map-loop($theme-colors, to-rgb, "$value");
 }
 
 .section_detail {
-    p{
+    p {
         img {
             width: -webkit-fill-available;
         }
@@ -81,25 +83,25 @@ $theme-colors-rgb: map-loop($theme-colors, to-rgb, "$value");
 }
 
 .multiselect__option--selected.multiselect__option--highlight::after,
-.multiselect__option--group-selected.multiselect__option--highlight::after{
+.multiselect__option--group-selected.multiselect__option--highlight::after {
     background: $desino !important;
     color: $white !important;
     content: attr(data-deselect);
 }
 
 .multiselect__option--highlight {
-     background: $desino !important;
+    background: $desino !important;
     outline: none;
     color: $white !important;
 }
 
 .multiselect__option--highlight::after {
     content: attr(data-select);
-     background: $desino !important;
+    background: $desino !important;
     color: $white !important;
 }
 
-.multiselect__tags{
+.multiselect__tags {
     display: block;
     width: 100%;
     line-height: normal !important;
@@ -115,13 +117,13 @@ $theme-colors-rgb: map-loop($theme-colors, to-rgb, "$value");
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
 
-.multiselect__placeholder{
+.multiselect__placeholder {
     color: var(--#{$prefix}secondary-color) !important;
     font-size: initial !important;
 }
 
-.is-invalid{
-    .multiselect__tags{
+.is-invalid {
+    .multiselect__tags {
         border-color: var(--bs-form-invalid-border-color);
         padding-right: calc(1.5em + .75rem);
         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
@@ -131,7 +133,7 @@ $theme-colors-rgb: map-loop($theme-colors, to-rgb, "$value");
     }
 }
 
-.dropdown-menu{
+.dropdown-menu {
     min-width: 7rem !important;
 }
 
@@ -157,7 +159,7 @@ $theme-colors-rgb: map-loop($theme-colors, to-rgb, "$value");
     font-size: 14px;
 }
 
-.sticky{
+.sticky {
     position: sticky;
     top: 0;
     z-index: 10;
@@ -166,6 +168,15 @@ $theme-colors-rgb: map-loop($theme-colors, to-rgb, "$value");
     overflow-y: auto;
 }
 
-.form-control:focus{
+.form-control:focus {
     box-shadow: none !important;
+}
+
+.macro_status_tags_remove {
+    color: $dark;
+
+    &:hover {
+        color: $white;
+        cursor: pointer;
+    }
 }
