@@ -144,84 +144,7 @@
                                     </span>
                                 </div>
                                 <div class="card-body">
-                                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
-                                        Ipsum has
-                                        been
-                                        the industry's standard dummy text ever since the 1500s, when an unknown printer
-                                        took a
-                                        galley
-                                        of type and scrambled it to make a type specimen book. It has survived not only
-                                        five
-                                        centuries,
-                                        but also the leap into electronic typesetting, remaining essentially unchanged.
-                                        It was
-                                        popularised in the 1960s with the release of Letraset sheets containing Lorem
-                                        Ipsum
-                                        passages,
-                                        and more recently with desktop publishing software like Aldus PageMaker
-                                        including versions
-                                        of
-                                        Lorem Ipsum</p>
-
-                                    <p>It is a long established fact that a reader will be distracted by the readable
-                                        content of a
-                                        page
-                                        when looking at its layout. The point of using Lorem Ipsum is that it has a
-                                        more-or-less
-                                        normal
-                                        distribution of letters, as opposed to using 'Content here, content here',
-                                        making it look
-                                        like
-                                        readable English. Many desktop publishing packages and web page editors now use
-                                        Lorem Ipsum
-                                        as
-                                        their default model text, and a search for 'lorem ipsum' will uncover many web
-                                        sites still
-                                        in
-                                        their infancy. Various versions have evolved over the years, sometimes by
-                                        accident,
-                                        sometimes on
-                                        purpose (injected humour and the like).</p>
-
-                                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
-                                        Ipsum has
-                                        been
-                                        the industry's standard dummy text ever since the 1500s, when an unknown printer
-                                        took a
-                                        galley
-                                        of type and scrambled it to make a type specimen book. It has survived not only
-                                        five
-                                        centuries,
-                                        but also the leap into electronic typesetting, remaining essentially unchanged.
-                                        It was
-                                        popularised in the 1960s with the release of Letraset sheets containing Lorem
-                                        Ipsum
-                                        passages,
-                                        and more recently with desktop publishing software like Aldus PageMaker
-                                        including versions
-                                        of
-                                        Lorem Ipsum</p>
-
-                                    <p>It is a long established fact that a reader will be distracted by the readable
-                                        content of a
-                                        page
-                                        when looking at its layout. The point of using Lorem Ipsum is that it has a
-                                        more-or-less
-                                        normal
-                                        distribution of letters, as opposed to using 'Content here, content here',
-                                        making it look
-                                        like
-                                        readable English. Many desktop publishing packages and web page editors now use
-                                        Lorem Ipsum
-                                        as
-                                        their default model text, and a search for 'lorem ipsum' will uncover many web
-                                        sites still
-                                        in
-                                        their infancy. Various versions have evolved over the years, sometimes by
-                                        accident,
-                                        sometimes on
-                                        purpose (injected humour and the like).</p>
-
+                                    <div v-html="ticketData.functionality_description"></div>
                                 </div>
                             </div>
                         </div>
@@ -236,7 +159,7 @@
                                     <div v-if="errors.release_note" class="text-danger mt-2">
                                         <span v-for="(error, index) in errors.release_note" :key="index">{{
                                             error
-                                            }}</span>
+                                        }}</span>
                                     </div>
                                     <button class="btn w-100 bg-desino text-white fw-bold m-2 rounded"
                                         @click="updateReleaseNote">
@@ -254,7 +177,7 @@
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">{{
                                                 $t('ticket_details_input_initial_estimation_development_time')
-                                            }} <strong class="text-danger">*</strong>
+                                                }} <strong class="text-danger">*</strong>
                                             </label>
                                             <input v-model="estimatedHoursFormData.initial_estimation_development_time"
                                                 :class="{ 'is-invalid': errors.initial_estimation_development_time }"
@@ -399,6 +322,7 @@ export default {
                 macro_status_label: {},
                 initiative_name: '',
                 display_functionality_name: '',
+                functionality_description: '',
             },
             currentActionFormData: {
                 ticket_id: '',
@@ -523,6 +447,7 @@ export default {
             this.ticketData.functionality_name = content?.functionality?.name.length > 0 ? content.initiative?.name + ' - ' + content?.functionality?.name : content.initiative?.name;
             this.ticketData.initiative_name = content.initiative?.name;
             this.ticketData.display_functionality_name = content?.functionality?.display_name;
+            this.ticketData.functionality_description = content?.functionality?.description;
             this.ticketData.functional_owner = content.initiative?.functional_owner?.name;
             this.ticketData.functional_owner_id = content.initiative?.functional_owner?.id;
             this.ticketData.quality_owner = content.initiative?.quality_owner?.name;
