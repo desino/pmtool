@@ -12,21 +12,18 @@
     <div class="app-content">
         <div class="row mb-3">
             <div class="col-12 col-md-2 mb-2 mb-md-0">
-                <label for="" class="form-label">{{ $t('ticket.filter.label.task_name') }}</label>
                 <input v-model="filter.task_name" :placeholder="$t('ticket.filter.task_name')" class="form-control"
                     type="text" @keyup="fetchAllTasks">
             </div>
             <div class="col-12 col-md-2 mb-2 mb-md-0">
-                <label for="" class="form-label">{{ $t('ticket.filter.label.task_type') }}</label>
-                <select id="client_id" v-model="filter.task_type" class="form-select" @change="fetchAllTasks">
+                <select v-model="filter.task_type" class="form-select" @change="fetchAllTasks">
                     <option value="">{{ $t('ticket.filter.task_type_placeholder') }}</option>
                     <option v-for="type in filterTaskTypes" :key="type.id" :value="type.id">{{ type.name }}
                     </option>
                 </select>
             </div>
             <div class="col-12 col-md-2 mb-2 mb-md-0">
-                <label for="" class="form-label">{{ $t('ticket.filter.label.action_owner') }}</label>
-                <select id="client_id" v-model="filter.action_owner" class="form-select" @change="fetchAllTasks">
+                <select v-model="filter.action_owner" class="form-select" @change="fetchAllTasks">
                     <option value="">{{ $t('ticket.filter.action_owner_placeholder') }}</option>
                     <option v-for="actionOwner in actionOwners" :key="actionOwner.id" :value="actionOwner.id">{{
                         actionOwner.name }}
@@ -34,8 +31,7 @@
                 </select>
             </div>
             <div class="col-12 col-md-2 mb-2 mb-md-0">
-                <label for="" class="form-label">{{ $t('ticket.filter.label.next_action_owner') }}</label>
-                <select id="client_id" v-model="filter.next_action_owner" class="form-select" @change="fetchAllTasks">
+                <select v-model="filter.next_action_owner" class="form-select" @change="fetchAllTasks">
                     <option value="">{{ $t('ticket.filter.next_action_owner_placeholder') }}</option>
                     <option v-for="nextActionOwner in nextActionOwners" :key="nextActionOwner.id"
                         :value="nextActionOwner.id">{{ nextActionOwner.name }}
@@ -43,7 +39,6 @@
                 </select>
             </div>
             <div class="col-12 col-md-2 mb-2 mb-md-0">
-                <label for="" class="form-label">{{ $t('ticket.filter.label.functionalities') }}</label>
                 <multiselect v-model="filter.functionalities" ref="multiselect" :multiple="true"
                     :options="functionalities" :searchable="true" deselect-label="" label="display_name"
                     :placeholder="$t('ticket.filter.functionalities_placeholder')" track-by="id" @select="fetchAllTasks"
@@ -51,7 +46,6 @@
                 </multiselect>
             </div>
             <div class="col-12 col-md-2 mb-2 mb-md-0">
-                <label for="" class="form-label">{{ $t('ticket.filter.label.projects') }}</label>
                 <multiselect v-model="filter.projects" :multiple="true" :options="projects" :searchable="true"
                     deselect-label="" label="name" :placeholder="$t('ticket.filter.projects_placeholder')" track-by="id"
                     @select="fetchAllTasks" @Remove="fetchAllTasks">
