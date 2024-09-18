@@ -48,7 +48,7 @@
                     <template #tag="{ option, remove }">
                         <span class="multiselect__tag" :class="'bg-' + option.color">
                             <span>{{ option.name }}</span>
-                            <i tabindex="1" class="multiselect__tag-icon"></i>
+                            <i tabindex="1" class="multiselect__tag-icon" @click="remove(option)"></i>
                         </span>
                     </template>
                 </multiselect>
