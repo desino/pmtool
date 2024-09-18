@@ -138,7 +138,10 @@
                         <div class="col-md-6 my-2">
                             <div class="card h-100">
                                 <div class="card-header fw-bold">
-                                    {{ ticketData.functionality_name }}
+                                    <span class="badge bg-desino">{{ ticketData.initiative_name }}</span>
+                                    <span v-if="ticketData.display_functionality_name">
+                                        : {{ ticketData.display_functionality_name }}
+                                    </span>
                                 </div>
                                 <div class="card-body">
                                     <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
@@ -393,7 +396,9 @@ export default {
                 quality_owner_id: '',
                 technical_owner: '',
                 technical_owner_id: '',
-                macro_status_label: {}
+                macro_status_label: {},
+                initiative_name: '',
+                display_functionality_name: '',
             },
             currentActionFormData: {
                 ticket_id: '',
@@ -516,6 +521,8 @@ export default {
             this.ticketData.task_type = content.type_label;
             this.ticketData.status_label = content.status_label;
             this.ticketData.functionality_name = content?.functionality?.name.length > 0 ? content.initiative?.name + ' - ' + content?.functionality?.name : content.initiative?.name;
+            this.ticketData.initiative_name = content.initiative?.name;
+            this.ticketData.display_functionality_name = content?.functionality?.display_name;
             this.ticketData.functional_owner = content.initiative?.functional_owner?.name;
             this.ticketData.functional_owner_id = content.initiative?.functional_owner?.id;
             this.ticketData.quality_owner = content.initiative?.quality_owner?.name;
