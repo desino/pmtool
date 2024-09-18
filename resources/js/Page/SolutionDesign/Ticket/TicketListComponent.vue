@@ -11,18 +11,18 @@
     <GlobalMessage v-if="showMessage" />
     <div class="app-content">
         <div class="row mb-3">
-            <div class="col-12 col-md-2 mb-2 mb-md-0">
+            <div class="col-12 col-md-3 mb-2 mb-md-0">
                 <input v-model="filter.task_name" :placeholder="$t('ticket.filter.task_name')" class="form-control"
                     type="text" @keyup="fetchAllTasks">
             </div>
-            <div class="col-12 col-md-2 mb-2 mb-md-0">
+            <div class="col-12 col-md-3 mb-2 mb-md-0">
                 <select v-model="filter.task_type" class="form-select" @change="fetchAllTasks">
                     <option value="">{{ $t('ticket.filter.task_type_placeholder') }}</option>
                     <option v-for="type in filterTaskTypes" :key="type.id" :value="type.id">{{ type.name }}
                     </option>
                 </select>
             </div>
-            <div class="col-12 col-md-2 mb-2 mb-md-0">
+            <div class="col-12 col-md-3 mb-2 mb-md-0">
                 <select v-model="filter.action_owner" class="form-select" @change="fetchAllTasks">
                     <option value="">{{ $t('ticket.filter.action_owner_placeholder') }}</option>
                     <option v-for="actionOwner in actionOwners" :key="actionOwner.id" :value="actionOwner.id">{{
@@ -30,7 +30,7 @@
                     </option>
                 </select>
             </div>
-            <div class="col-12 col-md-2 mb-2 mb-md-0">
+            <div class="col-12 col-md-3 mb-2 mb-md-0">
                 <select v-model="filter.next_action_owner" class="form-select" @change="fetchAllTasks">
                     <option value="">{{ $t('ticket.filter.next_action_owner_placeholder') }}</option>
                     <option v-for="nextActionOwner in nextActionOwners" :key="nextActionOwner.id"
@@ -38,14 +38,29 @@
                     </option>
                 </select>
             </div>
-            <div class="col-12 col-md-2 mb-2 mb-md-0">
+        </div>
+        <div class="row mb-3">
+            <div class="col-12 col-md-3 mb-2 mb-md-0">
+                <multiselect v-model="filter.macro_status" ref="multiselect" :multiple="true"
+                    :options="filterMacroStatus" :searchable="true" deselect-label="" label="name"
+                    :placeholder="$t('ticket.filter.macro_status_placeholder')" track-by="id" @select="fetchAllTasks"
+                    @Remove="fetchAllTasks">
+                    <!-- <template #tag="{ option, remove }">
+                        <span class="custom__tag bg-danger">
+                            <span>{{ option.name }}</span>
+                            <span class="custom__remove" @click="remove(option)">X</span>
+                        </span>
+                    </template> -->
+                </multiselect>
+            </div>
+            <div class="col-12 col-md-3 mb-2 mb-md-0">
                 <multiselect v-model="filter.functionalities" ref="multiselect" :multiple="true"
                     :options="functionalities" :searchable="true" deselect-label="" label="display_name"
                     :placeholder="$t('ticket.filter.functionalities_placeholder')" track-by="id" @select="fetchAllTasks"
                     @Remove="fetchAllTasks">
                 </multiselect>
             </div>
-            <div class="col-12 col-md-2 mb-2 mb-md-0">
+            <div class="col-12 col-md-3 mb-2 mb-md-0">
                 <multiselect v-model="filter.projects" :multiple="true" :options="projects" :searchable="true"
                     deselect-label="" label="name" :placeholder="$t('ticket.filter.projects_placeholder')" track-by="id"
                     @select="fetchAllTasks" @Remove="fetchAllTasks">
@@ -104,7 +119,10 @@
                             {{ task.composed_name }}
                         </div>
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6">{{ task.status_label }}</div>
+                    <div class="col-lg-2 col-md-6 col-6 text-white text-center p-2"
+                        :class="'bg-' + task.macro_status_label?.color">
+                        {{ task.macro_status_label?.label }}
+                    </div>
                     <div class="col-lg-2 col-md-6 col-6">
                         <span class="d-block d-lg-none fw-bold bg-desino mt-2 p-0 text-white text-center rounded-top">
                             {{ $t('ticket.list.column_project') }} </span>
@@ -219,6 +237,7 @@ export default {
             projects: [],
             actionOwners: [],
             nextActionOwners: [],
+            filterMacroStatus: [],
             filter: {
                 task_name: "",
                 task_type: "",
@@ -226,6 +245,7 @@ export default {
                 next_action_owner: "",
                 functionalities: [],
                 projects: [],
+                macro_status: [],
                 is_open_task: false
             },
             isChkAllTickets: false,
@@ -265,6 +285,8 @@ export default {
                 this.actionOwners = response.meta_data.users;
                 this.nextActionOwners = response.meta_data.users;
                 this.initiative = response.meta_data.initiative;
+                this.filterMacroStatus = response.meta_data.macro_status;
+                console.log('this.filterMacroStatus :: ', this.filterMacroStatus);
                 this.tasks = response.content.data.map(task => ({
                     ...task,
                     isChecked: false,
