@@ -5,12 +5,6 @@
                 <div class="col-sm-6">
                     <h3 class="m-0">{{ $t('opportunity.page_title') }}</h3>
                 </div>
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-end">
-                        <li class="breadcrumb-item"><a class="text-decoration-none" href="javascript:void(0)">{{
-                            $t('home.breadcrumb') }}</a></li>
-                    </ol>
-                </div>
             </div>
         </div>
     </div>
@@ -37,7 +31,7 @@
                     </div>
                     <div class="col-lg-3 col-md-6 col-6 fw-bold py-2">{{
                         $t('opportunity_list_table.initiative_name_th_text')
-                        }}
+                    }}
                     </div>
                     <div class="col-lg-3 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
                         {{ $t('opportunity_list_table.ballpark_development_hours_th_text') }}
@@ -62,7 +56,7 @@
                     <div class="col-lg-2 col-md-6 col-4">
                         <span class="d-block d-lg-none fw-bold bg-light-subtle mt-2 text-white text-center"> {{
                             $t('opportunity_list_table.actions_th_text')
-                            }} </span>
+                        }} </span>
                         <a :title="$t('opportunity_list_table.actions_edit_tooltip')" class="text-desino me-2"
                             href="javascript:" @click="editOpportunity(opportunity)">
                             <i class="bi bi-pencil-square"></i>
