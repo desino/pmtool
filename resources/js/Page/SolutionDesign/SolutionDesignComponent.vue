@@ -35,11 +35,11 @@
                 <span class="input-group-text" id="basic-addon2"><i class="bi bi-search"></i></span>
             </div>
             <hr>
-            <draggable v-model="sectionsWithFunctionalities" :move="checkMoveSection" class="list-group"
-                handle=".handle-section" item-key="id" @end="sectionOnDragEnd">
+            <draggable v-model="sectionsWithFunctionalities" :move="checkMoveSection"
+                class="list-group list-group-flush" handle=".handle-section" item-key="id" @end="sectionOnDragEnd">
                 <template #item="{ element: section, index }">
-                    <div class="section-functionality-container">
-                        <div class="mt-3 section-container">
+                    <div class="list-group-item section-functionality-container">
+                        <div class="section-container">
                             <div v-if="editingSectionId === section.id">
                                 <div class="col-md-8">
                                     <div class="input-group">
@@ -54,7 +54,7 @@
                                         <div v-if="errors.section_name" class="invalid-feedback ms-4">
                                             <span v-for="(error, index) in errors.section_name" :key="index">{{
                                                 error
-                                                }}</span>
+                                            }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -89,8 +89,9 @@
                         <div v-if="section.functionalities" class="list-group ps-5 collapse"
                             :class="{ 'show': !collapsedSections[section.id] }" :id="'collapse_' + section.id">
                             <draggable v-model="section.functionalities" :move="checkMoveFunctionality"
-                                class="list-group" group="people" handle=".handle-functionality" item-key="id"
-                                @add="functionalityOnDragAdd($event, index)" @end="functionalityOnDragEnd">
+                                class="list-group list-group-flush" group="people" handle=".handle-functionality"
+                                item-key="id" @add="functionalityOnDragAdd($event, index)"
+                                @end="functionalityOnDragEnd">
                                 <template #item="{ element: functionality, index: functionalityIndex }">
                                     <div class="border-0 border-bottom"
                                         :class="['list-group-item d-flex list-group-item-action', { 'bg-desino text-light': isSelected(functionality.id) }]"
@@ -136,7 +137,7 @@
                         <div class="mb-3">
                             <label class="form-label fw-bold">{{
                                 $t('solution_design.functionality_form.name')
-                                }} <strong class="text-danger">*</strong>
+                            }} <strong class="text-danger">*</strong>
                             </label>
                             <input v-model="functionalityFormData.name" :class="{ 'is-invalid': errors.name }"
                                 class="form-control" placeholder="Enter value" type="text">
@@ -149,13 +150,13 @@
                         <div class="mb-3">
                             <label class="form-label fw-bold">{{
                                 $t('solution_design.functionality_form.section_name_select_box')
-                                }} <strong class="text-danger">*</strong>
+                            }} <strong class="text-danger">*</strong>
                             </label>
                             <select v-model="functionalityFormData.section_id" aria-label="Default select example"
                                 class="form-select" :class="{ 'is-invalid': errors.section_id }">
                                 <option value="">{{
                                     $t('solution_design.functionality_form.section_name_select_box_placeholder')
-                                    }}
+                                }}
                                 </option>
                                 <option v-for="section in sectionsWithFunctionalities" :key="section.id"
                                     :value="section.id">
@@ -171,7 +172,7 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">{{
                         $t('solution_design.functionality_form.description')
-                        }}</label>
+                    }}</label>
                     <TinyMceEditor v-model="functionalityFormData.description" />
                 </div>
                 <div class="mb-3 d-flex gap-3">
