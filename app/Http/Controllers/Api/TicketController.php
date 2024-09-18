@@ -646,7 +646,7 @@ class TicketController extends Controller
             if ($release->id != $request->input('release_id')) {
                 return ApiHelper::response($status, __('messages.release.please_select_valid_release'), '', 400);
             }
-            if ($request->input('tags') != "") {
+            if ($request->input('tags') != "" || $request->input('is_major') == true) {
                 return ApiHelper::response($status, __('messages.release.your_release_has_already_been_created'), '', 400);
             }
         }
