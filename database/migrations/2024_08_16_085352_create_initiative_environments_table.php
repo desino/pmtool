@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('initiative_environments', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('initiative_id');
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->text('url')->nullable();
             $table->integer('desino_managed_fl')->default(0);
             $table->integer('created_by');

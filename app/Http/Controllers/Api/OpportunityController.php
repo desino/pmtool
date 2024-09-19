@@ -12,6 +12,7 @@ use App\Services\AsanaService;
 use App\Services\ClientService;
 use App\Services\InitiativeService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -66,27 +67,29 @@ class OpportunityController extends Controller
             $requestData['asana_project_id'] = $project['data']['data']['gid'];
         }
         DB::beginTransaction();
-        try {
-            $initiative->update($requestData);
-            $initiative->initiativeEnvironments()->delete();
-            $environments = $requestData['environments'];
-            if (!empty($environments)) {
-                foreach ($environments as $environment) {
-                    $environment['initiative_id'] = $initiative->id;
-                    $attributes = ['id' => $environment['id']];
-                    InitiativeEnvironment::updateOrCreate($attributes, $environment);
-                }
+        // try {
+        $initiative->update($requestData);
+        $initiative->initiativeEnvironments()->delete();
+        $environments = Arr::where($requestData['environments'], function ($value, $key) {
+            return $value['name'] != '' || $value['url'] != '';
+        });
+        if (!empty($environments)) {
+            foreach ($environments as $environment) {
+                $environment['initiative_id'] = $initiative->id;
+                $attributes = ['id' => $environment['id']];
+                InitiativeEnvironment::updateOrCreate($attributes, $environment);
             }
-            $status = true;
-            $message = __('messages.opportunity.update_success');
-            $statusCode = 200;
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
-            $statusCode = 500;
-            Log::info($e->getMessage());
         }
+        $status = true;
+        $message = __('messages.opportunity.update_success');
+        $statusCode = 200;
+        DB::commit();
+        // } catch (\Exception $e) {
+        //     DB::rollBack();
+        //     $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+        //     $statusCode = 500;
+        //     Log::info($e->getMessage());
+        // }
         return ApiHelper::response($status, $message, '', $statusCode);
     }
 
