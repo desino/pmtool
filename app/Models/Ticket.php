@@ -83,18 +83,18 @@ class Ticket extends Model
     public static function getAllMacroStatus()
     {
         return [
-            ['id' => self::MACRO_STATUS_DETAIL_TICKET, 'name' => __('ticket_macro_status.detail_ticket')],
-            ['id' => self::MACRO_STATUS_CLARIFY_AND_ESTIMATE, 'name' => __('ticket_macro_status.clarify_and_estimate')],
-            ['id' => self::MACRO_STATUS_DEVELOP_WAIT_FOR_CLIENT, 'name' => __('ticket_macro_status.develop_wait_for_client')],
-            ['id' => self::MACRO_STATUS_DEVELOP, 'name' => __('ticket_macro_status.develop')],
-            ['id' => self::MACRO_STATUS_TEST_WAIT_FOR_DEPLOYMENT_TO_TEST, 'name' => __('ticket_macro_status.test_wait_for_deployment_to_test')],
-            ['id' => self::MACRO_STATUS_TEST, 'name' => __('ticket_macro_status.test')],
-            ['id' => self::MACRO_STATUS_VALIDATE_WAITING_FOR_DEPLOYMENT_TO_ACC, 'name' => __('ticket_macro_status.validate_waiting_for_deployment_to_acc')],
-            ['id' => self::MACRO_STATUS_VALIDATE, 'name' => __('ticket_macro_status.validate')],
-            ['id' => self::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_TEST, 'name' => __('ticket_macro_status.ready_for_deployment_to_test')],
-            ['id' => self::MACRO_STATUS_DONE, 'name' => __('ticket_macro_status.done')],
-            ['id' => self::MACRO_STATUS_TEST_WAIT_FOR_CLIENT, 'name' => __('ticket_macro_status.test_wait_for_client')],
-            ['id' => self::MACRO_STATUS_VALIDATE_WAIT_FOR_CLIENT, 'name' => __('ticket_macro_status.validate_wait_for_client')],
+            ['id' => self::MACRO_STATUS_DETAIL_TICKET, 'name' => __('ticket_macro_status.detail_ticket'), 'color' => 'success'],
+            ['id' => self::MACRO_STATUS_CLARIFY_AND_ESTIMATE, 'name' => __('ticket_macro_status.clarify_and_estimate'), 'color' => 'success'],
+            ['id' => self::MACRO_STATUS_DEVELOP_WAIT_FOR_CLIENT, 'name' => __('ticket_macro_status.develop_wait_for_client'), 'color' => 'danger'],
+            ['id' => self::MACRO_STATUS_DEVELOP, 'name' => __('ticket_macro_status.develop'), 'color' => 'success'],
+            ['id' => self::MACRO_STATUS_TEST_WAIT_FOR_DEPLOYMENT_TO_TEST, 'name' => __('ticket_macro_status.test_wait_for_deployment_to_test'), 'color' => 'danger'],
+            ['id' => self::MACRO_STATUS_TEST, 'name' => __('ticket_macro_status.test'), 'color' => 'success'],
+            ['id' => self::MACRO_STATUS_VALIDATE_WAITING_FOR_DEPLOYMENT_TO_ACC, 'name' => __('ticket_macro_status.validate_waiting_for_deployment_to_acc'), 'color' => 'danger'],
+            ['id' => self::MACRO_STATUS_VALIDATE, 'name' => __('ticket_macro_status.validate'), 'color' => 'success'],
+            ['id' => self::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_TEST, 'name' => __('ticket_macro_status.ready_for_deployment_to_test'), 'color' => 'danger'],
+            ['id' => self::MACRO_STATUS_DONE, 'name' => __('ticket_macro_status.done'), 'color' => 'primary'],
+            ['id' => self::MACRO_STATUS_TEST_WAIT_FOR_CLIENT, 'name' => __('ticket_macro_status.test_wait_for_client'), 'color' => 'danger'],
+            ['id' => self::MACRO_STATUS_VALIDATE_WAIT_FOR_CLIENT, 'name' => __('ticket_macro_status.validate_wait_for_client'), 'color' => 'danger'],
         ];
     }
 

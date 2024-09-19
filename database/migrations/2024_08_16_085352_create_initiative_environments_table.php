@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('initiative_id');
             $table->string('name');
-            $table->text('url');
+            $table->text('url')->nullable();
             $table->integer('desino_managed_fl')->default(0);
             $table->integer('created_by');
             $table->integer('updated_by')->default(0);

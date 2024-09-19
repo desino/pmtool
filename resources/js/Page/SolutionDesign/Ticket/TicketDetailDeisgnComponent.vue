@@ -2,28 +2,29 @@
     <div class="app-content-header pb-0">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-sm-6">
-                    <h3 class="m-0">{{ ticketData.composed_name }}
-                        <span>
-                            <input id="btn-check" v-model="showTicketDropdown" autocomplete="off" class="btn-check"
-                                type="checkbox">
-                            <label class="btn btn-desino-outline fw-bold border" for="btn-check">
-                                <i :class="{ 'bi-pencil-square': !showTicketDropdown, 'bi-x-lg text-danger': showTicketDropdown }"
-                                    class="bi">
-                                </i>
-                            </label>
-                        </span>
-                    </h3>
-                    <div v-if="showTicketDropdown" class="col-md-12 py-2">
+                <div class="col-11">
+                    <div class="w-100">
+                        <h3 class="m-0">{{ ticketData.composed_name }}
+                            <span>
+                                <input id="btn-check" v-model="showTicketDropdown" autocomplete="off" class="btn-check"
+                                    type="checkbox">
+                                <label class="btn btn-outline-desino fw-bold border" for="btn-check">
+                                    <i :class="{ 'bi-pencil-square': !showTicketDropdown, 'bi-x-lg text-danger': showTicketDropdown }"
+                                        class="bi"></i>
+                                </label>
+                            </span>
+                        </h3>
+                    </div>
+                    <div v-if="showTicketDropdown" class="w-100 py-2">
                         <multiselect v-model="selectedTaskObject" :multiple="false" :options="tasksForDropdown"
                             :searchable="true" deselect-label="Selected" label="composed_name"
                             placeholder="Search & Select Task" track-by="id" @input="onTaskSelect">
                         </multiselect>
                     </div>
                 </div>
-                <div class="col-sm-6">
-                    <div v-if="ticketData.asana_task_link" class="float-sm-end">
-                        <a :href="ticketData.asana_task_link" class="btn btn-desino bg-desino text-white mt-2"
+                <div class="col-1 text-end">
+                    <div v-if="ticketData.asana_task_link">
+                        <a :href="ticketData.asana_task_link" class="btn bg-desino border-0 w-100 text-dark"
                             target="_blank">
                             <svg fill="none" height="21px" viewBox="0 0 24 24" width="21px"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -43,69 +44,74 @@
             </div>
         </div>
     </div>
-    <hr>
     <GlobalMessage v-if="showMessage" />
-    <div class="app-content">
+    <div class="app-content border border-start-0 border-end-0 py-2 mt-2">
         <div class="row">
-            <div class="col-md-2 border-end text-light fw-bold align-items-center d-flex justify-content-center"
-                :class="'bg-' + ticketData?.macro_status_label?.color">
-                {{ ticketData?.macro_status_label?.label }}
-            </div>
-            <div class="col-md-6">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="card h-100">
-                            <div class="card-body p-1 align-items-center">
-                                <div class="">
-                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.task_estimation') }}</h6>
-                                    <span class="badge rounded-3 bg-success-subtle text-success">{{
-                                        ticketData.initial_dev_time
-                                        }} hrs</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card h-100">
-                            <div class="card-body p-1 align-items-center">
-                                <h6 class="fw-bold mx-1">{{
-                                    $t('ticket_details.task_current_action_owner_label_text') }}</h6>
-                                <div v-if="currentAction">
-                                    <select v-model="currentActionFormData.user_id" :disabled="disableActionUser()"
-                                        class="form-select"
-                                        @change="handleCurrentActionChangeUser($event.target.value)">
-                                        <option value="">Select User</option>
-                                        <option v-for="user in users" :key="user.id" :value="user.id">
-                                            {{ user.name }}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card" v-if="nextAction">
-                            <div class="card-body p-2 align-items-center">
-                                <div class="">
-                                    <h6 class="fw-bold mx-1">{{ $t('ticket_details.task_next_action_label_text') }}</h6>
-                                    <span class="badge rounded-3 bg-success-subtle text-success">
-                                        {{ nextAction.action_name }}
-                                    </span>
-                                </div>
-                            </div>
+            <div class="col-12 col-md-3 col-lg-3 col-xl-3 text-center mb-2 mb-md-0">
+                <div class="card shadow-none h-100 border-0" :class="'bg-' + ticketData?.macro_status_label?.color">
+                    <div class="card-body border-0 bg-transparent p-0 align-content-center">
+                        <div class="text-light fw-bold">
+                            {{ ticketData?.macro_status_label?.label }}
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <button class="btn bg-desino text-white" :disabled="!currentActionAllowOrNot()"
-                    @click="handleCurrentActionChangeStatus()">
-                    {{ $t('ticket_details.task_current_action_completed_but_text') }}
-                </button>
-                <button v-if="previousAction && previousActionAllowOrNot()" class="btn bg-desino text-white mx-2"
-                    @click="handlePreviousActionStatus()" :title="$t('ticket_action.move_to_previous_action')">
-                    {{ $t('ticket_details.task_previous_action_completed_but_text') }}
-                </button>
+            <div class="col-4 col-md-3 col-lg-2 col-xl-2 text-center mb-2 mb-md-0">
+                <div class="card shadow-none h-100 border-0 bg-transparent">
+                    <div class="card-header border-0 fw-bold bg-secondary text-white">
+                        {{ $t('ticket_details.task_estimation') }}
+                    </div>
+                    <div class="card-body border-0 bg-transparent p-1 align-content-center">
+                        <div class="badge rounded-3 bg-success-subtle text-success mb-0">
+                            {{ ticketData.initial_dev_time }} hrs
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4 col-md-3 col-lg-2 col-xl-2 text-center mb-2 mb-md-0">
+                <div class="card shadow-none h-100 border-0 bg-transparent">
+                    <div class="card-header border-0 fw-bold bg-secondary text-white">
+                        {{ $t('ticket_details.task_current_action_owner_label_text') }}
+                    </div>
+                    <div class="card-body border-0 bg-transparent py-1 px-0 align-content-center">
+                        <div v-if="currentAction">
+                            <select v-model="currentActionFormData.user_id" :disabled="disableActionUser()"
+                                class="form-select" @change="handleCurrentActionChangeUser($event.target.value)">
+                                <option value="">---</option>
+                                <option v-for="user in users" :key="user.id" :value="user.id">
+                                    {{ user.name }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4 col-md-3 col-lg-2 col-xl-2 text-center mb-2 mb-md-0">
+                <div class="card shadow-none h-100 border-0 bg-transparent">
+                    <div class="card-header border-0 fw-bold bg-secondary text-white">
+                        {{ $t('ticket_details.task_next_action_label_text') }}
+                    </div>
+                    <div class="card-body border-0 bg-transparent p-1 align-content-center">
+                        <div v-if="nextAction" class="badge rounded-3 bg-success-subtle text-success mb-0">{{
+                            nextAction.action_name }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-12 col-lg-2 col-xl-3 text-center mb-2 mb-md-0">
+                <div class="card shadow-none h-100 border-0 bg-transparent">
+                    <div class="card-body border-0 bg-transparent p-1">
+                        <a role="button" class="btn bg-desino w-100 border-0 text-white mb-2"
+                            :class="{ 'disabled': !currentActionAllowOrNot() }"
+                            @click="handleCurrentActionChangeStatus()">
+                            {{ $t('ticket_details.task_current_action_completed_but_text') }}
+                        </a>
+                        <a role="button" class="btn btn-warning w-100 border-0 text-dark"
+                            v-if="previousAction && previousActionAllowOrNot()" @click="handlePreviousActionStatus()"
+                            :title="$t('ticket_action.move_to_previous_action')">
+                            {{ $t('ticket_details.task_previous_action_completed_but_text') }}
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -132,87 +138,13 @@
                         <div class="col-md-6 my-2">
                             <div class="card h-100">
                                 <div class="card-header fw-bold">
-                                    {{ ticketData.functionality_name }}
+                                    <span class="badge bg-desino">{{ ticketData.initiative_name }}</span>
+                                    <span v-if="ticketData.display_functionality_name">
+                                        : {{ ticketData.display_functionality_name }}
+                                    </span>
                                 </div>
                                 <div class="card-body">
-                                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
-                                        Ipsum has
-                                        been
-                                        the industry's standard dummy text ever since the 1500s, when an unknown printer
-                                        took a
-                                        galley
-                                        of type and scrambled it to make a type specimen book. It has survived not only
-                                        five
-                                        centuries,
-                                        but also the leap into electronic typesetting, remaining essentially unchanged.
-                                        It was
-                                        popularised in the 1960s with the release of Letraset sheets containing Lorem
-                                        Ipsum
-                                        passages,
-                                        and more recently with desktop publishing software like Aldus PageMaker
-                                        including versions
-                                        of
-                                        Lorem Ipsum</p>
-
-                                    <p>It is a long established fact that a reader will be distracted by the readable
-                                        content of a
-                                        page
-                                        when looking at its layout. The point of using Lorem Ipsum is that it has a
-                                        more-or-less
-                                        normal
-                                        distribution of letters, as opposed to using 'Content here, content here',
-                                        making it look
-                                        like
-                                        readable English. Many desktop publishing packages and web page editors now use
-                                        Lorem Ipsum
-                                        as
-                                        their default model text, and a search for 'lorem ipsum' will uncover many web
-                                        sites still
-                                        in
-                                        their infancy. Various versions have evolved over the years, sometimes by
-                                        accident,
-                                        sometimes on
-                                        purpose (injected humour and the like).</p>
-
-                                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
-                                        Ipsum has
-                                        been
-                                        the industry's standard dummy text ever since the 1500s, when an unknown printer
-                                        took a
-                                        galley
-                                        of type and scrambled it to make a type specimen book. It has survived not only
-                                        five
-                                        centuries,
-                                        but also the leap into electronic typesetting, remaining essentially unchanged.
-                                        It was
-                                        popularised in the 1960s with the release of Letraset sheets containing Lorem
-                                        Ipsum
-                                        passages,
-                                        and more recently with desktop publishing software like Aldus PageMaker
-                                        including versions
-                                        of
-                                        Lorem Ipsum</p>
-
-                                    <p>It is a long established fact that a reader will be distracted by the readable
-                                        content of a
-                                        page
-                                        when looking at its layout. The point of using Lorem Ipsum is that it has a
-                                        more-or-less
-                                        normal
-                                        distribution of letters, as opposed to using 'Content here, content here',
-                                        making it look
-                                        like
-                                        readable English. Many desktop publishing packages and web page editors now use
-                                        Lorem Ipsum
-                                        as
-                                        their default model text, and a search for 'lorem ipsum' will uncover many web
-                                        sites still
-                                        in
-                                        their infancy. Various versions have evolved over the years, sometimes by
-                                        accident,
-                                        sometimes on
-                                        purpose (injected humour and the like).</p>
-
+                                    <div v-html="ticketData.functionality_description"></div>
                                 </div>
                             </div>
                         </div>
@@ -249,7 +181,7 @@
                                             </label>
                                             <input v-model="estimatedHoursFormData.initial_estimation_development_time"
                                                 :class="{ 'is-invalid': errors.initial_estimation_development_time }"
-                                                class="form-control" type="number" min="0" step="0.5">
+                                                class="form-control" type="number" min="0" step="any">
                                             <div v-if="errors.initial_estimation_development_time"
                                                 class="invalid-feedback">
                                                 <span
@@ -387,7 +319,10 @@ export default {
                 quality_owner_id: '',
                 technical_owner: '',
                 technical_owner_id: '',
-                macro_status_label: {}
+                macro_status_label: {},
+                initiative_name: '',
+                display_functionality_name: '',
+                functionality_description: '',
             },
             currentActionFormData: {
                 ticket_id: '',
@@ -510,6 +445,9 @@ export default {
             this.ticketData.task_type = content.type_label;
             this.ticketData.status_label = content.status_label;
             this.ticketData.functionality_name = content?.functionality?.name.length > 0 ? content.initiative?.name + ' - ' + content?.functionality?.name : content.initiative?.name;
+            this.ticketData.initiative_name = content.initiative?.name;
+            this.ticketData.display_functionality_name = content?.functionality?.display_name;
+            this.ticketData.functionality_description = content?.functionality?.description;
             this.ticketData.functional_owner = content.initiative?.functional_owner?.name;
             this.ticketData.functional_owner_id = content.initiative?.functional_owner?.id;
             this.ticketData.quality_owner = content.initiative?.quality_owner?.name;

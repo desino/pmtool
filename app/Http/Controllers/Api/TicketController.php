@@ -205,7 +205,8 @@ class TicketController extends Controller
             'functionality_id',
             'initiative_id',
             'composed_name',
-            'status'
+            'status',
+            'macro_status'
         )
             ->with(['project' => function ($q) {
                 $q->select(
@@ -213,8 +214,7 @@ class TicketController extends Controller
                     'initiative_id',
                     'name',
                 );
-            }])
-            ->with(['functionality' => function ($q) {
+            }, 'functionality' => function ($q) {
                 $q->select(
                     'id',
                     'section_id',
@@ -231,11 +231,8 @@ class TicketController extends Controller
                         );
                     }]);
                 }]);
-            }])
-            ->with('initiative')
-            ->with('currentAction')
-            ->withCount('actions')
-            ->withCount('doneActions')
+            }, 'initiative', 'currentAction'])
+            ->withCount(['actions', 'doneActions'])
             ->where('initiative_id', $initiative_id)
             ->when($filters['task_name'] != '', function (Builder $query) use ($filters) {
                 $query->whereLike('composed_name', '%' . $filters['task_name'] . '%');
@@ -280,6 +277,9 @@ class TicketController extends Controller
                         });
                 });
             })
+            ->when(!empty($filters['macro_status']) != '', function (Builder $query) use ($filters) {
+                $query->whereIn('macro_status', array_column($filters['macro_status'], 'id'));
+            })
             ->paginate(10);
         $meta['task_type'] = Ticket::getAllTypes();
         $meta['functionalities'] = Functionality::whereHas('section', function ($query) use ($initiative_id) {
@@ -288,6 +288,7 @@ class TicketController extends Controller
         $meta['projects'] = ProjectService::getInitiativeProjects($initiative_id);
         $meta['users'] = TicketService::getUsers();
         $meta['initiative'] = TicketService::getInitiative($initiative_id);
+        $meta['macro_status'] = Ticket::getAllMacroStatus();
 
         return ApiHelper::response('false', __('messages.ticket.fetched'), $tickets, 200, $meta);
     }
@@ -370,9 +371,8 @@ class TicketController extends Controller
     }
 
 
-    public function updateReleaseNote($ticket_id, UpdateReleaseNoteRequest $request)
+    public function updateReleaseNote($initiative_id, $ticket_id, UpdateReleaseNoteRequest $request)
     {
-
         $ticket = Ticket::with('functionality')->find($ticket_id);
         if (!$ticket) {
             return ApiHelper::response('false', __('messages.ticket.not_found'), [], 404);
@@ -557,7 +557,7 @@ class TicketController extends Controller
             TicketService::updateTicketStatus($ticket);
             TicketService::createMacroStatusAndUpdateTicket($ticket);
             $status = true;
-            $message = __('messages.ticket.change_action_status_success');
+            $message = __('messages.ticket.change_current_action_status_success');
             $statusCode = 200;
             DB::commit();
         } catch (\Exception $e) {
@@ -603,7 +603,7 @@ class TicketController extends Controller
             TicketService::updateTicketStatus($ticket);
             TicketService::createMacroStatusAndUpdateTicket($ticket);
             $status = true;
-            $message = __('messages.ticket.change_action_status_success');
+            $message = __('messages.ticket.change_previous_action_status_success');
             $statusCode = 200;
             DB::commit();
         } catch (\Exception $e) {
@@ -645,7 +645,7 @@ class TicketController extends Controller
             if ($release->id != $request->input('release_id')) {
                 return ApiHelper::response($status, __('messages.release.please_select_valid_release'), '', 400);
             }
-            if ($request->input('tags') != "") {
+            if ($request->input('tags') != "" || $request->input('is_major') == true) {
                 return ApiHelper::response($status, __('messages.release.your_release_has_already_been_created'), '', 400);
             }
         }
