@@ -41,8 +41,8 @@
                     </div>
                 </div>
             </li>
-            <li class="border-desino border list-group-item" v-for="opportunity in opportunities"
-                v-if="opportunities.length > 0" :key="opportunity.id">
+            <li class="border list-group-item" v-for="opportunity in opportunities" v-if="opportunities.length > 0"
+                :key="opportunity.id">
                 <div class="row">
                     <div class="col-lg-4 col-md-6 col-6">{{ opportunity.client.name }}</div>
                     <div class="col-lg-3 col-md-6 col-6">{{ opportunity.name }}</div>
@@ -72,7 +72,7 @@
                     </div>
                 </div>
             </li>
-            <li v-if="opportunities.length > 0" class="border-desino border list-group-item">
+            <li v-if="opportunities.length > 0" class="border list-group-item">
                 <div class="row">
                     <div class="col-lg-4 col-md-6 col-6"></div>
                     <div class="col-lg-3 col-md-6 col-6"></div>

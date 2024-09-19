@@ -107,8 +107,7 @@
                     </div>
                 </div>
             </li>
-            <li v-for="(task, index) in tasks" v-if="tasks.length > 0" :key="task.id"
-                class="border-desino border list-group-item">
+            <li v-for="(task, index) in tasks" v-if="tasks.length > 0" :key="task.id" class="border list-group-item">
                 <div class="row align-items-center">
                     <div class="col-lg-2 col-md-6 col-6 d-flex align-items-center">
                         <div class="mx-2">

@@ -3,32 +3,40 @@
  *   Author: Colorlib
  *   Website: AdminLTE.io <https://adminlte.io>
  *   License: Open source - MIT <https://opensource.org/licenses/MIT>
- */
+*/
 
-// Bootstrap Configuration
-// ---------------------------------------------------
+
+@import "bootstrap/scss/mixins/banner";
+@include bsBanner("");
+
+
+// scss-docs-start import-stack
+// Configuration
 @import "bootstrap/scss/functions";
-
-// AdminLTE Configuration
-// ---------------------------------------------------
-@import "bootstrap-variables"; // little modified are here
+@import "bootstrap/scss/variables";
 
 $desino: #3d62a6;
-// custom colors
 $custom-colors: (
-    'desino'    : $desino,
+    "desino": $desino,
+    'white' : $white,
+    'black' : $black,
 );
 $theme-colors: map-merge($theme-colors, $custom-colors);
+$theme-colors-rgb: map-loop($theme-colors, to-rgb, "$value");
 
-// Bootstrap Configuration
-// ---------------------------------------------------
-@import "bootstrap/scss/variables";
-@import "bootstrap/scss/variables-dark";
+$enable-responsive-font-sizes: true;
+$input-focus-box-shadow      : 0 0 0;
+
+$link-color        : $desino;
+$hr-border-color   : $desino;
+$input-placeholder-color : $secondary;
+$form-check-input-checked-bg-color : $desino;
+
 @import "bootstrap/scss/maps";
 @import "bootstrap/scss/mixins";
 @import "bootstrap/scss/utilities";
 
-// Bootstrap Layout & components
+// Layout & components
 @import "bootstrap/scss/root";
 @import "bootstrap/scss/reboot";
 @import "bootstrap/scss/type";
@@ -61,11 +69,14 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 @import "bootstrap/scss/offcanvas";
 @import "bootstrap/scss/placeholders";
 
-// Bootstrap Helpers
+// Helpers
 @import "bootstrap/scss/helpers";
 
-// Bootstrap Utilities
+// Utilities
 @import "bootstrap/scss/utilities/api";
+// scss-docs-end import-stack
+@import "bootstrap-icons/font/bootstrap-icons.css";
+@import 'toastify-js/src/toastify.css';
 
 // AdminLTE Configuration
 // ---------------------------------------------------

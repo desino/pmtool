@@ -42,7 +42,7 @@
                     </div>
                 </div>
             </li>
-            <li class="list-group-item border-desino border" v-if="projects.length > 0" v-for="project in projects">
+            <li class="list-group-item border" v-if="projects.length > 0" v-for="project in projects">
                 <div class="row">
                     <div class="col-lg-4 col-md-6 col-6 py-1">
                         {{ project.name }}
