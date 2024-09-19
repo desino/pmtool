@@ -286,6 +286,7 @@ export default {
             let opportunityEnvironments = opportunity.initiative_environments;
             opportunityEnvironments.forEach((environment) => {
                 environment.desino_managed_fl = environment.desino_managed_fl == 1 ?? false;
+                environment.type = environment.type != null ? environment.type : '';
             })
             this.formData.environments = opportunityEnvironments.length == 0 ? [{
                 id: '',
