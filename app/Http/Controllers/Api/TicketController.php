@@ -558,7 +558,7 @@ class TicketController extends Controller
             TicketService::updateTicketStatus($ticket);
             TicketService::createMacroStatusAndUpdateTicket($ticket);
             $status = true;
-            $message = __('messages.ticket.change_action_status_success');
+            $message = __('messages.ticket.change_current_action_status_success');
             $statusCode = 200;
             DB::commit();
         } catch (\Exception $e) {
@@ -604,7 +604,7 @@ class TicketController extends Controller
             TicketService::updateTicketStatus($ticket);
             TicketService::createMacroStatusAndUpdateTicket($ticket);
             $status = true;
-            $message = __('messages.ticket.change_action_status_success');
+            $message = __('messages.ticket.change_previous_action_status_success');
             $statusCode = 200;
             DB::commit();
         } catch (\Exception $e) {
