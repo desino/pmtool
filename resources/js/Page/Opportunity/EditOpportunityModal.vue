@@ -3,13 +3,14 @@
         <form @submit.prevent="updateOpportunity">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editInitiativeModalLabel">{{ $t('edit_opportunity_modal_title') }}</h5>
+                    <h5 class="modal-title" id="editInitiativeModalLabel">{{ modalTitle }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <GlobalMessage v-if="showMessage" />
                     <div class="row">
                     </div>
+
                     <div class="row">
                         <div class="col-4">
                             <div class="mb-3">
@@ -159,8 +160,7 @@
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label fw-bold">{{
-                                            $t('edit_opportunity_modal_input_environment_url') }}<strong
-                                                class="text-danger">*</strong></label>
+                                            $t('edit_opportunity_modal_input_environment_url') }}</label>
                                         <input type="text" v-model="environment.url"
                                             :class="{ 'is-invalid': errors[`environments.${index}.url`] }"
                                             class="form-control">
@@ -241,6 +241,7 @@ export default {
                     }
                 ],
             },
+            modalTitle: '',
             users: [],
             errors: {},
             showMessage: true
@@ -271,6 +272,13 @@ export default {
                 url: '',
                 desino_managed_fl: false,
             }] : opportunityEnvironments;
+
+            if (document.getElementById('editInitiativeModal') != null) {
+                this.modalTitle = this.$t('edit_initiative_modal_title')
+            }
+            if (document.getElementById('editOpportunityModal') != null) {
+                this.modalTitle = this.$t('edit_opportunity_modal_title')
+            }
             this.getUserList();
             this.setLoading(false);
         },

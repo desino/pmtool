@@ -425,6 +425,7 @@
     "opportunity_list_table.search_button_text": "Search",
     "opportunity_list_table.actions_redirect_to_solution_design_tooltip": "Redirect to Solution Design",
     "edit_opportunity_modal_title": "Edit Opportunity",
+    "edit_initiative_modal_title": "Edit Initiative",
     "edit_opportunity_modal_submit_but_text": "Update Opportunity",
     "edit_opportunity_modal_card_header_sharepoint_link_text": "Sharepoint Link",
     "edit_opportunity_modal_card_header_servers_text": "Servers",
