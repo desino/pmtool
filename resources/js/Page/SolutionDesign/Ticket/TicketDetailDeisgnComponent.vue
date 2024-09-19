@@ -159,7 +159,7 @@
                                     <div v-if="errors.release_note" class="text-danger mt-2">
                                         <span v-for="(error, index) in errors.release_note" :key="index">{{
                                             error
-                                        }}</span>
+                                            }}</span>
                                     </div>
                                     <button class="btn w-100 bg-desino text-white fw-bold m-2 rounded"
                                         @click="updateReleaseNote">
@@ -177,7 +177,7 @@
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">{{
                                                 $t('ticket_details_input_initial_estimation_development_time')
-                                                }} <strong class="text-danger">*</strong>
+                                            }} <strong class="text-danger">*</strong>
                                             </label>
                                             <input v-model="estimatedHoursFormData.initial_estimation_development_time"
                                                 :class="{ 'is-invalid': errors.initial_estimation_development_time }"

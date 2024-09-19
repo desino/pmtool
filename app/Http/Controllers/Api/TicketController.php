@@ -371,9 +371,8 @@ class TicketController extends Controller
     }
 
 
-    public function updateReleaseNote($ticket_id, UpdateReleaseNoteRequest $request)
+    public function updateReleaseNote($initiative_id, $ticket_id, UpdateReleaseNoteRequest $request)
     {
-
         $ticket = Ticket::with('functionality')->find($ticket_id);
         if (!$ticket) {
             return ApiHelper::response('false', __('messages.ticket.not_found'), [], 404);
