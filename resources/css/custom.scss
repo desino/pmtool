@@ -1,22 +1,3 @@
-// Import Bootstrap functions and variables first
-@import 'bootstrap/scss/functions';
-@import 'bootstrap/scss/variables';
-
-// Override Bootstrap variables
-$desino: #3d62a6; // Overriding primary color
-
-// Define a new theme color
-$custom-theme-colors: (
-    "desino": $desino // Example custom theme color
-);
-
-// Merge the new theme colors with Bootstrap's existing theme colors
-$theme-colors: map-merge($theme-colors, $custom-theme-colors);
-$theme-colors-rgb: map-loop($theme-colors, to-rgb, "$value");
-
-// Import the rest of Bootstrap
-@import 'bootstrap/scss/bootstrap';
-
 @import "scss/adminlte";
 
 // Custom CSS
