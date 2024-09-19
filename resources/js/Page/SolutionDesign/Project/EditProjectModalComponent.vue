@@ -26,7 +26,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-desino bg-desino text-light">{{
+                    <button type="submit" class="btn btn-desino">{{
                         $t('project.list.edit.modal_submit_but_text') }}</button>
                 </div>
             </div>

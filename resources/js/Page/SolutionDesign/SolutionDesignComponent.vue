@@ -170,15 +170,14 @@
                     <TinyMceEditor v-model="functionalityFormData.description" />
                 </div>
                 <div class="mb-3 d-flex gap-3">
-                    <button :disabled="!functionalityFormData.section_id" class="btn bg-desino text-light w-100"
-                        type="submit">
+                    <button :disabled="!functionalityFormData.section_id" class="btn btn-desino w-100" type="submit">
                         {{
                             functionalityFormData.functionality_id ?
                                 $t('solution_design.functionality_form.submit_update_but_text') :
                                 $t('solution_design.functionality_form.submit_save_but_text')
                         }}
                     </button>
-                    <!-- <button :disabled="!functionalityFormData.section_id" class="btn bg-desino text-light w-50"
+                    <!-- <button :disabled="!functionalityFormData.section_id" class="btn btn-desino w-50"
                         type="submit">{{
                             $t('solution_design.functionality_form.submit_save_and_add_new_but_text') }}
                     </button> -->
@@ -372,7 +371,7 @@ export default {
                 confirmButtonText: '<i class="bi bi-check-lg"></i>',
                 cancelButtonText: '<i class="bi bi-x-lg"></i>',
                 customClass: {
-                    confirmButton: 'bg-desino',
+                    confirmButton: 'btn-desino',
                 }
             }).then(async (result) => {
                 if (result.isConfirmed) {
@@ -411,7 +410,7 @@ export default {
                 confirmButtonText: '<i class="bi bi-check-lg"></i>',
                 cancelButtonText: '<i class="bi bi-x-lg"></i>',
                 customClass: {
-                    confirmButton: 'bg-desino',
+                    confirmButton: 'btn-desino',
                 }
             }).then(async (result) => {
                 if (result.isConfirmed) {

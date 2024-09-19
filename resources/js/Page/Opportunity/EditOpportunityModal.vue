@@ -187,7 +187,7 @@
                                             {{ $t('edit_opportunity_modal_input_remove') }}
                                         </button>
                                         <button v-show="index === formData.environments.length - 1" type="button"
-                                            class="btn bg-desino text-white mx-1" @click="addEnvironment(index)">
+                                            class="btn btn-desino mx-1" @click="addEnvironment(index)">
                                             {{ $t('edit_opportunity_modal_input_add') }}
                                         </button>
                                     </div>
@@ -198,7 +198,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-desino bg-desino text-light">{{
+                    <button type="submit" class="btn btn-desino">{{
                         $t('edit_opportunity_modal_submit_but_text') }}</button>
                 </div>
             </div>

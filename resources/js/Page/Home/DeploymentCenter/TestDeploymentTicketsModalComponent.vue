@@ -39,7 +39,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-desino bg-desino text-light"
+                    <button type="submit" class="btn btn-desino"
                         :disabled="selectedTestDeploymentTickets.length > 0 ? false : true">{{
                             $t('home.deployment_center.test_deployment.ticket_modal.submit_but.text') }}</button>
                 </div>
@@ -99,7 +99,7 @@ export default {
                 confirmButtonText: '<i class="bi bi-check-lg"></i>',
                 cancelButtonText: '<i class="bi bi-x-lg"></i>',
                 customClass: {
-                    confirmButton: 'bg-desino',
+                    confirmButton: 'btn-desino',
                 },
             }).then(async (result) => {
                 if (result.isConfirmed) {

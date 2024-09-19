@@ -24,7 +24,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-desino bg-desino text-light" type="submit">
+                    <button class="btn btn-desino" type="submit">
                         {{ $t('task_detail.update_testcase_submit_btn_text') }}
                     </button>
                     <button class="btn btn-secondary" @click="hideModal" data-bs-dismiss="modal" type="button">{{

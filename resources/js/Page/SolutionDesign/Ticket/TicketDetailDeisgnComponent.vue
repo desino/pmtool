@@ -24,7 +24,7 @@
                 </div>
                 <div class="col-1 text-end">
                     <div v-if="ticketData.asana_task_link">
-                        <a :href="ticketData.asana_task_link" class="btn bg-desino border-0 w-100 text-dark"
+                        <a :href="ticketData.asana_task_link" class="btn btn-desino border-0 w-100 text-dark"
                             target="_blank">
                             <svg fill="none" height="21px" viewBox="0 0 24 24" width="21px"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -100,7 +100,7 @@
             <div class="col-12 col-md-12 col-lg-2 col-xl-3 text-center mb-2 mb-md-0">
                 <div class="card shadow-none h-100 border-0 bg-transparent">
                     <div class="card-body border-0 bg-transparent p-1">
-                        <a role="button" class="btn bg-desino w-100 border-0 text-white mb-2"
+                        <a role="button" class="btn btn-desino w-100 border-0 text-white mb-2"
                             :class="{ 'disabled': !currentActionAllowOrNot() }"
                             @click="handleCurrentActionChangeStatus()">
                             {{ $t('ticket_details.task_current_action_completed_but_text') }}
@@ -161,7 +161,7 @@
                                             error
                                             }}</span>
                                     </div>
-                                    <button class="btn w-100 bg-desino text-white fw-bold m-2 rounded"
+                                    <button class="btn w-100 btn-desino text-white fw-bold m-2 rounded"
                                         @click="updateReleaseNote">
                                         {{ $t('ticket_details.update') }}
                                     </button>
@@ -191,8 +191,7 @@
                                                 </span>
                                             </div>
                                         </div>
-                                        <button type="submit"
-                                            class="btn w-100 bg-desino text-white fw-bold m-2 rounded">
+                                        <button type="submit" class="btn w-100 btn-desino fw-bold m-2 rounded">
                                             {{ $t('ticket_details.estimated_hours.update_but_text') }}
                                         </button>
                                     </form>
@@ -499,7 +498,7 @@ export default {
                 confirmButtonText: '<i class="bi bi-check-lg"></i>',
                 cancelButtonText: '<i class="bi bi-x-lg"></i>',
                 customClass: {
-                    confirmButton: 'bg-desino',
+                    confirmButton: 'btn-desino',
                 },
             }).then(async (result) => {
                 if (result.isConfirmed) {
@@ -531,7 +530,7 @@ export default {
                 confirmButtonText: '<i class="bi bi-check-lg"></i>',
                 cancelButtonText: '<i class="bi bi-x-lg"></i>',
                 customClass: {
-                    confirmButton: 'bg-desino',
+                    confirmButton: 'btn-desino',
                 },
             }).then(async (result) => {
                 if (result.isConfirmed) {
@@ -572,7 +571,7 @@ export default {
                 confirmButtonText: '<i class="bi bi-check-lg"></i>',
                 cancelButtonText: '<i class="bi bi-x-lg"></i>',
                 customClass: {
-                    confirmButton: 'bg-desino',
+                    confirmButton: 'btn-desino',
                 },
             }).then(async (result) => {
                 if (result.isConfirmed) {
@@ -614,7 +613,7 @@ export default {
                 confirmButtonText: '<i class="bi bi-check-lg"></i>',
                 cancelButtonText: '<i class="bi bi-x-lg"></i>',
                 customClass: {
-                    confirmButton: 'bg-desino',
+                    confirmButton: 'btn-desino',
                 },
             }).then(async (result) => {
                 if (result.isConfirmed) {

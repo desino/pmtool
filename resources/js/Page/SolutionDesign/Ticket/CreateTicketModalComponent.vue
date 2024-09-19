@@ -50,7 +50,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">{{
                             $t('create_ticket_modal_modal_input_initial_estimation_development_time')
-                        }} <strong class="text-danger">*</strong>
+                            }} <strong class="text-danger">*</strong>
                         </label>
                         <input v-model="formData.initial_estimation_development_time"
                             :class="{ 'is-invalid': errors.initial_estimation_development_time }" class="form-control"
@@ -138,16 +138,13 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-desino bg-desino text-light" type="submit"
-                        @click="handleSubmitButtonClick('create_close')">
+                    <button class="btn btn-desino" type="submit" @click="handleSubmitButtonClick('create_close')">
                         {{ $t('create_ticket_modal_submit_but_create_close_text') }}
                     </button>
-                    <button class="btn btn-desino bg-desino text-light" type="submit"
-                        @click="handleSubmitButtonClick('create_new')">
+                    <button class="btn btn-desino" type="submit" @click="handleSubmitButtonClick('create_new')">
                         {{ $t('create_ticket_modal_submit_but_create_add_new_text') }}
                     </button>
-                    <button class="btn btn-desino bg-desino text-light" type="submit"
-                        @click="handleSubmitButtonClick('create_detail')">
+                    <button class="btn btn-desino" type="submit" @click="handleSubmitButtonClick('create_detail')">
                         {{ $t('create_ticket_modal_submit_but_create_detail_text') }}
                     </button>
                     <button class="btn btn-secondary" @click="hideModal" data-bs-dismiss="modal"

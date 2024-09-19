@@ -60,7 +60,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-desino bg-desino text-light" type="submit">
+                    <button class="btn btn-desino" type="submit">
                         {{ $t('ticket.release.create.modal_submit_but_text') }}
                     </button>
                     <button class="btn btn-secondary" @click="hideModal" data-bs-dismiss="modal"

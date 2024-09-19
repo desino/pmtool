@@ -141,7 +141,7 @@ export default {
                 confirmButtonText: '<i class="bi bi-check-lg"></i>',
                 cancelButtonText: '<i class="bi bi-x-lg"></i>',
                 customClass: {
-                    confirmButton: 'bg-desino',
+                    confirmButton: 'btn-desino',
                 }
             }).then(async (result) => {
                 if (result.isConfirmed) {

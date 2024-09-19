@@ -49,7 +49,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">{{
                             $t('create_ticket_modal_modal_input_initial_estimation_development_time')
-                            }} <strong class="text-danger">*</strong>
+                        }} <strong class="text-danger">*</strong>
                         </label>
                         <input v-model="formData.initial_estimation_development_time"
                             :class="{ 'is-invalid': errors.initial_estimation_development_time }" class="form-control"
@@ -138,7 +138,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-desino bg-desino text-light" type="submit">
+                    <button class="btn btn-desino" type="submit">
                         {{ $t('ticket.edit.modal_submit_but_text') }}
                     </button>
                     <button class="btn btn-secondary" @click="hideModal" data-bs-dismiss="modal" type="button">{{

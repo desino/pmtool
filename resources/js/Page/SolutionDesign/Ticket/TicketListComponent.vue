@@ -69,18 +69,18 @@
         </div>
         <div class="row mb-3">
             <div class="col-12 col-md-3 mb-2 mb-md-0">
-                <button class="btn btn-desino bg-desino text-light" :disabled="selectedTasks.length === 0" type="button"
+                <button class="btn btn-desino" :disabled="selectedTasks.length === 0" type="button"
                     @click="openAssignProjectModal">
                     {{ $t('ticket.assign.project.button_text') }}
                 </button>
-                <button v-if="createReleaseAllowOrNot()" class="btn btn-desino bg-desino text-light mx-2"
+                <button v-if="createReleaseAllowOrNot()" class="btn btn-desino mx-2"
                     :disabled="selectedTasks.length === 0" type="button" @click="openCreateReleaseModal">
                     {{ $t('ticket.release.create.button_text') }}
                 </button>
             </div>
         </div>
         <ul class="list-group list-group-flush mb-3 mt-2">
-            <li class="font-weight-bold bg-desino text-white rounded-top list-group-item">
+            <li class="font-weight-bold rounded-top list-group-item">
                 <div class="row">
                     <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
                         <input class="form-check-input mx-2" type="checkbox" id="chk_all_tickets"
@@ -361,7 +361,7 @@ export default {
                 confirmButtonText: '<i class="bi bi-check-lg"></i>',
                 cancelButtonText: '<i class="bi bi-x-lg"></i>',
                 customClass: {
-                    confirmButton: 'bg-desino',
+                    confirmButton: 'btn-desino',
                 },
                 didClose: () => {
                     this.closeDropdown(index);

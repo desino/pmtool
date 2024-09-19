@@ -6,7 +6,7 @@
                 <div class="card-body">
                     <div class="sidebar-brand mb-3">
                         <img alt="Brand Image" class="brand-image"
-                             src="https://www.desino.be/wp-content/uploads/2024/01/Logo_Finaloriginal-black.png"/>
+                            src="https://www.desino.be/wp-content/uploads/2024/01/Logo_Finaloriginal-black.png" />
                     </div>
                     <h5 class="text-center">{{ $t('forgot_password_page_title') }}</h5>
                     <form @submit.prevent="forgotPassword">
@@ -20,7 +20,7 @@
                                 <span v-for="(error, index) in errors.email" :key="index">{{ error }}</span>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-desino w-100 bg-desino text-light">{{
+                        <button type="submit" class="btn btn-desino w-100">{{
                             $t('forgot_password_submit_but_text')
                         }}</button>
                         <p class="mb-1">

@@ -5,7 +5,7 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="acceptanceDeploymentTicketsModalLabel">{{
                         $t('home.deployment_center.acceptance_deployment.ticket_modal.title')
-                    }}</h5>
+                        }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -39,7 +39,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-desino bg-desino text-light"
+                    <button type="submit" class="btn btn-desino"
                         :disabled="selectedAcceptanceDeploymentTickets.length > 0 ? false : true">{{
                             $t('home.deployment_center.acceptance_deployment.ticket_modal.submit_but.text') }}</button>
                 </div>
