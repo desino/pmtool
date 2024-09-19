@@ -24,11 +24,6 @@ $custom-colors: (
 $theme-colors: map-merge($theme-colors, $custom-colors);
 $theme-colors-rgb: map-loop($theme-colors, to-rgb, "$value");
 
-$table-variants-custom : (
-    "desino": $desino,
-);
-$table-variants: map-merge($table-variants, $table-variants-custom);
-
 $enable-responsive-font-sizes: true;
 $input-focus-box-shadow      : 0 0 0;
 
