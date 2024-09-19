@@ -16,7 +16,7 @@
                             <div class="mb-3">
                                 <label class="form-label fw-bold">{{
                                     $t('edit_opportunity_modal_select_client_name')
-                                }} <strong class="text-danger">*</strong></label>
+                                    }} <strong class="text-danger">*</strong></label>
                                 <input type="text" v-model="formData.client_name" disabled
                                     :class="{ 'is-invalid': errors.client_name }" class="form-control">
                                 <div v-if="errors.client_name" class="invalid-feedback">
@@ -43,7 +43,7 @@
                             <div v-if="errors.ballpark_development_hours" class="invalid-feedback">
                                 <span v-for="(error, index) in errors.ballpark_development_hours" :key="index">{{
                                     error
-                                }}</span>
+                                    }}</span>
                             </div>
                         </div>
                     </div>
@@ -113,7 +113,7 @@
                         <div v-if="errors.ballpark_development_hours" class="invalid-feedback">
                             <span v-for="(error, index) in errors.ballpark_development_hours" :key="index">{{
                                 error
-                            }}</span>
+                                }}</span>
                         </div>
                     </div>
 
@@ -130,7 +130,7 @@
                                 <div v-if="errors.share_point_url" class="invalid-feedback">
                                     <span v-for="(error, index) in errors.share_point_url" :key="index">{{
                                         error
-                                    }}</span>
+                                        }}</span>
                                 </div>
                             </div>
                         </div>
@@ -143,10 +143,29 @@
                         <div class="card-body">
                             <div v-for="(environment, index) in formData.environments" :key="index">
                                 <div class="row">
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-2 mb-3">
                                         <label class="form-label fw-bold">{{
-                                            $t('edit_opportunity_modal_input_environment_name') }} <strong
-                                                class="text-danger">*</strong></label>
+                                            $t('edit_opportunity_modal_input_environment_server_type') }}</label>
+                                        <select v-model="environment.type" :class="{ 'is-invalid': errors.type }"
+                                            class="form-select">
+                                            <option value="">{{
+                                                $t('edit_opportunity_modal_input_environment_server_type_placeholder')
+                                                }}
+                                            </option>
+                                            <option v-for="serverType in serverTypes" :key="serverType.id"
+                                                :value="serverType.id">{{
+                                                    serverType.name }}
+                                            </option>
+                                        </select>
+                                        <div v-if="errors.type" class="invalid-feedback">
+                                            <span v-for="(error, index) in errors.type" :key="index">{{
+                                                error
+                                                }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <label class="form-label fw-bold">{{
+                                            $t('edit_opportunity_modal_input_environment_name') }} </label>
                                         <input type="text" v-model="environment.name"
                                             :class="{ 'is-invalid': errors[`environments.${index}.name`] }"
                                             class="form-control">
@@ -158,7 +177,7 @@
                                             </span>
                                         </div>
                                     </div>
-                                    <div class="col-md-4 mb-3">
+                                    <div class="col-md-3 mb-3">
                                         <label class="form-label fw-bold">{{
                                             $t('edit_opportunity_modal_input_environment_url') }}</label>
                                         <input type="text" v-model="environment.url"
@@ -235,6 +254,7 @@ export default {
                 environments: [
                     {
                         id: '',
+                        type: '',
                         name: '',
                         url: '',
                         desino_managed_fl: false,
@@ -243,6 +263,7 @@ export default {
             },
             modalTitle: '',
             users: [],
+            serverTypes: [],
             errors: {},
             showMessage: true
         };
@@ -268,6 +289,7 @@ export default {
             })
             this.formData.environments = opportunityEnvironments.length == 0 ? [{
                 id: '',
+                type: '',
                 name: '',
                 url: '',
                 desino_managed_fl: false,
@@ -279,7 +301,7 @@ export default {
             if (document.getElementById('editOpportunityModal') != null) {
                 this.modalTitle = this.$t('edit_opportunity_modal_title')
             }
-            this.getUserList();
+            this.getEditOpportunityData();
             this.setLoading(false);
         },
         async updateOpportunity() {
@@ -305,6 +327,7 @@ export default {
         addEnvironment() {
             this.formData.environments.push({
                 id: '',
+                type: '',
                 name: '',
                 url: '',
                 desino_managed_fl: false,
@@ -316,12 +339,13 @@ export default {
         removeEnvironment(index) {
             this.formData.environments.splice(index, 1);
         },
-        async getUserList() {
+        async getEditOpportunityData() {
             this.clearMessages();
             try {
                 this.setLoading(true);
-                const response = await OpportunityService.getUserList();
-                this.users = response.content;
+                const response = await OpportunityService.getEditOpportunityData();
+                this.users = response.content.clients;
+                this.serverTypes = response.content.initiative_server_type;
                 this.setLoading(false);
             } catch (error) {
                 this.handleError(error);

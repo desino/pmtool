@@ -30,6 +30,7 @@ class EditOpportunityRequest extends FormRequest
             'functional_owner_id' => 'nullable|exists:users,id',
             'quality_owner_id' => 'nullable|exists:users,id',
             'technical_owner_id' => 'nullable|exists:users,id',
+            'environments.*.type' => 'nullable',
             'environments.*.name' => 'nullable|string',
             'environments.*.url' => 'nullable|url',
         ];

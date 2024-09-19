@@ -14,6 +14,7 @@ const endpoints = {
     getClientList: `${defaultPath}/get-client-list`,
     getUserList: `${defaultPath}/get-user-list`,
     getOpportunity: `${defaultPath}/get-opportunity/:id`,
+    getEditOpportunityData: `${defaultPath}/get-edit-opportunity-data`,
 
 };
 const OpportunityService = {
@@ -59,9 +60,9 @@ const OpportunityService = {
             throw handleError(error);
         }
     },
-    async getUserList() {
+    async getEditOpportunityData() {
         try {
-            const response = await axiosRequest.get(endpoints.getUserList);
+            const response = await axiosRequest.get(endpoints.getEditOpportunityData);
             return response.data;
         } catch (error) {
             throw handleError(error);

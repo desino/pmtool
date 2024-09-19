@@ -125,10 +125,14 @@ class OpportunityController extends Controller
         return ApiHelper::response(true, '', $clientList, 200);
     }
 
-    public function getUserList(Request $request)
+    public function getEditOpportunityData(Request $request)
     {
         $clientList = User::all();
-        return ApiHelper::response(true, '', $clientList, 200);
+        $retData = [
+            'clients' => $clientList,
+            'initiative_server_type' => InitiativeEnvironment::getServerTypeAll(),
+        ];
+        return ApiHelper::response(true, '', $retData, 200);
     }
 
     public function getOpportunity(Request $request, $id)
