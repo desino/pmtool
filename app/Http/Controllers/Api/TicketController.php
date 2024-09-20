@@ -80,7 +80,6 @@ class TicketController extends Controller
             return ApiHelper::response($status, __('messages.asana.project_does_not_exist'), '', 500);
         }
 
-        // $exists = array_search(TicketAction::getActionDevelop(), array_column($validateData['ticket_actions'], 'action'));
         $filteredActionDevelop = array_filter($validateData['ticket_actions'], function ($action) {
             return $action['is_checked'] == true && $action['action'] === TicketAction::getActionDevelop();
         });
@@ -151,6 +150,13 @@ class TicketController extends Controller
         $getAsanaProject = $this->asanaService->getProject(trim($initiative->asana_project_id));
         if ($getAsanaProject['error_status']) {
             return ApiHelper::response($status, __('messages.asana.project_does_not_exist'), '', 500);
+        }
+
+        $filteredActionDevelop = array_filter($validateData['ticket_actions'], function ($action) {
+            return $action['is_checked'] == true && $action['action'] === TicketAction::getActionDevelop();
+        });
+        if (empty($filteredActionDevelop)) {
+            return ApiHelper::response($status, __('messages.create_ticket.action_develop_not_exist'), '', 400);
         }
 
         $projectId = $initiative->asana_project_id;
