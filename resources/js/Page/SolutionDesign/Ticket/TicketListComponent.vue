@@ -80,7 +80,7 @@
             </div>
         </div>
         <ul class="list-group list-group-flush mb-3 mt-2">
-            <li class="font-weight-bold rounded-top list-group-item">
+            <li class="font-weight-bold bg-desino text-white rounded-top list-group-item">
                 <div class="row">
                     <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
                         <input class="form-check-input mx-2" type="checkbox" id="chk_all_tickets"

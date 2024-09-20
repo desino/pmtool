@@ -207,7 +207,7 @@ class TicketService
 
     public static function  getTicketActionStatus($index, $ticketAction, $autoWaitForClientApproval)
     {
-        if ($autoWaitForClientApproval && $index == 0 && ($ticketAction['action'] == 1 || $ticketAction['action'] == 2)) {
+        if ($autoWaitForClientApproval && $index == 0 && ($ticketAction['action'] != TicketAction::getActionDevelop())) {
             return TicketAction::getStatusActionable();
         }
 
@@ -228,49 +228,47 @@ class TicketService
         foreach ($ticketActions as $ticketAction) {
             switch ($ticketAction->action) {
                 case TicketAction::getActionDetailTicket():
-                    if ($ticketAction->status === 1 && $taskStatus == null) {
+                    if ($ticketAction->status === TicketAction::getStatusActionable() && $taskStatus == null) {
                         $taskStatus = Ticket::getStatusOngoing();
                     }
-                    if ($ticketAction->status === 0 && $taskStatus == null) {
+                    if ($ticketAction->status === TicketAction::getStatusWaitingForDependantAction() && $taskStatus == null) {
                         $taskStatus = Ticket::getStatusWaitForClient();
                     }
                     break;
                 case TicketAction::getActionClarifyAndEstimate():
-                    if ($ticketAction->status === 1 && $taskStatus == null) {
+                    if ($ticketAction->status === TicketAction::getStatusActionable() && $taskStatus == null) {
                         $taskStatus = Ticket::getStatusOngoing();
                     }
-                    if ($ticketAction->status === 0 && $taskStatus == null) {
+                    if ($ticketAction->status === TicketAction::getStatusWaitingForDependantAction() && $taskStatus == null) {
                         $taskStatus = Ticket::getStatusWaitForClient();
                     }
                     break;
                 case TicketAction::getActionDevelop():
-                    if ($ticket->auto_wait_for_client_approval && $ticketAction->status === 0  && $taskStatus == null) {
+                    if ($ticket->auto_wait_for_client_approval && $ticketAction->status != TicketAction::getStatusDone()  && $taskStatus == null) {
                         $taskStatus = Ticket::getStatusWaitForClient();
                     }
-                    if (!$ticket->auto_wait_for_client_approval && $ticketAction->status === 1  && $taskStatus == null) {
+                    if (!$ticket->auto_wait_for_client_approval && $ticketAction->status === TicketAction::getStatusActionable()  && $taskStatus == null) {
                         $taskStatus = Ticket::getStatusOngoing();
                     }
-                    break;
                 case TicketAction::getActionTest():
-                    if ($ticket->auto_wait_for_client_approval && $ticketAction->status === 0 && $taskStatus == null) {
+                    if ($ticketAction->status === TicketAction::getStatusWaitingForDependantAction() && $taskStatus == null) {
                         $taskStatus = Ticket::getStatusWaitForClient();
                     }
-                    if (!$ticket->auto_wait_for_client_approval && $ticketAction->status === 1 && $taskStatus == null) {
+                    if ($ticketAction->status === TicketAction::getStatusActionable() && $taskStatus == null) {
                         $taskStatus = Ticket::getStatusReadyForTest();
                     }
                     break;
                 case TicketAction::getActionValidate():
-                    if ($ticket->auto_wait_for_client_approval && $ticketAction->status === 0 && $taskStatus == null) {
+                    if ($ticketAction->status === TicketAction::getStatusWaitingForDependantAction() && $taskStatus == null) {
                         $taskStatus = Ticket::getStatusWaitForClient();
                     }
-                    if (!$ticket->auto_wait_for_client_approval && $ticketAction->status === 1 && $taskStatus == null) {
+                    if ($ticketAction->status === TicketAction::getStatusActionable() && $taskStatus == null) {
                         $taskStatus = Ticket::getStatusReadyForACC();
                     }
                     break;
             }
         }
-
-        $ticketActionsDoneCount = $ticketActions->where('status', 2)->count();
+        $ticketActionsDoneCount = $ticketActions->where('status', TicketAction::getStatusDone())->count();
         if ($ticketActionsDoneCount == $ticketActions->count()) {
             $taskStatus = Ticket::getStatusReadyForPRD();
         }
@@ -295,16 +293,12 @@ class TicketService
             $macroStatus = Ticket::MACRO_STATUS_TEST_WAIT_FOR_DEPLOYMENT_TO_TEST;
         } else if ($ticketCurrentAction == TicketAction::getActionTest() && $ticketStatus == Ticket::getStatusOngoing()) {
             $macroStatus = Ticket::MACRO_STATUS_TEST;
-        } else if ($ticketCurrentAction == TicketAction::getActionTest() && $ticketStatus == Ticket::getStatusWaitForClient()) {
-            $macroStatus = Ticket::MACRO_STATUS_TEST_WAIT_FOR_CLIENT;
         } else if ($ticketCurrentAction == TicketAction::getActionValidate() && $ticketStatus == Ticket::getStatusReadyForACC()) {
             $macroStatus = Ticket::MACRO_STATUS_VALIDATE_WAITING_FOR_DEPLOYMENT_TO_ACC;
         } else if ($ticketCurrentAction == TicketAction::getActionValidate() && $ticketStatus == Ticket::getStatusOngoing()) {
             $macroStatus = Ticket::MACRO_STATUS_VALIDATE;
-        } else if ($ticketCurrentAction == TicketAction::getActionValidate() && $ticketStatus == Ticket::getStatusWaitForClient()) {
-            $macroStatus = Ticket::MACRO_STATUS_VALIDATE_WAIT_FOR_CLIENT;
         } else if ($ticketStatus == Ticket::getStatusReadyForPRD()) {
-            $macroStatus = Ticket::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_TEST;
+            $macroStatus = Ticket::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_PRD;
         } else if ($ticketStatus == Ticket::getStatusDone()) {
             $macroStatus = Ticket::MACRO_STATUS_DONE;
         }
