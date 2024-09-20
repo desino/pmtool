@@ -367,7 +367,7 @@ class TicketService
             $action['is_checked'] = in_array($action['id'], $selectedTicketActions);
             $action['is_disabled'] = in_array($action['id'], $disabledTicketActions);
             $action['is_user_select_box_disabled'] = in_array($action['id'], $disabledTicketActionUsers);
-            $currentAction = collect([]);
+            $currentAction = [];
             if ($ticket && $ticket?->actions) {
                 $currentAction = $ticket->actions->where('action', $action['id'])->first();
             }
@@ -375,21 +375,24 @@ class TicketService
                 case TicketAction::getActionDetailTicket():
                 case TicketAction::getActionValidate():
                     $action['user_id'] = $initiative->functional_owner_id;
-                    if ($currentAction && $currentAction?->action == $action['id']) {
+                    if (!empty($currentAction) && $currentAction?->action == $action['id']) {
                         $action['user_id'] = $currentAction->user_id;
+                        $action['status'] = $currentAction->status;
                     }
                     break;
                 case TicketAction::getActionClarifyAndEstimate():
                 case TicketAction::getActionDevelop():
                     $action['user_id'] = $initiative->technical_owner_id;
-                    if ($currentAction && $currentAction?->action == $action['id']) {
+                    if (!empty($currentAction) && $currentAction?->action == $action['id']) {
                         $action['user_id'] = $currentAction->user_id;
+                        $action['status'] = $currentAction->status;
                     }
                     break;
                 case TicketAction::getActionTest():
                     $action['user_id'] = $initiative->quality_owner_id;
-                    if ($currentAction && $currentAction?->action == $action['id']) {
+                    if (!empty($currentAction) && $currentAction?->action == $action['id']) {
                         $action['user_id'] = $currentAction->user_id;
+                        $action['status'] = $currentAction->status;
                     }
                     break;
                 default:
