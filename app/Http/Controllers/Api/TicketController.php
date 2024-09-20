@@ -44,8 +44,9 @@ class TicketController extends Controller
         $ticketTypes = TicketService::getTicketTypes();
         $projects = TicketService::getInitiativeProject($initiative_id);
         $users = TicketService::getUsers();
-        $actions = TicketAction::getAllActions();
         $initiative = TicketService::getInitiative($initiative_id);
+        $actions = TicketService::getTicketActionWithDefaultData(TicketAction::getAllActions(), $initiative);
+
         $retData = [
             'sectionFunctionality' => $sectionFunctionality,
             'ticketTypes' => $ticketTypes,
@@ -60,6 +61,7 @@ class TicketController extends Controller
     public function store(TicketRequest $request)
     {
         $validateData = $request->validated();
+        $requestData = $request->all();
         $status = false;
         $retData = [
             'ticket' => "",
@@ -78,6 +80,14 @@ class TicketController extends Controller
             return ApiHelper::response($status, __('messages.asana.project_does_not_exist'), '', 500);
         }
 
+        // $exists = array_search(TicketAction::getActionDevelop(), array_column($validateData['ticket_actions'], 'action'));
+        $filteredActionDevelop = array_filter($validateData['ticket_actions'], function ($action) {
+            return $action['is_checked'] == true && $action['action'] === TicketAction::getActionDevelop();
+        });
+        if (empty($filteredActionDevelop)) {
+            return ApiHelper::response($status, __('messages.create_ticket.action_develop_not_exist'), '', 400);
+        }
+
         $ticketTypes = Ticket::getAllTypes();
         $projectId = $initiative->asana_project_id;
         $generateTicketComposedNameData = TicketService::generateTicketComposedName($validateData['initiative_id'], $validateData['name'], $validateData['type']);
@@ -87,9 +97,6 @@ class TicketController extends Controller
             'name' => $validateData['composed_name'],
             'resource_type' => 'task',
             'resource_subtype' => 'default_task',
-            // 'resource_subtype' => $ticketTypes[$validateData['type']],
-            // 'notes' => 'This is a task created from the API.',
-            // 'due_on' => '2024-08-10',
         ];
         $task = $this->asanaService->createTask($projectId, $data);
         if ($task['error_status']) {
@@ -154,9 +161,6 @@ class TicketController extends Controller
             'name' => $validateData['composed_name'],
             'resource_type' => 'task',
             'resource_subtype' => 'default_task',
-            // 'resource_subtype' => $ticketTypes[$validateData['type']],
-            // 'notes' => 'This is a task created from the API.',
-            // 'due_on' => '2024-08-10',
         ];
         $task = $this->asanaService->updateTask($ticket->asana_task_id, $data);
         if ($task['error_status']) {
@@ -301,13 +305,6 @@ class TicketController extends Controller
             return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
         }
         $ticket = Ticket::with('functionality', 'actions')->find($ticket_id);
-        $selectedTicketActions = $ticket->actions->map(function ($item) {
-            return [
-                'action' => $item['action'],
-                'user_id' => $item['user_id'],
-                'status' => $item['status']
-            ];
-        });
         if (!$ticket) {
             return ApiHelper::response($status, __('messages.ticket.not_found'), [], 404);
         }
@@ -316,8 +313,8 @@ class TicketController extends Controller
         $ticketTypes = TicketService::getTicketTypes();
         $projects = TicketService::getInitiativeProject($initiative_id);
         $users = TicketService::getUsers();
-        $actions = TicketAction::getAllActions();
         $initiative = TicketService::getInitiative($initiative_id);
+        $actions = TicketService::getTicketActionWithDefaultData(TicketAction::getAllActions(), $initiative, $ticket);
         $retData = [
             'ticket' => $ticket,
             'sectionFunctionality' => $sectionFunctionality,
@@ -326,7 +323,6 @@ class TicketController extends Controller
             'users' => $users,
             'actions' => $actions,
             'initiative' => $initiative,
-            'selectedTicketActions' => $selectedTicketActions
         ];
         return ApiHelper::response($status, __('messages.ticket.fetched'), $retData, 200);
     }

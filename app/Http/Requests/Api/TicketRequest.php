@@ -35,6 +35,8 @@ class TicketRequest extends FormRequest
             'ticket_actions.*.user_id' => 'required|exists:users,id',
             'ticket_actions.*.action' => 'required',
             'ticket_actions.*.status' => 'nullable',
+            'ticket_actions.*.is_checked' => 'nullable',
+            'ticket_actions.*.is_disabled' => 'nullable',
         ];
     }
 

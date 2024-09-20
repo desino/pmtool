@@ -113,6 +113,9 @@ class TicketService
     public static function insertTicketActions(int $ticketId, array $ticketActions, bool $autoWaitForClientApproval)
     {
         $ticketActions = Arr::where($ticketActions, function ($value) {
+            return $value['is_checked'] == 1;
+        });
+        $ticketActions = Arr::where($ticketActions, function ($value) {
             return !isset($value['status']) || $value['status'] != TicketAction::getStatusDone();
         });
         $actions = array_column($ticketActions, 'action');
@@ -340,5 +343,59 @@ class TicketService
         $defaultName = __('messages.release.default_name');
         $releaseName = $defaultName . " " . $releaseVersion;
         return $releaseName;
+    }
+
+    public static function getTicketActionWithDefaultData($actions, $initiative, $ticket = null)
+    {
+        $selectedTicketActions = [TicketAction::getActionDevelop(), TicketAction::getActionTest(), TicketAction::getActionValidate()];
+        if ($ticket && $ticket->actions) {
+            $selectedTicketActions = $ticket->actions->pluck('action')->toArray();
+            $selectedTicketActions[] = TicketAction::getActionDevelop();
+        }
+        $disabledTicketActions = [TicketAction::getActionDevelop()];
+        $disabledTicketActionUsers = [];
+        if ($ticket && $ticket?->actions) {
+            $disabledTicketActions = $ticket->actions->where(function ($q) {
+                $q->where('status', TicketAction::getStatusDone());
+                $q->orWhere('status', TicketAction::getActionDevelop());
+            })->pluck('action')->toArray();
+            $disabledTicketActions[] = TicketAction::getActionDevelop();
+            $disabledTicketActionUsers = $ticket->actions->where('status', TicketAction::getStatusDone())->pluck('action')->toArray();
+        }
+        foreach ($actions as &$action) {
+            $action['action'] = $action['id'];
+            $action['is_checked'] = in_array($action['id'], $selectedTicketActions);
+            $action['is_disabled'] = in_array($action['id'], $disabledTicketActions);
+            $action['is_user_select_box_disabled'] = in_array($action['id'], $disabledTicketActionUsers);
+            $currentAction = collect([]);
+            if ($ticket && $ticket?->actions) {
+                $currentAction = $ticket->actions->where('action', $action['id'])->first();
+            }
+            switch ($action['id']) {
+                case TicketAction::getActionDetailTicket():
+                case TicketAction::getActionValidate():
+                    $action['user_id'] = $initiative->functional_owner_id;
+                    if ($currentAction && $currentAction?->action == $action['id']) {
+                        $action['user_id'] = $currentAction->user_id;
+                    }
+                    break;
+                case TicketAction::getActionClarifyAndEstimate():
+                case TicketAction::getActionDevelop():
+                    $action['user_id'] = $initiative->technical_owner_id;
+                    if ($currentAction && $currentAction?->action == $action['id']) {
+                        $action['user_id'] = $currentAction->user_id;
+                    }
+                    break;
+                case TicketAction::getActionTest():
+                    $action['user_id'] = $initiative->quality_owner_id;
+                    if ($currentAction && $currentAction?->action == $action['id']) {
+                        $action['user_id'] = $currentAction->user_id;
+                    }
+                    break;
+                default:
+                    $action['user_id'] = "";
+            }
+        }
+        return $actions;
     }
 }

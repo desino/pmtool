@@ -49,7 +49,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">{{
                             $t('create_ticket_modal_modal_input_initial_estimation_development_time')
-                        }} <strong class="text-danger">*</strong>
+                            }} <strong class="text-danger">*</strong>
                         </label>
                         <input v-model="formData.initial_estimation_development_time"
                             :class="{ 'is-invalid': errors.initial_estimation_development_time }" class="form-control"
@@ -93,14 +93,14 @@
                             <h6 class="mb-0">{{ $t('create_ticket_modal_card_header_task_actions_text') }}</h6>
                         </div>
                         <div class="card-body">
-                            <div class="w-100" v-for="action in actions" :key="action.id">
+                            <div class="w-100" v-for="action in formData.ticket_actions" :key="action.id">
                                 <div class="row align-items-center">
                                     <div class="col-md-6 mb-3">
                                         <div class="form-check">
                                             <input class="form-check-input" :class="{ 'is-invalid': errors.actions }"
                                                 type="checkbox" :id="'ticket_action_' + action.id" :value="action.id"
-                                                v-model="selectedActions" @change="handleActionChange(action.id)"
-                                                :disabled="disableActionInput(action.id)">
+                                                v-model="action.is_checked"
+                                                :disabled="action.is_disabled || action.is_user_select_box_disabled">
                                             <label class="form-check-label fw-bold" :for="'ticket_action_' + action.id">
                                                 {{ action.name }}
                                             </label>
@@ -110,11 +110,10 @@
                                                 }}</span>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 mb-3" v-if="isActionSelected(action.id)">
+                                    <div class="col-md-6 mb-3" v-if="action.is_checked">
                                         <select :class="{ 'is-invalid': errors[`ticket_actions.${action.id}.user_id`] }"
                                             :id="'user_id' + action.id" class="form-select"
-                                            :disabled="disableActionInput(action.id)"
-                                            :value="getSelectedUserId(action.id)"
+                                            :disabled="action.is_user_select_box_disabled" :value="action.user_id"
                                             @change="updateUser(action.id, $event.target.value)">
                                             <option value="">{{ $t('create_ticket_modal_select_action_user_placeholder')
                                                 }}</option>
@@ -183,10 +182,7 @@ export default {
             sectionsFunctionalitiesList: [],
             initiativeProjects: [],
             users: [],
-            actions: [],
             initiative: [],
-            selectedActions: [],
-            selectedTicketActions: [],
             errors: {},
             showMessage: true
         }
@@ -210,12 +206,9 @@ export default {
                 this.ticketTypes = ticketTypes;
                 this.initiativeProjects = projects;
                 this.users = users;
-                this.actions = actions;
                 this.initiative = initiative;
-                this.ticket_actions = this.actions;
-                // this.selectedTicketActions = selectedTicketActions;
-                this.selectedTicketActions = Object.values(selectedTicketActions);
                 this.setFormData(ticket);
+                this.formData.ticket_actions = actions;
                 this.setLoading(false);
             } catch (error) {
                 this.handleError(error);
@@ -231,66 +224,13 @@ export default {
                 initial_estimation_development_time: ticket.initial_estimation_development_time,
                 project_id: ticket.project_id,
                 auto_wait_for_client_approval: ticket.auto_wait_for_client_approval == 1 ?? false,
-                ticket_actions: []
             };
-            this.selectedActions = this.selectedTicketActions.map(action => action.action);
-            this.selectedTicketActions.forEach(ticketAction => {
-                this.formData.ticket_actions.push({
-                    action: ticketAction.action,
-                    user_id: ticketAction.user_id,
-                    status: ticketAction.status
-                });
-            });
-        },
-        handleActionChange(actionId) {
-            let selectedUserId = "";
-            switch (actionId) {
-                case 1:
-                    selectedUserId = this.initiative.functional_owner_id ?? "";
-                    break;
-                case 2:
-                case 3:
-                    selectedUserId = this.initiative.technical_owner_id ?? "";
-                    break;
-                case 4:
-                    selectedUserId = this.initiative.quality_owner_id ?? "";
-                    break;
-                case 5:
-                    selectedUserId = this.initiative.functional_owner_id ?? "";
-                    break;
-                default:
-                    selectedUserId = "";
-            }
-            if (this.isActionSelected(actionId)) {
-                const selectedTicketAction = this.selectedTicketActions.filter(a => a.action === actionId);
-                this.formData.ticket_actions.push({
-                    action: actionId,
-                    user_id: selectedTicketAction[0]?.user_id ?? selectedUserId,
-                    status: selectedTicketAction[0]?.status
-                });
-            } else {
-                this.formData.ticket_actions = this.formData.ticket_actions.filter(a => a.action !== actionId);
-            }
         },
         updateUser(actionId, userId) {
             const action = this.formData.ticket_actions.find(a => a.action === actionId);
             if (action) {
                 action.user_id = userId;
             }
-        },
-        getSelectedUserId(actionId) {
-            const action = this.formData.ticket_actions.find(a => a.action === actionId);
-            return action ? action.user_id : "";
-        },
-        isActionSelected(actionId) {
-            return this.selectedActions.includes(actionId);
-        },
-        disableActionInput(actionId) {
-            const action = this.selectedTicketActions.filter(a => a.action === actionId);
-            if (action.length) {
-                return action[0].status == 2 ?? false;
-            }
-            return false;
         },
         resetForm() {
             this.formData = {
