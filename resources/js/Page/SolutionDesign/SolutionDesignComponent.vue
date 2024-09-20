@@ -104,14 +104,10 @@
                                                 <i class="bi bi-trash3"></i>
                                             </a>
                                             <span class="badge bg-secondary"
-                                                :title="$t('solution_design.functionality_form.actions_open_tickets_count_tooltip')">{{
+                                                :title="$t('solution_design.functionality_form.actions_open_tickets_count_tooltip')"
+                                                @click.stop="showFunctionalityDetailModal(functionality)">{{
                                                     functionality?.open_tickets_count
                                                 }}</span>
-                                            <a class="text-primary ms-2" href="javascript:"
-                                                @click.stop="showFunctionalityDetailModal(functionality)"
-                                                :title="$t('solution_design.functionality_form.actions_show_open_task_tooltip')">
-                                                <i class="bi bi-eye-fill"></i>
-                                            </a>
                                         </span>
                                     </div>
                                 </template>

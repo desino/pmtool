@@ -295,7 +295,6 @@ export default {
                 this.nextActionOwners = response.meta_data.users;
                 this.initiative = response.meta_data.initiative;
                 this.filterMacroStatus = response.meta_data.macro_status;
-                console.log('this.filterMacroStatus :: ', this.filterMacroStatus);
                 this.tasks = response.content.data.map(task => ({
                     ...task,
                     isChecked: false,
