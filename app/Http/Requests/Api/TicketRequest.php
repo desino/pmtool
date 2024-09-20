@@ -54,6 +54,9 @@ class TicketRequest extends FormRequest
         $data = parent::all($keys);
         $data['functionality_id'] = $data['functionality_id']['id'] ?? null;
         $data['ticket_actions'] = array_column($data['ticket_actions'], null, 'action');
+        $data['ticket_actions'] = array_filter($data['ticket_actions'], function ($action) {
+            return $action['is_checked'];
+        });
         return $data;
     }
 }
