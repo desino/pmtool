@@ -527,7 +527,7 @@ class TicketController extends Controller
         if (!$initiative) {
             return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
         }
-        if (Auth::id() != $request->input('user_id')) {
+        if (Auth::id() != $request->input('user_id') && $initiative->functional_owner_id != Auth::id()) {
             return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed'), '', 400);
         }
         $ticket = Ticket::find($ticketId);
@@ -543,8 +543,12 @@ class TicketController extends Controller
             return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed_du_to_done'), '', 400);
         }
 
-        if ($request->input('action') > 2 && $ticket->auto_wait_for_client_approval) {
+        if ($request->input('action') == TicketAction::getActionDevelop() && $ticket->auto_wait_for_client_approval) {
             return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed_du_to_waiting_for_client_approval'), '', 400);
+        }
+
+        if ($ticket->status != Ticket::getStatusOngoing()) {
+            return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed_du_to_status_not_ongoing'), '', 400);
         }
 
         DB::beginTransaction();

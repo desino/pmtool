@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Auth;
 
 class Ticket extends Model
 {
@@ -18,7 +19,10 @@ class Ticket extends Model
         'status_label',
         'macro_status_label',
         'display_created_at',
-        'asana_task_link'
+        'asana_task_link',
+        'is_show_mark_as_done_but',
+        'is_enable_mark_as_done_but',
+        'is_disable_action_user',
     ];
 
     public const TYPE_CHANGE_REQUEST = 1;
@@ -170,6 +174,20 @@ class Ticket extends Model
         return Attribute::make(
             get: fn() => $this->initiative_id ? "https://app.asana.com/0/" . $this->initiative->asana_project_id . '/' . $this->asana_task_id . '/f' : null,
         );
+    }
+
+    protected function getIsShowMarkAsDoneButAttribute()
+    {
+        return $this->initiative_id ? $this->initiative->functional_owner_id == Auth::id() || $this->currentAction?->user_id == Auth::id() ?? false : false;
+    }
+
+    protected function getIsEnableMarkAsDoneButAttribute()
+    {
+        return $this->status == Self::getStatusOngoing() ?? false;
+    }
+    protected function getIsDisableActionUserAttribute()
+    {
+        return $this->initiative_id ? $this->initiative->functional_owner_id == Auth::id() || $this->initiative->technical_owner_id == Auth::id() ?? false : false;
     }
 
     public function functionality(): BelongsTo

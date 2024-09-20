@@ -75,8 +75,9 @@
                     </div>
                     <div class="card-body border-0 bg-transparent py-1 px-0 align-content-center">
                         <div v-if="currentAction">
-                            <select v-model="currentActionFormData.user_id" :disabled="disableActionUser()"
-                                class="form-select" @change="handleCurrentActionChangeUser($event.target.value)">
+                            <select v-model="currentActionFormData.user_id"
+                                :disabled="!ticketData.is_disable_action_user" class="form-select"
+                                @change="handleCurrentActionChangeUser($event.target.value)">
                                 <option value="">---</option>
                                 <option v-for="user in users" :key="user.id" :value="user.id">
                                     {{ user.name }}
@@ -100,8 +101,9 @@
             <div class="col-12 col-md-12 col-lg-2 col-xl-3 text-center mb-2 mb-md-0">
                 <div class="card shadow-none h-100 border-0 bg-transparent">
                     <div class="card-body border-0 bg-transparent p-1">
-                        <a role="button" class="btn btn-desino w-100 border-0 text-white mb-2"
-                            :class="{ 'disabled': !currentActionAllowOrNot() }"
+                        <a v-if="ticketData.is_show_mark_as_done_but" role="button"
+                            class="btn btn-desino w-100 border-0 text-white mb-2"
+                            :class="{ 'disabled': !ticketData.is_enable_mark_as_done_but }"
                             @click="handleCurrentActionChangeStatus()">
                             {{ $t('ticket_details.task_current_action_completed_but_text') }}
                         </a>
@@ -159,7 +161,7 @@
                                     <div v-if="errors.release_note" class="text-danger mt-2">
                                         <span v-for="(error, index) in errors.release_note" :key="index">{{
                                             error
-                                            }}</span>
+                                        }}</span>
                                     </div>
                                     <button class="btn w-100 btn-desino text-white fw-bold m-2 rounded"
                                         @click="updateReleaseNote">
@@ -177,7 +179,7 @@
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">{{
                                                 $t('ticket_details_input_initial_estimation_development_time')
-                                            }} <strong class="text-danger">*</strong>
+                                                }} <strong class="text-danger">*</strong>
                                             </label>
                                             <input v-model="estimatedHoursFormData.initial_estimation_development_time"
                                                 :class="{ 'is-invalid': errors.initial_estimation_development_time }"
@@ -322,6 +324,8 @@ export default {
                 initiative_name: '',
                 display_functionality_name: '',
                 functionality_description: '',
+                is_show_mark_as_done_but: false,
+                is_enable_mark_as_done_but: false,
             },
             currentActionFormData: {
                 ticket_id: '',
@@ -456,6 +460,9 @@ export default {
             this.ticketData.asana_task_link = content.asana_task_link;
             this.ticketData.auto_wait_for_client_approval = content.auto_wait_for_client_approval == 1 ? true : false;
             this.ticketData.macro_status_label = content.macro_status_label;
+            this.ticketData.is_show_mark_as_done_but = content.is_show_mark_as_done_but;
+            this.ticketData.is_enable_mark_as_done_but = content.is_enable_mark_as_done_but;
+            this.ticketData.is_disable_action_user = content.is_disable_action_user;
             this.currentAction = content.current_action;
             this.currentActionFormData.user_id = content.current_action?.user_id;
             this.currentActionFormData.status = content.current_action?.status;
@@ -519,47 +526,8 @@ export default {
                 this.currentActionFormData.user_id = previousUserId;
             });
         },
-        handleNextActionChangeUser(userId) {
-            const previousUserId = this.nextAction?.user?.id;
-            this.$swal({
-                title: this.$t('ticket_detail.confirm_alert.next_action_change_user_title'),
-                text: this.$t('ticket_detail.confirm_alert.next_action_change_user_text'),
-                showCancelButton: true,
-                confirmButtonColor: '#1e6abf',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '<i class="bi bi-check-lg"></i>',
-                cancelButtonText: '<i class="bi bi-x-lg"></i>',
-                customClass: {
-                    confirmButton: 'btn-desino',
-                },
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    this.nextActionFormData = {
-                        user_id: userId,
-                        action_id: this.nextAction.id,
-                        action: this.nextAction.action,
-                        ticket_id: this.localTicketId,
-                        status: this.nextActionFormData.status,
-                        initiative_id: this.localInitiativeId,
-                        action_text: 'next_action',
-                    }
-                    this.changeActionUser(this.nextActionFormData);
-                } else {
-                    this.nextActionFormData.user_id = previousUserId;
-                }
-            }).catch(() => {
-                this.nextActionFormData.user_id = previousUserId;
-            });
-        },
-        currentActionAllowOrNot() {
-            if (this.user?.id != this.currentAction?.user?.id || (this.ticketData.auto_wait_for_client_approval && this.currentAction?.action > 2)) {
-                return false;
-            }
-            return true;
-        },
         handleCurrentActionChangeStatus() {
-            const currentActionAllowOrNot = this.currentActionAllowOrNot();
-            if (!currentActionAllowOrNot) {
+            if (!this.ticketData.is_enable_mark_as_done_but) {
                 return false;
             }
             this.$swal({
@@ -668,12 +636,6 @@ export default {
                 this.handleError(error);
                 this.tasks[index].project = this.previousProject;
             }
-        },
-        disableActionUser() {
-            if (this.user?.id === this.ticketData.functional_owner_id || this.user?.id === this.ticketData.technical_owner_id) {
-                return false;
-            }
-            return true;
         },
         showHideTestSectionButton() {
             let isTestSectionBut = false;
