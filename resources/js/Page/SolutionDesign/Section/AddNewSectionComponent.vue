@@ -1,12 +1,12 @@
 <template>
 
     <div class="fs-5 mt-3">
-        <div class="col-md-12" v-if="!showInput">
-            <a class="text-decoration-none text-dark ms-4 fw-bold " role="button" @click="showHideInput">
+        <div class="w-100" v-if="!showInput">
+            <a class="btn btn-desino border-0 w-100" role="button" @click="showHideInput">
                 <span class="fw-bold"><i class="bi bi-plus-lg"></i></span> Add Section
             </a>
         </div>
-        <div class="col-md-8" v-if="showInput">
+        <div class="w-100" v-if="showInput">
             <div class="input-group mb-3">
                 <input type="text" class="form-control ms-4"
                     :placeholder="$t('solution_design.add_section_input_placeholder')" v-model="formData.section_name"

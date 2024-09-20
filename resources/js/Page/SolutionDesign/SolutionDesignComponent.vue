@@ -28,11 +28,9 @@
                     aria-describedby="basic-addon2">
                 <span class="input-group-text" id="basic-addon2"><i class="bi bi-search"></i></span>
             </div>
-            <hr>
-            <draggable v-model="sectionsWithFunctionalities" :move="checkMoveSection"
-                class="list-group list-group-flush" handle=".handle-section" item-key="id" @end="sectionOnDragEnd">
+            <draggable v-model="sectionsWithFunctionalities" :move="checkMoveSection" class="list-group list-group-flush border border-start-0 border-end-0" handle=".handle-section" item-key="id" @end="sectionOnDragEnd">
                 <template #item="{ element: section, index }">
-                    <div class="list-group-item section-functionality-container">
+                    <div class="list-group-item section-functionality-container px-0 border-0">
                         <div class="section-container">
                             <div v-if="editingSectionId === section.id">
                                 <div class="col-md-8">
@@ -53,34 +51,40 @@
                                     </div>
                                 </div>
                             </div>
-                            <div v-else class="d-flex align-items-center section-container">
-                                <div class="section-sort" role="button">
-                                    <i class="bi bi-grip-vertical handle-section me-2 hover-sort"></i>
-                                </div>
-                                <div class="fw-bold fs-5">
-                                    <i :class="['bi', collapsedSections[section.id] ? 'bi-caret-right-fill' : 'bi-caret-down-fill']"
+                            <div v-else class="w-100 section-container section_name_area_cover">
+                                <div class="row h-100 w-100 g-0">
+                                    <div class="col-auto text-start" style="width:24px">
+                                        <div class="section-sort" role="button">
+                                            <i class="bi bi-grip-vertical handle-section me-2 hover-sort"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto text-start" style="width:24px">
+                                        <i :class="['bi', collapsedSections[section.id] ? 'bi-caret-right-fill' : 'bi-caret-down-fill']"
                                         data-bs-toggle="collapse" :data-bs-target="'#collapse_' + section.id"
                                         :aria-expanded="!collapsedSections[section.id]"
                                         :aria-controls="'#collapse_' + section.id"
                                         @click="collapsedSections[section.id] = !collapsedSections[section.id]"></i>
-                                    {{ section.display_name }}
-                                </div>
-                                <div class="section-menu">
-                                    <div class="ms-2 hover-menu">
-                                        <a class="me-2" href="javascript:" @click="toggleSection(section.id)">
-                                            <i :class="isSectionActive(section.id) ? '' : 'bi bi-plus-square'"></i>
-                                        </a>
-                                        <a class="me-2" href="javascript:" @click="editSection(section)">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </a>
-                                        <a class="me-2 text-danger" href="javascript:" @click="deleteSection(section)">
-                                            <i class="bi bi-trash3"></i>
-                                        </a>
+                                    </div>
+                                    <div class="col-auto text-start" style="width: calc(100% - 50px)">
+                                        <span class="section_name fs-5 fw-bold">{{ section.display_name }}</span>
+                                        <span class="section-menu ms-3 d-inline-block">
+                                            <span class="hover-menu">
+                                                <a class="btn btn-desino btn-sm border-0 me-1" href="javascript:" @click="toggleSection(section.id)" :class="isSectionActive(section.id) ? 'd-none' : ''">
+                                                    <i class="bi bi-plus-lg"></i>
+                                                </a>
+                                                <a class="btn btn-desino btn-sm border-0 me-1" href="javascript:" @click="editSection(section)">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </a>
+                                                <a class="btn btn-danger btn-sm border-0 me-1" href="javascript:" @click="deleteSection(section)">
+                                                    <i class="bi bi-trash3"></i>
+                                                </a>
+                                            </span>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div v-if="section.functionalities" class="list-group ps-5 collapse"
+                        <div v-if="section.functionalities" class="ps-4 py-2 pe-0 collapse w-100"
                             :class="{ 'show': !collapsedSections[section.id] }" :id="'collapse_' + section.id">
                             <draggable v-model="section.functionalities" :move="checkMoveFunctionality"
                                 class="list-group list-group-flush" group="people" handle=".handle-functionality"
@@ -88,7 +92,7 @@
                                 @end="functionalityOnDragEnd">
                                 <template #item="{ element: functionality, index: functionalityIndex }">
                                     <div class="border-0 border-bottom"
-                                        :class="['list-group-item d-flex list-group-item-action', { 'bg-desino text-light': isSelected(functionality.id) }]"
+                                        :class="['list-group-item px-1 d-flex list-group-item-action', { 'bg-desino text-light': isSelected(functionality.id) }]"
                                         role="button" @click="selectFunctionality(functionality)">
                                         <span><i class="bi bi-grip-vertical handle-functionality me-2"></i></span>
                                         <span>{{ functionality.display_name }}</span>

@@ -1,11 +1,11 @@
 <template>
     <div class="modal-dialog modal-lg">
         <form @submit.prevent="storeTicket">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 id="createTicketModalLabel" class="modal-title">{{ $t('create_ticket_modal_title') }}
+            <div class="modal-content border-0">
+                <div class="modal-header text-white bg-desino border-0 py-2 justify-content-center">
+                    <h5 class="modal-title font-italic" id="createTicketModalLabel">
+                        {{ $t('create_ticket_modal_title') }}
                     </h5>
-                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
                 </div>
                 <div class="modal-body">
                     <GlobalMessage v-if="showMessage" />
@@ -136,18 +136,29 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button class="btn btn-desino" type="submit" @click="handleSubmitButtonClick('create_close')">
-                        {{ $t('create_ticket_modal_submit_but_create_close_text') }}
-                    </button>
-                    <button class="btn btn-desino" type="submit" @click="handleSubmitButtonClick('create_new')">
-                        {{ $t('create_ticket_modal_submit_but_create_add_new_text') }}
-                    </button>
-                    <button class="btn btn-desino" type="submit" @click="handleSubmitButtonClick('create_detail')">
-                        {{ $t('create_ticket_modal_submit_but_create_detail_text') }}
-                    </button>
-                    <button class="btn btn-secondary" @click="hideModal" data-bs-dismiss="modal"
-                        type="button">Close</button>
+                <div class="modal-footer border-0 p-0 justify-content-center">
+                    <div class="row w-100 g-1">
+                        <div class="col-4 col-md-4 col-lg-3">
+                            <button class="btn btn-desino w-100 border-0" type="submit" @click="handleSubmitButtonClick('create_close')">
+                                {{ $t('create_ticket_modal_submit_but_create_close_text') }}
+                            </button>
+                        </div>
+                        <div class="col-4 col-md-4 col-lg-3">
+                            <button class="btn btn-desino w-100 border-0" type="submit" @click="handleSubmitButtonClick('create_new')">
+                                {{ $t('create_ticket_modal_submit_but_create_add_new_text') }}
+                            </button>
+                        </div>
+                        <div class="col-4 col-md-4 col-lg-3">
+                            <button class="btn btn-desino w-100 border-0" type="submit" @click="handleSubmitButtonClick('create_detail')">
+                                {{ $t('create_ticket_modal_submit_but_create_detail_text') }}
+                            </button>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-3">
+                            <button class="btn btn-danger w-100 border-0" @click="hideModal" data-bs-dismiss="modal" type="button">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </form>
