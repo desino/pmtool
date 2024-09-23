@@ -173,6 +173,10 @@ class SolutionDesignService
                 $eachMoveToSection->order_no = $newOrderNo;
                 $eachMoveToSection->display_name = $newOrderNo . " " . $eachMoveToSection->name;
                 $eachMoveToSection->save();
+                $eachMoveToSection->functionalities->each(function ($functionality, $index) use ($eachMoveToSection) {
+                    $functionality->display_name = $eachMoveToSection->order_no . "." . $functionality->order_no . " " . $functionality->name;
+                    $functionality->save();
+                });
             });
 
 
