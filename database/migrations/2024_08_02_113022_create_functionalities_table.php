@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('display_name')->nullable();
             $table->longText('description')->nullable();
+            $table->boolean('include_in_solution_design')->default(0);
             $table->unsignedBigInteger('order_no')->default(0);
             $table->integer('created_by');
             $table->integer('updated_by')->default(0);
