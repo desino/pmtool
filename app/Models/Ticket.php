@@ -23,6 +23,7 @@ class Ticket extends Model
         'is_show_mark_as_done_but',
         'is_enable_mark_as_done_but',
         'is_disable_action_user',
+        'is_show_pre_action_but',
     ];
 
     public const TYPE_CHANGE_REQUEST = 1;
@@ -188,6 +189,31 @@ class Ticket extends Model
     protected function getIsDisableActionUserAttribute()
     {
         return $this->initiative_id ? $this->initiative->functional_owner_id == Auth::id() || $this->initiative->technical_owner_id == Auth::id() ?? false : false;
+    }
+
+    protected function getIsShowPreActionButAttribute()
+    {
+        if (
+            $this->previousAction &&
+            (
+                ($this->currentAction && $this->currentAction->user_id == Auth::id()) &&
+                (
+                    $this->macro_status == Self::MACRO_STATUS_CLARIFY_AND_ESTIMATE ||
+                    $this->macro_status == Self::MACRO_STATUS_DEVELOP_WAIT_FOR_CLIENT ||
+                    $this->macro_status == Self::MACRO_STATUS_DEVELOP ||
+                    $this->macro_status == Self::MACRO_STATUS_TEST_WAIT_FOR_DEPLOYMENT_TO_TEST ||
+                    $this->macro_status == Self::MACRO_STATUS_TEST ||
+                    $this->macro_status == Self::MACRO_STATUS_VALIDATE_WAITING_FOR_DEPLOYMENT_TO_ACC ||
+                    $this->macro_status == Self::MACRO_STATUS_VALIDATE ||
+                    $this->macro_status == Self::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_PRD
+                ) ||
+                ($this->initiative_id && $this->initiative->functional_owner_id == Auth::id())
+            )
+        ) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function functionality(): BelongsTo

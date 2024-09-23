@@ -107,8 +107,13 @@
                             @click="handleCurrentActionChangeStatus()">
                             {{ $t('ticket_details.task_current_action_completed_but_text') }}
                         </a>
-                        <a role="button" class="btn btn-warning w-100 border-0 text-dark"
+                        <!-- <a role="button" class="btn btn-warning w-100 border-0 text-dark"
                             v-if="previousAction && previousActionAllowOrNot()" @click="handlePreviousActionStatus()"
+                            :title="$t('ticket_action.move_to_previous_action')">
+                            {{ $t('ticket_details.task_previous_action_completed_but_text') }}
+                        </a> -->
+                        <a role="button" class="btn btn-warning w-100 border-0 text-dark"
+                            v-if="ticketData.is_show_pre_action_but" @click="handlePreviousActionStatus()"
                             :title="$t('ticket_action.move_to_previous_action')">
                             {{ $t('ticket_details.task_previous_action_completed_but_text') }}
                         </a>
@@ -161,7 +166,7 @@
                                     <div v-if="errors.release_note" class="text-danger mt-2">
                                         <span v-for="(error, index) in errors.release_note" :key="index">{{
                                             error
-                                        }}</span>
+                                            }}</span>
                                     </div>
                                     <button class="btn w-100 btn-desino text-white fw-bold m-2 rounded"
                                         @click="updateReleaseNote">
@@ -179,7 +184,7 @@
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">{{
                                                 $t('ticket_details_input_initial_estimation_development_time')
-                                                }} <strong class="text-danger">*</strong>
+                                            }} <strong class="text-danger">*</strong>
                                             </label>
                                             <input v-model="estimatedHoursFormData.initial_estimation_development_time"
                                                 :class="{ 'is-invalid': errors.initial_estimation_development_time }"
@@ -326,6 +331,7 @@ export default {
                 functionality_description: '',
                 is_show_mark_as_done_but: false,
                 is_enable_mark_as_done_but: false,
+                is_show_pre_action_but: false,
             },
             currentActionFormData: {
                 ticket_id: '',
@@ -462,6 +468,7 @@ export default {
             this.ticketData.macro_status_label = content.macro_status_label;
             this.ticketData.is_show_mark_as_done_but = content.is_show_mark_as_done_but;
             this.ticketData.is_enable_mark_as_done_but = content.is_enable_mark_as_done_but;
+            this.ticketData.is_show_pre_action_but = content.is_show_pre_action_but;
             this.ticketData.is_disable_action_user = content.is_disable_action_user;
             this.currentAction = content.current_action;
             this.currentActionFormData.user_id = content.current_action?.user_id;
@@ -558,18 +565,8 @@ export default {
             }).catch(() => {
             });
         },
-        previousActionAllowOrNot() {
-            if (this.user.id != this.ticketData.functional_owner_id && this.user.id != this.currentAction?.user?.id) {
-                return false;
-            }
-            if (this.ticketData.auto_wait_for_client_approval) {
-                return false;
-            }
-            return true;
-        },
         handlePreviousActionStatus() {
-            const previousActionAllowOrNot = this.previousActionAllowOrNot();
-            if (!previousActionAllowOrNot) {
+            if (!this.ticketData.is_show_pre_action_but) {
                 return false;
             }
             this.$swal({
