@@ -334,14 +334,14 @@ export default {
         },
         async getSectionsWithFunctionalities() {
             try {
-                this.setLoading(true);
+                this.solutionDesignFilters.name === '' ? this.setLoading(true) : null;
                 const passData = {
                     initiative_id: this.initiativeId,
                     name: this.solutionDesignFilters.name
                 }
                 const { content } = await SolutionDesignService.getSectionsWithFunctionalities(passData);
                 this.sectionsWithFunctionalities = content;
-                this.setLoading(false);
+                this.solutionDesignFilters.name === '' ? this.setLoading(false) : null;
             } catch (error) {
                 this.handleError(error);
             }
