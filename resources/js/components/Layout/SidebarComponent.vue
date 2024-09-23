@@ -45,7 +45,7 @@
                                 <li class="nav-item" v-if="currentInitiative.id">
                                     <router-link class="nav-link text-dark"
                                         :class="{ 'bg-opacity-25 bg-primary': isActive('solution-design.download') }"
-                                        :to="{ name: 'tasks', params: { id: currentInitiative.id } }">
+                                        :to="{ name: 'solution-design.download', params: { id: currentInitiative.id } }">
                                         <i class="bi bi-file-pdf-fill mx-2"></i>
                                         Solution PDF
                                     </router-link>
