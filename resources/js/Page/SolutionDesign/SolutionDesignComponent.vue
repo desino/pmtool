@@ -25,8 +25,9 @@
     <div class="app-content row">
         <div class="col-md-4 border">
             <div class="input-group my-3">
-                <input type="text" class="form-control" placeholder="Search" aria-label="Recipient's username"
-                    aria-describedby="basic-addon2">
+                <input v-model="solutionDesignFilters.name" type="text" class="form-control" placeholder="Search"
+                    aria-label="Recipient's username" aria-describedby="basic-addon2"
+                    @keyup="getSectionsWithFunctionalities">
                 <span class="input-group-text" id="basic-addon2"><i class="bi bi-search"></i></span>
             </div>
             <draggable v-model="sectionsWithFunctionalities" :move="checkMoveSection"
@@ -263,6 +264,9 @@ export default {
             oldMoveFunctionality: {},
             moveSection: {},
             functionalitySubmitButtonClickedValue: "",
+            solutionDesignFilters: {
+                name: '',
+            }
         };
     },
     methods: {
@@ -331,7 +335,11 @@ export default {
         async getSectionsWithFunctionalities() {
             try {
                 this.setLoading(true);
-                const { content } = await SolutionDesignService.getSectionsWithFunctionalities({ initiative_id: this.initiativeId });
+                const passData = {
+                    initiative_id: this.initiativeId,
+                    name: this.solutionDesignFilters.name
+                }
+                const { content } = await SolutionDesignService.getSectionsWithFunctionalities(passData);
                 this.sectionsWithFunctionalities = content;
                 this.setLoading(false);
             } catch (error) {

@@ -6,12 +6,17 @@ use App\Models\Functionality;
 use App\Models\Initiative;
 use App\Models\Section;
 use Faker\Provider\ar_EG\Person;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class SolutionDesignService
 {
     public static function getSectionsWithFunctionalities($request)
     {
-        $sectionWithFunctionalities = Section::with('functionalities')
+        $sectionWithFunctionalities = Section::with(['functionalities' => function ($query) use ($request) {
+            $query->when($request->post('name') != '', function (Builder $query) use ($request) {
+                $query->whereLike('display_name', '%' . $request->post('name') . '%');
+            });
+        }])
             ->InitiativeId($request->post('initiative_id'))
             ->orderBy('order_no')
             ->get();
