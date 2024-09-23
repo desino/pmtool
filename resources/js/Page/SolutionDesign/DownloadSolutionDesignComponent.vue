@@ -148,7 +148,7 @@ export default {
                 const hasValue = this.objectInValueExistOrNot(this.downloadFilters);
                 hasValue ?? this.setLoading(true);
                 this.downloadFilters.initiative_id = this.initiativeId;
-                const { content } = await SolutionDesignService.getSectionsWithFunctionalities(this.downloadFilters);
+                const { content } = await SolutionDesignService.getSectionsWithFunctionalitiesForDownload(this.downloadFilters);
                 this.sectionsWithFunctionalities = content;
                 hasValue ?? this.setLoading(false);
             } catch (error) {

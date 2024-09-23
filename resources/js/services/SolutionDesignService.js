@@ -17,6 +17,7 @@ const endpoints = {
     updateSection: `${defaultPath}/update-section`,
     updateFunctionalityOrderNo: `${defaultPath}/update-functionality-order-no`,
     updateSectionOrderNo: `${defaultPath}/update-section-order-no`,
+    getSectionsWithFunctionalitiesForDownload: `${defaultPath}/download`
 }
 
 const SolutionDesignService = {
@@ -40,6 +41,14 @@ const SolutionDesignService = {
     async getSectionsWithFunctionalities(data) {
         try {
             const response = await axiosRequest.post(endpoints.getSectionsWithFunctionalities, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async getSectionsWithFunctionalitiesForDownload(data) {
+        try {
+            const response = await axiosRequest.post(endpoints.getSectionsWithFunctionalitiesForDownload, data);
             return response.data;
         } catch (error) {
             throw handleError(error);

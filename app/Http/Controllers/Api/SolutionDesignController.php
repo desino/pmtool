@@ -22,6 +22,11 @@ class SolutionDesignController extends Controller
         $getSectionsWithFunctionalities = SolutionDesignService::getSectionsWithFunctionalities($request);
         return ApiHelper::response(true, '', $getSectionsWithFunctionalities, 200);
     }
+    public function download(Request $request)
+    {
+        $getSectionsWithFunctionalities = SolutionDesignService::getSectionsWithFunctionalitiesForDownload($request);
+        return ApiHelper::response(true, '', $getSectionsWithFunctionalities, 200);
+    }
     public function getInitiative(Request $request)
     {
         $initiative = InitiativeService::getInitiative($request);
