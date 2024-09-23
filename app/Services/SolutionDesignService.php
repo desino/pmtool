@@ -16,6 +16,9 @@ class SolutionDesignService
             $query->when($request->post('name') != '', function (Builder $query) use ($request) {
                 $query->whereLike('display_name', '%' . $request->post('name') . '%');
             });
+            $query->when($request->post('include_in_solution_design') == true, function (Builder $query) use ($request) {
+                $query->where('include_in_solution_design', 1);
+            });
         }])
             ->InitiativeId($request->post('initiative_id'))
             ->orderBy('order_no')

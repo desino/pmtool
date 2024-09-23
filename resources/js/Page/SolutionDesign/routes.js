@@ -3,6 +3,7 @@ import DetailSolutionDesignComponent from "./DetailSolutionDesignComponent.vue";
 import TicketDetailDeisgnComponent from "@/Page/SolutionDesign/Ticket/TicketDetailDeisgnComponent.vue";
 import TicketListComponent from "@/Page/SolutionDesign/Ticket/TicketListComponent.vue";
 import ProjectListComponent from "./Project/ProjectListComponent.vue";
+import DownloadSolutionDesignComponent from "./DownloadSolutionDesignComponent.vue";
 
 export default [
     {
@@ -16,6 +17,12 @@ export default [
         name: 'solution-design.detail',
         component: DetailSolutionDesignComponent,
         meta: { requiresAuth: true, title: 'Solution Design Detail' },
+    },
+    {
+        path: '/solution-design/download/:id',
+        name: 'solution-design.download',
+        component: DownloadSolutionDesignComponent,
+        meta: { requiresAuth: true, title: 'Solution Design Download' },
     },
     {
         path: '/solution-design/:id/tickets/',

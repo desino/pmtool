@@ -18,6 +18,7 @@ router.beforeEach((to, from, next) => {
     const routesWithInitiativeId = [
         'solution-design',
         'solution-design.detail',
+        'solution-design.download',
         'tasks',
         'task.detail',
         'projects',
