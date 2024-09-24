@@ -57,7 +57,8 @@ const SolutionDesignService = {
     },
     async getSectionsWithFunctionalitiesForDownloadPDF(data) {
         try {
-            const response = await axiosRequest.post(endpoints.getSectionsWithFunctionalitiesForDownloadPDF, data);
+            const response = await axiosRequest.post(endpoints.getSectionsWithFunctionalitiesForDownloadPDF, data, { responseType: 'blob' });
+            // const response = await axiosRequest.post(endpoints.getSectionsWithFunctionalitiesForDownloadPDF, data);
             return response;
         } catch (error) {
             throw handleError(error);

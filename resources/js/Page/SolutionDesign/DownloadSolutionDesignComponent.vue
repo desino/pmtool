@@ -73,12 +73,13 @@
 <script>
 import globalMixin from '@/globalMixin';
 import GlobalMessage from './../../components/GlobalMessage.vue';
-import messageService from './../../services/messageService';
 import SolutionDesignService from './../../services/SolutionDesignService';
 import eventBus from '../../eventBus';
 import { mapActions } from 'vuex';
+import messageService from '../../services/messageService';
 export default {
     name: 'DownloadSolutionDesignComponent',
+    mixins: [globalMixin],
     components: {
         GlobalMessage,
     },
@@ -146,23 +147,20 @@ export default {
             }
         },
         async downloadPDF() {
+            this.clearMessages();
             try {
                 this.setLoading(true);
                 this.downloadFilters.initiative_id = this.initiativeId;
-                const response = await SolutionDesignService.getSectionsWithFunctionalitiesForDownloadPDF(this.downloadFilters, {
-                    responseType: 'blob' // This ensures the response is handled as a Blob
-                });
-                const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', 'example_vue.pdf'); // Set the desired file name
-                document.body.appendChild(link);
-                link.click();
+                const response = await SolutionDesignService.getSectionsWithFunctionalitiesForDownloadPDF(this.downloadFilters);
 
-                // Remove the link from the DOM after download
-                link.remove();
+                const blob = new Blob([response.data], { type: 'application/pdf' });
+                const link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = 'generated.pdf';
+                link.click();
                 this.setLoading(false);
             } catch (error) {
+                error.message = this.$t('solution_design_download.error_message');
                 this.handleError(error);
             }
         },
@@ -174,6 +172,7 @@ export default {
             if (error.type === 'validation') {
                 this.errors = error.errors;
             } else {
+                console.log('error.message :: ', error.message);
                 messageService.setMessage(error.message, 'danger');
             }
             this.setLoading(false);
