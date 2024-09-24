@@ -17,7 +17,8 @@ const endpoints = {
     updateSection: `${defaultPath}/update-section`,
     updateFunctionalityOrderNo: `${defaultPath}/update-functionality-order-no`,
     updateSectionOrderNo: `${defaultPath}/update-section-order-no`,
-    getSectionsWithFunctionalitiesForDownload: `${defaultPath}/download`
+    getSectionsWithFunctionalitiesForDownloadList: `${defaultPath}/download-list`,
+    getSectionsWithFunctionalitiesForDownloadPDF: `${defaultPath}/download-pdf`,
 }
 
 const SolutionDesignService = {
@@ -46,10 +47,18 @@ const SolutionDesignService = {
             throw handleError(error);
         }
     },
-    async getSectionsWithFunctionalitiesForDownload(data) {
+    async getSectionsWithFunctionalitiesForDownloadList(data) {
         try {
-            const response = await axiosRequest.post(endpoints.getSectionsWithFunctionalitiesForDownload, data);
+            const response = await axiosRequest.post(endpoints.getSectionsWithFunctionalitiesForDownloadList, data);
             return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async getSectionsWithFunctionalitiesForDownloadPDF(data) {
+        try {
+            const response = await axiosRequest.post(endpoints.getSectionsWithFunctionalitiesForDownloadPDF, data);
+            return response;
         } catch (error) {
             throw handleError(error);
         }

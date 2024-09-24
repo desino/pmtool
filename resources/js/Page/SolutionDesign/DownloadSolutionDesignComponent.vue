@@ -2,7 +2,7 @@
     <div class="app-content-header pb-0">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-12">
                     <h3 class="m-0">{{ $t('solution_design_download.page_title') }} - {{ initiativeData.name }}</h3>
                     <h5>
                         <span class="badge rounded bg-desino text-light my-3">
@@ -29,21 +29,16 @@
                     </div>
                 </div>
                 <div class="col-md-2">
-                    <button class="btn btn-desino">
-                        <i class="bi bi-file-pdf-fill"></i>
+                    <button class="btn btn-desino" @click="downloadPDF"
+                        :title="$t('solution_design_download.but_title_text')">
+                        <i class="bi bi-download"></i>
                     </button>
                 </div>
             </div>
         </div>
     </div>
     <div class="app-content row position-relative">
-        <div class="col-md-4 border-top border-bottom sticky top-0 d-none d-lg-block">
-            <div class="input-group sticky-top pt-3 pb-1 bg-white">
-                <input aria-label="Search" v-model="downloadFilters.name" class="form-control" placeholder="Search"
-                    type="text" @keyup="getSectionsWithFunctionalities">
-                <span class="input-group-text"><i class="bi bi-search"></i></span>
-            </div>
-            <hr>
+        <div class="col-md-12 border-top border-bottom sticky top-0 d-none d-lg-block">
             <div v-for="section in sectionsWithFunctionalities" :key="section.id">
                 <div class="section-functionality-container ps-3">
                     <div class="mt-3 section-container">
@@ -54,8 +49,8 @@
                                     :class="['bi', collapsedSections[section.id] ? 'bi-caret-right-fill' : 'bi-caret-down-fill']"
                                     :data-bs-target="'#collapse_' + section.id" data-bs-toggle="collapse"
                                     @click="collapsedSections[section.id] = !collapsedSections[section.id]"></i>
-                                <a href="javascript:void(0)" @click="scrollToSection(section.id)"
-                                    class="text-decoration-none text-dark">{{ section.display_name }}</a>
+                                <a href="javascript:void(0)" class="text-decoration-none text-dark">{{
+                                    section.display_name }}</a>
                             </div>
                         </div>
                     </div>
@@ -64,28 +59,13 @@
                         <div v-for="functionality in section.functionalities" :key="functionality.id">
                             <div :class="['list-group-item d-flex list-group-item-action', { 'bg-desino text-light': isSelected(functionality.id) }]"
                                 class="border-0 border-bottom" role="button"
-                                @click="scrollToFunctionality(section.id, functionality.id)">
+                                @click="selectFunctionality(functionality)">
                                 <span>{{ functionality.display_name }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="col-md-8 border-start border-bottom border-top">
-            <section class="p-2 border-bottom section_detail" v-for="section in sectionsWithFunctionalities"
-                :key="section.id" :id="'section_' + section.id">
-                <h5 class="mb-2 text-primary"># {{ section.display_name }}</h5>
-                <div v-if="section.functionalities.length > 0" class="px-4"
-                    v-for="functionality in section.functionalities" :key="functionality.id"
-                    :id="'functionality_' + functionality.id">
-                    <h6># {{ functionality.display_name }}</h6>
-
-                    <p class="ps-3 text-break mw-100" v-html="functionality.description">
-                    </p>
-                </div>
-            </section>
         </div>
     </div>
 </template>
@@ -148,7 +128,7 @@ export default {
                 const hasValue = this.objectInValueExistOrNot(this.downloadFilters);
                 hasValue ?? this.setLoading(true);
                 this.downloadFilters.initiative_id = this.initiativeId;
-                const { content } = await SolutionDesignService.getSectionsWithFunctionalitiesForDownload(this.downloadFilters);
+                const { content } = await SolutionDesignService.getSectionsWithFunctionalitiesForDownloadList(this.downloadFilters);
                 this.sectionsWithFunctionalities = content;
                 hasValue ?? this.setLoading(false);
             } catch (error) {
@@ -158,16 +138,32 @@ export default {
         isSelected(functionalityId) {
             return this.selectedFunctionalityId === functionalityId;
         },
-        scrollToSection(sectionId) {
-            const element = document.getElementById(`section_${sectionId}`);
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth' });
+        selectFunctionality(functionality) {
+            if (this.selectedFunctionalityId === functionality.id) {
+                this.selectedFunctionalityId = null;
+            } else {
+                this.selectedFunctionalityId = functionality.id;
             }
         },
-        scrollToFunctionality(sectionId, functionalityId) {
-            const element = document.getElementById(`functionality_${functionalityId}`);
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth' });
+        async downloadPDF() {
+            try {
+                this.setLoading(true);
+                this.downloadFilters.initiative_id = this.initiativeId;
+                const response = await SolutionDesignService.getSectionsWithFunctionalitiesForDownloadPDF(this.downloadFilters, {
+                    responseType: 'blob' // This ensures the response is handled as a Blob
+                });
+                const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'example_vue.pdf'); // Set the desired file name
+                document.body.appendChild(link);
+                link.click();
+
+                // Remove the link from the DOM after download
+                link.remove();
+                this.setLoading(false);
+            } catch (error) {
+                this.handleError(error);
             }
         },
         objectInValueExistOrNot(obj) {

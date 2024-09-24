@@ -25,7 +25,7 @@ class SolutionDesignService
             ->get();
         return $sectionWithFunctionalities;
     }
-    public static function getSectionsWithFunctionalitiesForDownload($request)
+    public static function getSectionsWithFunctionalitiesForDownloadList($request)
     {
         $sectionWithFunctionalities = Section::with(['functionalities' => function ($query) use ($request) {
             $query->when($request->post('name') != '', function (Builder $query) use ($request) {

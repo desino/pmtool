@@ -11,6 +11,7 @@ use App\Models\Section;
 use App\Services\ClientService;
 use App\Services\InitiativeService;
 use App\Services\SolutionDesignService;
+use TCPDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -22,10 +23,53 @@ class SolutionDesignController extends Controller
         $getSectionsWithFunctionalities = SolutionDesignService::getSectionsWithFunctionalities($request);
         return ApiHelper::response(true, '', $getSectionsWithFunctionalities, 200);
     }
-    public function download(Request $request)
+    public function downloadList(Request $request)
     {
-        $getSectionsWithFunctionalities = SolutionDesignService::getSectionsWithFunctionalitiesForDownload($request);
+        $getSectionsWithFunctionalities = SolutionDesignService::getSectionsWithFunctionalitiesForDownloadList($request);
         return ApiHelper::response(true, '', $getSectionsWithFunctionalities, 200);
+    }
+    public function downloadPDF(Request $request)
+    {
+        // $getSectionsWithFunctionalities = SolutionDesignService::getSectionsWithFunctionalitiesForDownloadList($request);
+        // print('<pre>');
+        // print_r($getSectionsWithFunctionalities->toArray());
+        // print('</pre>');
+        // exit;
+
+        $title = "Test PDF";
+        $pdf = new TCPDF();
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetAuthor('Laravel TCPDF');
+        $pdf->SetTitle($title);
+        $pdf->SetSubject('PDF Generation');
+
+        // Add a page
+        $pdf->AddPage();
+
+        // Set font
+        $pdf->SetFont('helvetica', '', 12);
+
+        // Add content
+        $pdf->Write(0, 'Test content', '', 0, 'L', true, 0, false, false, 0);
+
+        // Custom HTML rendering (optional)
+        $data = [
+            'title' => 'Generate PDF using Laravel TCPDF - ItSolutionStuff.com!'
+        ];
+
+        $html = view()->make('solution-design-pdf.pdfSample', $data)->render();
+        $pdf->WriteHTML($html);
+
+        // Generate PDF content
+        $pdfContent = $pdf->Output('example.pdf', 'S'); // Return as a string (S)
+
+        // Return PDF response for Vue.js frontend
+        return response($pdfContent)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="example.pdf"')
+            ->header('Cache-Control', 'public, must-revalidate, max-age=0')
+            ->header('Pragma', 'public')
+            ->header('Expires', '0');
     }
     public function getInitiative(Request $request)
     {

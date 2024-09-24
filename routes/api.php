@@ -51,7 +51,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::controller(SolutionDesignController::class)->prefix('solution-design')->group(function () {
         Route::post('/', 'index');
-        Route::post('/download', 'download');
+        Route::post('/download-list', 'downloadList');
+        Route::post('/download-pdf', 'downloadPDF');
         Route::post('/get-initiative', 'getInitiative');
         Route::post('/store-section', 'storeSection');
         Route::post('/store-update-functionality', 'storeUpdateFunctionality');
