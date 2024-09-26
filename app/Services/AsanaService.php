@@ -19,7 +19,7 @@ class AsanaService
     public function __construct()
     {
         $this->workspaceId = Config::get('myapp.asana_workspace_id');
-        $key = "2/1206969167492969/1208008802985718:fb3401866e90c74deebdf582c71c00b3";
+        $key = Config::get('myapp.asana_workspace_key');
         $verify = [];
         if (Config::get('myapp.ssl_certificate') != '') {
             $verify = [
@@ -28,7 +28,7 @@ class AsanaService
         }
 
         $this->client = new Client($verify + [
-            'base_uri' => 'https://app.asana.com/api/1.0/',
+            'base_uri' => Config::get('myapp.asana_workspace_base_uri'),
             'headers' => [
                 'Authorization' => 'Bearer ' . $key,
                 'Accept' => 'application/json',
