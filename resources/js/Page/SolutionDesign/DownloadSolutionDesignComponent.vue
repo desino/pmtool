@@ -172,7 +172,6 @@ export default {
             if (error.type === 'validation') {
                 this.errors = error.errors;
             } else {
-                console.log('error.message :: ', error.message);
                 messageService.setMessage(error.message, 'danger');
             }
             this.setLoading(false);
