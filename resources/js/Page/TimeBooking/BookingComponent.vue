@@ -45,6 +45,7 @@
                                 {{ weekDay.total_hours }}
                             </small>
                         </td>
+
                         <td rowspan="5"></td>
                     </tr>
                     <template v-for="(timeBooking, timeBookingIndex) in timeBookings" :key="timeBookingIndex">
