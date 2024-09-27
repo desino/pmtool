@@ -233,6 +233,7 @@
     "messages.solution_design_pdf_cover_page_initiative_title": "Initiative Name: :INITIATIVE_NAME",
     "messages.solution_design_pdf_table_of_content_section_title": "Table Of Contents",
     "messages.solution_design_pdf_cover_page_export_at": "Exported at: :DATE",
+    "message.time_booking.only_one_week": "Only one week is allowed.",
     "login_title": "Login",
     "login_page_title": "Login",
     "login_input_email": "Email",
@@ -377,6 +378,7 @@
     "header.menu.projects": "Projects",
     "header.menu.initiative_links": "Initiative Links",
     "header.menu.initiative.share_point_url": "Share Point URL",
+    "header.menu.time_booking": "Time Booking",
     "ticket.page_title": "All Ticket",
     "ticket.list.column_task_name": "Ticket",
     "ticket.list.column_task_status": "Macro Status",
@@ -518,5 +520,6 @@
     "home.deployment_center.production_deployment.ticket_modal.title": "Production Deployment Tickets",
     "home.deployment_center.production_deployment.ticket_modal.li.name.text": "Name",
     "home.deployment_center.production_deployment.ticket_modal.submit_but.text": "Deployed at PRODUCTION",
-    "home.deployment_center.production_deployment.ticket_modal.submit.alert.text": "Are you sure you want update ticket status to <b>Done</b> from <b>Ready to deploy at PRD</b>?"
+    "home.deployment_center.production_deployment.ticket_modal.submit.alert.text": "Are you sure you want update ticket status to <b>Done</b> from <b>Ready to deploy at PRD</b>?",
+    "time_booking.page_title": "Time Booking"
 }

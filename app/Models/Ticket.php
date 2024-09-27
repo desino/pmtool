@@ -270,6 +270,11 @@ class Ticket extends Model
             ->orderBy('action', 'desc')->latest();
     }
 
+    public function timeBookings()
+    {
+        return $this->hasMany(TimeBooking::class);
+    }
+
     public function scopeReadyForTestStatus($query)
     {
         return $query->where('status', Self::getStatusReadyForTest());

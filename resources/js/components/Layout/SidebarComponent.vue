@@ -130,6 +130,16 @@
                             }}
                         </router-link>
                     </li>
+                    <li class="nav-item">
+                        <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('time-booking.booking') }"
+                            :to="{ name: 'time-booking.booking' }" class="nav-link text-dark"
+                            @click="unselectHeaderInitiative">
+                            <i class="bi bi-clock-history mx-2"></i>
+                            {{
+                                $t('header.menu.time_booking')
+                            }}
+                        </router-link>
+                    </li>
                 </ul>
             </nav>
         </div>

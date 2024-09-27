@@ -100,6 +100,11 @@ class Initiative extends Model
         return $this->belongsTo(User::class, 'technical_owner_id');
     }
 
+    public function timeBookings()
+    {
+        return $this->hasMany(TimeBooking::class);
+    }
+
     public function scopeStatus($query, int|array $status)
     {
         if (is_array($status)) {
