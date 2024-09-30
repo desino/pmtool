@@ -27,7 +27,7 @@
 
         <ul class="list-group list-group-flush list mb-3 mt-2">
             <li class="list-group-item font-weight-bold bg-desino text-white rounded-top">
-                <div class="row">
+                <div class="row w-100">
                     <div class="col-lg-4 col-md-6 col-6 fw-bold py-2">
                         {{ $t('project.list.name_th_text') }}
                     </div>
@@ -43,7 +43,7 @@
                 </div>
             </li>
             <li class="list-group-item border" v-if="projects.length > 0" v-for="project in projects">
-                <div class="row">
+                <div class="row w-100">
                     <div class="col-lg-4 col-md-6 col-6 py-1">
                         {{ project.name }}
                     </div>

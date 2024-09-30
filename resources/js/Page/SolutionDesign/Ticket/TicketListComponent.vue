@@ -81,7 +81,7 @@
         </div>
         <ul class="list-group list-group-flush mb-3 mt-2">
             <li class="font-weight-bold bg-desino text-white rounded-top list-group-item">
-                <div class="row">
+                <div class="row w-100">
                     <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
                         <input class="form-check-input mx-2" type="checkbox" id="chk_all_tickets"
                             v-model="isChkAllTickets" @change="handleSelectAllTasks">
@@ -108,7 +108,7 @@
                 </div>
             </li>
             <li v-for="(task, index) in tasks" v-if="tasks.length > 0" :key="task.id" class="border list-group-item">
-                <div class="row align-items-center">
+                <div class="row w-100 align-items-center">
                     <div class="col-lg-2 col-md-6 col-6 d-flex align-items-center">
                         <div class="mx-2">
                             <input class="form-check-input" type="checkbox" :id="'chk_ticket_' + task.id"
