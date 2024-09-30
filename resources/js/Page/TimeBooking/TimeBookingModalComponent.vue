@@ -148,6 +148,7 @@ export default {
         ...mapActions(['setLoading']),
         getTimeBookingData(timeBooking, weekDay, ticket = {}) {
             this.clearFormData();
+            this.clearMessages();
             this.formData.initiative_id = timeBooking.initiative_id;
             this.formData.ticket_id = ticket?.ticket_id ?? null;
             this.formData.booked_date = weekDay.date;
@@ -265,6 +266,7 @@ export default {
         },
         clearMessages() {
             this.errors = {};
+            this.showErrorMessage = "";
             messageService.clearMessage();
         },
         clearFormData() {
