@@ -103,6 +103,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::controller(TimeBookingController::class)->prefix('time-booking')->group(function () {
         Route::get('/', 'index');
+        Route::post('/store', 'store');
+        Route::get('/get-time-booking-modal-initial-data', 'getTimeBookingModalInitialData');
+        Route::post('/delete-time-bookings', 'deleteTimeBookings');
     });
 });
 
