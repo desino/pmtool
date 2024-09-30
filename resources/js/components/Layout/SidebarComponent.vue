@@ -23,7 +23,7 @@
                 <HeaderInitiativeDropBoxComponent />
             </div>
             <div
-                v-if="isActive('solution-design') || isActive('tasks') || isActive('task.detail') || isActive('projects') || isActive('solution-design.detail')">
+                v-if="isActive('solution-design') || isActive('tasks') || isActive('task.detail') || isActive('projects') || isActive('solution-design.detail') || isActive('solution-design.download')">
                 <div class="shadow">
                     <div class="p-2 rounded-bottom">
                         <nav class="mt-1">
@@ -41,6 +41,14 @@
                                             class="bi bi-file-pdf-fill mx-2"></i>
                                         {{ $t('header.menu.solution_design') }}
                                     </a>
+                                </li>
+                                <li class="nav-item" v-if="currentInitiative.id">
+                                    <router-link class="nav-link text-dark"
+                                        :class="{ 'bg-opacity-25 bg-primary': isActive('solution-design.download') }"
+                                        :to="{ name: 'solution-design.download', params: { id: currentInitiative.id } }">
+                                        <i class="bi bi-file-pdf-fill mx-2"></i>
+                                        Solution PDF
+                                    </router-link>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" href="javascript:" @click="showEditOpportunityModal">
@@ -70,9 +78,11 @@
                 </div>
                 <hr>
                 <ul class="list-group border">
-                    <li class="list-group-item bg-desino text-white border-desino fw-bold border-bottom">{{ $t('header.menu.initiative_links') }}</li>
+                    <li class="list-group-item bg-desino text-white border-desino fw-bold border-bottom">{{
+                        $t('header.menu.initiative_links') }}</li>
                     <li v-if="initiativeData?.share_point_url" class="list-group-item border-0">
-                        <a v-if="initiativeData?.share_point_url" :href="initiativeData?.share_point_url" target="_blank" class="btn-link" style="text-decoration: none;">
+                        <a v-if="initiativeData?.share_point_url" :href="initiativeData?.share_point_url"
+                            target="_blank" class="btn-link" style="text-decoration: none;">
                             <i class="bi bi-folder-symlink"></i>
                             {{ $t('header.menu.initiative.share_point_url') }}
                         </a>
@@ -84,7 +94,8 @@
                             {{ environment.name }}
                         </a>
                     </li>
-                    <li v-if="initiativeData?.initiative_environments?.length === 0" class="list-group-item border-0"></li>
+                    <li v-if="initiativeData?.initiative_environments?.length === 0" class="list-group-item border-0">
+                    </li>
                 </ul>
             </div>
         </div>
@@ -116,6 +127,16 @@
                             @click="unselectHeaderInitiative"><i class="bi bi-list mx-2"></i>
                             {{
                                 $t('header.menu.opportunities')
+                            }}
+                        </router-link>
+                    </li>
+                    <li class="nav-item">
+                        <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('time-booking.booking') }"
+                            :to="{ name: 'time-booking.booking' }" class="nav-link text-dark"
+                            @click="unselectHeaderInitiative">
+                            <i class="bi bi-clock-history mx-2"></i>
+                            {{
+                                $t('header.menu.time_booking')
                             }}
                         </router-link>
                     </li>

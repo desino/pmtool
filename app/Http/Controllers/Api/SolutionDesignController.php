@@ -10,7 +10,9 @@ use App\Models\Functionality;
 use App\Models\Section;
 use App\Services\ClientService;
 use App\Services\InitiativeService;
+use App\Services\MytcpdfService;
 use App\Services\SolutionDesignService;
+use TCPDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -21,6 +23,77 @@ class SolutionDesignController extends Controller
     {
         $getSectionsWithFunctionalities = SolutionDesignService::getSectionsWithFunctionalities($request);
         return ApiHelper::response(true, '', $getSectionsWithFunctionalities, 200);
+    }
+    public function downloadList(Request $request)
+    {
+        $getSectionsWithFunctionalities = SolutionDesignService::getSectionsWithFunctionalitiesForDownloadList($request);
+        return ApiHelper::response(true, '', $getSectionsWithFunctionalities, 200);
+    }
+    public function downloadPDF(Request $request)
+    {
+        $initiative = InitiativeService::getInitiative($request);
+        $sectionsWithFunctionalities = SolutionDesignService::getSectionsWithFunctionalitiesForDownloadList($request);
+
+        $pdfTitle = trans('messages.solution_design_pdf_title', ['INITIATIVE_NAME' => $initiative->name]);
+        $pdf = new MytcpdfService();
+        $pdf->SetTitle($pdfTitle);
+        $pdf->SetHeaderMargin(0);
+        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+        $pdf->SetMargins(0, 30, 0);
+        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+        $pdf->setFontSubsetting(false);
+        $tagvs = [
+            'p' => [
+                0 => ['h' => 0, 'n' => 0],
+            ],
+            'ul' => [
+                0 => ['h' => 0.5, 'n' => 1],
+                1 => ['h' => 0.5, 'n' => 1],
+            ],
+        ];
+        $pdf->setHtmlVSpace($tagvs);
+
+        $fontname = \TCPDF_FONTS::addTTFfont(public_path() . '/fonts/Nunito/Nunito-Regular.ttf', 'TrueTypeUnicode');
+        $pdf->SetFont($fontname);
+        $fontname = \TCPDF_FONTS::addTTFfont(public_path() . '/fonts/Nunito/Nunito-Italic.ttf', 'TrueTypeUnicode');
+        $pdf->SetFont($fontname);
+        $fontname = \TCPDF_FONTS::addTTFfont(public_path() . '/fonts/Nunito/Nunito-SemiBold.ttf', 'TrueTypeUnicode');
+        $pdf->SetFont($fontname);
+        $fontname = \TCPDF_FONTS::addTTFfont(public_path() . '/fonts/Nunito/Nunito-Bold.ttf', 'TrueTypeUnicode');
+        $pdf->SetFont($fontname);
+        $fontname = \TCPDF_FONTS::addTTFfont(public_path() . '/fonts/Nunito/Nunito-BoldItalic.ttf', 'TrueTypeUnicode');
+        $pdf->SetFont($fontname);
+
+        $pdf->data = compact('initiative');
+
+
+        $coverHtml = view('solution-design-pdf.cover_html', compact('initiative'))->render();
+
+        $pdf->setPrintHeader(false);
+        $pdf->SetMargins(0, 0, 0);
+        $pdf->AddPage();
+        $pdf->Rect(0, 0, $pdf->getPageWidth(), $pdf->getPageHeight() - 17, 'DF', array('width' => 0),  array(61, 98, 166));
+        $img_file = public_path() . '/images/pdf_cover2.png';
+        $pdf->Image($img_file, 0, 50, 90);
+        $pdf->writeHTMLCell(0, 0, 95, 72, $coverHtml);
+
+        $pdf->SetMargins(0, 30, 0);
+        $pdf->setPrintHeader(true);
+
+        $solutionDesignTableContentHTML = view('solution-design-pdf.table_content_html', compact('sectionsWithFunctionalities'));
+        $pdf->AddPage();
+        $pdf->WriteHTML($solutionDesignTableContentHTML);
+
+        foreach ($sectionsWithFunctionalities as $sectionsWithFunctionality) {
+            $pdfHtml = view('solution-design-pdf.solution_design_pdf_html', compact('sectionsWithFunctionality'));
+            $pdf->AddPage();
+            $pdf->WriteHTML($pdfHtml, true, 0, true, 0);
+        }
+
+        $pdfContent = $pdf->Output($pdfTitle . '.pdf', 'S');
+        return response($pdfContent)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="example.pdf"');
     }
     public function getInitiative(Request $request)
     {

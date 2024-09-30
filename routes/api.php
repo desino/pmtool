@@ -11,9 +11,11 @@ use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\SolutionDesignController;
 use App\Http\Controllers\Api\TestCaseController;
 use App\Http\Controllers\Api\TicketController;
+use App\Http\Controllers\Api\TimeBookingController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Ramsey\Uuid\Type\Time;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::controller(AuthController::class)->group(function () {
@@ -51,6 +53,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::controller(SolutionDesignController::class)->prefix('solution-design')->group(function () {
         Route::post('/', 'index');
+        Route::post('/download-list', 'downloadList');
+        Route::post('/download-pdf', 'downloadPDF');
         Route::post('/get-initiative', 'getInitiative');
         Route::post('/store-section', 'storeSection');
         Route::post('/store-update-functionality', 'storeUpdateFunctionality');
@@ -95,6 +99,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::controller(HeaderController::class)->prefix('header')->group(function () {
         Route::get('/get-initiatives', 'getInitiatives');
+    });
+
+    Route::controller(TimeBookingController::class)->prefix('time-booking')->group(function () {
+        Route::get('/', 'index');
     });
 });
 

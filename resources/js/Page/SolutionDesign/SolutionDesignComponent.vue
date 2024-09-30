@@ -5,13 +5,18 @@
                 <div class="col-sm-6">
                     <h3 class="m-0">{{ $t('solution_design.page_title') }} - {{ initiativeData.name }}
                         <span>
-                            <router-link :to="{ name: 'solution-design.detail', params: { id: initiativeData.id } }"><i
-                                    class="bi bi-link-45deg"></i></router-link>
+                            <router-link :to="{ name: 'solution-design.detail', params: { id: initiativeData.id } }">
+                                <i class="bi bi-link-45deg"></i>
+                            </router-link>
+                            <router-link :to="{ name: 'solution-design.download', params: { id: initiativeData.id } }">
+                                <i class="bi bi-file-earmark-pdf"></i>
+                            </router-link>
                         </span>
                     </h3>
                     <h5>
                         <span class="badge rounded bg-desino text-light my-3">
-                            Development Ballpark: {{ initiativeData.ballpark_development_hours }} hours
+                            {{ $t('solution_design.development_ballpark') }}: {{
+                                initiativeData.ballpark_development_hours }} hours
                         </span>
                     </h5>
                 </div>
@@ -24,11 +29,14 @@
     <div class="app-content row">
         <div class="col-md-4 border">
             <div class="input-group my-3">
-                <input type="text" class="form-control" placeholder="Search" aria-label="Recipient's username"
-                    aria-describedby="basic-addon2">
+                <input v-model="solutionDesignFilters.name" type="text" class="form-control" placeholder="Search"
+                    aria-label="Recipient's username" aria-describedby="basic-addon2"
+                    @keyup="getSectionsWithFunctionalities">
                 <span class="input-group-text" id="basic-addon2"><i class="bi bi-search"></i></span>
             </div>
-            <draggable v-model="sectionsWithFunctionalities" :move="checkMoveSection" class="list-group list-group-flush border border-start-0 border-end-0" handle=".handle-section" item-key="id" @end="sectionOnDragEnd">
+            <draggable v-model="sectionsWithFunctionalities" :move="checkMoveSection"
+                class="list-group list-group-flush border border-start-0 border-end-0" handle=".handle-section"
+                item-key="id" @end="sectionOnDragEnd">
                 <template #item="{ element: section, index }">
                     <div class="list-group-item section-functionality-container px-0 border-0">
                         <div class="section-container">
@@ -46,7 +54,7 @@
                                         <div v-if="errors.section_name" class="invalid-feedback ms-4">
                                             <span v-for="(error, index) in errors.section_name" :key="index">{{
                                                 error
-                                            }}</span>
+                                                }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -60,22 +68,26 @@
                                     </div>
                                     <div class="col-auto text-start" style="width:24px">
                                         <i :class="['bi', collapsedSections[section.id] ? 'bi-caret-right-fill' : 'bi-caret-down-fill']"
-                                        data-bs-toggle="collapse" :data-bs-target="'#collapse_' + section.id"
-                                        :aria-expanded="!collapsedSections[section.id]"
-                                        :aria-controls="'#collapse_' + section.id"
-                                        @click="collapsedSections[section.id] = !collapsedSections[section.id]"></i>
+                                            data-bs-toggle="collapse" :data-bs-target="'#collapse_' + section.id"
+                                            :aria-expanded="!collapsedSections[section.id]"
+                                            :aria-controls="'#collapse_' + section.id"
+                                            @click="collapsedSections[section.id] = !collapsedSections[section.id]"></i>
                                     </div>
                                     <div class="col-auto text-start" style="width: calc(100% - 50px)">
                                         <span class="section_name fs-5 fw-bold">{{ section.display_name }}</span>
                                         <span class="section-menu ms-3 d-inline-block">
                                             <span class="hover-menu">
-                                                <a class="btn btn-desino btn-sm border-0 me-1" href="javascript:" @click="toggleSection(section.id)" :class="isSectionActive(section.id) ? 'd-none' : ''">
+                                                <a class="btn btn-desino btn-sm border-0 me-1" href="javascript:"
+                                                    @click="toggleSection(section.id)"
+                                                    :class="isSectionActive(section.id) ? 'd-none' : ''">
                                                     <i class="bi bi-plus-lg"></i>
                                                 </a>
-                                                <a class="btn btn-desino btn-sm border-0 me-1" href="javascript:" @click="editSection(section)">
+                                                <a class="btn btn-desino btn-sm border-0 me-1" href="javascript:"
+                                                    @click="editSection(section)">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </a>
-                                                <a class="btn btn-danger btn-sm border-0 me-1" href="javascript:" @click="deleteSection(section)">
+                                                <a class="btn btn-danger btn-sm border-0 me-1" href="javascript:"
+                                                    @click="deleteSection(section)">
                                                     <i class="bi bi-trash3"></i>
                                                 </a>
                                             </span>
@@ -117,7 +129,6 @@
                                 </template>
                             </draggable>
                         </div>
-
                     </div>
                 </template>
             </draggable>
@@ -131,7 +142,7 @@
                         <div class="mb-3">
                             <label class="form-label fw-bold">{{
                                 $t('solution_design.functionality_form.name')
-                            }} <strong class="text-danger">*</strong>
+                                }} <strong class="text-danger">*</strong>
                             </label>
                             <input v-model="functionalityFormData.name" :class="{ 'is-invalid': errors.name }"
                                 class="form-control" placeholder="Enter value" type="text">
@@ -144,13 +155,13 @@
                         <div class="mb-3">
                             <label class="form-label fw-bold">{{
                                 $t('solution_design.functionality_form.section_name_select_box')
-                            }} <strong class="text-danger">*</strong>
+                                }} <strong class="text-danger">*</strong>
                             </label>
                             <select v-model="functionalityFormData.section_id" aria-label="Default select example"
                                 class="form-select" :class="{ 'is-invalid': errors.section_id }">
                                 <option value="">{{
                                     $t('solution_design.functionality_form.section_name_select_box_placeholder')
-                                }}
+                                    }}
                                 </option>
                                 <option v-for="section in sectionsWithFunctionalities" :key="section.id"
                                     :value="section.id">
@@ -166,21 +177,45 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">{{
                         $t('solution_design.functionality_form.description')
-                    }}</label>
+                        }}</label>
                     <TinyMceEditor v-model="functionalityFormData.description" />
                 </div>
-                <div class="mb-3 d-flex gap-3">
-                    <button :disabled="!functionalityFormData.section_id" class="btn btn-desino w-100" type="submit">
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" v-model="functionalityFormData.include_in_solution_design"
+                            type="checkbox" id="include_in_solution_design">
+                        <label class="form-check-label fw-bold" for="include_in_solution_design">
+                            {{ $t('solution_design.functionality_form.include_in_solution_design_text') }}
+                        </label>
+                    </div>
+                </div>
+                <div class="mb-3 d-flex gap-3" v-if="!functionalityFormData.functionality_id">
+                    <!-- <button :disabled="!functionalityFormData.section_id" class="btn btn-desino w-100" type="submit">
                         {{
                             functionalityFormData.functionality_id ?
                                 $t('solution_design.functionality_form.submit_update_but_text') :
                                 $t('solution_design.functionality_form.submit_save_but_text')
                         }}
-                    </button>
-                    <!-- <button :disabled="!functionalityFormData.section_id" class="btn btn-desino w-50"
-                        type="submit">{{
-                            $t('solution_design.functionality_form.submit_save_and_add_new_but_text') }}
                     </button> -->
+
+                    <button class="btn btn-desino w-50" type="submit"
+                        @click="handleFunctionalitySubmitButtonClick('create')">{{
+                            $t('solution_design.functionality_form.submit_create_but_text') }}
+                    </button>
+                    <button class="btn btn-desino w-50" type="submit"
+                        @click="handleFunctionalitySubmitButtonClick('create_and_add_new')">{{
+                            $t('solution_design.functionality_form.submit_create_and_add_new_but_text') }}
+                    </button>
+                </div>
+                <div class="mb-3 d-flex gap-3" v-if="functionalityFormData.functionality_id">
+                    <button class="btn btn-desino w-50" type="submit"
+                        @click="handleFunctionalitySubmitButtonClick('update')">{{
+                            $t('solution_design.functionality_form.submit_update_but_text') }}
+                    </button>
+                    <button class="btn btn-desino w-50" type="submit"
+                        @click="handleFunctionalitySubmitButtonClick('update_and_add_new')">{{
+                            $t('solution_design.functionality_form.submit_update_and_add_new_but_text') }}
+                    </button>
                 </div>
             </form>
         </div>
@@ -233,6 +268,7 @@ export default {
                 initiative_id: "",
                 description: "",
                 functionality_id: "",
+                include_in_solution_design: false
             },
             activeSectionId: null,
             selectedFunctionalityId: null,
@@ -241,6 +277,10 @@ export default {
             moveFunctionality: {},
             oldMoveFunctionality: {},
             moveSection: {},
+            functionalitySubmitButtonClickedValue: "",
+            solutionDesignFilters: {
+                name: '',
+            }
         };
     },
     methods: {
@@ -257,6 +297,9 @@ export default {
                 this.handleError(error);
             }
         },
+        handleFunctionalitySubmitButtonClick(buttonValue) {
+            this.functionalitySubmitButtonClickedValue = buttonValue;
+        },
         async storeUpdateFunctionality() {
             this.clearMessages();
             try {
@@ -269,10 +312,21 @@ export default {
                 const section = this.findItem(updatedFunc.section_id);
                 this.getSectionsWithFunctionalities();
 
-
-                this.functionalityFormData.functionality_id = updatedFunc.id;
-                this.selectedFunctionalityId = updatedFunc.id;
-                this.activeSectionId = null;
+                if (this.functionalitySubmitButtonClickedValue === 'create' || this.functionalitySubmitButtonClickedValue === 'update') {
+                    this.functionalityFormData.functionality_id = updatedFunc.id;
+                    this.selectedFunctionalityId = updatedFunc.id;
+                    this.activeSectionId = null;
+                } else if (this.functionalitySubmitButtonClickedValue === 'create_and_add_new') {
+                    this.functionalityFormData.name = "";
+                    this.functionalityFormData.description = "";
+                    this.functionalityFormData.include_in_solution_design = false;
+                } else if (this.functionalitySubmitButtonClickedValue === 'update_and_add_new') {
+                    this.functionalityFormData.functionality_id = "";
+                    this.functionalityFormData.name = "";
+                    this.functionalityFormData.description = "";
+                    this.functionalityFormData.include_in_solution_design = false;
+                    this.selectedFunctionalityId = null;
+                }
                 showToast(message, 'success');
                 this.setLoading(false);
             } catch (error) {
@@ -296,10 +350,15 @@ export default {
         },
         async getSectionsWithFunctionalities() {
             try {
-                this.setLoading(true);
-                const { content } = await SolutionDesignService.getSectionsWithFunctionalities({ initiative_id: this.initiativeId });
+                const hasValue = this.objectInValueExistOrNot(this.solutionDesignFilters);
+                hasValue ?? this.setLoading(true);
+                const passData = {
+                    initiative_id: this.initiativeId,
+                    name: this.solutionDesignFilters.name
+                }
+                const { content } = await SolutionDesignService.getSectionsWithFunctionalities(passData);
                 this.sectionsWithFunctionalities = content;
-                this.setLoading(false);
+                hasValue ?? this.setLoading(false);
             } catch (error) {
                 this.handleError(error);
             }
@@ -352,6 +411,7 @@ export default {
                     description: functionality.description ?? '',
                     functionality_id: functionality.id,
                     initiative_id: this.initiativeId,
+                    include_in_solution_design: functionality.include_in_solution_design == 1 ?? false,
                 };
                 this.selectedFunctionalityId = functionality.id;
                 this.activeSectionId = null;
@@ -553,6 +613,10 @@ export default {
             this.$router.push({
                 name: 'tasks'
             });
+        },
+        objectInValueExistOrNot(obj) {
+            const hasValue = Object.values(obj).some(value => value);
+            return hasValue;
         }
     },
     mounted() {

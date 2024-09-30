@@ -27,10 +27,12 @@ class FunctionalityRequest extends FormRequest
             "name" => "required|string",
             "description" => "nullable",
             "functionality_id" => "nullable",
+            "include_in_solution_design" => "boolean",
         ];
     }
 
-    public function messages(): array{
+    public function messages(): array
+    {
         return [
             "section_id.required" => __('message.solution_design.functionality.section_id.required'),
             "section_id.exists" => __('message.solution_design.functionality.section_id.exists'),

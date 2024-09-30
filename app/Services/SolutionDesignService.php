@@ -6,12 +6,35 @@ use App\Models\Functionality;
 use App\Models\Initiative;
 use App\Models\Section;
 use Faker\Provider\ar_EG\Person;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class SolutionDesignService
 {
     public static function getSectionsWithFunctionalities($request)
     {
-        $sectionWithFunctionalities = Section::with('functionalities')
+        $sectionWithFunctionalities = Section::with(['functionalities' => function ($query) use ($request) {
+            $query->when($request->post('name') != '', function (Builder $query) use ($request) {
+                $query->whereLike('display_name', '%' . $request->post('name') . '%');
+            });
+            $query->when($request->post('include_in_solution_design') == true, function (Builder $query) use ($request) {
+                $query->where('include_in_solution_design', 1);
+            });
+        }])
+            ->InitiativeId($request->post('initiative_id'))
+            ->orderBy('order_no')
+            ->get();
+        return $sectionWithFunctionalities;
+    }
+    public static function getSectionsWithFunctionalitiesForDownloadList($request)
+    {
+        $sectionWithFunctionalities = Section::with(['functionalities' => function ($query) use ($request) {
+            $query->when($request->post('name') != '', function (Builder $query) use ($request) {
+                $query->whereLike('display_name', '%' . $request->post('name') . '%');
+            });
+            $query->when($request->post('include_in_solution_design') == true, function (Builder $query) use ($request) {
+                $query->where('include_in_solution_design', 1);
+            });
+        }])
             ->InitiativeId($request->post('initiative_id'))
             ->orderBy('order_no')
             ->get();
@@ -168,6 +191,10 @@ class SolutionDesignService
                 $eachMoveToSection->order_no = $newOrderNo;
                 $eachMoveToSection->display_name = $newOrderNo . " " . $eachMoveToSection->name;
                 $eachMoveToSection->save();
+                $eachMoveToSection->functionalities->each(function ($functionality, $index) use ($eachMoveToSection) {
+                    $functionality->display_name = $eachMoveToSection->order_no . "." . $functionality->order_no . " " . $functionality->name;
+                    $functionality->save();
+                });
             });
 
 
