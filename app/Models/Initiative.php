@@ -105,6 +105,11 @@ class Initiative extends Model
         return $this->hasMany(TimeBooking::class);
     }
 
+    public function timeBookingsWithoutTickets()
+    {
+        return $this->hasMany(TimeBooking::class)->whereNull('ticket_id');
+    }
+
     public function scopeStatus($query, int|array $status)
     {
         if (is_array($status)) {

@@ -14,9 +14,10 @@
             <table class="table table-bordered w-100">
                 <tbody>
                     <tr class="bg-desino">
-                        <th class="bg-transparent text-center text-white align-middle p-1" width="200px">Initiative
-                            Name</th>
-                        <th class="bg-transparent text-center text-white align-middle p-1" width="300px;">Ticket Name
+                        <th class="bg-transparent text-center text-white align-middle p-1" width="200px">{{
+                            $t('time_booking.list_table.initiative_column') }}</th>
+                        <th class="bg-transparent text-center text-white align-middle p-1" width="300px;">
+                            {{ $t('time_booking.list_table.ticket_column') }}
                         </th>
                         <th class="bg-dark text-center align-middle p-1" width="10px;">
                             <a class="text-white" href="javascript:void(0);" @click="getTimeBookingData(-1)">
@@ -37,32 +38,40 @@
                         </th>
                     </tr>
                     <tr>
-                        <th colspan="2" class="bg-opacity-25 bg-primary text-center align-middle p-1">Total</th>
-                        <td rowspan="5"></td>
+                        <th colspan="2" class="bg-opacity-25 bg-primary text-center align-middle p-1">{{
+                            $t('time_booking.list_table.total_hours') }}</th>
+                        <td :rowspan="thRowSpanCount"></td>
                         <td class="text-center align-middle p-1" v-for="(weekDay, index) in weekDays" :key="index">
                             <small v-if="weekDay.total_hours > 0" class="badge text-white bg-secondary" style="
                                 font-size: 0.8rem;">
                                 {{ weekDay.total_hours }}
                             </small>
                         </td>
-
-                        <td rowspan="5"></td>
+                        <td :rowspan="thRowSpanCount"></td>
                     </tr>
                     <template v-for="(timeBooking, timeBookingIndex) in timeBookings" :key="timeBookingIndex">
-                        <tr v-for="(ticket, ticketIndex) in timeBooking.tickets" :key="ticketIndex">
-                            <th class="text-left p-1" :rowspan="timeBooking.tickets.length" v-if="ticketIndex === 0">
-                                {{ timeBooking.initiative_name }}
+                        <tr>
+                            <th class="text-left p-1" :rowspan="timeBooking.tickets.length + 1">
+                                <small>{{ timeBooking.initiative_name }}</small>
                             </th>
-                            <th class="text-left align-middle p-1">
+                        </tr>
+                        <tr v-for="(ticket, ticketIndex) in timeBooking.tickets" :key="ticketIndex">
+                            <th class="text-left align-middle p-1"
+                                :class="ticketIndex == 0 ? 'bg-info text-white' : ''">
                                 <small>{{ ticket.ticket_name }}</small>
                             </th>
-                            <td class="text-center align-middle p-1" v-for="(weekDay, index) in weekDays" :key="index">
+                            <td class="text-center align-middle p-1" role="button" v-for="(weekDay, index) in weekDays"
+                                :key="index" @click="openTimeBookingModal(timeBooking, weekDay, ticket)">
                                 <span class="badge text-secondary">{{ ticket.hours_per_day[weekDay.date] }}</span>
                             </td>
                         </tr>
                     </template>
                 </tbody>
             </table>
+        </div>
+        <div id="timeBookingModal" aria-hidden="true" aria-labelledby="timeBookingModalLabel" class="modal fade"
+            tabindex="-1">
+            <TimeBookingModalComponent ref="timeBookingModalComponent" @pageUpdated="getTimeBookingData" />
         </div>
     </div>
 </template>
@@ -75,16 +84,20 @@ import messageService from '../../services/messageService';
 import showToast from '../../utils/toasts';
 import eventBus from './../../eventBus';
 import TimeBookingService from '../../services/TimeBookingService';
+import { Modal } from 'bootstrap';
+import TimeBookingModalComponent from './TimeBookingModalComponent.vue';
 export default {
     name: 'BookingComponent',
     mixins: [globalMixin],
     components: {
-        GlobalMessage
+        GlobalMessage,
+        TimeBookingModalComponent
     },
     data() {
         return {
             timeBookings: [],
             weekDays: [],
+            thRowSpanCount: 0,
             errors: {},
             showMessage: true
         }
@@ -100,12 +113,24 @@ export default {
                     start_date: this.weekDays[0]?.date,
                     end_date: this.weekDays[this.weekDays.length - 1]?.date
                 }
-                const { content: { weekDays, initiativeWithTicketsAndTimeBooking } } = await TimeBookingService.getTimeBookingData(passData);
+                const { content: { weekDays, initiativeWithTicketsAndTimeBooking, thRowSpanCount } } = await TimeBookingService.getTimeBookingData(passData);
+                // this.thRowSpanCount = thRowSpanCount;
                 this.weekDays = weekDays;
                 this.timeBookings = initiativeWithTicketsAndTimeBooking;
                 this.setLoading(false);
             } catch (error) {
                 this.handleError(error);
+            }
+        },
+        openTimeBookingModal(timeBooking, weekDay, ticket = {}) {
+            // console.log('timeBooking :: ', timeBooking);
+            // console.log('ticket :: ', ticket);
+            // console.log('weekDay :: ', weekDay);
+            const modalElement = document.getElementById('timeBookingModal');
+            if (modalElement) {
+                this.$refs.timeBookingModalComponent.getTimeBookingData(timeBooking, weekDay, ticket);
+                const modal = new Modal(modalElement);
+                modal.show();
             }
         },
         handleError(error) {
@@ -122,6 +147,7 @@ export default {
         },
     },
     mounted() {
+        this.clearMessages();
         this.getTimeBookingData();
     },
 }

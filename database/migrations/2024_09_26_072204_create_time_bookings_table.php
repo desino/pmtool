@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('user_id');
             $table->bigInteger('initiative_id');
-            $table->bigInteger('ticket_id');
+            $table->bigInteger('ticket_id')->nullable();
             $table->float('hours', 8, 2);
+            $table->text('comments')->nullable();
             $table->date('booked_date');
             $table->bigInteger('created_by');
             $table->bigInteger('updated_by')->nullable();
