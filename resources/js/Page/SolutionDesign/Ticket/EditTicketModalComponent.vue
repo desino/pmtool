@@ -49,7 +49,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">{{
                             $t('create_ticket_modal_modal_input_initial_estimation_development_time')
-                            }} <strong class="text-danger">*</strong>
+                        }} <strong class="text-danger">*</strong>
                         </label>
                         <input v-model="formData.initial_estimation_development_time"
                             :class="{ 'is-invalid': errors.initial_estimation_development_time }" class="form-control"
@@ -94,7 +94,7 @@
                         </div>
                         <div class="card-body">
                             <div class="w-100" v-for="action in formData.ticket_actions" :key="action.id">
-                                <div class="row align-items-center">
+                                <div class="row w-100 align-items-center">
                                     <div class="col-md-6 mb-3">
                                         <div class="form-check">
                                             <input class="form-check-input" :class="{ 'is-invalid': errors.actions }"

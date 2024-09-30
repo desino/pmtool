@@ -28,7 +28,7 @@
                             <span v-for="(error, index) in errors.release_id" :key="index">{{ error }}</span>
                         </div>
                     </div>
-                    <div class="row my-3">
+                    <div class="row w-100 my-3">
                         <div class="col-5">
                             <hr>
                         </div>

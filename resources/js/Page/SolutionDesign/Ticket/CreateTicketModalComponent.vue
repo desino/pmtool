@@ -50,7 +50,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">{{
                             $t('create_ticket_modal_modal_input_initial_estimation_development_time')
-                            }} <strong class="text-danger">*</strong>
+                        }} <strong class="text-danger">*</strong>
                         </label>
                         <input v-model="formData.initial_estimation_development_time"
                             :class="{ 'is-invalid': errors.initial_estimation_development_time }" class="form-control"
@@ -95,7 +95,7 @@
                         </div>
                         <div class="card-body">
                             <div v-for="action in formData.ticket_actions" :key="action.id">
-                                <div class="row align-items-center">
+                                <div class="row w-100 align-items-center">
                                     <div class="col-md-6 mb-3">
                                         <div class="form-check">
                                             <input class="form-check-input" :class="{ 'is-invalid': errors.actions }"
@@ -139,22 +139,26 @@
                 <div class="modal-footer border-0 p-0 justify-content-center">
                     <div class="row w-100 g-1">
                         <div class="col-4 col-md-4 col-lg-3">
-                            <button class="btn btn-desino w-100 border-0" type="submit" @click="handleSubmitButtonClick('create_close')">
+                            <button class="btn btn-desino w-100 border-0" type="submit"
+                                @click="handleSubmitButtonClick('create_close')">
                                 {{ $t('create_ticket_modal_submit_but_create_close_text') }}
                             </button>
                         </div>
                         <div class="col-4 col-md-4 col-lg-3">
-                            <button class="btn btn-desino w-100 border-0" type="submit" @click="handleSubmitButtonClick('create_new')">
+                            <button class="btn btn-desino w-100 border-0" type="submit"
+                                @click="handleSubmitButtonClick('create_new')">
                                 {{ $t('create_ticket_modal_submit_but_create_add_new_text') }}
                             </button>
                         </div>
                         <div class="col-4 col-md-4 col-lg-3">
-                            <button class="btn btn-desino w-100 border-0" type="submit" @click="handleSubmitButtonClick('create_detail')">
+                            <button class="btn btn-desino w-100 border-0" type="submit"
+                                @click="handleSubmitButtonClick('create_detail')">
                                 {{ $t('create_ticket_modal_submit_but_create_detail_text') }}
                             </button>
                         </div>
                         <div class="col-12 col-md-12 col-lg-3">
-                            <button class="btn btn-danger w-100 border-0" @click="hideModal" data-bs-dismiss="modal" type="button">
+                            <button class="btn btn-danger w-100 border-0" @click="hideModal" data-bs-dismiss="modal"
+                                type="button">
                                 <i class="bi bi-x-lg"></i>
                             </button>
                         </div>

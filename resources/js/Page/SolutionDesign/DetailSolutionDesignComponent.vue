@@ -1,7 +1,7 @@
 <template>
     <div class="app-content-header pb-0">
         <div class="container-fluid">
-            <div class="row">
+            <div class="row w-100">
                 <div class="col-sm-6">
                     <h3 class="m-0">{{ $t('solution_design.page_title') }} - {{ initiativeData.name }}</h3>
                     <h5>

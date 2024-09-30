@@ -1,7 +1,7 @@
 <template>
     <div class="app-content-header pb-0">
         <div class="container-fluid">
-            <div class="row">
+            <div class="row w-100">
                 <div class="col-sm-12">
                     <h3 class="m-0">{{ $t('solution_design_download.page_title') }} - {{ initiativeData.name }}</h3>
                     <h5>
@@ -18,7 +18,7 @@
     <GlobalMessage v-if="showMessage" />
     <div class="app-content position-relative">
         <div class="border-top">
-            <div class="row mb-3 mt-3">
+            <div class="row w-100 mb-3 mt-3">
                 <div class="col-md-10">
                     <div class="form-check">
                         <input v-model="downloadFilters.include_in_solution_design" class="form-check-input"

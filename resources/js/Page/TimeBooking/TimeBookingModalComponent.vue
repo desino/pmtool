@@ -101,7 +101,7 @@
                         <li class="border list-group-item" v-if="timeBookings.length === 0">
                             <div class="row w-100">
                                 <div class="col-md-12 py-2 fw-bold text-center">
-                                    No record found
+                                    {{ $t('time_booking.modal.list_table.no_data_text') }}
                                 </div>
                             </div>
                         </li>

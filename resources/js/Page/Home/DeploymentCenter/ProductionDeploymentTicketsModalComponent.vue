@@ -12,14 +12,14 @@
                     <GlobalMessage v-if="showMessage" />
                     <ul class="list-group">
                         <li class="list-group-item fw-bold bg-desino text-white">
-                            <div class="row">
+                            <div class="row w-100">
                                 <div class="col-md-8">
                                     {{ $t('home.deployment_center.production_deployment.ticket_modal.li.name.text') }}
                                 </div>
                             </div>
                         </li>
                         <li class="list-group-item" v-for="ticket in ticketList" :key="ticket.id">
-                            <div class="row">
+                            <div class="row w-100">
                                 <div class="col-md-8" :for="'chk_production_deployment_ticket_' + ticket.ticket.id">
                                     {{ ticket?.ticket.composed_name }}
                                 </div>

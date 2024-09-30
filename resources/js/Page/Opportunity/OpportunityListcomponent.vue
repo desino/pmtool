@@ -1,7 +1,7 @@
 <template>
     <div class="app-content-header">
         <div class="container-fluid">
-            <div class="row">
+            <div class="row w-100">
                 <div class="col-sm-6">
                     <h3 class="m-0">{{ $t('opportunity.page_title') }}</h3>
                 </div>
@@ -10,7 +10,7 @@
     </div>
     <GlobalMessage v-if="showMessage" />
     <div class="app-content">
-        <div class="row mb-3">
+        <div class="row w-100 mb-3">
             <div class="col-12 col-md-3 mb-2 mb-md-0">
                 <input v-model="filter.initiative_name"
                     :placeholder="$t('opportunity_list_table.search_placeholder_initiative_name')" class="form-control"
@@ -81,7 +81,7 @@
                     </div>
                 </div>
             </li>
-            <li v-else class="list-group-item row border p-4">
+            <li v-else class="list-group-item border p-4">
                 <div class="col h4 fw-bold text-center">{{ $t('opportunity_list_table.opportunities_not_found_text') }}
                 </div>
             </li>

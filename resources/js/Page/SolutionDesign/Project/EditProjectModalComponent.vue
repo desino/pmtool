@@ -8,7 +8,7 @@
                 </div>
                 <div class="modal-body">
                     <GlobalMessage v-if="showMessage" />
-                    <div class="row">
+                    <div class="row w-100">
                         <div class="col-12">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">

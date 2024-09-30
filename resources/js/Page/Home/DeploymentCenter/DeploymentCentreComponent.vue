@@ -1,7 +1,7 @@
 <template>
     <GlobalMessage v-if="showMessage" />
     <div class="app-content mt-3">
-        <div class="row">
+        <div class="row w-100">
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-header bg-desino text-white text-center">
@@ -18,7 +18,7 @@
                                         v-for="productionDeployment in productionDeployments"
                                         :key="productionDeployment.id"
                                         @click="openProductionDeploymentModal(productionDeployment)" role="button">
-                                        <div class="row">
+                                        <div class="row w-100">
                                             <div class="col-md-8">
                                                 {{ productionDeployment?.client?.name }} -
                                                 {{ productionDeployment?.name }}
@@ -29,14 +29,14 @@
                                                         }}
                                                         <span class="small">{{
                                                             $t('home.deployment_center.test_deployment.tickets.text')
-                                                        }}</span>
+                                                            }}</span>
                                                     </span>
                                                 </h6>
                                             </div>
                                         </div>
                                     </li>
                                     <li v-else class="list-group-item">
-                                        <div class="row col-md-12">
+                                        <div class="row w-100 col-md-12">
                                             {{ $t('home.deployment_center.test_deployment.record_does_not_exist') }}
                                         </div>
                                     </li>
@@ -53,7 +53,7 @@
                                         v-for="acceptanceDeployment in acceptanceDeployments"
                                         :key="acceptanceDeployment.id"
                                         @click="openAcceptanceDeploymentModal(acceptanceDeployment)" role="button">
-                                        <div class="row">
+                                        <div class="row w-100">
                                             <div class="col-md-8">
                                                 {{ acceptanceDeployment?.client?.name }} -
                                                 {{ acceptanceDeployment?.name }}
@@ -64,14 +64,14 @@
                                                         }}
                                                         <span class="small">{{
                                                             $t('home.deployment_center.test_deployment.tickets.text')
-                                                        }}</span>
+                                                            }}</span>
                                                     </span>
                                                 </h6>
                                             </div>
                                         </div>
                                     </li>
                                     <li v-else class="list-group-item">
-                                        <div class="row col-md-12">
+                                        <div class="row w-100 col-md-12">
                                             {{ $t('home.deployment_center.test_deployment.record_does_not_exist') }}
                                         </div>
                                     </li>
@@ -87,7 +87,7 @@
                                     <li class="list-group-item" v-if="testDeployments.length > 0"
                                         v-for="testDeployment in testDeployments" :key="testDeployment.id"
                                         @click="openTestDeploymentModal(testDeployment)" role="button">
-                                        <div class="row">
+                                        <div class="row w-100">
                                             <div class="col-md-8">
                                                 {{ testDeployment?.client?.name }} - {{ testDeployment?.name }}
                                             </div>
@@ -96,14 +96,14 @@
                                                     <span class="badge bg-desino">{{ testDeployment?.tickets_count }}
                                                         <span class="small">{{
                                                             $t('home.deployment_center.test_deployment.tickets.text')
-                                                        }}</span>
+                                                            }}</span>
                                                     </span>
                                                 </h6>
                                             </div>
                                         </div>
                                     </li>
                                     <li v-else class="list-group-item">
-                                        <div class="row col-md-12">
+                                        <div class="row w-100 col-md-12">
                                             {{ $t('home.deployment_center.test_deployment.record_does_not_exist') }}
                                         </div>
                                     </li>

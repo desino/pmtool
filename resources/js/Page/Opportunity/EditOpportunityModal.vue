@@ -8,10 +8,10 @@
                 </div>
                 <div class="modal-body">
                     <GlobalMessage v-if="showMessage" />
-                    <div class="row">
+                    <div class="row w-100">
                     </div>
 
-                    <div class="row">
+                    <div class="row w-100">
                         <div class="col-4">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">{{
@@ -48,7 +48,7 @@
                         </div>
                     </div>
 
-                    <div class="row ">
+                    <div class="row w-100">
                         <div class="col-md-4 mb-3">
                             <label class="form-label fw-bold">
                                 {{ $t('create_initiative_modal_select_functional_owner') }}
@@ -142,7 +142,7 @@
                         </div>
                         <div class="card-body">
                             <div v-for="(environment, index) in formData.environments" :key="index">
-                                <div class="row">
+                                <div class="row w-100">
                                     <div class="col-md-2 mb-3">
                                         <label class="form-label fw-bold">{{
                                             $t('edit_opportunity_modal_input_environment_server_type') }}</label>

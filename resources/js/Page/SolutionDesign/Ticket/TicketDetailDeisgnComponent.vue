@@ -1,7 +1,7 @@
 <template>
     <div class="app-content-header pb-0">
         <div class="container-fluid">
-            <div class="row">
+            <div class="row w-100">
                 <div class="col-11">
                     <div class="w-100">
                         <h3 class="m-0">{{ ticketData.composed_name }}
@@ -46,7 +46,7 @@
     </div>
     <GlobalMessage v-if="showMessage" />
     <div class="app-content border border-start-0 border-end-0 py-2 mt-2">
-        <div class="row">
+        <div class="row w-100">
             <div class="col-12 col-md-3 col-lg-3 col-xl-3 text-center mb-2 mb-md-0">
                 <div class="card shadow-none h-100 border-0" :class="'bg-' + ticketData?.macro_status_label?.color">
                     <div class="card-body border-0 bg-transparent p-0 align-content-center">
@@ -141,7 +141,7 @@
             <div id="custom-tabs-five-tabContent" class="tab-content">
                 <div id="ticket_detail_tab_body" aria-labelledby="ticket_detail_tab_body"
                     class="tab-pane fade active show" role="tabpanel">
-                    <div class="row">
+                    <div class="row w-100">
                         <div class="col-md-6 my-2">
                             <div class="card h-100">
                                 <div class="card-header fw-bold">
@@ -233,7 +233,7 @@
                             <div v-if="test_cases?.length > 0" class="card-body pt-0">
                                 <div v-for="(test_case, index) in test_cases" :key="index"
                                     :class="{ 'py-3': true, 'border-bottom': index !== test_cases.length - 1 }">
-                                    <div class="row">
+                                    <div class="row w-100">
                                         <div class="col-md-10">
                                             <label class="fw-bold h6"> Test {{ index + 1 }}
                                                 ({{
