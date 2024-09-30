@@ -10,7 +10,7 @@
     </div>
     <GlobalMessage v-if="showMessage" />
     <div class="app-content">
-        <div class="row mb-3">
+        <div class="row w-100 mb-3">
             <div class="col-12 col-md-3 mb-2 mb-md-0">
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="checkbox" id="inline_active" v-model="filter.active"
@@ -27,7 +27,7 @@
 
         <ul class="list-group list-group-flush list mb-3 mt-2">
             <li class="list-group-item font-weight-bold bg-desino text-white rounded-top">
-                <div class="row">
+                <div class="row w-100">
                     <div class="col-lg-4 col-md-6 col-6 fw-bold py-2">
                         {{ $t('project.list.name_th_text') }}
                     </div>
@@ -43,7 +43,7 @@
                 </div>
             </li>
             <li class="list-group-item border" v-if="projects.length > 0" v-for="project in projects">
-                <div class="row">
+                <div class="row w-100">
                     <div class="col-lg-4 col-md-6 col-6 py-1">
                         {{ project.name }}
                     </div>
@@ -64,7 +64,7 @@
                     </div>
                 </div>
             </li>
-            <li v-else class="list-group-item row border p-4">
+            <li v-else class="list-group-item border p-4">
                 <div class="col h4 fw-bold text-center">{{ $t('project.list.projects_not_found_text') }}
                 </div>
             </li>

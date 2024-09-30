@@ -1,7 +1,7 @@
 <template>
     <div class="app-content-header">
         <div class="container-fluid">
-            <div class="row">
+            <div class="row w-100">
                 <div class="col-sm-6">
                     <h3 class="m-0">{{ $t('opportunity.page_title') }}</h3>
                 </div>
@@ -10,7 +10,7 @@
     </div>
     <GlobalMessage v-if="showMessage" />
     <div class="app-content">
-        <div class="row mb-3">
+        <div class="row w-100 mb-3">
             <div class="col-12 col-md-3 mb-2 mb-md-0">
                 <input v-model="filter.initiative_name"
                     :placeholder="$t('opportunity_list_table.search_placeholder_initiative_name')" class="form-control"
@@ -26,12 +26,12 @@
         </div>
         <ul class="list-group list-group-flush mb-3 mt-2">
             <li class="list-group-item font-weight-bold bg-desino text-white rounded-top">
-                <div class="row">
+                <div class="row w-100">
                     <div class="col-lg-4 col-md-6 col-6 fw-bold py-2">{{ $t('opportunity_list_table.client_th_text') }}
                     </div>
                     <div class="col-lg-3 col-md-6 col-6 fw-bold py-2">{{
                         $t('opportunity_list_table.initiative_name_th_text')
-                        }}
+                    }}
                     </div>
                     <div class="col-lg-3 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
                         {{ $t('opportunity_list_table.ballpark_development_hours_th_text') }}
@@ -43,7 +43,7 @@
             </li>
             <li class="border list-group-item" v-for="opportunity in opportunities" v-if="opportunities.length > 0"
                 :key="opportunity.id">
-                <div class="row">
+                <div class="row w-100">
                     <div class="col-lg-4 col-md-6 col-6">{{ opportunity.client.name }}</div>
                     <div class="col-lg-3 col-md-6 col-6">{{ opportunity.name }}</div>
                     <div class="col-lg-3 col-md-6 col-8 text-center text-lg-start">
@@ -56,7 +56,7 @@
                     <div class="col-lg-2 col-md-6 col-4">
                         <span class="d-block d-lg-none fw-bold bg-light-subtle mt-2 text-white text-center"> {{
                             $t('opportunity_list_table.actions_th_text')
-                            }} </span>
+                        }} </span>
                         <a :title="$t('opportunity_list_table.actions_edit_tooltip')" class="text-desino me-2"
                             href="javascript:" @click="editOpportunity(opportunity)">
                             <i class="bi bi-pencil-square"></i>
@@ -73,7 +73,7 @@
                 </div>
             </li>
             <li v-if="opportunities.length > 0" class="border list-group-item">
-                <div class="row">
+                <div class="row w-100">
                     <div class="col-lg-4 col-md-6 col-6"></div>
                     <div class="col-lg-3 col-md-6 col-6"></div>
                     <div class="col-lg-3 fw-bold col-md-6 col-8">{{ ballparkTotal }}</div>
@@ -81,7 +81,7 @@
                     </div>
                 </div>
             </li>
-            <li v-else class="list-group-item row border p-4">
+            <li v-else class="list-group-item border p-4">
                 <div class="col h4 fw-bold text-center">{{ $t('opportunity_list_table.opportunities_not_found_text') }}
                 </div>
             </li>

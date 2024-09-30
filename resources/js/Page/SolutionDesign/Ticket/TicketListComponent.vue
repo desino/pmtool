@@ -1,7 +1,7 @@
 <template>
     <div class="app-content-header">
         <div class="container-fluid">
-            <div class="row">
+            <div class="row w-100">
                 <div class="col-sm-6">
                     <h3 class="m-0">{{ $t('ticket.page_title') }}</h3>
                 </div>
@@ -10,7 +10,7 @@
     </div>
     <GlobalMessage v-if="showMessage" />
     <div class="app-content">
-        <div class="row mb-3">
+        <div class="row w-100 mb-3">
             <div class="col-12 col-md-3 mb-2 mb-md-0">
                 <input v-model="filter.task_name" :placeholder="$t('ticket.filter.task_name')" class="form-control"
                     type="text" @keyup="fetchAllTasks">
@@ -39,7 +39,7 @@
                 </select>
             </div>
         </div>
-        <div class="row mb-3">
+        <div class="row w-100 mb-3">
             <div class="col-12 col-md-6 mb-2 mb-md-0">
                 <multiselect v-model="filter.macro_status" ref="multiselect" :multiple="true"
                     :options="filterMacroStatus" :searchable="true" deselect-label="" label="name"
@@ -67,7 +67,7 @@
                 </multiselect>
             </div>
         </div>
-        <div class="row mb-3">
+        <div class="row w-100 mb-3">
             <div class="col-12 col-md-3 mb-2 mb-md-0">
                 <button class="btn btn-desino" :disabled="selectedTasks.length === 0" type="button"
                     @click="openAssignProjectModal">
@@ -81,7 +81,7 @@
         </div>
         <ul class="list-group list-group-flush mb-3 mt-2">
             <li class="font-weight-bold bg-desino text-white rounded-top list-group-item">
-                <div class="row">
+                <div class="row w-100">
                     <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
                         <input class="form-check-input mx-2" type="checkbox" id="chk_all_tickets"
                             v-model="isChkAllTickets" @change="handleSelectAllTasks">
@@ -108,7 +108,7 @@
                 </div>
             </li>
             <li v-for="(task, index) in tasks" v-if="tasks.length > 0" :key="task.id" class="border list-group-item">
-                <div class="row align-items-center">
+                <div class="row w-100 align-items-center">
                     <div class="col-lg-2 col-md-6 col-6 d-flex align-items-center">
                         <div class="mx-2">
                             <input class="form-check-input" type="checkbox" :id="'chk_ticket_' + task.id"

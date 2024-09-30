@@ -1,7 +1,7 @@
 <template>
     <div class="app-content-header pb-0">
         <div class="container-fluid">
-            <div class="row">
+            <div class="row w-100">
                 <div class="col-sm-6">
                     <h3 class="m-0">{{ $t('solution_design.page_title') }} - {{ initiativeData.name }}
                         <span>
@@ -54,13 +54,13 @@
                                         <div v-if="errors.section_name" class="invalid-feedback ms-4">
                                             <span v-for="(error, index) in errors.section_name" :key="index">{{
                                                 error
-                                                }}</span>
+                                            }}</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div v-else class="w-100 section-container section_name_area_cover">
-                                <div class="row h-100 w-100 g-0">
+                                <div class="row w-100 h-100 w-100 g-0">
                                     <div class="col-auto text-start" style="width:24px">
                                         <div class="section-sort" role="button">
                                             <i class="bi bi-grip-vertical handle-section me-2 hover-sort"></i>
@@ -137,12 +137,12 @@
         <div class="col-md-8 border-top border-bottom p-3">
             <form @submit.prevent="storeUpdateFunctionality" v-if="functionalityFormData.section_id">
                 <input type="hidden" v-model="functionalityFormData.functionality_id">
-                <div class="row">
+                <div class="row w-100">
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label class="form-label fw-bold">{{
                                 $t('solution_design.functionality_form.name')
-                                }} <strong class="text-danger">*</strong>
+                            }} <strong class="text-danger">*</strong>
                             </label>
                             <input v-model="functionalityFormData.name" :class="{ 'is-invalid': errors.name }"
                                 class="form-control" placeholder="Enter value" type="text">
@@ -155,13 +155,13 @@
                         <div class="mb-3">
                             <label class="form-label fw-bold">{{
                                 $t('solution_design.functionality_form.section_name_select_box')
-                                }} <strong class="text-danger">*</strong>
+                            }} <strong class="text-danger">*</strong>
                             </label>
                             <select v-model="functionalityFormData.section_id" aria-label="Default select example"
                                 class="form-select" :class="{ 'is-invalid': errors.section_id }">
                                 <option value="">{{
                                     $t('solution_design.functionality_form.section_name_select_box_placeholder')
-                                    }}
+                                }}
                                 </option>
                                 <option v-for="section in sectionsWithFunctionalities" :key="section.id"
                                     :value="section.id">
@@ -177,7 +177,7 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">{{
                         $t('solution_design.functionality_form.description')
-                        }}</label>
+                    }}</label>
                     <TinyMceEditor v-model="functionalityFormData.description" />
                 </div>
                 <div class="mb-3">
