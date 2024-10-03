@@ -59,17 +59,15 @@
                         <tr v-if="!timeBooking.initiative_id">
                             <th class="text-left p-1 bg-opacity-25 bg-warning text-center" :colspan="2"
                                 :rowspan="timeBooking.tickets.length + 1">
-                                <small>{{ timeBooking.initiative_name }} {{ timeBooking.tickets.length }}</small>
+                                <small>{{ timeBooking.initiative_name }}</small>
                             </th>
                         </tr>
-
-                        <!-- :class="ticketIndex == 0 && timeBooking.initiative_id ? 'bg-info text-white' : ''"> -->
                         <tr v-for="(ticket, ticketIndex) in timeBooking.tickets" :key="ticketIndex">
                             <th v-if="timeBooking.initiative_id" class="text-left align-middle p-1" :class="{
                                 'bg-info text-white': ticketIndex == 0,
                                 'bg-warning': timeBooking.tickets.length - 1 == ticketIndex
                             }">
-                                <small>{{ ticket.ticket_name }} {{ timeBooking.tickets.length }}</small>
+                                <small>{{ ticket.ticket_name }}</small>
                             </th>
                             <td class="text-center align-middle p-1"
                                 :role="ticket.hours_per_day[weekDay.date]?.is_allow_booking ? 'button' : false"
@@ -148,11 +146,6 @@ export default {
             }
         },
         openTimeBookingModal(timeBooking, weekDay, isAllowBooking, ticketIndex, ticket = {}) {
-            // console.log('timeBooking :: ', timeBooking);
-            // console.log('weekDay :: ', weekDay);
-            // console.log('isAllowBooking :: ', isAllowBooking);
-            // console.log('ticket :: ', ticket);
-            // console.log('ticketIndex :: ', ticketIndex);
             if (!isAllowBooking) {
                 return;
             }
