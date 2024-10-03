@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\TimeBookingOnNewInitiativeOrTicketRequest;
 use App\Http\Requests\Api\TimeBookingOnNewTicketRequest;
 use App\Http\Requests\Api\TimeBookingRequest;
 use App\Models\Initiative;
@@ -96,7 +97,7 @@ class TimeBookingController extends Controller
         $defaultRowDataTicketsHoursPerDay = [];
         foreach ($weekDays as $weekDay) {
             $defaultRowDataTicketsHoursPerDay[$weekDay['date']]['hours'] = '<i class="bi bi-plus-circle"></i>';
-            $defaultRowDataTicketsHoursPerDay[$weekDay['date']]['is_allow_booking'] = true;
+            $defaultRowDataTicketsHoursPerDay[$weekDay['date']]['is_allow_booking'] = $weekDay['date'] <= Carbon::now()->format('Y-m-d') ?? false;
             $retData['weekDays'][array_search($weekDay, $weekDays)]['total_hours'] = $timeBookings->where('booked_date', $weekDay['date'])->sum('hours');
         }
         $defaultRowData['tickets'][0]['hours_per_day'] = $defaultRowDataTicketsHoursPerDay;
@@ -340,18 +341,45 @@ class TimeBookingController extends Controller
 
         $status = true;
         $statusCode = 200;
+        $date = Carbon::parse($requestData['booked_date']);
+        $startOfWeek = $date->copy()->startOfWeek()->format('Y-m-d');
+        $endOfWeek = $date->copy()->endOfWeek()->format('Y-m-d');
         $tickets = Ticket::where('initiative_id', $requestData['initiative_id'])
             ->whereHas('actions', function ($query) {
                 $query->where('user_id', Auth::id());
             })
-            ->whereDoesntHave('timeBookings', function ($query) use ($requestData) {
+            ->whereDoesntHave('timeBookings', function ($query) use ($requestData, $startOfWeek, $endOfWeek) {
                 $query->where('initiative_id', $requestData['initiative_id'])
-                    ->whereNotNull('ticket_id');
+                    ->whereNotNull('ticket_id')
+                    ->whereBetween('booked_date', [$startOfWeek, $endOfWeek]);
             })
             ->get();
 
         $data = [
             'tickets' => $tickets,
+        ];
+        return ApiHelper::response($status, '', $data, $statusCode);
+    }
+
+    public function getTimeBookingOnNewInitiativeOrTicketModalInitialData(Request $request)
+    {
+        $requestData = $request->all();
+        $status = false;
+
+        $status = true;
+        $statusCode = 200;
+
+        $date = Carbon::parse($requestData['booked_date']);
+        $startOfWeek = $date->copy()->startOfWeek()->format('Y-m-d');
+        $endOfWeek = $date->copy()->endOfWeek()->format('Y-m-d');
+        $initiatives = Initiative::whereDoesntHave('timeBookings', function ($query) use ($startOfWeek, $endOfWeek) {
+            $query->whereNotNull('initiative_id')
+                ->whereBetween('booked_date', [$startOfWeek, $endOfWeek]);
+        })
+            ->get();
+
+        $data = [
+            'initiatives' => $initiatives,
         ];
         return ApiHelper::response($status, '', $data, $statusCode);
     }
@@ -419,6 +447,67 @@ class TimeBookingController extends Controller
             Log::info($e->getMessage());
         }
         return ApiHelper::response($status, $message, '', $statusCode);
+    }
+
+    public function storeTimeBookingOnNewInitiativeOrTicket(TimeBookingOnNewInitiativeOrTicketRequest $request)
+    {
+        $validData = $request->validated();
+        $validData['user_id'] = Auth::id();
+        $status = false;
+        $initiative = InitiativeService::getInitiative($request);
+        if (!$initiative) {
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
+        }
+        if ($validData['ticket_id'] != '') {
+            $ticket = Ticket::find($validData['ticket_id']);
+            if (!$ticket || $initiative->id != $ticket->initiative_id) {
+                return ApiHelper::response($status, __('messages.ticket.not_found'), '', 400);
+            }
+        }
+        DB::beginTransaction();
+        $message = __('messages.time_booking.store_success');
+        $statusCode = 200;
+        try {
+            TimeBooking::create($validData);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $statusCode = 500;
+            Log::info($e->getMessage());
+        }
+        return ApiHelper::response($status, $message, '', $statusCode);
+    }
+
+    public function fetchTickets(Request $request)
+    {
+        $requestData = $request->all();
+        $status = false;
+        $initiative = InitiativeService::getInitiative($request, $requestData['initiative_id']);
+        if (!$initiative) {
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
+        }
+
+        $date = Carbon::parse($requestData['booked_date']);
+        $startOfWeek = $date->copy()->startOfWeek()->format('Y-m-d');
+        $endOfWeek = $date->copy()->endOfWeek()->format('Y-m-d');
+
+        $status = true;
+        $statusCode = 200;
+        $tickets = Ticket::where('initiative_id', $requestData['initiative_id'])
+            ->whereHas('actions', function ($query) {
+                $query->where('user_id', Auth::id());
+            })
+            ->whereDoesntHave('timeBookings', function ($query) use ($requestData, $startOfWeek, $endOfWeek) {
+                $query->where('initiative_id', $requestData['initiative_id'])
+                    ->whereNotNull('ticket_id')
+                    ->whereBetween('booked_date', [$startOfWeek, $endOfWeek]);
+            })
+            ->get();
+        $data = [
+            'tickets' => $tickets,
+        ];
+        return ApiHelper::response($status, '', $data, $statusCode);
     }
 
     public function deleteTimeBookings(Request $request)

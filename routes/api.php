@@ -106,8 +106,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/get-time-booking-modal-initial-data', 'getTimeBookingModalInitialData');
         Route::post('/store', 'store');
         Route::get('/get-time-booking-on-new-ticket-modal-initial-data', 'getTimeBookingOnNewTicketModalInitialData');
+        Route::get('get-time-booking-on-new-initiative-or-ticket-modal-initial-data', 'getTimeBookingOnNewInitiativeOrTicketModalInitialData');
         Route::post('/store-time-booking-on-new-ticket', 'storeTimeBookingOnNewTicket');
+        Route::post('/store-time-booking-on-new-initiative-or-ticket', 'storeTimeBookingOnNewInitiativeOrTicket');
         Route::post('/delete-time-bookings', 'deleteTimeBookings');
+        Route::get('/fetch-tickets', 'fetchTickets');
     });
 });
 

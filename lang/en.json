@@ -546,6 +546,7 @@
     "time_booking.modal.delete_alert.text": "Are you sure you want to delete this time booking?",
     "time_booking.modal.list_table.no_data_text": "No record found",
     "time_booking_on_new_ticket.popup_title": "Time Booking",
+    "time_booking_on_new_ticket.modal_select_initiative_label_text": "Initiative",
     "time_booking_on_new_ticket.modal_select_ticket_label_text": "Ticket",
     "time_booking_on_new_ticket.modal_input_hours_label_text": "Hours",
     "time_booking_on_new_ticket.modal_textarea_comments_label_text": "Comments",

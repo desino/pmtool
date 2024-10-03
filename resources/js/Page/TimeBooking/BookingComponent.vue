@@ -94,6 +94,11 @@
             <TimeBookingOnNewTicketModalComponent ref="timeBookingOnNewTicketModalComponent"
                 @pageUpdated="getTimeBookingData" />
         </div>
+        <div id="timeBookingOnNewInitiativeOrTicketModal" aria-hidden="true"
+            aria-labelledby="timeBookingOnNewInitiativeOrTicketModalLabel" class="modal fade" tabindex="-1">
+            <TimeBookingOnNewInitiativeOrTicketModalComponent ref="timeBookingOnNewInitiativeOrTicketModalComponent"
+                @pageUpdated="getTimeBookingData" />
+        </div>
     </div>
 </template>
 
@@ -108,13 +113,15 @@ import TimeBookingService from '../../services/TimeBookingService';
 import { Modal } from 'bootstrap';
 import TimeBookingModalComponent from './TimeBookingModalComponent.vue';
 import TimeBookingOnNewTicketModalComponent from './TimeBookingOnNewTicketModalComponent.vue';
+import TimeBookingOnNewInitiativeOrTicketModalComponent from './TimeBookingOnNewInitiativeOrTicketModalComponent.vue';
 export default {
     name: 'BookingComponent',
     mixins: [globalMixin],
     components: {
         GlobalMessage,
         TimeBookingModalComponent,
-        TimeBookingOnNewTicketModalComponent
+        TimeBookingOnNewTicketModalComponent,
+        TimeBookingOnNewInitiativeOrTicketModalComponent
     },
     data() {
         return {
@@ -150,7 +157,12 @@ export default {
                 return;
             }
             if (!timeBooking.initiative_id) {
-                console.log('ddd :: ');
+                const timeBookingOnNewInitiativeOrTicketModalElement = document.getElementById('timeBookingOnNewInitiativeOrTicketModal');
+                if (timeBookingOnNewInitiativeOrTicketModalElement) {
+                    this.$refs.timeBookingOnNewInitiativeOrTicketModalComponent.getTimeBookingData(timeBooking, weekDay, ticket);
+                    const timeBookingOnNewInitiativeOrTicketModal = new Modal(timeBookingOnNewInitiativeOrTicketModalElement);
+                    timeBookingOnNewInitiativeOrTicketModal.show();
+                }
             } else if (timeBooking.initiative_id && ticketIndex > 0 && !ticket.ticket_id) {
                 const timeBookingOnNewTicketModalElement = document.getElementById('timeBookingOnNewTicketModal');
                 if (timeBookingOnNewTicketModalElement) {
