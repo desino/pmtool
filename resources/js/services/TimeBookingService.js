@@ -11,6 +11,8 @@ const endpoints = {
     storeTimeBooking: `${defaultPath}/store`,
     getTimeBookingModalInitialData: `${defaultPath}/get-time-booking-modal-initial-data`,
     deleteTimeBookings: `${defaultPath}/delete-time-bookings`,
+    getTimeBookingOnNewTicketModalInitialData: `${defaultPath}/get-time-booking-on-new-ticket-modal-initial-data`,
+    storeTimeBookingOnNewTicket: `${defaultPath}/store-time-booking-on-new-ticket`,
 }
 
 const TimeBookingService = {
@@ -31,9 +33,25 @@ const TimeBookingService = {
             throw handleError(error);
         }
     },
+    async storeTimeBookingOnNewTicket(data) {
+        try {
+            const response = await axiosRequest.post(endpoints.storeTimeBookingOnNewTicket, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
     async getTimeBookingModalInitialData(data) {
         try {
             const response = await axiosRequest.get(endpoints.getTimeBookingModalInitialData, { params: data });
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async getTimeBookingOnNewTicketModalInitialData(data) {
+        try {
+            const response = await axiosRequest.get(endpoints.getTimeBookingOnNewTicketModalInitialData, { params: data });
             return response.data;
         } catch (error) {
             throw handleError(error);

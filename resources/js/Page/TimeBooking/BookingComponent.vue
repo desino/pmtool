@@ -12,6 +12,7 @@
     <div class="app-content">
         <div class="w-100">
             <table class="table table-bordered w-100">
+
                 <tbody>
                     <tr class="bg-desino">
                         <th class="bg-transparent text-center text-white align-middle p-1" width="200px">{{
@@ -50,19 +51,36 @@
                         <td :rowspan="thRowSpanCount"></td>
                     </tr>
                     <template v-for="(timeBooking, timeBookingIndex) in timeBookings" :key="timeBookingIndex">
-                        <tr>
+                        <tr v-if="timeBooking.initiative_id">
                             <th class="text-left p-1" :rowspan="timeBooking.tickets.length + 1">
                                 <small>{{ timeBooking.initiative_name }}</small>
                             </th>
                         </tr>
-                        <tr v-for="(ticket, ticketIndex) in timeBooking.tickets" :key="ticketIndex">
-                            <th class="text-left align-middle p-1"
-                                :class="ticketIndex == 0 ? 'bg-info text-white' : ''">
-                                <small>{{ ticket.ticket_name }}</small>
+                        <tr v-if="!timeBooking.initiative_id">
+                            <th class="text-left p-1 bg-opacity-25 bg-warning text-center" :colspan="2"
+                                :rowspan="timeBooking.tickets.length + 1">
+                                <small>{{ timeBooking.initiative_name }} {{ timeBooking.tickets.length }}</small>
                             </th>
-                            <td class="text-center align-middle p-1" role="button" v-for="(weekDay, index) in weekDays"
-                                :key="index" @click="openTimeBookingModal(timeBooking, weekDay, ticket)">
-                                <span class="badge text-secondary">{{ ticket.hours_per_day[weekDay.date] }}</span>
+                        </tr>
+
+                        <!-- :class="ticketIndex == 0 && timeBooking.initiative_id ? 'bg-info text-white' : ''"> -->
+                        <tr v-for="(ticket, ticketIndex) in timeBooking.tickets" :key="ticketIndex">
+                            <th v-if="timeBooking.initiative_id" class="text-left align-middle p-1" :class="{
+                                'bg-info text-white': ticketIndex == 0,
+                                'bg-warning': timeBooking.tickets.length - 1 == ticketIndex
+                            }">
+                                <small>{{ ticket.ticket_name }} {{ timeBooking.tickets.length }}</small>
+                            </th>
+                            <td class="text-center align-middle p-1"
+                                :role="ticket.hours_per_day[weekDay.date]?.is_allow_booking ? 'button' : false"
+                                v-for="(weekDay, index) in weekDays" :key="index"
+                                @click="openTimeBookingModal(timeBooking, weekDay, ticket.hours_per_day[weekDay.date]?.is_allow_booking, ticketIndex, ticket)">
+                                <span v-if="timeBooking.initiative_id" class="badge text-secondary">{{
+                                    ticket.hours_per_day[weekDay.date]?.hours > 0 ?
+                                        ticket.hours_per_day[weekDay.date]?.hours : ''
+                                }}</span>
+                                <span v-if="!timeBooking.initiative_id" class="badge text-secondary"
+                                    v-html="ticket.hours_per_day[weekDay.date]?.hours"></span>
                             </td>
                         </tr>
                     </template>
@@ -72,6 +90,11 @@
         <div id="timeBookingModal" aria-hidden="true" aria-labelledby="timeBookingModalLabel" class="modal fade"
             tabindex="-1">
             <TimeBookingModalComponent ref="timeBookingModalComponent" @pageUpdated="getTimeBookingData" />
+        </div>
+        <div id="timeBookingOnNewTicketModal" aria-hidden="true" aria-labelledby="timeBookingOnNewTicketModalLabel"
+            class="modal fade" tabindex="-1">
+            <TimeBookingOnNewTicketModalComponent ref="timeBookingOnNewTicketModalComponent"
+                @pageUpdated="getTimeBookingData" />
         </div>
     </div>
 </template>
@@ -86,12 +109,14 @@ import eventBus from './../../eventBus';
 import TimeBookingService from '../../services/TimeBookingService';
 import { Modal } from 'bootstrap';
 import TimeBookingModalComponent from './TimeBookingModalComponent.vue';
+import TimeBookingOnNewTicketModalComponent from './TimeBookingOnNewTicketModalComponent.vue';
 export default {
     name: 'BookingComponent',
     mixins: [globalMixin],
     components: {
         GlobalMessage,
-        TimeBookingModalComponent
+        TimeBookingModalComponent,
+        TimeBookingOnNewTicketModalComponent
     },
     data() {
         return {
@@ -122,15 +147,31 @@ export default {
                 this.handleError(error);
             }
         },
-        openTimeBookingModal(timeBooking, weekDay, ticket = {}) {
+        openTimeBookingModal(timeBooking, weekDay, isAllowBooking, ticketIndex, ticket = {}) {
             // console.log('timeBooking :: ', timeBooking);
-            // console.log('ticket :: ', ticket);
             // console.log('weekDay :: ', weekDay);
-            const modalElement = document.getElementById('timeBookingModal');
-            if (modalElement) {
-                this.$refs.timeBookingModalComponent.getTimeBookingData(timeBooking, weekDay, ticket);
-                const modal = new Modal(modalElement);
-                modal.show();
+            // console.log('isAllowBooking :: ', isAllowBooking);
+            // console.log('ticket :: ', ticket);
+            // console.log('ticketIndex :: ', ticketIndex);
+            if (!isAllowBooking) {
+                return;
+            }
+            if (!timeBooking.initiative_id) {
+                console.log('ddd :: ');
+            } else if (timeBooking.initiative_id && ticketIndex > 0 && !ticket.ticket_id) {
+                const timeBookingOnNewTicketModalElement = document.getElementById('timeBookingOnNewTicketModal');
+                if (timeBookingOnNewTicketModalElement) {
+                    this.$refs.timeBookingOnNewTicketModalComponent.getTimeBookingData(timeBooking, weekDay, ticket);
+                    const timeBookingOnNewTicketModal = new Modal(timeBookingOnNewTicketModalElement);
+                    timeBookingOnNewTicketModal.show();
+                }
+            } else {
+                const modalElement = document.getElementById('timeBookingModal');
+                if (modalElement) {
+                    this.$refs.timeBookingModalComponent.getTimeBookingData(timeBooking, weekDay, ticket);
+                    const modal = new Modal(modalElement);
+                    modal.show();
+                }
             }
         },
         handleError(error) {

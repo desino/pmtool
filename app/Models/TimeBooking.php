@@ -10,4 +10,14 @@ class TimeBooking extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+
+    public function initiative()
+    {
+        return $this->belongsTo(Initiative::class);
+    }
+
+    public function tickets()
+    {
+        return $this->belongsToMany(Ticket::class);
+    }
 }
