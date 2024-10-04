@@ -2,8 +2,8 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="timeBookingOnNewTicketModalLabel">{{
-                    $t('time_booking_on_new_ticket.popup_title') }}
+                <h5 class="modal-title" id="timeBookingOnNewTicketModalLabel"
+                    v-html="formattedModalTitleForNewTicket()">
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -85,6 +85,7 @@ export default {
                 comments: '',
                 booked_date: '',
             },
+            weekDay: {},
             tickets: [],
             weekDays: [],
             showErrorMessage: "",
@@ -100,7 +101,12 @@ export default {
             this.formData.initiative_id = timeBooking.initiative_id;
             this.formData.booked_date = weekDay.date;
             this.weekDays = weekDays;
+            this.weekDay = weekDay;
             this.getTimeBookingOnNewTicketModalInitialData();
+        },
+        formattedModalTitleForNewTicket() {
+            const title = this.$t('time_booking_on_new_ticket.popup_title', { DATE: this.weekDay?.format_date_dd_mm_yyyy });
+            return title.replace(this.weekDay?.format_date_dd_mm_yyyy, `<span class='badge bg-secondary'>${this.weekDay?.format_date_dd_mm_yyyy}</span>`);
         },
         async getTimeBookingOnNewTicketModalInitialData() {
             this.setLoading(true);

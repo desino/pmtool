@@ -61,6 +61,7 @@ class TimeBookingController extends Controller
                 'day' => $startOfWeekDate->format('l'),
                 'date' => $startOfWeekDate->toDateString(),
                 'format_date' => $startOfWeekDate->format('d/m'),
+                'format_date_dd_mm_yyyy' => $startOfWeekDate->format('d/m/Y'),
                 'is_today' => $startOfWeekDate->toDateString() == $todayDate,
                 'total_hours' => 0
             ];

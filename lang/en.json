@@ -532,7 +532,8 @@
     "time_booking.list_table.initiative_column": "Initiative",
     "time_booking.list_table.ticket_column": "Ticket",
     "time_booking.list_table.total_hours": "Total",
-    "time_booking.popup_title": "Time Booking",
+    "time_booking.popup_title_initiative_level": "Initiative Time Booking on {DATE} for Initiative: {INITIATIVE_NAME}",
+    "time_booking.popup_title_ticket_level": "Ticket Time Bookings on {DATE} for ticket: {TICKET_NAME}",
     "time_booking.modal_submit_but_text": "Book",
     "time_booking.modal_input_hours_label_text": "Hours",
     "time_booking.modal_textarea_Comments_label_text": "Comments",
@@ -545,10 +546,16 @@
     "time_booking.modal.delete_alert.title": "Delete Time Booking",
     "time_booking.modal.delete_alert.text": "Are you sure you want to delete this time booking?",
     "time_booking.modal.list_table.no_data_text": "No record found",
-    "time_booking_on_new_ticket.popup_title": "Time Booking",
+    "time_booking_on_new_ticket.popup_title": "Add Time booking on {DATE} for new ticket.",
     "time_booking_on_new_ticket.modal_select_initiative_label_text": "Initiative",
     "time_booking_on_new_ticket.modal_select_ticket_label_text": "Ticket",
     "time_booking_on_new_ticket.modal_input_hours_label_text": "Hours",
     "time_booking_on_new_ticket.modal_textarea_comments_label_text": "Comments",
-    "time_booking_on_new_ticket.modal_submit_but_text": "Book"
+    "time_booking_on_new_ticket.modal_submit_but_text": "Book",
+    "time_booking_on_new_initiative_or_ticket.popup_title": "Add time booking on {DATE} for new initiative or ticket",
+    "time_booking_on_new_initiative_or_ticket.modal_select_initiative_label_text": "Initiative",
+    "time_booking_on_new_initiative_or_ticket.modal_select_ticket_label_text": "Ticket",
+    "time_booking_on_new_initiative_or_ticket.modal_input_hours_label_text": "Hours",
+    "time_booking_on_new_initiative_or_ticket.modal_textarea_comments_label_text": "Comments",
+    "time_booking_on_new_initiative_or_ticket.modal_submit_but_text": "Book"
 }

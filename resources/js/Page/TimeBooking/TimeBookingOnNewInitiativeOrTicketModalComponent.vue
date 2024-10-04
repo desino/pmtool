@@ -2,8 +2,8 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="timeBookingOnNewInitiativeOrTicketModalLabel">{{
-                    $t('time_booking_on_new_ticket.popup_title') }}
+                <h5 class="modal-title" id="timeBookingOnNewInitiativeOrTicketModalLabel"
+                    v-html="formattedModalTitleForNewInitiativeOrTicket()">
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -20,8 +20,8 @@
                                 <select v-model="formData.initiative_id" :class="{ 'is-invalid': errors.initiative_id }"
                                     class="form-select" @change="fetchTickets">
                                     <option value="">{{
-                                        $t('time_booking_on_new_ticket.modal_select_initiative_label_text')
-                                    }}</option>
+                                        $t('time_booking_on_new_initiative_or_ticket.modal_select_initiative_label_text')
+                                        }}</option>
                                     <option v-for="initiative in initiatives" :key="initiative.id"
                                         :value="initiative.id">{{
                                             initiative.name }}
@@ -34,7 +34,8 @@
                             <div class="col-6 mb-3">
                                 <select v-model="formData.ticket_id" :class="{ 'is-invalid': errors.ticket_id }"
                                     class="form-select">
-                                    <option value="">{{ $t('time_booking_on_new_ticket.modal_select_ticket_label_text')
+                                    <option value="">{{
+                                        $t('time_booking_on_new_initiative_or_ticket.modal_select_ticket_label_text')
                                         }}</option>
                                     <option v-for="ticket in tickets" :key="ticket.id" :value="ticket.id">{{
                                         ticket.composed_name }}
@@ -49,7 +50,7 @@
                             <div class="col-2 mb-3">
                                 <input type="text" v-model="formData.hours" :class="{ 'is-invalid': errors.hours }"
                                     class="form-control"
-                                    :placeholder="$t('time_booking_on_new_ticket.modal_input_hours_label_text')">
+                                    :placeholder="$t('time_booking_on_new_initiative_or_ticket.modal_input_hours_label_text')">
                                 <small v-if="errors.hours" class="invalid-feedback">
                                     <span v-for="(error, index) in errors.hours" :key="index">{{ error
                                         }}</span>
@@ -58,7 +59,7 @@
                             <div class="col-10 mb-3">
                                 <textarea class="form-control" rows="3" v-model="formData.comments"
                                     :class="{ 'is-invalid': errors.comments }"
-                                    :placeholder="$t('time_booking_on_new_ticket.modal_textarea_comments_label_text')"
+                                    :placeholder="$t('time_booking_on_new_initiative_or_ticket.modal_textarea_comments_label_text')"
                                     maxlength="500"></textarea>
                                 <div v-if="errors.comments" class="invalid-feedback">
                                     <span v-for="(error, index) in errors.comments" :key="index">{{ error
@@ -67,7 +68,7 @@
                             </div>
                             <div class="col-12">
                                 <button type="submit" class="btn btn-desino w-100">{{
-                                    $t('time_booking_on_new_ticket.modal_submit_but_text') }}</button>
+                                    $t('time_booking_on_new_initiative_or_ticket.modal_submit_but_text') }}</button>
                             </div>
                         </div>
                     </div>
@@ -100,6 +101,7 @@ export default {
                 comments: '',
                 booked_date: '',
             },
+            weekDay: {},
             initiatives: [],
             tickets: [],
             weekDays: [],
@@ -115,7 +117,12 @@ export default {
             this.clearMessages();
             this.formData.booked_date = weekDay.date;
             this.weekDays = weekDays;
+            this.weekDay = weekDay;
             this.getTimeBookingOnNewInitiativeOrTicketModalInitialData();
+        },
+        formattedModalTitleForNewInitiativeOrTicket() {
+            const title = this.$t('time_booking_on_new_initiative_or_ticket.popup_title', { DATE: this.weekDay?.format_date_dd_mm_yyyy });
+            return title.replace(this.weekDay?.format_date_dd_mm_yyyy, `<span class='badge bg-secondary'>${this.weekDay?.format_date_dd_mm_yyyy}</span>`);
         },
         async getTimeBookingOnNewInitiativeOrTicketModalInitialData() {
             this.setLoading(true);

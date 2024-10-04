@@ -2,7 +2,8 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editInitiativeModalLabel">{{ $t('time_booking.popup_title') }}</h5>
+                <h5 class="modal-title" id="editInitiativeModalLabel" v-html="formattedModalTitleForNewTimeBooking()">
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -135,6 +136,9 @@ export default {
                 comments: '',
                 booked_date: '',
             },
+            timeBooking: {},
+            weekDay: {},
+            ticket: {},
             timeBookings: [],
             totalTimeBookingHours: 0,
             isChkAllTimeBookings: false,
@@ -149,10 +153,22 @@ export default {
         getTimeBookingData(timeBooking, weekDay, ticket = {}) {
             this.clearFormData();
             this.clearMessages();
+            this.timeBooking = timeBooking;
+            this.weekDay = weekDay;
+            this.ticket = ticket;
             this.formData.initiative_id = timeBooking.initiative_id;
             this.formData.ticket_id = ticket?.ticket_id ?? null;
             this.formData.booked_date = weekDay.date;
             this.getTimeBookingModalInitialData();
+        },
+        formattedModalTitleForNewTimeBooking() {
+            if (this.formData?.ticket_id == '') {
+                const title = this.$t('time_booking.popup_title_initiative_level', { 'DATE': this.weekDay?.format_date_dd_mm_yyyy, 'INITIATIVE_NAME': this.timeBooking?.initiative_name });
+                return title.replace(this.weekDay?.format_date_dd_mm_yyyy, `<span class='badge bg-secondary'>${this.weekDay?.format_date_dd_mm_yyyy}</span>`);
+            } else if (this.formData?.ticket_id != '') {
+                const title = this.$t('time_booking.popup_title_ticket_level', { 'DATE': this.weekDay?.format_date_dd_mm_yyyy, 'TICKET_NAME': this.ticket?.ticket_name });
+                return title.replace(this.weekDay?.format_date_dd_mm_yyyy, `<span class='badge bg-secondary'>${this.weekDay?.format_date_dd_mm_yyyy}</span>`);
+            }
         },
         async storeTimeBooking() {
             this.setLoading(true);
