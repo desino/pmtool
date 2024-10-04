@@ -271,7 +271,7 @@ export default {
                             'timeBookingIds': timeBookingIds
                         }
                         const { content } = await TimeBookingService.deleteTimeBookings(passData);
-                        this.$emit('pageUpdated');
+                        this.$emit('pageUpdated', this.weekDays);
                         this.showMessage = true;
                         this.setLoading(false);
                         this.getTimeBookingModalInitialData();

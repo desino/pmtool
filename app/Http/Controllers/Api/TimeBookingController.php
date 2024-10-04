@@ -22,10 +22,6 @@ class TimeBookingController extends Controller
 {
     public function index(Request $request)
     {
-        // print('<pre>');
-        // print_r($request->all());
-        // print('</pre>');
-        // exit;
         $retData = [
             'weekDays' => [],
             'initiativeWithTicketsAndTimeBooking' => [],

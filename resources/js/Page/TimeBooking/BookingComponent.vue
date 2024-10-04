@@ -11,79 +11,103 @@
     <GlobalMessage v-if="showMessage" />
     <div class="app-content">
         <div class="w-100">
-            <table class="table table-bordered w-100">
+            <div class="table-responsive">
+                <table class="table table-bordered w-100">
+                    <thead>
+                        <tr class="bg-desino">
+                            <th class="sticky-col sticky-col-1 bg-transparent text-center text-white align-middle p-1">
+                                {{ $t('time_booking.list_table.initiative_column') }}
+                            </th>
 
-                <tbody>
-                    <tr class="bg-desino">
-                        <th class="bg-transparent text-center text-white align-middle p-1" width="200px">{{
-                            $t('time_booking.list_table.initiative_column') }}</th>
-                        <th class="bg-transparent text-center text-white align-middle p-1" width="300px;">
-                            {{ $t('time_booking.list_table.ticket_column') }}
-                        </th>
-                        <th class="bg-dark text-center align-middle p-1" width="10px;">
-                            <a class="text-white" href="javascript:void(0);" @click="getTimeBookingData(-1)">
-                                <i class="bi bi-caret-left"></i>
-                            </a>
-                        </th>
-                        <td class="text-center align-middle p-1"
-                            :class="weekDay.is_today ? 'bg-black' : 'bg-transparent'"
-                            v-for="(weekDay, index) in weekDays" :key="index" width="60px;">
-                            <small class="small text-white" style="font-size: 0.8rem;">
-                                {{ weekDay.format_date }}
-                            </small>
-                        </td>
-                        <th class="bg-dark text-center align-middle p-1" width="10px;">
-                            <a class="text-white" href="javascript:void(0);" @click="getTimeBookingData(-1)">
-                                <i class="bi bi-caret-right"></i>
-                            </a>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th colspan="2" class="bg-opacity-25 bg-primary text-center align-middle p-1">{{
-                            $t('time_booking.list_table.total_hours') }}</th>
-                        <td :rowspan="thRowSpanCount"></td>
-                        <td class="text-center align-middle p-1" v-for="(weekDay, index) in weekDays" :key="index">
-                            <small v-if="weekDay.total_hours > 0" class="badge text-white bg-secondary" style="
-                                font-size: 0.8rem;">
-                                {{ weekDay.total_hours }}
-                            </small>
-                        </td>
-                        <td :rowspan="thRowSpanCount"></td>
-                    </tr>
-                    <template v-for="(timeBooking, timeBookingIndex) in timeBookings" :key="timeBookingIndex">
-                        <tr v-if="timeBooking.initiative_id">
-                            <th class="text-left p-1" :rowspan="timeBooking.tickets.length + 1">
-                                <small>{{ timeBooking.initiative_name }}</small>
+                            <th class="sticky-col sticky-col-2 bg-transparent text-center text-white align-middle p-1">
+                                {{ $t('time_booking.list_table.ticket_column') }}
                             </th>
-                        </tr>
-                        <tr v-if="!timeBooking.initiative_id">
-                            <th class="text-left p-1 bg-opacity-25 bg-warning text-center" :colspan="2"
-                                :rowspan="timeBooking.tickets.length + 1">
-                                <small>{{ timeBooking.initiative_name }}</small>
+
+                            <th class="bg-dark text-center align-middle p-1" width="40px;">
+                                <a class="text-white" href="javascript:void(0);" @click="getTimeBookingData(-1)">
+                                    <i class="bi bi-caret-left"></i>
+                                </a>
                             </th>
-                        </tr>
-                        <tr v-for="(ticket, ticketIndex) in timeBooking.tickets" :key="ticketIndex">
-                            <th v-if="timeBooking.initiative_id" class="text-left align-middle p-1" :class="{
-                                'bg-info text-white': ticketIndex == 0,
-                                'bg-warning': timeBooking.tickets.length - 1 == ticketIndex
-                            }">
-                                <small>{{ ticket.ticket_name }}</small>
-                            </th>
+
                             <td class="text-center align-middle p-1"
-                                :role="ticket.hours_per_day[weekDay.date]?.is_allow_booking ? 'button' : false"
-                                v-for="(weekDay, index) in weekDays" :key="index"
-                                @click="openTimeBookingModal(timeBooking, weekDay, ticket.hours_per_day[weekDay.date]?.is_allow_booking, ticketIndex, ticket)">
-                                <span v-if="timeBooking.initiative_id" class="badge text-secondary">{{
-                                    ticket.hours_per_day[weekDay.date]?.hours > 0 ?
-                                        ticket.hours_per_day[weekDay.date]?.hours : ''
-                                }}</span>
-                                <span v-if="!timeBooking.initiative_id" class="badge text-secondary"
-                                    v-html="ticket.hours_per_day[weekDay.date]?.hours"></span>
+                                :class="weekDay.is_today ? 'bg-black' : 'bg-transparent'"
+                                v-for="(weekDay, index) in weekDays" :key="index" width="60px;">
+                                <small class="small text-white" style="font-size: 0.8rem;">
+                                    {{ weekDay.format_date }}
+                                </small>
                             </td>
+
+                            <th class="bg-dark text-center align-middle p-1" width="40px;">
+                                <a class="text-white" href="javascript:void(0);" @click="getTimeBookingData(1)">
+                                    <i class="bi bi-caret-right"></i>
+                                </a>
+                            </th>
                         </tr>
-                    </template>
-                </tbody>
-            </table>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <th class="sticky-col sticky-col-1 bg-opacity-25 bg-primary text-center align-middle p-1">
+                                {{ $t('time_booking.list_table.total_hours') }}
+                            </th>
+
+                            <th class="sticky-col sticky-col-2 bg-opacity-25 bg-primary text-center align-middle p-1">
+                                {{ $t('time_booking.list_table.total_hours') }}
+                            </th>
+
+                            <td :rowspan="thRowSpanCount"></td>
+                            <td class="text-center align-middle p-1" v-for="(weekDay, index) in weekDays" :key="index">
+                                <small v-if="weekDay.total_hours > 0" class="badge text-white bg-secondary"
+                                    style="font-size: 0.8rem;">
+                                    {{ weekDay.total_hours }}
+                                </small>
+                            </td>
+                            <td :rowspan="thRowSpanCount"></td>
+                        </tr>
+
+                        <template v-for="(timeBooking, timeBookingIndex) in timeBookings" :key="timeBookingIndex">
+                            <tr v-if="timeBooking.initiative_id">
+                                <!-- First sticky column -->
+                                <th class="sticky-col sticky-col-1 text-left p-1"
+                                    :rowspan="timeBooking.tickets.length + 1">
+                                    <small>{{ timeBooking.initiative_name }}</small>
+                                </th>
+                            </tr>
+
+                            <tr v-if="!timeBooking.initiative_id">
+                                <th class="sticky-col sticky-col-1 text-left p-1 bg-opacity-25 bg-warning text-center"
+                                    :colspan="2" :rowspan="timeBooking.tickets.length + 1">
+                                    <small>{{ timeBooking.initiative_name }}</small>
+                                </th>
+                            </tr>
+
+                            <tr v-for="(ticket, ticketIndex) in timeBooking.tickets" :key="ticketIndex">
+                                <th v-if="timeBooking.initiative_id"
+                                    class="sticky-col sticky-col-2 text-left align-middle p-1" :class="{
+                                        'bg-info text-white': ticketIndex == 0,
+                                        'bg-warning': timeBooking.tickets.length - 1 == ticketIndex
+                                    }">
+                                    <small>{{ ticket.ticket_name }}</small>
+                                </th>
+
+                                <td class="text-center align-middle p-1"
+                                    :role="ticket.hours_per_day[weekDay.date]?.is_allow_booking ? 'button' : false"
+                                    v-for="(weekDay, index) in weekDays" :key="index"
+                                    @click="openTimeBookingModal(timeBooking, weekDay, ticket.hours_per_day[weekDay.date]?.is_allow_booking, ticketIndex, ticket)">
+                                    <span v-if="timeBooking.initiative_id" class="badge text-secondary">
+                                        {{ ticket.hours_per_day[weekDay.date]?.hours > 0 ?
+                                            ticket.hours_per_day[weekDay.date]?.hours : '' }}
+                                    </span>
+                                    <span v-if="!timeBooking.initiative_id" class="badge text-secondary"
+                                        v-html="ticket.hours_per_day[weekDay.date]?.hours"></span>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+
+
         </div>
         <div id="timeBookingModal" aria-hidden="true" aria-labelledby="timeBookingModalLabel" class="modal fade"
             tabindex="-1">

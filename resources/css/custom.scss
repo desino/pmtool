@@ -152,3 +152,30 @@
 .form-control:focus {
     box-shadow: none !important;
 }
+
+
+.sticky-col {
+    position: sticky;
+    left: 0;
+    background-color: white;
+    z-index: 2;
+    white-space: nowrap;
+    width: 100px;
+}
+
+.sticky-col-2 {
+    position: sticky;
+    left: 100px;
+    background-color: white;
+    z-index: 2;
+    white-space: nowrap;
+    width: 150px;
+}
+
+.first-col {
+    width: 100px;
+}
+
+.second-col {
+    width: 150px;
+}
