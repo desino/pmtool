@@ -86,6 +86,7 @@ export default {
                 booked_date: '',
             },
             tickets: [],
+            weekDays: [],
             showErrorMessage: "",
             errors: {},
             showMessage: true
@@ -93,19 +94,22 @@ export default {
     },
     methods: {
         ...mapActions(['setLoading']),
-        getTimeBookingData(timeBooking, weekDay, ticket = {}) {
+        getTimeBookingData(timeBooking, weekDay, weekDays) {
             this.clearFormData();
             this.clearMessages();
             this.formData.initiative_id = timeBooking.initiative_id;
             this.formData.booked_date = weekDay.date;
+            this.weekDays = weekDays;
             this.getTimeBookingOnNewTicketModalInitialData();
         },
         async getTimeBookingOnNewTicketModalInitialData() {
             this.setLoading(true);
             try {
                 const passData = {
-                    'initiative_id': this.formData.initiative_id,
-                    'booked_date': this.formData.booked_date
+                    initiative_id: this.formData.initiative_id,
+                    booked_date: this.formData.booked_date,
+                    start_date: this.weekDays[0]?.date,
+                    end_date: this.weekDays[this.weekDays.length - 1]?.date
                 }
                 const { content: { tickets } } = await TimeBookingService.getTimeBookingOnNewTicketModalInitialData(passData);
                 this.tickets = tickets;

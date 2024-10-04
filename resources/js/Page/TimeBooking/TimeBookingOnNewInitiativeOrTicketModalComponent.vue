@@ -21,7 +21,7 @@
                                     class="form-select" @change="fetchTickets">
                                     <option value="">{{
                                         $t('time_booking_on_new_ticket.modal_select_initiative_label_text')
-                                        }}</option>
+                                    }}</option>
                                     <option v-for="initiative in initiatives" :key="initiative.id"
                                         :value="initiative.id">{{
                                             initiative.name }}
@@ -102,6 +102,7 @@ export default {
             },
             initiatives: [],
             tickets: [],
+            weekDays: [],
             showErrorMessage: "",
             errors: {},
             showMessage: true
@@ -109,17 +110,20 @@ export default {
     },
     methods: {
         ...mapActions(['setLoading']),
-        getTimeBookingData(timeBooking, weekDay, ticket = {}) {
+        getTimeBookingData(weekDay, weekDays) {
             this.clearFormData();
             this.clearMessages();
             this.formData.booked_date = weekDay.date;
+            this.weekDays = weekDays;
             this.getTimeBookingOnNewInitiativeOrTicketModalInitialData();
         },
         async getTimeBookingOnNewInitiativeOrTicketModalInitialData() {
             this.setLoading(true);
             try {
                 const passData = {
-                    'booked_date': this.formData.booked_date
+                    booked_date: this.formData.booked_date,
+                    start_date: this.weekDays[0]?.date,
+                    end_date: this.weekDays[this.weekDays.length - 1]?.date
                 }
                 const { content: { initiatives } } = await TimeBookingService.getTimeBookingOnNewInitiativeOrTicketModalInitialData(passData);
                 this.initiatives = initiatives;
@@ -144,11 +148,17 @@ export default {
             }
         },
         async fetchTickets() {
+            if (!this.formData.initiative_id) {
+                this.tickets = [];
+                return;
+            }
             this.setLoading(true);
             try {
                 const passData = {
-                    'initiative_id': this.formData.initiative_id,
-                    'booked_date': this.formData.booked_date
+                    initiative_id: this.formData.initiative_id,
+                    booked_date: this.formData.booked_date,
+                    start_date: this.weekDays[0]?.date,
+                    end_date: this.weekDays[this.weekDays.length - 1]?.date
                 };
                 const { content: { tickets } } = await TimeBookingService.fetchTickets(passData);
                 this.tickets = tickets;

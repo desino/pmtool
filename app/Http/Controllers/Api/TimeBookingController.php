@@ -341,17 +341,20 @@ class TimeBookingController extends Controller
 
         $status = true;
         $statusCode = 200;
-        $date = Carbon::parse($requestData['booked_date']);
-        $startOfWeek = $date->copy()->startOfWeek()->format('Y-m-d');
-        $endOfWeek = $date->copy()->endOfWeek()->format('Y-m-d');
+        // $date = Carbon::parse($requestData['booked_date']);
+        // $startOfWeek = $date->copy()->startOfWeek()->format('Y-m-d');
+        // $endOfWeek = $date->copy()->endOfWeek()->format('Y-m-d');
+
+        $startDate = Carbon::parse($requestData['start_date'])->format('Y-m-d');
+        $endDate = Carbon::parse($requestData['end_date'])->format('Y-m-d');
         $tickets = Ticket::where('initiative_id', $requestData['initiative_id'])
             ->whereHas('actions', function ($query) {
                 $query->where('user_id', Auth::id());
             })
-            ->whereDoesntHave('timeBookings', function ($query) use ($requestData, $startOfWeek, $endOfWeek) {
+            ->whereDoesntHave('timeBookings', function ($query) use ($requestData, $startDate, $endDate) {
                 $query->where('initiative_id', $requestData['initiative_id'])
                     ->whereNotNull('ticket_id')
-                    ->whereBetween('booked_date', [$startOfWeek, $endOfWeek]);
+                    ->whereBetween('booked_date', [$startDate, $endDate]);
             })
             ->get();
 
@@ -369,12 +372,15 @@ class TimeBookingController extends Controller
         $status = true;
         $statusCode = 200;
 
-        $date = Carbon::parse($requestData['booked_date']);
-        $startOfWeek = $date->copy()->startOfWeek()->format('Y-m-d');
-        $endOfWeek = $date->copy()->endOfWeek()->format('Y-m-d');
-        $initiatives = Initiative::whereDoesntHave('timeBookings', function ($query) use ($startOfWeek, $endOfWeek) {
+        // $date = Carbon::parse($requestData['booked_date']);
+        // $startOfWeek = $date->copy()->startOfWeek()->format('Y-m-d');
+        // $endOfWeek = $date->copy()->endOfWeek()->format('Y-m-d');
+
+        $startDate = Carbon::parse($requestData['start_date'])->format('Y-m-d');
+        $endDate = Carbon::parse($requestData['end_date'])->format('Y-m-d');
+        $initiatives = Initiative::whereDoesntHave('timeBookings', function ($query) use ($startDate, $endDate) {
             $query->whereNotNull('initiative_id')
-                ->whereBetween('booked_date', [$startOfWeek, $endOfWeek]);
+                ->whereBetween('booked_date', [$startDate, $endDate]);
         })
             ->get();
 
@@ -482,15 +488,15 @@ class TimeBookingController extends Controller
     public function fetchTickets(Request $request)
     {
         $requestData = $request->all();
+
         $status = false;
         $initiative = InitiativeService::getInitiative($request, $requestData['initiative_id']);
         if (!$initiative) {
             return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
         }
 
-        $date = Carbon::parse($requestData['booked_date']);
-        $startOfWeek = $date->copy()->startOfWeek()->format('Y-m-d');
-        $endOfWeek = $date->copy()->endOfWeek()->format('Y-m-d');
+        $startDate = Carbon::parse($requestData['start_date'])->format('Y-m-d');
+        $endDate = Carbon::parse($requestData['end_date'])->format('Y-m-d');
 
         $status = true;
         $statusCode = 200;
@@ -498,10 +504,10 @@ class TimeBookingController extends Controller
             ->whereHas('actions', function ($query) {
                 $query->where('user_id', Auth::id());
             })
-            ->whereDoesntHave('timeBookings', function ($query) use ($requestData, $startOfWeek, $endOfWeek) {
+            ->whereDoesntHave('timeBookings', function ($query) use ($requestData, $startDate, $endDate) {
                 $query->where('initiative_id', $requestData['initiative_id'])
                     ->whereNotNull('ticket_id')
-                    ->whereBetween('booked_date', [$startOfWeek, $endOfWeek]);
+                    ->whereBetween('booked_date', [$startDate, $endDate]);
             })
             ->get();
         $data = [

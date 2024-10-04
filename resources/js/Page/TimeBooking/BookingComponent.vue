@@ -159,14 +159,14 @@ export default {
             if (!timeBooking.initiative_id) {
                 const timeBookingOnNewInitiativeOrTicketModalElement = document.getElementById('timeBookingOnNewInitiativeOrTicketModal');
                 if (timeBookingOnNewInitiativeOrTicketModalElement) {
-                    this.$refs.timeBookingOnNewInitiativeOrTicketModalComponent.getTimeBookingData(timeBooking, weekDay, ticket);
+                    this.$refs.timeBookingOnNewInitiativeOrTicketModalComponent.getTimeBookingData(weekDay, this.weekDays);
                     const timeBookingOnNewInitiativeOrTicketModal = new Modal(timeBookingOnNewInitiativeOrTicketModalElement);
                     timeBookingOnNewInitiativeOrTicketModal.show();
                 }
             } else if (timeBooking.initiative_id && ticketIndex > 0 && !ticket.ticket_id) {
                 const timeBookingOnNewTicketModalElement = document.getElementById('timeBookingOnNewTicketModal');
                 if (timeBookingOnNewTicketModalElement) {
-                    this.$refs.timeBookingOnNewTicketModalComponent.getTimeBookingData(timeBooking, weekDay, ticket);
+                    this.$refs.timeBookingOnNewTicketModalComponent.getTimeBookingData(timeBooking, weekDay, this.weekDays);
                     const timeBookingOnNewTicketModal = new Modal(timeBookingOnNewTicketModalElement);
                     timeBookingOnNewTicketModal.show();
                 }
