@@ -138,6 +138,7 @@ export default {
             },
             timeBooking: {},
             weekDay: {},
+            weekDays: [],
             ticket: {},
             timeBookings: [],
             totalTimeBookingHours: 0,
@@ -150,11 +151,12 @@ export default {
     },
     methods: {
         ...mapActions(['setLoading']),
-        getTimeBookingData(timeBooking, weekDay, ticket = {}) {
+        getTimeBookingData(timeBooking, weekDay, weekDays, ticket = {}) {
             this.clearFormData();
             this.clearMessages();
             this.timeBooking = timeBooking;
             this.weekDay = weekDay;
+            this.weekDays = weekDays;
             this.ticket = ticket;
             this.formData.initiative_id = timeBooking.initiative_id;
             this.formData.ticket_id = ticket?.ticket_id ?? null;
@@ -175,7 +177,7 @@ export default {
             this.clearMessages();
             try {
                 const { content } = await TimeBookingService.storeTimeBooking(this.formData);
-                this.$emit('pageUpdated');
+                this.$emit('pageUpdated', this.weekDays);
                 // this.hideModal();
                 this.showMessage = true;
                 this.setLoading(false);

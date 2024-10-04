@@ -22,6 +22,10 @@ class TimeBookingController extends Controller
 {
     public function index(Request $request)
     {
+        // print('<pre>');
+        // print_r($request->all());
+        // print('</pre>');
+        // exit;
         $retData = [
             'weekDays' => [],
             'initiativeWithTicketsAndTimeBooking' => [],
@@ -47,6 +51,10 @@ class TimeBookingController extends Controller
             $endOfWeekDate = Carbon::parse($request->get('end_date'))->addWeek()->endOfWeek(Carbon::SUNDAY);
             $endOfWeek = $endOfWeekDate->format('Y-m-d');
             $otherStartDate = Carbon::parse($endOfWeek)->startOfWeek();
+        } else if ($request->get('previous_or_next_of_week') == '0' && $request->get('start_date') && $request->get('end_date')) {
+            $startOfWeekDate = Carbon::parse($request->get('start_date'));
+            $startOfWeek =  $startOfWeekDate->format('Y-m-d');
+            $endOfWeek = Carbon::parse($request->get('end_date'))->format('Y-m-d');
         }
 
         $weekDifferenceCount = abs($currentStartDate->diffInWeeks($otherStartDate));

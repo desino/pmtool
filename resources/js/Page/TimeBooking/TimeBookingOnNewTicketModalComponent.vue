@@ -129,7 +129,7 @@ export default {
             this.clearMessages();
             try {
                 const { content } = await TimeBookingService.storeTimeBookingOnNewTicket(this.formData);
-                this.$emit('pageUpdated');
+                this.$emit('pageUpdated', this.weekDays);
                 this.hideModal();
                 this.showMessage = true;
                 this.setLoading(false);

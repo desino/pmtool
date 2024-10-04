@@ -21,7 +21,7 @@
                                     class="form-select" @change="fetchTickets">
                                     <option value="">{{
                                         $t('time_booking_on_new_initiative_or_ticket.modal_select_initiative_label_text')
-                                        }}</option>
+                                    }}</option>
                                     <option v-for="initiative in initiatives" :key="initiative.id"
                                         :value="initiative.id">{{
                                             initiative.name }}
@@ -36,7 +36,7 @@
                                     class="form-select">
                                     <option value="">{{
                                         $t('time_booking_on_new_initiative_or_ticket.modal_select_ticket_label_text')
-                                        }}</option>
+                                    }}</option>
                                     <option v-for="ticket in tickets" :key="ticket.id" :value="ticket.id">{{
                                         ticket.composed_name }}
                                     </option>
@@ -144,7 +144,7 @@ export default {
             this.clearMessages();
             try {
                 const { content } = await TimeBookingService.storeTimeBookingOnNewInitiativeOrTicket(this.formData);
-                this.$emit('pageUpdated');
+                this.$emit('pageUpdated', this.weekDays);
                 this.hideModal();
                 this.showMessage = true;
                 this.setLoading(false);

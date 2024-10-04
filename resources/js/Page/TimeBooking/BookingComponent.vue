@@ -87,17 +87,17 @@
         </div>
         <div id="timeBookingModal" aria-hidden="true" aria-labelledby="timeBookingModalLabel" class="modal fade"
             tabindex="-1">
-            <TimeBookingModalComponent ref="timeBookingModalComponent" @pageUpdated="getTimeBookingData" />
+            <TimeBookingModalComponent ref="timeBookingModalComponent" @pageUpdated="getTimeBookingEmitData" />
         </div>
         <div id="timeBookingOnNewTicketModal" aria-hidden="true" aria-labelledby="timeBookingOnNewTicketModalLabel"
             class="modal fade" tabindex="-1">
             <TimeBookingOnNewTicketModalComponent ref="timeBookingOnNewTicketModalComponent"
-                @pageUpdated="getTimeBookingData" />
+                @pageUpdated="getTimeBookingEmitData" />
         </div>
         <div id="timeBookingOnNewInitiativeOrTicketModal" aria-hidden="true"
             aria-labelledby="timeBookingOnNewInitiativeOrTicketModalLabel" class="modal fade" tabindex="-1">
             <TimeBookingOnNewInitiativeOrTicketModalComponent ref="timeBookingOnNewInitiativeOrTicketModalComponent"
-                @pageUpdated="getTimeBookingData" />
+                @pageUpdated="getTimeBookingEmitData" />
         </div>
     </div>
 </template>
@@ -173,11 +173,15 @@ export default {
             } else {
                 const modalElement = document.getElementById('timeBookingModal');
                 if (modalElement) {
-                    this.$refs.timeBookingModalComponent.getTimeBookingData(timeBooking, weekDay, ticket);
+                    this.$refs.timeBookingModalComponent.getTimeBookingData(timeBooking, weekDay, this.weekDays, ticket);
                     const modal = new Modal(modalElement);
                     modal.show();
                 }
             }
+        },
+        getTimeBookingEmitData(weekDays) {
+            this.weekDays = weekDays;
+            this.getTimeBookingData();
         },
         handleError(error) {
             if (error.type === 'validation') {
