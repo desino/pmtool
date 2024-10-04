@@ -113,14 +113,15 @@ export default {
             this.submitButtonClickedValue = buttonValue;
         },
         async storeTimeBookingForTicketDetail() {
-            this.setLoading(true);
             try {
-                const { content: { message } } = await TimeBookingService.storeTimeBookingForTicketDetail(this.formData);
+                this.setLoading(true);
+                const { message } = await TimeBookingService.storeTimeBookingForTicketDetail(this.formData);
                 showToast(message, 'success');
                 this.clearFormData();
                 if (this.submitButtonClickedValue === 'create_close') {
                     this.hideModal();
                 }
+                this.setLoading(false);
             } catch (error) {
                 this.handleError(error);
             }
