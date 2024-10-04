@@ -564,15 +564,15 @@ class TimeBookingController extends Controller
         DB::beginTransaction();
         $message = __('messages.time_booking.store_success');
         $statusCode = 200;
-        // try {
-        TimeBooking::create($validData);
-        DB::commit();
-        // } catch (Exception $e) {
-        //     DB::rollBack();
-        //     $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
-        //     $statusCode = 500;
-        //     Log::info($e->getMessage());
-        // }
+        try {
+            TimeBooking::create($validData);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $statusCode = 500;
+            Log::info($e->getMessage());
+        }
         return ApiHelper::response($status, $message, '', $statusCode);
     }
 }
