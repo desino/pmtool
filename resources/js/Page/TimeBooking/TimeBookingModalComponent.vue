@@ -1,10 +1,10 @@
 <template>
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editInitiativeModalLabel" v-html="formattedModalTitleForNewTimeBooking()">
+            <div class="modal-header text-white bg-desino border-0 py-2 justify-content-center">
+                <h5 class="modal-title font-italic" id="createTicketModalLabel"
+                    v-html="formattedModalTitleForNewTimeBooking()">
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <GlobalMessage v-if="showMessage" />
@@ -33,9 +33,15 @@
                                         }}</span>
                                 </div>
                             </div>
-                            <div class="col-12">
-                                <button type="submit" class="btn btn-desino w-100">{{
-                                    $t('time_booking.modal_submit_but_text') }}</button>
+                            <div class="col-6">
+                                <button type="submit" class="btn btn-desino w-100"
+                                    @click="handleSubmitButtonClickForTimeBooking('create')">{{
+                                        $t('time_booking.modal_submit_but_text') }}</button>
+                            </div>
+                            <div class="col-6">
+                                <button type="submit" class="btn btn-desino w-100"
+                                    @click="handleSubmitButtonClickForTimeBooking('create_close')">{{
+                                        $t('time_booking.modal_submit_and_close_but_text') }}</button>
                             </div>
                         </div>
                     </div>
@@ -110,7 +116,11 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <div class="col-12 col-md-12 col-lg-3 w-100">
+                    <button class="btn btn-danger w-100 border-0" data-bs-dismiss="modal" type="button">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -144,6 +154,7 @@ export default {
             totalTimeBookingHours: 0,
             isChkAllTimeBookings: false,
             selectedTimeBookings: [],
+            submitButtonClickedValue: '',
             showErrorMessage: "",
             errors: {},
             showMessage: true
@@ -178,7 +189,9 @@ export default {
             try {
                 const { content } = await TimeBookingService.storeTimeBooking(this.formData);
                 this.$emit('pageUpdated', this.weekDays);
-                // this.hideModal();
+                if (this.submitButtonClickedValue == 'create_close') {
+                    this.hideModal();
+                }
                 this.showMessage = true;
                 this.setLoading(false);
                 this.getTimeBookingModalInitialData();
@@ -187,6 +200,9 @@ export default {
             } catch (error) {
                 this.handleError(error);
             }
+        },
+        handleSubmitButtonClickForTimeBooking(buttonValue) {
+            this.submitButtonClickedValue = buttonValue;
         },
         async getTimeBookingModalInitialData() {
             this.setLoading(true);
