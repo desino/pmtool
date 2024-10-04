@@ -80,6 +80,7 @@ import { Modal } from 'bootstrap';
 import GlobalMessage from '../../../components/GlobalMessage.vue';
 import messageService from '../../../services/messageService';
 import Datepicker from 'vue3-datepicker';
+import showToast from '../../../utils/toasts';
 
 export default {
     name: 'TimeBookingModalComponent',
