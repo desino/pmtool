@@ -141,11 +141,9 @@ export default {
             messageService.clearMessage();
         },
         clearFormData() {
-            this.formData = {
-                hours: '',
-                comments: '',
-                booked_date: new Date(),
-            };
+            this.formData.hours = '';
+            this.formData.comments = '';
+            this.formData.booked_date = new Date();
         },
         hideModal() {
             const modalElement = document.getElementById('timeBookingForTicketDetailModal');
