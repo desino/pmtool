@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\TimeBookingForTicketDetailRequest;
 use App\Http\Requests\Api\TimeBookingOnNewInitiativeOrTicketRequest;
 use App\Http\Requests\Api\TimeBookingOnNewTicketRequest;
 use App\Http\Requests\Api\TimeBookingRequest;
@@ -17,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Ramsey\Uuid\Type\Time;
 
 class TimeBookingController extends Controller
 {
@@ -541,6 +543,36 @@ class TimeBookingController extends Controller
             $statusCode = 500;
             Log::info($e->getMessage());
         }
+        return ApiHelper::response($status, $message, '', $statusCode);
+    }
+
+    public function storeTimeBookingForTicketDetail(TimeBookingForTicketDetailRequest $request)
+    {
+        $validData = $request->all();
+        $validData['user_id'] = Auth::id();
+        $status = false;
+        $status = false;
+        $initiative = InitiativeService::getInitiative($request);
+        if (!$initiative) {
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
+        }
+        $ticket = Ticket::find($validData['ticket_id']);
+        if (!$ticket || $initiative->id != $ticket->initiative_id) {
+            return ApiHelper::response($status, __('messages.ticket.not_found'), '', 400);
+        }
+        $validData['booked_date'] = Carbon::parse($validData['booked_date'])->format('Y-m-d');
+        DB::beginTransaction();
+        $message = __('messages.time_booking.store_success');
+        $statusCode = 200;
+        // try {
+        TimeBooking::create($validData);
+        DB::commit();
+        // } catch (Exception $e) {
+        //     DB::rollBack();
+        //     $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+        //     $statusCode = 500;
+        //     Log::info($e->getMessage());
+        // }
         return ApiHelper::response($status, $message, '', $statusCode);
     }
 }

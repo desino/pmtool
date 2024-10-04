@@ -111,6 +111,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/store-time-booking-on-new-initiative-or-ticket', 'storeTimeBookingOnNewInitiativeOrTicket');
         Route::post('/delete-time-bookings', 'deleteTimeBookings');
         Route::get('/fetch-tickets', 'fetchTickets');
+        Route::post('/store-time-booking-for-ticket-detail', 'storeTimeBookingForTicketDetail');
     });
 });
 

@@ -16,6 +16,7 @@ const endpoints = {
     getTimeBookingOnNewInitiativeOrTicketModalInitialData: `${defaultPath}/get-time-booking-on-new-initiative-or-ticket-modal-initial-data`,
     storeTimeBookingOnNewInitiativeOrTicket: `${defaultPath}/store-time-booking-on-new-initiative-or-ticket`,
     fetchTickets: `${defaultPath}/fetch-tickets`,
+    storeTimeBookingForTicketDetail: `${defaultPath}/store-time-booking-for-ticket-detail`,
 }
 
 const TimeBookingService = {
@@ -31,6 +32,14 @@ const TimeBookingService = {
     async storeTimeBooking(data) {
         try {
             const response = await axiosRequest.post(endpoints.storeTimeBooking, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async storeTimeBookingForTicketDetail(data) {
+        try {
+            const response = await axiosRequest.post(endpoints.storeTimeBookingForTicketDetail, data);
             return response.data;
         } catch (error) {
             throw handleError(error);

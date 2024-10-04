@@ -158,7 +158,6 @@ export default {
                 this.getTimeBookingOnNewInitiativeOrTicketModalInitialData();
                 this.fetchTickets();
                 if (this.submitButtonClickedValue == 'create_close') {
-                    console.log('sdfsdf :: ',);
                     this.hideModal();
                 }
                 this.showMessage = true;
