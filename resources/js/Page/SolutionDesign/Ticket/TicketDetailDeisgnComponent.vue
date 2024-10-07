@@ -23,7 +23,7 @@
                     </div>
                 </div>
                 <div class="col-1 text-end">
-                    <div v-if="ticketData.asana_task_link">
+                    <div v-if="ticketData.asana_task_link" class="d-flex">
                         <a :href="ticketData.asana_task_link" class="btn btn-desino border-0 w-100 text-dark"
                             target="_blank">
                             <svg fill="none" height="21px" viewBox="0 0 24 24" width="21px"
@@ -39,6 +39,10 @@
                                     fill="#fff" fill-rule="evenodd" />
                             </svg>
                         </a>
+                        <button v-if="user_actions_count > 0" class="btn btn-desino btn-sm mx-2"
+                            @click="handleTimeBooking()" :title="$t('ticket_details.time_booking')">
+                            <i class="bi bi-clock-history"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -166,7 +170,7 @@
                                     <div v-if="errors.release_note" class="text-danger mt-2">
                                         <span v-for="(error, index) in errors.release_note" :key="index">{{
                                             error
-                                            }}</span>
+                                        }}</span>
                                     </div>
                                     <button class="btn w-100 btn-desino text-white fw-bold m-2 rounded"
                                         @click="updateReleaseNote">
@@ -184,11 +188,11 @@
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">{{
                                                 $t('ticket_details_input_initial_estimation_development_time')
-                                            }} <strong class="text-danger">*</strong>
+                                                }} <strong class="text-danger">*</strong>
                                             </label>
                                             <input v-model="estimatedHoursFormData.initial_estimation_development_time"
                                                 :class="{ 'is-invalid': errors.initial_estimation_development_time }"
-                                                class="form-control" type="number" min="0" step="any">
+                                                class="form-control" type="text">
                                             <div v-if="errors.initial_estimation_development_time"
                                                 class="invalid-feedback">
                                                 <span
@@ -275,6 +279,10 @@
             </div>
         </div>
     </div>
+    <div id="timeBookingForTicketDetailModal" aria-hidden="true" aria-labelledby="timeBookingForTicketDetailLabel"
+        class="modal fade" tabindex="-1">
+        <TimeBookingForTicketDetailComponent ref="timeBookingForTicketDetailComponent" />
+    </div>
 </template>
 
 <script>
@@ -290,6 +298,7 @@ import CreateTestCaseModalComponent from "./../Ticket/TestCase/CreateTestCaseMod
 import UpdateTestCaseModalComponent from "./../Ticket/TestCase/UpdateTestCaseModelComponent.vue";
 import testCaseService from "./../../../services/TestCaseService.js";
 import eventBus from "./../../../eventBus.js";
+import TimeBookingForTicketDetailComponent from './TimeBookingForTicketDetailComponent.vue';
 
 export default {
     name: 'SolutionDesignComponent',
@@ -299,6 +308,7 @@ export default {
         TinyMceEditor,
         GlobalMessage,
         Multiselect,
+        TimeBookingForTicketDetailComponent
     },
     props: ['initiative_id', 'ticket_id'],
     data() {
@@ -332,6 +342,7 @@ export default {
                 is_show_mark_as_done_but: false,
                 is_enable_mark_as_done_but: false,
                 is_show_pre_action_but: false,
+                user_actions_count: 0
             },
             currentActionFormData: {
                 ticket_id: '',
@@ -392,7 +403,6 @@ export default {
         ...mapActions(['setLoading', 'setServerError']),
         async fetchTicketData(id) {
             this.resetEstimatedHoursFormData();
-            // this.setServerError({ message: 'dsakdnk' });
             try {
                 this.setLoading(true);
                 let data = {
@@ -448,6 +458,8 @@ export default {
             }
         },
         setData(content) {
+            this.ticketData.id = content.id;
+            this.ticketData.initiative_id = content.initiative_id;
             this.ticketData.name = content.name;
             this.ticketData.composed_name = content.composed_name;
             this.ticketData.initial_dev_time = content.initial_estimation_development_time;
@@ -481,6 +493,7 @@ export default {
             this.previousActionFormData.status = content.previous_action?.status;
             this.releaseNoteForm.release_note = content.release_note;
             this.test_cases = content.test_cases;
+            this.user_actions_count = content.actions_count;
         },
         onTaskSelect() {
             // Ensure the selected task is synced with the dropdown
@@ -681,6 +694,14 @@ export default {
                 initial_estimation_development_time: "",
             };
             this.errors = {};
+        },
+        handleTimeBooking() {
+            const modalElement = document.getElementById('timeBookingForTicketDetailModal');
+            if (modalElement) {
+                this.$refs.timeBookingForTicketDetailComponent.getTimeBookingForTicketDetailData(this.ticketData);
+                const modal = new Modal(modalElement);
+                modal.show();
+            }
         },
         clearMessages() {
             this.errors = {};

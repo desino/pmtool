@@ -5,7 +5,7 @@ namespace App\Http\Requests\Api;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class TicketDetailEstimatedHoursRequest extends FormRequest
+class TimeBookingOnNewInitiativeOrTicketRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +23,11 @@ class TicketDetailEstimatedHoursRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'initial_estimation_development_time' => 'required|numeric|between:0,99999.99',
+            'initiative_id' => 'required',
+            'ticket_id' => 'nullable',
+            'hours' => 'required|numeric|between:0,99999.99',
+            'comments' => 'nullable|string|max:500',
+            'booked_date' => 'required|date',
         ];
     }
 }

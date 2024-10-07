@@ -53,7 +53,7 @@
                         </label>
                         <input v-model="formData.initial_estimation_development_time"
                             :class="{ 'is-invalid': errors.initial_estimation_development_time }" class="form-control"
-                            type="number" min="0" step="any">
+                            type="text">
                         <div v-if="errors.initial_estimation_development_time" class="invalid-feedback">
                             <span v-for="(error, index) in errors.initial_estimation_development_time" :key="index">
                                 {{ error }}

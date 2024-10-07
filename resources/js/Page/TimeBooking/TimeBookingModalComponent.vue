@@ -1,9 +1,10 @@
 <template>
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editInitiativeModalLabel">{{ $t('time_booking.popup_title') }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header text-white bg-desino border-0 py-2 justify-content-center">
+                <h5 class="modal-title font-italic" id="createTicketModalLabel"
+                    v-html="formattedModalTitleForNewTimeBooking()">
+                </h5>
             </div>
             <div class="modal-body">
                 <GlobalMessage v-if="showMessage" />
@@ -32,9 +33,15 @@
                                         }}</span>
                                 </div>
                             </div>
-                            <div class="col-12">
-                                <button type="submit" class="btn btn-desino w-100">{{
-                                    $t('time_booking.modal_submit_but_text') }}</button>
+                            <div class="col-6">
+                                <button type="submit" class="btn btn-desino w-100"
+                                    @click="handleSubmitButtonClickForTimeBooking('create')">{{
+                                        $t('time_booking.modal_submit_but_text') }}</button>
+                            </div>
+                            <div class="col-6">
+                                <button type="submit" class="btn btn-desino w-100"
+                                    @click="handleSubmitButtonClickForTimeBooking('create_close')">{{
+                                        $t('time_booking.modal_submit_and_close_but_text') }}</button>
                             </div>
                         </div>
                     </div>
@@ -109,7 +116,11 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <div class="col-12 col-md-12 col-lg-3 w-100">
+                    <button class="btn btn-danger w-100 border-0" data-bs-dismiss="modal" type="button">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -135,10 +146,15 @@ export default {
                 comments: '',
                 booked_date: '',
             },
+            timeBooking: {},
+            weekDay: {},
+            weekDays: [],
+            ticket: {},
             timeBookings: [],
             totalTimeBookingHours: 0,
             isChkAllTimeBookings: false,
             selectedTimeBookings: [],
+            submitButtonClickedValue: '',
             showErrorMessage: "",
             errors: {},
             showMessage: true
@@ -146,21 +162,36 @@ export default {
     },
     methods: {
         ...mapActions(['setLoading']),
-        getTimeBookingData(timeBooking, weekDay, ticket = {}) {
+        getTimeBookingData(timeBooking, weekDay, weekDays, ticket = {}) {
             this.clearFormData();
             this.clearMessages();
+            this.timeBooking = timeBooking;
+            this.weekDay = weekDay;
+            this.weekDays = weekDays;
+            this.ticket = ticket;
             this.formData.initiative_id = timeBooking.initiative_id;
             this.formData.ticket_id = ticket?.ticket_id ?? null;
             this.formData.booked_date = weekDay.date;
             this.getTimeBookingModalInitialData();
+        },
+        formattedModalTitleForNewTimeBooking() {
+            if (this.formData?.ticket_id == '') {
+                const title = this.$t('time_booking.popup_title_initiative_level', { 'DATE': this.weekDay?.format_date_dd_mm_yyyy, 'INITIATIVE_NAME': this.timeBooking?.initiative_name });
+                return title.replace(this.weekDay?.format_date_dd_mm_yyyy, `<span class='badge bg-secondary'>${this.weekDay?.format_date_dd_mm_yyyy}</span>`);
+            } else if (this.formData?.ticket_id != '') {
+                const title = this.$t('time_booking.popup_title_ticket_level', { 'DATE': this.weekDay?.format_date_dd_mm_yyyy, 'TICKET_NAME': this.ticket?.ticket_name });
+                return title.replace(this.weekDay?.format_date_dd_mm_yyyy, `<span class='badge bg-secondary'>${this.weekDay?.format_date_dd_mm_yyyy}</span>`);
+            }
         },
         async storeTimeBooking() {
             this.setLoading(true);
             this.clearMessages();
             try {
                 const { content } = await TimeBookingService.storeTimeBooking(this.formData);
-                this.$emit('pageUpdated');
-                // this.hideModal();
+                this.$emit('pageUpdated', this.weekDays);
+                if (this.submitButtonClickedValue == 'create_close') {
+                    this.hideModal();
+                }
                 this.showMessage = true;
                 this.setLoading(false);
                 this.getTimeBookingModalInitialData();
@@ -169,6 +200,9 @@ export default {
             } catch (error) {
                 this.handleError(error);
             }
+        },
+        handleSubmitButtonClickForTimeBooking(buttonValue) {
+            this.submitButtonClickedValue = buttonValue;
         },
         async getTimeBookingModalInitialData() {
             this.setLoading(true);
@@ -237,7 +271,7 @@ export default {
                             'timeBookingIds': timeBookingIds
                         }
                         const { content } = await TimeBookingService.deleteTimeBookings(passData);
-                        this.$emit('pageUpdated');
+                        this.$emit('pageUpdated', this.weekDays);
                         this.showMessage = true;
                         this.setLoading(false);
                         this.getTimeBookingModalInitialData();
