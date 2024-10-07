@@ -15,12 +15,32 @@
                 <table class="table table-bordered w-100">
                     <thead>
                         <tr class="bg-desino">
-                            <th class="sticky-col sticky-col-1 bg-transparent text-center text-white align-middle p-1">
-                                {{ $t('time_booking.list_table.initiative_column') }}
+                            <th class="sticky-col sticky-col-1 bg-transparent text-center text-white align-middle p-2">
+                                <!-- <select class="form-select form-select-sm" v-model="filter.initiative_id"
+                                    @change="handleInitiativeFilterChange">
+                                    <option value="">{{ $t('time_booking.list_table.initiative_column') }}</option>
+                                    <option v-for="initiative in initiativesFilterList" :key="initiative.id"
+                                        :value="initiative.initiative_id">
+                                        {{ initiative.initiative_name }}
+                                    </option>
+                                </select> -->
+
+                                <multiselect v-model="filter.initiative_id" :options="initiativesFilterList"
+                                    :placeholder="$t('create_ticket_modal_select_functionality_placeholder')"
+                                    label="initiative_name" track-by="initiative_id"
+                                    @select="handleInitiativeFilterChange" @remove="handleInitiativeFilterChange">
+                                </multiselect>
                             </th>
 
                             <th class="sticky-col sticky-col-2 bg-transparent text-center text-white align-middle p-1">
-                                {{ $t('time_booking.list_table.ticket_column') }}
+                                <select class="form-select form-select-sm" v-model="filter.ticket_id"
+                                    @change="handleTicketFilterChange">
+                                    <option value="">{{ $t('time_booking.list_table.ticket_column') }}</option>
+                                    <option v-for="ticket in selectBoxTicketsFilterList" :key="ticket.id"
+                                        :value="ticket.ticket_id">
+                                        {{ ticket.ticket_name }}
+                                    </option>
+                                </select>
                             </th>
 
                             <th class="bg-dark text-center align-middle p-1" width="40px;">
@@ -47,14 +67,10 @@
 
                     <tbody>
                         <tr>
-                            <th class="sticky-col sticky-col-1 bg-opacity-25 bg-primary text-center align-middle p-1">
+                            <th class="sticky-col sticky-col-1 bg-opacity-25 bg-primary text-center align-middle p-1"
+                                colspan="2">
                                 {{ $t('time_booking.list_table.total_hours') }}
                             </th>
-
-                            <th class="sticky-col sticky-col-2 bg-opacity-25 bg-primary text-center align-middle p-1">
-                                {{ $t('time_booking.list_table.total_hours') }}
-                            </th>
-
                             <td :rowspan="thRowSpanCount"></td>
                             <td class="text-center align-middle p-1" v-for="(weekDay, index) in weekDays" :key="index">
                                 <small v-if="weekDay.total_hours > 0" class="badge text-white bg-secondary"
@@ -67,7 +83,6 @@
 
                         <template v-for="(timeBooking, timeBookingIndex) in timeBookings" :key="timeBookingIndex">
                             <tr v-if="timeBooking.initiative_id">
-                                <!-- First sticky column -->
                                 <th class="sticky-col sticky-col-1 text-left p-1"
                                     :rowspan="timeBooking.tickets.length + 1">
                                     <small>{{ timeBooking.initiative_name }}</small>
@@ -138,6 +153,8 @@ import { Modal } from 'bootstrap';
 import TimeBookingModalComponent from './TimeBookingModalComponent.vue';
 import TimeBookingOnNewTicketModalComponent from './TimeBookingOnNewTicketModalComponent.vue';
 import TimeBookingOnNewInitiativeOrTicketModalComponent from './TimeBookingOnNewInitiativeOrTicketModalComponent.vue';
+import { handleError } from 'vue';
+import Multiselect from 'vue-multiselect';
 export default {
     name: 'BookingComponent',
     mixins: [globalMixin],
@@ -145,13 +162,22 @@ export default {
         GlobalMessage,
         TimeBookingModalComponent,
         TimeBookingOnNewTicketModalComponent,
-        TimeBookingOnNewInitiativeOrTicketModalComponent
+        TimeBookingOnNewInitiativeOrTicketModalComponent,
+        Multiselect
     },
     data() {
         return {
             timeBookings: [],
+            forFilterTimeBooking: [],
             weekDays: [],
             thRowSpanCount: 0,
+            filter: {
+                initiative_id: "",
+                ticket_id: ""
+            },
+            initiativesFilterList: [],
+            ticketsFilterList: [],
+            selectBoxTicketsFilterList: [],
             errors: {},
             showMessage: true
         }
@@ -171,6 +197,8 @@ export default {
                 // this.thRowSpanCount = thRowSpanCount;
                 this.weekDays = weekDays;
                 this.timeBookings = initiativeWithTicketsAndTimeBooking;
+                this.forFilterTimeBooking = initiativeWithTicketsAndTimeBooking;
+                this.getInitiativesAndTicketsFilterList();
                 this.setLoading(false);
             } catch (error) {
                 this.handleError(error);
@@ -206,6 +234,57 @@ export default {
         getTimeBookingEmitData(weekDays) {
             this.weekDays = weekDays;
             this.getTimeBookingData();
+        },
+        getInitiativesAndTicketsFilterList() {
+            this.initiativesFilterList = [];
+            this.forFilterTimeBooking.forEach((timeBooking, timeBookingIndex) => {
+                if (!this.initiativesFilterList.includes(timeBooking.initiative_id) && timeBooking.initiative_id) {
+                    const initiativeData = {
+                        initiative_id: timeBooking.initiative_id,
+                        initiative_name: timeBooking.initiative_name
+                    };
+                    this.initiativesFilterList.push(initiativeData);
+                }
+                timeBooking.tickets.forEach((ticket, ticketIndex) => {
+                    if ((!this.ticketsFilterList.includes(ticket.ticket_id) && ticket.ticket_id && ticket.ticket_id != '') || (timeBookingIndex == 0 && ticketIndex == 0)) {
+                        let ticketId = ticket.ticket_id;
+                        let initiativeId = timeBooking.initiative_id;
+                        if (timeBookingIndex == 0 && ticketIndex == 0) {
+                            ticketId = 0;
+                            initiativeId = '';
+                        }
+                        const ticketData = {
+                            initiative_id: initiativeId,
+                            ticket_id: ticketId,
+                            ticket_name: ticket.ticket_name
+                        };
+                        this.ticketsFilterList.push(ticketData);
+                    }
+                })
+            });
+            this.selectBoxTicketsFilterList = this.ticketsFilterList;
+        },
+        handleInitiativeFilterChange() {
+            const filterInitiativeId = this.filter.initiative_id.initiative_id;
+            this.filter.ticket_id = '';
+            if (filterInitiativeId == '') {
+                this.timeBookings = this.forFilterTimeBooking;
+                this.selectBoxTicketsFilterList = this.ticketsFilterList;
+            } else {
+                this.timeBookings = this.forFilterTimeBooking.filter(timeBooking => timeBooking.initiative_id === filterInitiativeId);
+                this.selectBoxTicketsFilterList = this.ticketsFilterList.filter(ticket => ticket.initiative_id === filterInitiativeId || ticket.initiative_id === '');
+            }
+            const ticketsHoursPerDay = this.timeBookings.flatMap(timeBooking => timeBooking.tickets).flatMap(ticket => ticket.hours_per_day);
+            const sumPerDate = {};
+            ticketsHoursPerDay.forEach((currentTicketDates) => {
+                Object.keys(currentTicketDates).forEach(date => {
+                    const hours = parseFloat(currentTicketDates[date].hours) || 0;
+                    sumPerDate[date] = (sumPerDate[date] || 0) + hours;
+                });
+            });
+            this.weekDays.forEach(weekDay => {
+                weekDay.total_hours = sumPerDate[weekDay.date] || 0;
+            });
         },
         handleError(error) {
             if (error.type === 'validation') {
