@@ -356,7 +356,6 @@ class TicketController extends Controller
             ->withCount([
                 'actions' => function ($query) {
                     $query->where('user_id', Auth::id());
-                    $query->where('status', '!=', TicketAction::getStatusDone());
                 }
             ])
             ->where([
