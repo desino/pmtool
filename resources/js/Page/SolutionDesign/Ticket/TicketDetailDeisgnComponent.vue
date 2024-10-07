@@ -192,7 +192,7 @@
                                             </label>
                                             <input v-model="estimatedHoursFormData.initial_estimation_development_time"
                                                 :class="{ 'is-invalid': errors.initial_estimation_development_time }"
-                                                class="form-control" type="number" min="0" step="any">
+                                                class="form-control" type="text">
                                             <div v-if="errors.initial_estimation_development_time"
                                                 class="invalid-feedback">
                                                 <span

@@ -181,7 +181,8 @@
                                     fill="#ffc107" fill-rule="evenodd" />
                             </svg>
                         </a>
-                        <a class="ms-2" href="javascript:" @click="handleTimeBooking(task)">
+                        <a class="ms-2" href="javascript:" @click="handleTimeBooking(task)"
+                            :title="$t('ticket_details.time_booking')">
                             <i class="bi bi-clock-history"></i>
                         </a>
                     </div>

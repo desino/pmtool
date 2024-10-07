@@ -25,7 +25,7 @@ class EditOpportunityRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'ballpark_development_hours' => 'required|numeric',
+            'ballpark_development_hours' => 'required|numeric|between:0,99999.99',
             'share_point_url' => 'nullable|url',
             'functional_owner_id' => 'nullable|exists:users,id',
             'quality_owner_id' => 'nullable|exists:users,id',

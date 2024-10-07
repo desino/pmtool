@@ -26,7 +26,7 @@ class InitiativeRequest extends FormRequest
         return [
             'client_id' => 'required|exists:clients,id',
             'name' => 'required',
-            'ballpark_development_hours' => 'required|numeric|min:0',
+            'ballpark_development_hours' => 'required|numeric|min:0|between:0,99999.99',
             'is_sold' => 'nullable',
             'status' => 'nullable',
         ];
