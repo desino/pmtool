@@ -179,3 +179,13 @@
 .second-col {
     width: 150px;
 }
+
+.v3dp__elements button.selected span {
+    background-color: $desino !important;
+    color: white !important;
+}
+
+.v3dp__elements button span:hover {
+    background-color: $desino !important;
+    color: white !important;
+}

@@ -560,7 +560,7 @@ class TimeBookingController extends Controller
         if (!$ticket || $initiative->id != $ticket->initiative_id) {
             return ApiHelper::response($status, __('messages.ticket.not_found'), '', 400);
         }
-        $validData['booked_date'] = Carbon::parse($validData['booked_date'])->format('Y-m-d');
+        $validData['booked_date'] = Carbon::parse($validData['booked_date'])->addDay(1)->format('Y-m-d');
         DB::beginTransaction();
         $message = __('messages.time_booking.store_success');
         $statusCode = 200;
