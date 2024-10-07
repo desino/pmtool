@@ -96,13 +96,13 @@
                     <div class="col-lg-2 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
                         {{ $t('ticket.list.current_action') }}
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
+                    <div class="col-lg-1 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
                         {{ $t('ticket.list.current_owner') }}
                     </div>
                     <div class="col-lg-1 col-md-6 col-6 fw-bold py-2 d-none d-lg-block text-center">
                         {{ $t('ticket.list.column_task_created_at') }}
                     </div>
-                    <div class="col-lg-1 col-md-6 col-6 fw-bold py-2 d-none d-lg-block text-lg-end">
+                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2 d-none d-lg-block text-lg-end">
                         {{ $t('ticket.list.column_action') }}
                     </div>
                 </div>
@@ -142,7 +142,7 @@
                             -
                         </span>
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6">
+                    <div class="col-lg-1 col-md-6 col-6">
                         <span class="d-block d-lg-none fw-bold bg-desino mt-2 p-0 text-white text-center rounded-top">
                             {{ $t('ticket.list.current_owner') }} </span>
                         <span v-if="task?.actions_count != task?.done_actions_count">
@@ -157,7 +157,7 @@
                             {{ $t('ticket.list.column_task_created_at') }} </span>
                         {{ task.display_created_at }}
                     </div>
-                    <div class="col-lg-1 col-md-12 col-12 justify-content-end text-end">
+                    <div class="col-lg-2 col-md-12 col-12 justify-content-end text-end">
                         <router-link
                             :to="{ name: 'task.detail', params: { initiative_id: this.initiative_id, ticket_id: task.id } }"
                             class="text-success me-2">
@@ -180,6 +180,9 @@
                                     d="M17 12.25C16.4747 12.25 15.9546 12.3535 15.4693 12.5545C14.984 12.7555 14.543 13.0501 14.1716 13.4216C13.8001 13.793 13.5055 14.234 13.3045 14.7193C13.1035 15.2046 13 15.7247 13 16.25C13 16.7753 13.1035 17.2954 13.3045 17.7807C13.5055 18.266 13.8001 18.707 14.1716 19.0784C14.543 19.4499 14.984 19.7445 15.4693 19.9455C15.9546 20.1465 16.4747 20.25 17 20.25C17.5253 20.25 18.0454 20.1465 18.5307 19.9455C19.016 19.7445 19.457 19.4499 19.8284 19.0784C20.1999 18.707 20.4945 18.266 20.6955 17.7807C20.8965 17.2954 21 16.7753 21 16.25C21 15.7247 20.8965 15.2046 20.6955 14.7193C20.4945 14.234 20.1999 13.793 19.8284 13.4216C19.457 13.0501 19.016 12.7555 18.5307 12.5545C18.0454 12.3535 17.5253 12.25 17 12.25ZM16.0433 13.9403C16.3466 13.8147 16.6717 13.75 17 13.75C17.3283 13.75 17.6534 13.8147 17.9567 13.9403C18.26 14.0659 18.5356 14.2501 18.7678 14.4822C18.9999 14.7144 19.1841 14.99 19.3097 15.2933C19.4353 15.5966 19.5 15.9217 19.5 16.25C19.5 16.5783 19.4353 16.9034 19.3097 17.2067C19.1841 17.51 18.9999 17.7856 18.7678 18.0178C18.5356 18.2499 18.26 18.4341 17.9567 18.5597C17.6534 18.6853 17.3283 18.75 17 18.75C16.6717 18.75 16.3466 18.6853 16.0433 18.5597C15.74 18.4341 15.4644 18.2499 15.2322 18.0178C15.0001 17.7856 14.8159 17.51 14.6903 17.2067C14.5647 16.9034 14.5 16.5783 14.5 16.25C14.5 15.9217 14.5647 15.5966 14.6903 15.2933C14.8159 14.99 15.0001 14.7144 15.2322 14.4822C15.4644 14.2501 15.74 14.0659 16.0433 13.9403Z"
                                     fill="#ffc107" fill-rule="evenodd" />
                             </svg>
+                        </a>
+                        <a class="ms-2" href="javascript:" @click="handleTimeBooking(task)">
+                            <i class="bi bi-clock-history"></i>
                         </a>
                     </div>
                 </div>
@@ -204,6 +207,10 @@
             tabindex="-1">
             <CreateReleaseModalComponent ref="createReleaseModalComponent" @refreshTickets="fetchAllTasks" />
         </div>
+        <div id="timeBookingForTicketDetailModal" aria-hidden="true" aria-labelledby="timeBookingForTicketDetailLabel"
+            class="modal fade" tabindex="-1">
+            <TimeBookingForTicketDetailComponent ref="timeBookingForTicketDetailComponent" />
+        </div>
     </div>
 </template>
 
@@ -222,6 +229,7 @@ import eventBus from "@/eventBus.js";
 import EditTicketModalComponent from './EditTicketModalComponent.vue';
 import CreateReleaseModalComponent from './CreateReleaseModalComponent.vue';
 import store from '../../../store';
+import TimeBookingForTicketDetailComponent from './TimeBookingForTicketDetailComponent.vue';
 
 export default {
     name: 'TicketListComponent',
@@ -232,7 +240,8 @@ export default {
         PaginationComponent,
         AssignProjectModalComponent,
         EditTicketModalComponent,
-        CreateReleaseModalComponent
+        CreateReleaseModalComponent,
+        TimeBookingForTicketDetailComponent
     },
     props: ['id'],
     data() {
@@ -415,6 +424,14 @@ export default {
                 return false;
             }
             return true;
+        },
+        handleTimeBooking(task) {
+            const modalElement = document.getElementById('timeBookingForTicketDetailModal');
+            if (modalElement) {
+                this.$refs.timeBookingForTicketDetailComponent.getTimeBookingForTicketDetailData(task);
+                const modal = new Modal(modalElement);
+                modal.show();
+            }
         },
         handleError(error) {
             if (error.type === 'validation') {
