@@ -18,8 +18,9 @@
                             <label class="form-label fw-bold">{{
                                 $t('ticket_detail_time_booking_modal.input_booked_date') }} <strong
                                     class="text-danger">*</strong></label>
-                            <Datepicker class="form-control" v-model="formData.booked_date"
-                                :class="{ 'is-invalid': errors.booked_date }" inputFormat="dd/MM/yyyy" />
+                            <Datepicker ref="bookedDateDatePicker" class="form-control" v-model="formData.booked_date"
+                                :class="{ 'is-invalid': errors.booked_date }" inputFormat="dd/MM/yyyy"
+                                :upper-limit="todayDate" @closed="onBookedDateDatePickerClose()" />
                             <small v-if="errors.booked_date" class="invalid-feedback">
                                 <span v-for="(error, index) in errors.booked_date" :key="index">{{ error
                                     }}</span>
@@ -30,7 +31,7 @@
                                 $t('ticket_detail_time_booking_modal.input_hours') }} <strong
                                     class="text-danger">*</strong></label>
                             <input type="text" v-model="formData.hours" :class="{ 'is-invalid': errors.hours }"
-                                class="form-control">
+                                class="form-control" ref="hoursInput">
                             <small v-if="errors.hours" class="invalid-feedback">
                                 <span v-for="(error, index) in errors.hours" :key="index">{{ error
                                     }}</span>
@@ -90,6 +91,7 @@ export default {
     },
     data() {
         return {
+            todayDate: new Date(),
             formData: {
                 initiative_id: '',
                 ticket_id: '',
@@ -106,6 +108,7 @@ export default {
     methods: {
         ...mapActions(['setLoading']),
         getTimeBookingForTicketDetailData(ticketData) {
+            this.clearMessages();
             this.formData.initiative_id = ticketData.initiative_id;
             this.formData.ticket_id = ticketData.id;
         },
@@ -113,6 +116,7 @@ export default {
             this.submitButtonClickedValue = buttonValue;
         },
         async storeTimeBookingForTicketDetail() {
+            this.clearMessages();
             try {
                 this.setLoading(true);
                 const { message } = await TimeBookingService.storeTimeBookingForTicketDetail(this.formData);
@@ -124,6 +128,12 @@ export default {
                 this.setLoading(false);
             } catch (error) {
                 this.handleError(error);
+            }
+        },
+        onBookedDateDatePickerClose() {
+            const hoursInputElement = this.$refs.hoursInput;
+            if (hoursInputElement) {
+                hoursInputElement.focus();
             }
         },
         handleError(error) {

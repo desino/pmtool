@@ -39,8 +39,8 @@
                                     fill="#fff" fill-rule="evenodd" />
                             </svg>
                         </a>
-                        <button class="btn btn-desino btn-sm mx-2" @click="handleTimeBooking()"
-                            :title="$t('ticket_details.time_booking')">
+                        <button v-if="user_actions_count > 0" class="btn btn-desino btn-sm mx-2"
+                            @click="handleTimeBooking()" :title="$t('ticket_details.time_booking')">
                             <i class="bi bi-clock-history"></i>
                         </button>
                     </div>
@@ -170,7 +170,7 @@
                                     <div v-if="errors.release_note" class="text-danger mt-2">
                                         <span v-for="(error, index) in errors.release_note" :key="index">{{
                                             error
-                                            }}</span>
+                                        }}</span>
                                     </div>
                                     <button class="btn w-100 btn-desino text-white fw-bold m-2 rounded"
                                         @click="updateReleaseNote">
@@ -188,7 +188,7 @@
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">{{
                                                 $t('ticket_details_input_initial_estimation_development_time')
-                                            }} <strong class="text-danger">*</strong>
+                                                }} <strong class="text-danger">*</strong>
                                             </label>
                                             <input v-model="estimatedHoursFormData.initial_estimation_development_time"
                                                 :class="{ 'is-invalid': errors.initial_estimation_development_time }"
@@ -342,6 +342,7 @@ export default {
                 is_show_mark_as_done_but: false,
                 is_enable_mark_as_done_but: false,
                 is_show_pre_action_but: false,
+                user_actions_count: 0
             },
             currentActionFormData: {
                 ticket_id: '',
@@ -402,7 +403,6 @@ export default {
         ...mapActions(['setLoading', 'setServerError']),
         async fetchTicketData(id) {
             this.resetEstimatedHoursFormData();
-            // this.setServerError({ message: 'dsakdnk' });
             try {
                 this.setLoading(true);
                 let data = {
@@ -493,6 +493,7 @@ export default {
             this.previousActionFormData.status = content.previous_action?.status;
             this.releaseNoteForm.release_note = content.release_note;
             this.test_cases = content.test_cases;
+            this.user_actions_count = content.actions_count;
         },
         onTaskSelect() {
             // Ensure the selected task is synced with the dropdown

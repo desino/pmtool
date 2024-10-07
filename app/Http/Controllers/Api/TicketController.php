@@ -342,7 +342,6 @@ class TicketController extends Controller
      */
     public function show(int $initiative_id, int $ticket_id): JsonResponse
     {
-        // Fetch ticket with related models using eager loading
         $ticket = Ticket::with([
             'functionality',
             'initiative',
@@ -353,10 +352,18 @@ class TicketController extends Controller
             'nextAction',
             'previousAction',
             'testCases',
-        ])->where([
-            ['id', '=', $ticket_id],
-            ['initiative_id', '=', $initiative_id]
-        ])->first();
+        ])
+            ->withCount([
+                'actions' => function ($query) {
+                    $query->where('user_id', Auth::id());
+                    $query->where('status', '!=', TicketAction::getStatusDone());
+                }
+            ])
+            ->where([
+                ['id', '=', $ticket_id],
+                ['initiative_id', '=', $initiative_id]
+            ])
+            ->first();
         // If the ticket is not found, return a 404 response
         if (!$ticket) {
             return ApiHelper::response(false, __('messages.ticket.not_found'), [], 404);
