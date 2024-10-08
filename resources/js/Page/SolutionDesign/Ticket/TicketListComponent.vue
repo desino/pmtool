@@ -68,7 +68,7 @@
             </div>
         </div>
         <div class="row w-100 mb-3">
-            <div class="col-12 col-md-3 mb-2 mb-md-0">
+            <div class="col-12 col-md-12 mb-2 mb-md-0">
                 <button class="btn btn-desino" :disabled="selectedTasks.length === 0" type="button"
                     @click="openAssignProjectModal">
                     {{ $t('ticket.assign.project.button_text') }}
@@ -76,6 +76,14 @@
                 <button v-if="createReleaseAllowOrNot()" class="btn btn-desino mx-2"
                     :disabled="selectedTasks.length === 0" type="button" @click="openCreateReleaseModal">
                     {{ $t('ticket.release.create.button_text') }}
+                </button>
+                <button class="btn btn-desino mx-2" :disabled="selectedTasks.length === 0" type="button"
+                    @click="addRemovePriority(1)">
+                    {{ $t('ticket.add_priority.button_text') }}
+                </button>
+                <button class="btn btn-desino mx-2" :disabled="selectedTasks.length === 0" type="button"
+                    @click="addRemovePriority(0)">
+                    {{ $t('ticket.remove_priority.button_text') }}
                 </button>
             </div>
         </div>
@@ -109,15 +117,28 @@
             </li>
             <li v-for="(task, index) in tasks" v-if="tasks.length > 0" :key="task.id" class="border list-group-item">
                 <div class="row w-100 align-items-center">
-                    <div class="col-lg-2 col-md-6 col-6 d-flex align-items-center">
-                        <div class="mx-2">
-                            <input class="form-check-input" type="checkbox" :id="'chk_ticket_' + task.id"
-                                v-model="task.isChecked" @change="handleSelectTasks(task)">
-                        </div>
-                        <div class="mx-2">
-                            {{ task.composed_name }}
-                        </div>
+                    <div v-if="task.is_priority" class="position-absolute bg-warning"
+                        style="width: 5px; height: 100%; left: 0; top: 0;">
                     </div>
+
+                    <div class="col-lg-2 col-md-6 col-6 d-flex align-items-center">
+                        <input class="form-check-input mx-3" type="checkbox" :id="'chk_ticket_' + task.id"
+                            v-model="task.isChecked" @change="handleSelectTasks(task)" style="margin-right: 10px;">
+                        <span>{{ task.composed_name }}</span>
+                    </div>
+
+                    <!-- <div class="col-lg-2 col-md-6 col-6 d-flex align-items-center">
+                        <div class="position-relative" style="height: 100%;">
+                            <div class="bg-dasino position-absolute"
+                                style="height: 100%; width: 100%; position: absolute; top: 0; left: 0; z-index: -1;">
+                            </div>
+                            <input class="form-check-input mx-2" type="checkbox" :id="'chk_ticket_' + task.id"
+                                v-model="task.isChecked" @change="handleSelectTasks(task)">
+                            <div class="mx-2">
+                                {{ task.composed_name }}
+                            </div>
+                        </div>
+                    </div> -->
                     <div class="col-lg-2 col-md-6 col-6 text-white text-center p-2"
                         :class="'bg-' + task.macro_status_label?.color">
                         {{ task.macro_status_label?.label }}
@@ -433,6 +454,45 @@ export default {
                 const modal = new Modal(modalElement);
                 modal.show();
             }
+        },
+        async addRemovePriority(isPriority) {
+            let alertText = '';
+            if (isPriority) {
+                alertText = this.$t('ticket.add_priority.conformation_popup_text');
+            } else {
+                alertText = this.$t('ticket.remove_priority.conformation_popup_text');
+            }
+            this.$swal({
+                title: this.$t('ticket.priority.conformation_popup_title'),
+                text: alertText,
+                showCancelButton: true,
+                confirmButtonColor: '#1e6abf',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '<i class="bi bi-check-lg"></i>',
+                cancelButtonText: '<i class="bi bi-x-lg"></i>',
+                customClass: {
+                    confirmButton: 'btn-desino',
+                },
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        const passData = {
+                            initiative_id: this.initiative_id,
+                            is_priority: isPriority,
+                            ticket_ids: this.selectedTasks
+                        }
+                        this.setLoading(true);
+                        const { message, status } = await ticketService.addRemovePriority(passData);
+                        showToast(message, 'success');
+                        this.setLoading(false);
+                        this.clearMessages();
+                        this.fetchAllTasks();
+                    } catch (error) {
+                        this.handleError(error);
+                        this.tasks[index].project = this.previousProject;
+                    }
+                }
+            })
         },
         handleError(error) {
             if (error.type === 'validation') {

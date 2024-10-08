@@ -25,6 +25,7 @@ const endpoints = {
     getCreateReleaseData: `${defaultPath}/get-create-release-data`,
     submitCreateRelease: `${defaultPath}/create-release`,
     updateTicketDetailEstimatedHours: `${defaultPath}/update-ticket-detail-estimated-hours/:ticket_id`,
+    addRemovePriority: `${defaultPath}/add-remove-priority`,
 }
 
 const SolutionDesignService = {
@@ -176,6 +177,15 @@ const SolutionDesignService = {
     async updateTicketDetailEstimatedHours(data) {
         try {
             const endpoint = endpoints.updateTicketDetailEstimatedHours.replace(':initiative_id', data.initiative_id).replace(':ticket_id', data.ticket_id);
+            const response = await axiosRequest.post(endpoint, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async addRemovePriority(data) {
+        try {
+            const endpoint = endpoints.addRemovePriority.replace(':initiative_id', data.initiative_id);
             const response = await axiosRequest.post(endpoint, data);
             return response.data;
         } catch (error) {

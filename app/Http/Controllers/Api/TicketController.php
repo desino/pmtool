@@ -216,7 +216,8 @@ class TicketController extends Controller
             'initiative_id',
             'composed_name',
             'status',
-            'macro_status'
+            'macro_status',
+            'is_priority',
         )
             ->with(['project' => function ($q) {
                 $q->select(
@@ -377,7 +378,6 @@ class TicketController extends Controller
         // Return the ticket and related meta data in a success response
         return ApiHelper::response(true, __('messages.ticket.fetched'), $ticket, 200, $meta_data);
     }
-
 
     public function updateReleaseNote($initiative_id, $ticket_id, UpdateReleaseNoteRequest $request)
     {
@@ -748,5 +748,36 @@ class TicketController extends Controller
             Log::info($e->getMessage());
         }
         return ApiHelper::response($status, $message, $retData, $statusCode);
+    }
+
+    public function addRemovePriority(Request $request, $initiativeId)
+    {
+        $requestData = $request->all();
+
+        $status = false;
+        $request->merge(['initiative_id' => $initiativeId]);
+        $initiative = InitiativeService::getInitiative($request);
+        if (!$initiative) {
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
+        }
+
+        $status = true;
+        if ($requestData['is_priority'] == true) {
+            $message = __('messages.ticket.add_remove_priority_success_alt_add');
+        } else {
+            $message = __('messages.ticket.add_remove_priority_success_alt_remove');
+        }
+        $statusCode = 200;
+        DB::beginTransaction();
+        try {
+            Ticket::whereIn('id', $requestData['ticket_ids'])->update(['is_priority' => $requestData['is_priority']]);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $statusCode = 500;
+            Log::info($e->getMessage());
+        }
+        return ApiHelper::response($status, $message, '', $statusCode);
     }
 }
