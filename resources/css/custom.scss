@@ -91,7 +91,7 @@
     -moz-appearance: none;
     appearance: none;
     background-color: var(--bs-body-bg);
-    box-shadow: var(--bs-box-shadow-inset);
+    box-shadow: none !important;
     background-clip: padding-box;
     border: var(--bs-border-width) solid var(--bs-border-color);
     border-radius: var(--bs-border-radius);
@@ -99,7 +99,7 @@
 }
 
 .multiselect__placeholder {
-    color: var(--#{$prefix}secondary-color) !important;
+    color: var(--bs-body-color) !important;
     font-size: initial !important;
 }
 

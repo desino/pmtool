@@ -126,7 +126,7 @@ import { Modal } from 'bootstrap';
 import TimeBookingModalComponent from './TimeBookingModalComponent.vue';
 import TimeBookingOnNewTicketModalComponent from './TimeBookingOnNewTicketModalComponent.vue';
 import TimeBookingOnNewInitiativeOrTicketModalComponent from './TimeBookingOnNewInitiativeOrTicketModalComponent.vue';
-import { handleError } from 'vue';
+import { handleError, nextTick } from 'vue';
 import Multiselect from 'vue-multiselect';
 export default {
     name: 'BookingComponent',
@@ -152,9 +152,17 @@ export default {
             ticketsFilterList: [],
             selectBoxTicketsFilterList: [],
             errors: {},
-            showMessage: true
+            showMessage: true,
         }
     },
+    // watch: {
+    //     filter: {
+    //         deep: true,
+    //         handler(newValue) {
+    //             this.handleInitiativeFilterChange();
+    //         }
+    //     }
+    // },
     methods: {
         ...mapActions(['setLoading']),
         async getTimeBookingData(number = 0) {
@@ -164,7 +172,7 @@ export default {
                 const passData = {
                     previous_or_next_of_week: number,
                     start_date: this.weekDays[0]?.date,
-                    end_date: this.weekDays[this.weekDays.length - 1]?.date
+                    end_date: this.weekDays[this.weekDays.length - 1]?.date,
                 }
                 const { content: { weekDays, initiativeWithTicketsAndTimeBooking, ticketRowsCount } } = await TimeBookingService.getTimeBookingData(passData);
                 this.ticketRowsCount = ticketRowsCount;
@@ -173,6 +181,8 @@ export default {
                 this.forFilterTimeBooking = initiativeWithTicketsAndTimeBooking;
                 this.getInitiativesAndTicketsFilterList();
                 this.setLoading(false);
+                this.handleInitiativeFilterChange();
+                this.handleTicketFilterChange();
             } catch (error) {
                 this.handleError(error);
             }
@@ -210,6 +220,7 @@ export default {
         },
         getInitiativesAndTicketsFilterList() {
             this.initiativesFilterList = [];
+            this.ticketsFilterList = [];
             this.forFilterTimeBooking.forEach((timeBooking, timeBookingIndex) => {
                 if (!this.initiativesFilterList.includes(timeBooking.initiative_id) && timeBooking.initiative_id) {
                     const initiativeData = {
@@ -219,13 +230,13 @@ export default {
                     this.initiativesFilterList.push(initiativeData);
                 }
                 timeBooking.tickets.forEach((ticket, ticketIndex) => {
-                    if ((!this.ticketsFilterList.includes(ticket.ticket_id) && ticket.ticket_id && ticket.ticket_id != '') || (timeBookingIndex == 0 && ticketIndex == 0)) {
+                    if ((!this.ticketsFilterList.includes(ticket.ticket_id) && ticket.ticket_id && ticket.ticket_id != '')) {
                         let ticketId = ticket.ticket_id;
                         let initiativeId = timeBooking.initiative_id;
-                        if (timeBookingIndex == 0 && ticketIndex == 0) {
-                            ticketId = 0;
-                            initiativeId = '';
-                        }
+                        // if (timeBookingIndex == 0 && ticketIndex == 0) {
+                        //     ticketId = 0;
+                        //     initiativeId = '';
+                        // }
                         const ticketData = {
                             initiative_id: initiativeId,
                             ticket_id: ticketId,
@@ -235,18 +246,53 @@ export default {
                     }
                 })
             });
+            if (this.initiativesFilterList.length == 0) {
+                this.ticketsFilterList = [];
+            }
             this.selectBoxTicketsFilterList = this.ticketsFilterList;
         },
-        handleInitiativeFilterChange() {
-            const filterInitiativeId = this.filter.initiative_id.initiative_id;
-            this.filter.ticket_id = '';
-            if (filterInitiativeId == '') {
+        handleInitiativeFilterChange(ifOnchange = false) {
+            // const filterInitiativeId = this.filter.initiative_id?.initiative_id;
+            const filterInitiativeId = this.filter.initiative_id;
+            this.filter.ticket_id = this.filter.ticket_id ?? '';
+            if (ifOnchange) {
+                this.filter.ticket_id = "";
+            }
+            if (filterInitiativeId == undefined || filterInitiativeId == '') {
                 this.timeBookings = this.forFilterTimeBooking;
                 this.selectBoxTicketsFilterList = this.ticketsFilterList;
             } else {
-                this.timeBookings = this.forFilterTimeBooking.filter(timeBooking => timeBooking.initiative_id === filterInitiativeId);
-                this.selectBoxTicketsFilterList = this.ticketsFilterList.filter(ticket => ticket.initiative_id === filterInitiativeId || ticket.initiative_id === '');
+                setTimeout(() => {
+                    this.timeBookings = this.forFilterTimeBooking.filter(timeBooking => timeBooking.initiative_id === filterInitiativeId);
+                    this.selectBoxTicketsFilterList = this.ticketsFilterList.filter(ticket => ticket.initiative_id === filterInitiativeId || ticket.initiative_id === '');
+                    this.calculateWeekDaysHours();
+                })
             }
+        },
+        handleTicketFilterChange() {
+            const filterTicketId = this.filter.ticket_id;
+            if (filterTicketId == '') {
+                this.timeBookings = this.forFilterTimeBooking;
+            } else {
+                const selectedTicket = this.ticketsFilterList.find(ticket => ticket.ticket_id === filterTicketId);
+                const initiativeBaseOnTicket = this.forFilterTimeBooking.filter(timeBooking => timeBooking.initiative_id === selectedTicket.initiative_id);
+
+                const initiativeTickets = initiativeBaseOnTicket.map(initiative => {
+                    return {
+                        ...initiative,
+                        tickets: initiative.tickets.filter(ticket => ticket.ticket_id === filterTicketId) // Filter products by 'inStock'
+                    };
+                });
+                setTimeout(() => {
+                    this.timeBookings = initiativeTickets;
+                    this.calculateWeekDaysHours();
+                })
+            }
+            if (this.filter.initiative_id) {
+                this.handleInitiativeFilterChange();
+            }
+        },
+        calculateWeekDaysHours() {
             const ticketsHoursPerDay = this.timeBookings.flatMap(timeBooking => timeBooking.tickets).flatMap(ticket => ticket.hours_per_day);
             const sumPerDate = {};
             ticketsHoursPerDay.forEach((currentTicketDates) => {
