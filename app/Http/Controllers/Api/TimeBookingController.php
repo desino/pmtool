@@ -27,7 +27,7 @@ class TimeBookingController extends Controller
         $retData = [
             'weekDays' => [],
             'initiativeWithTicketsAndTimeBooking' => [],
-            'thRowSpanCount' => 0
+            'ticketRowsCount' => 0
         ];
         $currentStartDate = Carbon::now()->startOfWeek();
         $otherStartDate = "";
@@ -75,7 +75,7 @@ class TimeBookingController extends Controller
         }
         $retData['weekDays'] = $weekDays;
 
-
+        $ticketRowsCount = 1;
         $timeBookings = TimeBooking::select(
             'time_bookings.booked_date',
             'time_bookings.hours',
@@ -164,11 +164,12 @@ class TimeBookingController extends Controller
             array_push($initiativeTickets, $initiativeLevelTicketBookingRowData);
             $row['tickets'] = $initiativeTickets;
             $timeBookingRowData[] = $row;
+            $ticketRowsCount += count($initiativeTickets);
         }
         array_push($timeBookingRowData, $defaultRowData);
-        $retData['thRowSpanCount'] = 0;
+        $retData['ticketRowsCount'] = $ticketRowsCount + 1;//adding last row
         $retData['initiativeWithTicketsAndTimeBooking'] = $timeBookingRowData;
-        return ApiHelper::response(true, '', $retData, 200);
+        return ApiHelper::response(true, '', $retData, 200);    
 
 
 

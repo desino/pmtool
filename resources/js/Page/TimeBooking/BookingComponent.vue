@@ -11,28 +11,18 @@
     <GlobalMessage v-if="showMessage" />
     <div class="app-content">
         <div class="w-100">
-            <div class="table-responsive">
-                <table class="table table-bordered w-100">
-                    <thead>
-                        <tr class="bg-desino">
-                            <th class="sticky-col sticky-col-1 bg-transparent text-center text-white align-middle p-2">
-                                <!-- <select class="form-select form-select-sm" v-model="filter.initiative_id"
-                                    @change="handleInitiativeFilterChange">
-                                    <option value="">{{ $t('time_booking.list_table.initiative_column') }}</option>
-                                    <option v-for="initiative in initiativesFilterList" :key="initiative.id"
-                                        :value="initiative.initiative_id">
-                                        {{ initiative.initiative_name }}
-                                    </option>
-                                </select> -->
-
+            <div class="scrolling outer">
+                <div class="inner">
+                    <table border="0" cellspacing="0" cellpadding="0">
+                        <tr class="header_row bg-transparent">
+                            <th scope="col" class="border abs1 bg-transparent text-left text-white align-middle p-2" style="height: 45px;">
                                 <multiselect v-model="filter.initiative_id" :options="initiativesFilterList"
                                     :placeholder="$t('create_ticket_modal_select_functionality_placeholder')"
                                     label="initiative_name" track-by="initiative_id"
                                     @select="handleInitiativeFilterChange" @remove="handleInitiativeFilterChange">
                                 </multiselect>
                             </th>
-
-                            <th class="sticky-col sticky-col-2 bg-transparent text-center text-white align-middle p-1">
+                            <th scope="col" class="border abs2 bg-transparent text-left text-white align-middle p-1"  style="height: 45px;">
                                 <select class="form-select form-select-sm" v-model="filter.ticket_id"
                                     @change="handleTicketFilterChange">
                                     <option value="">{{ $t('time_booking.list_table.ticket_column') }}</option>
@@ -42,87 +32,70 @@
                                     </option>
                                 </select>
                             </th>
-
-                            <th class="bg-dark text-center align-middle p-1" width="40px;">
+                            <th scope="col" class="border abs3 bg-dark text-center align-middle p-1" style="height: 45px;">
                                 <a class="text-white" href="javascript:void(0);" @click="getTimeBookingData(-1)">
                                     <i class="bi bi-caret-left"></i>
                                 </a>
                             </th>
-
-                            <td class="text-center align-middle p-1"
-                                :class="weekDay.is_today ? 'bg-black' : 'bg-transparent'"
-                                v-for="(weekDay, index) in weekDays" :key="index" width="60px;">
+                            <td scope="col" class="border text-center align-middle p-1"
+                                :class="weekDay.is_today ? 'bg-black' : 'bg-desino'"
+                                v-for="(weekDay, index) in weekDays" :key="index" style="height: 45px;">
                                 <small class="small text-white" style="font-size: 0.8rem;">
                                     {{ weekDay.format_date }}
                                 </small>
                             </td>
-
-                            <th class="bg-dark text-center align-middle p-1" width="40px;">
+                            <th scope="col" class="border abs4 bg-dark text-center align-middle p-1" style="height: 45px;">
                                 <a class="text-white" href="javascript:void(0);" @click="getTimeBookingData(1)">
                                     <i class="bi bi-caret-right"></i>
                                 </a>
                             </th>
                         </tr>
-                    </thead>
-
-                    <tbody>
                         <tr>
-                            <th class="sticky-col sticky-col-1 bg-opacity-25 bg-primary text-center align-middle p-1"
-                                colspan="2">
+                            <th class="border total_abs1 bg-opacity-25 bg-primary text-center align-middle p-1"colspan="2">
                                 {{ $t('time_booking.list_table.total_hours') }}
                             </th>
-                            <td :rowspan="thRowSpanCount"></td>
-                            <td class="text-center align-middle p-1" v-for="(weekDay, index) in weekDays" :key="index">
-                                <small v-if="weekDay.total_hours > 0" class="badge text-white bg-secondary"
-                                    style="font-size: 0.8rem;">
-                                    {{ weekDay.total_hours }}
+                            <th :rowspan="ticketRowsCount" class="border total_abs2 border">&nbsp;</th>
+                            <td class="text-center align-middle p-1 border" v-for="(weekDay, index) in weekDays" :key="index">
+                                <small v-if="weekDay.total_hours > 0" class="badge text-white bg-secondary" style="font-size: 0.8rem;">
+                                    {{ weekDay.total_hours > 0 ? weekDay.total_hours : '' }}
                                 </small>
+                                <small v-if="weekDay.total_hours == 0" >&nbsp;</small>
                             </td>
-                            <td :rowspan="thRowSpanCount"></td>
+                            <th :rowspan="ticketRowsCount" class="border total_abs3">&nbsp;</th>
                         </tr>
 
                         <template v-for="(timeBooking, timeBookingIndex) in timeBookings" :key="timeBookingIndex">
-                            <tr v-if="timeBooking.initiative_id">
-                                <th class="sticky-col sticky-col-1 text-left p-1"
-                                    :rowspan="timeBooking.tickets.length + 1">
-                                    <small>{{ timeBooking.initiative_name }}</small>
-                                </th>
-                            </tr>
-
-                            <tr v-if="!timeBooking.initiative_id">
-                                <th class="sticky-col sticky-col-1 text-left p-1 bg-opacity-25 bg-warning text-center"
-                                    :colspan="2" :rowspan="timeBooking.tickets.length + 1">
-                                    <small>{{ timeBooking.initiative_name }}</small>
-                                </th>
-                            </tr>
-
                             <tr v-for="(ticket, ticketIndex) in timeBooking.tickets" :key="ticketIndex">
+                                <th v-if="timeBooking.initiative_id &&ticketIndex == 0" class="border abs1 text-left p-1" :rowspan="timeBooking.tickets.length">
+                                    <small>{{ timeBooking.initiative_name }}</small>
+                                </th>
                                 <th v-if="timeBooking.initiative_id"
-                                    class="sticky-col sticky-col-2 text-left align-middle p-1" :class="{
+                                    class="border abs2 text-left align-middle p-1" :class="{
                                         'bg-info text-white': ticketIndex == 0,
                                         'bg-warning': timeBooking.tickets.length - 1 == ticketIndex
                                     }">
                                     <small>{{ ticket.ticket_name }}</small>
                                 </th>
-
-                                <td class="text-center align-middle p-1"
+                                <th v-if="!timeBooking.initiative_id" class="border lastrow_abs text-left p-1 bg-opacity-25 bg-warning text-center" :colspan="2" >
+                                    <small>{{ timeBooking.initiative_name }}</small>
+                                </th>
+                                <td class="border text-center align-middle p-1 border"
                                     :role="ticket.hours_per_day[weekDay.date]?.is_allow_booking ? 'button' : false"
                                     v-for="(weekDay, index) in weekDays" :key="index"
                                     @click="openTimeBookingModal(timeBooking, weekDay, ticket.hours_per_day[weekDay.date]?.is_allow_booking, ticketIndex, ticket)">
                                     <span v-if="timeBooking.initiative_id" class="badge text-secondary">
                                         {{ ticket.hours_per_day[weekDay.date]?.hours > 0 ?
-                                            ticket.hours_per_day[weekDay.date]?.hours : '' }}
+                                            ticket.hours_per_day[weekDay.date]?.hours : ' ' }}
                                     </span>
                                     <span v-if="!timeBooking.initiative_id" class="badge text-secondary"
-                                        v-html="ticket.hours_per_day[weekDay.date]?.hours"></span>
+                                        v-html="ticket.hours_per_day[weekDay.date]?.hours">
+                                    </span>
                                 </td>
                             </tr>
                         </template>
-                    </tbody>
-                </table>
+                    </table>
+                </div>
             </div>
-
-
         </div>
         <div id="timeBookingModal" aria-hidden="true" aria-labelledby="timeBookingModalLabel" class="modal fade"
             tabindex="-1">
@@ -170,7 +143,7 @@ export default {
             timeBookings: [],
             forFilterTimeBooking: [],
             weekDays: [],
-            thRowSpanCount: 0,
+            ticketRowsCount: 0,
             filter: {
                 initiative_id: "",
                 ticket_id: ""
@@ -193,8 +166,8 @@ export default {
                     start_date: this.weekDays[0]?.date,
                     end_date: this.weekDays[this.weekDays.length - 1]?.date
                 }
-                const { content: { weekDays, initiativeWithTicketsAndTimeBooking, thRowSpanCount } } = await TimeBookingService.getTimeBookingData(passData);
-                // this.thRowSpanCount = thRowSpanCount;
+                const { content: { weekDays, initiativeWithTicketsAndTimeBooking, ticketRowsCount } } = await TimeBookingService.getTimeBookingData(passData);
+                this.ticketRowsCount = ticketRowsCount;
                 this.weekDays = weekDays;
                 this.timeBookings = initiativeWithTicketsAndTimeBooking;
                 this.forFilterTimeBooking = initiativeWithTicketsAndTimeBooking;
@@ -324,4 +297,26 @@ export default {
     flex-wrap: wrap;
     /* Allow wrapping for small screens */
 }
+.outer {position: relative}
+.inner {overflow-x: auto;overflow-y: hidden;}
+.scrolling table {width: auto;}
+.scrolling td, .scrolling th {
+    vertical-align: top  !important;
+    padding: 10px 5px !important;
+    min-width: 100px  !important;
+}
+.scrolling th.abs1, .scrolling th.abs2, .scrolling th.abs3, .scrolling th.abs4, .scrolling th.total_abs1, .scrolling th.total_abs2, .scrolling th.total_abs3, .scrolling th.lastrow_abs{
+    position: absolute;
+}
+.inner {margin-left: 540px;}
+.scrolling th.abs1{left: 0;width: 200px;}
+.scrolling th.abs2 {left: 200px;width: 300px;}
+.scrolling th.abs3 {left: 500px;width: 40px;min-width: auto !important;}
+.scrolling th.abs4 {width: 40px;min-width: auto !important;}
+
+.scrolling th.total_abs1{left: 0;width: 500px;}
+.scrolling th.total_abs2{left: 500px;width: 40px;min-width: auto !important;}
+.scrolling th.total_abs3{width: 40px;min-width: auto !important;}
+
+.scrolling th.lastrow_abs{left: 0;width: 500px;}
 </style>
