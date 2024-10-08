@@ -26,6 +26,7 @@ const endpoints = {
     submitCreateRelease: `${defaultPath}/create-release`,
     updateTicketDetailEstimatedHours: `${defaultPath}/update-ticket-detail-estimated-hours/:ticket_id`,
     addRemovePriority: `${defaultPath}/add-remove-priority`,
+    markAsVisibleInvisible: `${defaultPath}/mark-as-visible-invisible`,
 }
 
 const SolutionDesignService = {
@@ -186,6 +187,15 @@ const SolutionDesignService = {
     async addRemovePriority(data) {
         try {
             const endpoint = endpoints.addRemovePriority.replace(':initiative_id', data.initiative_id);
+            const response = await axiosRequest.post(endpoint, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async markAsVisibleInvisible(data) {
+        try {
+            const endpoint = endpoints.markAsVisibleInvisible.replace(':initiative_id', data.initiative_id);
             const response = await axiosRequest.post(endpoint, data);
             return response.data;
         } catch (error) {

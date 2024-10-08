@@ -83,6 +83,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('create-release', 'createRelease');
             Route::post('update-ticket-detail-estimated-hours/{ticket_id}', 'updateTicketDetailEstimatedHours');
             Route::post('add-remove-priority', 'addRemovePriority');
+            Route::post('mark-as-visible-invisible', 'markAsVisibleInvisible');
 
             Route::controller(TestCaseController::class)->prefix('{ticket_id}/test-case')->group(function () {
                 Route::post('/store', 'store');

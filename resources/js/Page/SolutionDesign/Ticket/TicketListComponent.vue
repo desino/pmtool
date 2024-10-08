@@ -85,6 +85,14 @@
                     @click="addRemovePriority(0)">
                     {{ $t('ticket.remove_priority.button_text') }}
                 </button>
+                <button class="btn btn-desino mx-2" :disabled="selectedTasks.length === 0" type="button"
+                    @click="markAsVisibleInvisible(1)">
+                    {{ $t('ticket.mark_as_visible.button_text') }}
+                </button>
+                <button class="btn btn-desino mx-2" :disabled="selectedTasks.length === 0" type="button"
+                    @click="markAsVisibleInvisible(0)">
+                    {{ $t('ticket.mark_as_invisible.button_text') }}
+                </button>
             </div>
         </div>
         <ul class="list-group list-group-flush mb-3 mt-2">
@@ -470,6 +478,45 @@ export default {
                         }
                         this.setLoading(true);
                         const { message, status } = await ticketService.addRemovePriority(passData);
+                        showToast(message, 'success');
+                        this.setLoading(false);
+                        this.clearMessages();
+                        this.fetchAllTasks();
+                    } catch (error) {
+                        this.handleError(error);
+                        this.tasks[index].project = this.previousProject;
+                    }
+                }
+            })
+        },
+        async markAsVisibleInvisible(isVisible) {
+            let alertText = '';
+            if (isVisible) {
+                alertText = this.$t('ticket.is_visible.conformation_popup_text');
+            } else {
+                alertText = this.$t('ticket.is_invisible.conformation_popup_text');
+            }
+            this.$swal({
+                title: this.$t('ticket.visible.conformation_popup_title'),
+                text: alertText,
+                showCancelButton: true,
+                confirmButtonColor: '#1e6abf',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '<i class="bi bi-check-lg"></i>',
+                cancelButtonText: '<i class="bi bi-x-lg"></i>',
+                customClass: {
+                    confirmButton: 'btn-desino',
+                },
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        const passData = {
+                            initiative_id: this.initiative_id,
+                            is_visible: isVisible,
+                            ticket_ids: this.selectedTasks
+                        }
+                        this.setLoading(true);
+                        const { message, status } = await ticketService.markAsVisibleInvisible(passData);
                         showToast(message, 'success');
                         this.setLoading(false);
                         this.clearMessages();

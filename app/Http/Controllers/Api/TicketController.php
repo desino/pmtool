@@ -218,6 +218,7 @@ class TicketController extends Controller
             'status',
             'macro_status',
             'is_priority',
+            'is_visible',
         )
             ->with(['project' => function ($q) {
                 $q->select(
@@ -771,6 +772,36 @@ class TicketController extends Controller
         DB::beginTransaction();
         try {
             Ticket::whereIn('id', $requestData['ticket_ids'])->update(['is_priority' => $requestData['is_priority']]);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $statusCode = 500;
+            Log::info($e->getMessage());
+        }
+        return ApiHelper::response($status, $message, '', $statusCode);
+    }
+    public function markAsVisibleInvisible(Request $request, $initiativeId)
+    {
+        $requestData = $request->all();
+
+        $status = false;
+        $request->merge(['initiative_id' => $initiativeId]);
+        $initiative = InitiativeService::getInitiative($request);
+        if (!$initiative) {
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
+        }
+
+        $status = true;
+        if ($requestData['is_visible'] == true) {
+            $message = __('messages.ticket.visible_success_alt_add');
+        } else {
+            $message = __('messages.ticket.visible_success_alt_remove');
+        }
+        $statusCode = 200;
+        DB::beginTransaction();
+        try {
+            Ticket::whereIn('id', $requestData['ticket_ids'])->update(['is_visible' => $requestData['is_visible']]);
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
