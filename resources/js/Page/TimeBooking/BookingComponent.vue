@@ -15,24 +15,33 @@
                 <div class="inner">
                     <table border="0" cellspacing="0" cellpadding="0">
                         <tr class="header_row bg-transparent">
-                            <th scope="col" class="border abs1 bg-transparent text-left text-white align-middle p-2" style="height: 45px;">
+                            <th scope="col" class="border abs1 bg-transparent text-left text-white align-middle p-1"
+                                style="height: 45px;">
                                 <multiselect v-model="filter.initiative_id" :options="initiativesFilterList"
                                     :placeholder="$t('create_ticket_modal_select_functionality_placeholder')"
                                     label="initiative_name" track-by="initiative_id"
-                                    @select="handleInitiativeFilterChange" @remove="handleInitiativeFilterChange">
+                                    @select="handleInitiativeFilterChange(true)"
+                                    @remove="handleInitiativeFilterChange(true)">
                                 </multiselect>
                             </th>
-                            <th scope="col" class="border abs2 bg-transparent text-left text-white align-middle p-1"  style="height: 45px;">
-                                <select class="form-select form-select-sm" v-model="filter.ticket_id"
+                            <th scope="col" class="border abs2 bg-transparent text-left text-white align-middle p-1"
+                                style="height: 45px;">
+                                <!-- <select class="form-select form-select-sm" v-model="filter.ticket_id"
                                     @change="handleTicketFilterChange">
                                     <option value="">{{ $t('time_booking.list_table.ticket_column') }}</option>
                                     <option v-for="ticket in selectBoxTicketsFilterList" :key="ticket.id"
                                         :value="ticket.ticket_id">
                                         {{ ticket.ticket_name }}
                                     </option>
-                                </select>
+                                </select> -->
+                                <multiselect v-model="filter.ticket_id" :options="selectBoxTicketsFilterList"
+                                    :placeholder="$t('create_ticket_modal_select_functionality_placeholder')"
+                                    label="ticket_name" track-by="ticket_id" @select="handleTicketFilterChange"
+                                    @remove="handleTicketFilterChange">
+                                </multiselect>
                             </th>
-                            <th scope="col" class="border abs3 bg-dark text-center align-middle p-1" style="height: 45px;">
+                            <th scope="col" class="border abs3 bg-dark text-center align-middle p-1"
+                                style="height: 45px;">
                                 <a class="text-white" href="javascript:void(0);" @click="getTimeBookingData(-1)">
                                     <i class="bi bi-caret-left"></i>
                                 </a>
@@ -44,39 +53,46 @@
                                     {{ weekDay.format_date }}
                                 </small>
                             </td>
-                            <th scope="col" class="border abs4 bg-dark text-center align-middle p-1" style="height: 45px;">
+                            <th scope="col" class="border abs4 bg-dark text-center align-middle p-1"
+                                style="height: 45px;">
                                 <a class="text-white" href="javascript:void(0);" @click="getTimeBookingData(1)">
                                     <i class="bi bi-caret-right"></i>
                                 </a>
                             </th>
                         </tr>
                         <tr>
-                            <th class="border total_abs1 bg-opacity-25 bg-primary text-center align-middle p-1"colspan="2">
+                            <th class="border total_abs1 bg-opacity-25 bg-primary text-center align-middle p-1"
+                                colspan="2">
                                 {{ $t('time_booking.list_table.total_hours') }}
                             </th>
                             <th :rowspan="ticketRowsCount" class="border total_abs2 border">&nbsp;</th>
-                            <td class="text-center align-middle p-1 border" v-for="(weekDay, index) in weekDays" :key="index">
-                                <small v-if="weekDay.total_hours > 0" class="badge text-white bg-secondary" style="font-size: 0.8rem;">
+                            <td class="text-center align-middle p-1 border" v-for="(weekDay, index) in weekDays"
+                                :key="index">
+                                <small v-if="weekDay.total_hours > 0" class="badge text-white bg-secondary"
+                                    style="font-size: 0.8rem;">
                                     {{ weekDay.total_hours > 0 ? weekDay.total_hours : '' }}
                                 </small>
-                                <small v-if="weekDay.total_hours == 0" >&nbsp;</small>
+                                <small v-if="weekDay.total_hours == 0">&nbsp;</small>
                             </td>
                             <th :rowspan="ticketRowsCount" class="border total_abs3">&nbsp;</th>
                         </tr>
 
                         <template v-for="(timeBooking, timeBookingIndex) in timeBookings" :key="timeBookingIndex">
                             <tr v-for="(ticket, ticketIndex) in timeBooking.tickets" :key="ticketIndex">
-                                <th v-if="timeBooking.initiative_id &&ticketIndex == 0" class="border abs1 text-left p-1" :rowspan="timeBooking.tickets.length">
+                                <th v-if="timeBooking.initiative_id && ticketIndex == 0"
+                                    class="border abs1 text-left p-1" :rowspan="timeBooking.tickets.length">
                                     <small>{{ timeBooking.initiative_name }}</small>
                                 </th>
-                                <th v-if="timeBooking.initiative_id"
-                                    class="border abs2 text-left align-middle p-1" :class="{
+                                <th v-if="timeBooking.initiative_id" class="border abs2 text-left align-middle p-1"
+                                    :class="{
                                         'bg-info text-white': ticketIndex == 0,
                                         'bg-warning': timeBooking.tickets.length - 1 == ticketIndex
                                     }">
                                     <small>{{ ticket.ticket_name }}</small>
                                 </th>
-                                <th v-if="!timeBooking.initiative_id" class="border lastrow_abs text-left p-1 bg-opacity-25 bg-warning text-center" :colspan="2" >
+                                <th v-if="!timeBooking.initiative_id"
+                                    class="border lastrow_abs text-left p-1 bg-opacity-25 bg-warning text-center"
+                                    :colspan="2">
                                     <small>{{ timeBooking.initiative_name }}</small>
                                 </th>
                                 <td class="border text-center align-middle p-1 border"
@@ -155,14 +171,6 @@ export default {
             showMessage: true,
         }
     },
-    // watch: {
-    //     filter: {
-    //         deep: true,
-    //         handler(newValue) {
-    //             this.handleInitiativeFilterChange();
-    //         }
-    //     }
-    // },
     methods: {
         ...mapActions(['setLoading']),
         async getTimeBookingData(number = 0) {
@@ -252,8 +260,8 @@ export default {
             this.selectBoxTicketsFilterList = this.ticketsFilterList;
         },
         handleInitiativeFilterChange(ifOnchange = false) {
-            // const filterInitiativeId = this.filter.initiative_id?.initiative_id;
-            const filterInitiativeId = this.filter.initiative_id;
+            const filterInitiativeId = this.filter.initiative_id?.initiative_id;
+            // const filterInitiativeId = this.filter.initiative_id;
             this.filter.ticket_id = this.filter.ticket_id ?? '';
             if (ifOnchange) {
                 this.filter.ticket_id = "";
@@ -265,13 +273,15 @@ export default {
                 setTimeout(() => {
                     this.timeBookings = this.forFilterTimeBooking.filter(timeBooking => timeBooking.initiative_id === filterInitiativeId);
                     this.selectBoxTicketsFilterList = this.ticketsFilterList.filter(ticket => ticket.initiative_id === filterInitiativeId || ticket.initiative_id === '');
-                    this.calculateWeekDaysHours();
                 })
             }
+            setTimeout(() => {
+                this.calculateWeekDaysHours();
+            })
         },
         handleTicketFilterChange() {
-            const filterTicketId = this.filter.ticket_id;
-            if (filterTicketId == '') {
+            const filterTicketId = this.filter.ticket_id?.ticket_id;
+            if (filterTicketId == undefined || filterTicketId == '') {
                 this.timeBookings = this.forFilterTimeBooking;
             } else {
                 const selectedTicket = this.ticketsFilterList.find(ticket => ticket.ticket_id === filterTicketId);
@@ -288,7 +298,10 @@ export default {
                     this.calculateWeekDaysHours();
                 })
             }
-            if (this.filter.initiative_id) {
+            setTimeout(() => {
+                this.calculateWeekDaysHours();
+            })
+            if (this.filter.initiative_id?.initiative_id && (filterTicketId == undefined || filterTicketId == '')) {
                 this.handleInitiativeFilterChange();
             }
         },
