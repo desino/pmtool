@@ -9,7 +9,7 @@
         </div>
     </div>
     <GlobalMessage v-if="showMessage" />
-    <div class="app-content">
+    <div class="app-content" id="timeBookingPageSection">
         <div class="w-100">
             <div class="scrolling outer">
                 <div class="inner">
@@ -324,45 +324,3 @@ export default {
     },
 }
 </script>
-
-<style>
-/* Add any custom styles here */
-.list-group {
-    margin-bottom: 0;
-}
-
-.list-group-item {
-    border: 1px solid #dee2e6;
-}
-
-/* Adjust flex properties to ensure uniformity in appearance */
-.list-group-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    /* Allow wrapping for small screens */
-}
-.outer {position: relative}
-.inner {overflow-x: auto;overflow-y: hidden;}
-.scrolling table {width: auto;}
-.scrolling td, .scrolling th {
-    vertical-align: top  !important;
-    padding: 10px 5px !important;
-    min-width: 100px  !important;
-}
-.scrolling th.abs1, .scrolling th.abs2, .scrolling th.abs3, .scrolling th.abs4, .scrolling th.total_abs1, .scrolling th.total_abs2, .scrolling th.total_abs3, .scrolling th.lastrow_abs{
-    position: absolute;
-}
-.inner {margin-left: 540px;}
-.scrolling th.abs1{left: 0;width: 200px;}
-.scrolling th.abs2 {left: 200px;width: 300px;}
-.scrolling th.abs3 {left: 500px;width: 40px;min-width: auto !important;}
-.scrolling th.abs4 {width: 40px;min-width: auto !important;}
-
-.scrolling th.total_abs1{left: 0;width: 500px;}
-.scrolling th.total_abs2{left: 500px;width: 40px;min-width: auto !important;}
-.scrolling th.total_abs3{width: 40px;min-width: auto !important;}
-
-.scrolling th.lastrow_abs{left: 0;width: 500px;}
-</style>
