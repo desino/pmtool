@@ -126,19 +126,6 @@
                             v-model="task.isChecked" @change="handleSelectTasks(task)" style="margin-right: 10px;">
                         <span>{{ task.composed_name }}</span>
                     </div>
-
-                    <!-- <div class="col-lg-2 col-md-6 col-6 d-flex align-items-center">
-                        <div class="position-relative" style="height: 100%;">
-                            <div class="bg-dasino position-absolute"
-                                style="height: 100%; width: 100%; position: absolute; top: 0; left: 0; z-index: -1;">
-                            </div>
-                            <input class="form-check-input mx-2" type="checkbox" :id="'chk_ticket_' + task.id"
-                                v-model="task.isChecked" @change="handleSelectTasks(task)">
-                            <div class="mx-2">
-                                {{ task.composed_name }}
-                            </div>
-                        </div>
-                    </div> -->
                     <div class="col-lg-2 col-md-6 col-6 text-white text-center p-2"
                         :class="'bg-' + task.macro_status_label?.color">
                         {{ task.macro_status_label?.label }}
