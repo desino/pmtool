@@ -450,6 +450,7 @@
     "ticket.edit.modal_close_but_text": "Close",
     "my_ticket.page_title": "My Ticket",
     "my_ticket.list.column_ticket_name": "Ticket",
+    "my_ticket.list.column_macro_status": "Macro Status",
     "my_ticket.list.column_related_functionality": "Related Functionality",
     "my_ticket.list.column_current_action": "Current Action",
     "my_ticket.list.column_actions": "Actions",

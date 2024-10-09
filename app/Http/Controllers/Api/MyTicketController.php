@@ -30,6 +30,7 @@ class MyTicketController extends Controller
             'tickets.functionality_id',
             'tickets.composed_name',
             'tickets.asana_task_id',
+            'tickets.macro_status',
         )
             ->with([
                 'currentAction' => function ($q) {
@@ -60,6 +61,7 @@ class MyTicketController extends Controller
             ->groupBy('tickets.id')
             ->paginate(10);
         $meta['task_type'] = Ticket::getAllTypes();
+        $meta['macro_status'] = Ticket::getAllMacroStatus();
         return ApiHelper::response(true, '', $tickets, 200, $meta);
     }
 }

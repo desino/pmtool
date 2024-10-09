@@ -30,12 +30,15 @@
                         {{ $t('my_ticket.list.column_ticket_name') }}
                     </div>
                     <div class="col-lg-3 col-md-6 col-6 fw-bold py-2">
+                        {{ $t('my_ticket.list.column_macro_status') }}
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-6 fw-bold py-2">
                         {{ $t('my_ticket.list.column_related_functionality') }}
                     </div>
-                    <div class="col-lg-3 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
+                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
                         {{ $t('my_ticket.list.column_current_action') }}
                     </div>
-                    <div class="col-lg-3 col-md-6 col-6 fw-bold py-2 d-none d-lg-block text-lg-end">
+                    <div class="col-lg-1 col-md-6 col-6 fw-bold py-2 d-none d-lg-block text-lg-end">
                         {{ $t('my_ticket.list.column_actions') }}
                     </div>
                 </div>
@@ -46,13 +49,17 @@
                     <div class="col-lg-3 col-md-6 col-6 py-2">
                         {{ ticket.composed_name }}
                     </div>
+                    <div class="col-lg-3 col-md-6 col-6 py-2 text-white text-center p-2"
+                        :class="'bg-' + ticket.macro_status_label?.color">
+                        {{ ticket.macro_status_label?.label }}
+                    </div>
                     <div class="col-lg-3 col-md-6 col-6 py-2">
                         {{ ticket?.functionality?.display_name }}
                     </div>
-                    <div class="col-lg-3 col-md-6 col-6 py-2 d-none d-lg-block">
+                    <div class="col-lg-2 col-md-6 col-6 py-2 d-none d-lg-block">
                         {{ ticket?.current_action?.action_name }}
                     </div>
-                    <div class="col-lg-3 col-md-6 col-6 py-2 d-none d-lg-block text-lg-end">
+                    <div class="col-lg-1 col-md-6 col-6 py-2 d-none d-lg-block text-lg-end">
                         <router-link
                             :to="{ name: 'task.detail', params: { initiative_id: this.initiative_id, ticket_id: ticket.id } }"
                             class="text-success me-2">
