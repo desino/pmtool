@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\Auth\SocialiteController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\DeploymentCenterController;
 use App\Http\Controllers\Api\HeaderController;
+use App\Http\Controllers\Api\HomeMyActionsController;
 use App\Http\Controllers\Api\InitiativeController;
 use App\Http\Controllers\Api\MyTicketController;
 use App\Http\Controllers\Api\OpportunityController;
@@ -31,6 +32,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('submit-acceptance-deployment-ticket/{initiative_id}', 'submitAcceptanceDeploymentTicket');
         Route::get('get-production-deployment-tickets-modal-data/{initiative_id}', 'getProductionDeploymentTicketsModalData');
         Route::post('submit-production-deployment-ticket/{initiative_id}', 'submitProductionDeploymentTicket');
+    });
+
+    Route::controller(HomeMyActionsController::class)->prefix('home-my-actions')->group(function () {
+        Route::get('/', 'index');
     });
 
     Route::controller(ClientController::class)->prefix('client')->group(function () {

@@ -1,146 +1,130 @@
 <template>
-    <GlobalMessage v-if="showMessage" />
-    <div class="app-content mt-3">
-        <div class="row w-100">
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header bg-desino text-white text-center">
-                        {{ $t('home.deployment_center.title') }}
-                    </div>
-                    <div class="card-body">
-                        <div class="card mb-3">
-                            <div class="card-header text-center">
-                                {{ $t('home.deployment_center.production_deployment.title') }}
+    <div class="card">
+        <div class="card-header bg-desino text-white text-center">
+            {{ $t('home.deployment_center.title') }}
+        </div>
+        <div class="card-body">
+            <div class="card mb-3">
+                <div class="card-header text-center">
+                    {{ $t('home.deployment_center.production_deployment.title') }}
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item" v-if="productionDeployments.length > 0"
+                            v-for="productionDeployment in productionDeployments" :key="productionDeployment.id"
+                            @click="openProductionDeploymentModal(productionDeployment)" role="button">
+                            <div class="row w-100">
+                                <div class="col-md-8">
+                                    {{ productionDeployment?.client?.name }} -
+                                    {{ productionDeployment?.name }}
+                                </div>
+                                <div class="col-md-4">
+                                    <h6>
+                                        <span class="badge bg-desino">{{ productionDeployment?.tickets_count
+                                            }}
+                                            <span class="small">{{
+                                                $t('home.deployment_center.test_deployment.tickets.text')
+                                                }}</span>
+                                        </span>
+                                    </h6>
+                                </div>
                             </div>
-                            <div class="card-body">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item" v-if="productionDeployments.length > 0"
-                                        v-for="productionDeployment in productionDeployments"
-                                        :key="productionDeployment.id"
-                                        @click="openProductionDeploymentModal(productionDeployment)" role="button">
-                                        <div class="row w-100">
-                                            <div class="col-md-8">
-                                                {{ productionDeployment?.client?.name }} -
-                                                {{ productionDeployment?.name }}
-                                            </div>
-                                            <div class="col-md-4">
-                                                <h6>
-                                                    <span class="badge bg-desino">{{ productionDeployment?.tickets_count
-                                                        }}
-                                                        <span class="small">{{
-                                                            $t('home.deployment_center.test_deployment.tickets.text')
-                                                            }}</span>
-                                                    </span>
-                                                </h6>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li v-else class="list-group-item">
-                                        <div class="row w-100 col-md-12">
-                                            {{ $t('home.deployment_center.test_deployment.record_does_not_exist') }}
-                                        </div>
-                                    </li>
-                                </ul>
+                        </li>
+                        <li v-else class="list-group-item">
+                            <div class="row w-100 col-md-12">
+                                {{ $t('home.deployment_center.test_deployment.record_does_not_exist') }}
                             </div>
-                        </div>
-                        <div class="card mb-3">
-                            <div class="card-header text-center">
-                                {{ $t('home.deployment_center.acceptance_deployment.title') }}
-                            </div>
-                            <div class="card-body">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item" v-if="acceptanceDeployments.length > 0"
-                                        v-for="acceptanceDeployment in acceptanceDeployments"
-                                        :key="acceptanceDeployment.id"
-                                        @click="openAcceptanceDeploymentModal(acceptanceDeployment)" role="button">
-                                        <div class="row w-100">
-                                            <div class="col-md-8">
-                                                {{ acceptanceDeployment?.client?.name }} -
-                                                {{ acceptanceDeployment?.name }}
-                                            </div>
-                                            <div class="col-md-4">
-                                                <h6>
-                                                    <span class="badge bg-desino">{{ acceptanceDeployment?.tickets_count
-                                                        }}
-                                                        <span class="small">{{
-                                                            $t('home.deployment_center.test_deployment.tickets.text')
-                                                            }}</span>
-                                                    </span>
-                                                </h6>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li v-else class="list-group-item">
-                                        <div class="row w-100 col-md-12">
-                                            {{ $t('home.deployment_center.test_deployment.record_does_not_exist') }}
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-header text-center">
-                                {{ $t('home.deployment_center.test_deployment.title') }}
-                            </div>
-                            <div class="card-body">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item" v-if="testDeployments.length > 0"
-                                        v-for="testDeployment in testDeployments" :key="testDeployment.id"
-                                        @click="openTestDeploymentModal(testDeployment)" role="button">
-                                        <div class="row w-100">
-                                            <div class="col-md-8">
-                                                {{ testDeployment?.client?.name }} - {{ testDeployment?.name }}
-                                            </div>
-                                            <div class="col-md-4">
-                                                <h6>
-                                                    <span class="badge bg-desino">{{ testDeployment?.tickets_count }}
-                                                        <span class="small">{{
-                                                            $t('home.deployment_center.test_deployment.tickets.text')
-                                                            }}</span>
-                                                    </span>
-                                                </h6>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li v-else class="list-group-item">
-                                        <div class="row w-100 col-md-12">
-                                            {{ $t('home.deployment_center.test_deployment.record_does_not_exist') }}
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
-            <div class="col-md-4">
-
+            <div class="card mb-3">
+                <div class="card-header text-center">
+                    {{ $t('home.deployment_center.acceptance_deployment.title') }}
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item" v-if="acceptanceDeployments.length > 0"
+                            v-for="acceptanceDeployment in acceptanceDeployments" :key="acceptanceDeployment.id"
+                            @click="openAcceptanceDeploymentModal(acceptanceDeployment)" role="button">
+                            <div class="row w-100">
+                                <div class="col-md-8">
+                                    {{ acceptanceDeployment?.client?.name }} -
+                                    {{ acceptanceDeployment?.name }}
+                                </div>
+                                <div class="col-md-4">
+                                    <h6>
+                                        <span class="badge bg-desino">{{ acceptanceDeployment?.tickets_count
+                                            }}
+                                            <span class="small">{{
+                                                $t('home.deployment_center.test_deployment.tickets.text')
+                                                }}</span>
+                                        </span>
+                                    </h6>
+                                </div>
+                            </div>
+                        </li>
+                        <li v-else class="list-group-item">
+                            <div class="row w-100 col-md-12">
+                                {{ $t('home.deployment_center.test_deployment.record_does_not_exist') }}
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <div class="col-md-4">
-
+            <div class="card">
+                <div class="card-header text-center">
+                    {{ $t('home.deployment_center.test_deployment.title') }}
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item" v-if="testDeployments.length > 0"
+                            v-for="testDeployment in testDeployments" :key="testDeployment.id"
+                            @click="openTestDeploymentModal(testDeployment)" role="button">
+                            <div class="row w-100">
+                                <div class="col-md-8">
+                                    {{ testDeployment?.client?.name }} - {{ testDeployment?.name }}
+                                </div>
+                                <div class="col-md-4">
+                                    <h6>
+                                        <span class="badge bg-desino">{{ testDeployment?.tickets_count }}
+                                            <span class="small">{{
+                                                $t('home.deployment_center.test_deployment.tickets.text')
+                                                }}</span>
+                                        </span>
+                                    </h6>
+                                </div>
+                            </div>
+                        </li>
+                        <li v-else class="list-group-item">
+                            <div class="row w-100 col-md-12">
+                                {{ $t('home.deployment_center.test_deployment.record_does_not_exist') }}
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
-        <div id="testDeploymentTicketsModal" aria-hidden="true" aria-labelledby="testDeploymentTicketsModalLabel"
-            class="modal fade" tabindex="-1">
-            <TestDeploymentTicketsModalComponent ref="testDeploymentTicketsModalComponent"
-                @pageUpdated="getDeploymentCenterData()" />
-        </div>
-        <div id="acceptanceDeploymentTicketsModal" aria-hidden="true"
-            aria-labelledby="acceptanceDeploymentTicketsModalLabel" class="modal fade" tabindex="-1">
-            <AcceptanceDeploymentTicketsModalComponent ref="acceptanceDeploymentTicketsModalComponent"
-                @pageUpdated="getDeploymentCenterData()" />
-        </div>
-        <div id="productionDeploymentTicketsModal" aria-hidden="true"
-            aria-labelledby="productionDeploymentTicketsModalLabel" class="modal fade" tabindex="-1">
-            <ProductionDeploymentTicketsModalComponent ref="productionDeploymentTicketsModalComponent"
-                @pageUpdated="getDeploymentCenterData()" />
-        </div>
+    </div>
+    <div id="testDeploymentTicketsModal" aria-hidden="true" aria-labelledby="testDeploymentTicketsModalLabel"
+        class="modal fade" tabindex="-1">
+        <TestDeploymentTicketsModalComponent ref="testDeploymentTicketsModalComponent"
+            @pageUpdated="getDeploymentCenterData()" />
+    </div>
+    <div id="acceptanceDeploymentTicketsModal" aria-hidden="true"
+        aria-labelledby="acceptanceDeploymentTicketsModalLabel" class="modal fade" tabindex="-1">
+        <AcceptanceDeploymentTicketsModalComponent ref="acceptanceDeploymentTicketsModalComponent"
+            @pageUpdated="getDeploymentCenterData()" />
+    </div>
+    <div id="productionDeploymentTicketsModal" aria-hidden="true"
+        aria-labelledby="productionDeploymentTicketsModalLabel" class="modal fade" tabindex="-1">
+        <ProductionDeploymentTicketsModalComponent ref="productionDeploymentTicketsModalComponent"
+            @pageUpdated="getDeploymentCenterData()" />
     </div>
 </template>
 
 <script>
 import globalMixin from '@/globalMixin';
-import GlobalMessage from '../../../components/GlobalMessage.vue';
 import { mapActions } from 'vuex';
 import eventBus from '../../../eventBus';
 import messageService from '../../../services/messageService';
@@ -154,7 +138,6 @@ export default {
     name: 'DeploymentCentreComponent',
     mixins: [globalMixin],
     components: {
-        GlobalMessage,
         TestDeploymentTicketsModalComponent,
         AcceptanceDeploymentTicketsModalComponent,
         ProductionDeploymentTicketsModalComponent

@@ -559,6 +559,8 @@
     "home.deployment_center.production_deployment.ticket_modal.li.name.text": "Name",
     "home.deployment_center.production_deployment.ticket_modal.submit_but.text": "Deployed at PRODUCTION",
     "home.deployment_center.production_deployment.ticket_modal.submit.alert.text": "Are you sure you want update ticket status to <b>Done</b> from <b>Ready to deploy at PRD</b>?",
+    "home.my_actions.title": "My Actions",
+    "home.my_actions.tickets.text": "tickets",
     "time_booking.page_title": "Time Booking",
     "time_booking.list_table.initiative_column": "Initiative",
     "time_booking.list_table.ticket_column": "Ticket",

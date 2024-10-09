@@ -24,6 +24,7 @@ use App\Observers\SectionObserver;
 use App\Observers\TicketActionObserver;
 use App\Observers\TicketObserver;
 use App\Observers\TimeBookingObserver;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -46,6 +47,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Schema::defaultStringLength(191);
+        DB::statement("SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
         Client::observe(ClientObserver::class);
         Initiative::observe(InitiativeObserver::class);
         Section::observe(SectionObserver::class);
