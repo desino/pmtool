@@ -10,6 +10,19 @@
     </div>
     <GlobalMessage v-if="showMessage" />
     <div class="app-content">
+        <div class="row w-100 mb-3">
+            <div class="col-12 col-md-3 mb-2 mb-md-0">
+                <input v-model="filter.task_name" :placeholder="$t('my_ticket.filter.task_name')" class="form-control"
+                    type="text" @keyup="getMyTickets">
+            </div>
+            <div class="col-12 col-md-3 mb-2 mb-md-0">
+                <select v-model="filter.task_type" class="form-select" @change="getMyTickets">
+                    <option value="">{{ $t('my_ticket.filter.task_type_placeholder') }}</option>
+                    <option v-for="type in filterTaskTypes" :key="type.id" :value="type.id">{{ type.name }}
+                    </option>
+                </select>
+            </div>
+        </div>
         <ul class="list-group list-group-flush mb-3 mt-2">
             <li class="font-weight-bold bg-desino text-white rounded-top list-group-item">
                 <div class="row w-100">
@@ -102,8 +115,10 @@ export default {
     data() {
         return {
             initiative_id: this.$route.params.id,
+            filterTaskTypes: [],
             filter: {
-
+                task_name: "",
+                task_type: "",
             },
             tickets: [],
             currentPage: "",
@@ -126,9 +141,9 @@ export default {
                     initiative_id: this.initiative_id,
                     filters: this.filter
                 }
-                const { content } = await MyTicketService.getMyTickets(params);
+                const { content, meta_data } = await MyTicketService.getMyTickets(params);
                 this.tickets = content.data;
-                // console.log('this.tickets :: ', this.tickets);
+                this.filterTaskTypes = meta_data.task_type;
                 this.setLoading(false);
             } catch (error) {
                 this.handleError(error);

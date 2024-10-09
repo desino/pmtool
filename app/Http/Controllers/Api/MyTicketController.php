@@ -51,8 +51,15 @@ class MyTicketController extends Controller
                             ->orderBy('action', 'desc');
                     });
             })
+            ->when($filters['task_name'] != '', function ($query) use ($filters) {
+                $query->whereLike('composed_name', '%' . $filters['task_name'] . '%');
+            })
+            ->when($filters['task_type'] != '', function ($query) use ($filters) {
+                $query->where('type', $filters['task_type']);
+            })
             ->groupBy('tickets.id')
             ->paginate(10);
-        return ApiHelper::response(true, '', $tickets, 200);
+        $meta['task_type'] = Ticket::getAllTypes();
+        return ApiHelper::response(true, '', $tickets, 200, $meta);
     }
 }

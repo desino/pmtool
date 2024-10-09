@@ -454,6 +454,8 @@
     "my_ticket.list.column_current_action": "Current Action",
     "my_ticket.list.column_actions": "Actions",
     "my_ticket.list.not_ticket": "No Result Found",
+    "my_ticket.filter.task_name": "Task Name",
+    "my_ticket.filter.task_type_placeholder": "Task Type",
     "opportunity.page_title": "Opportunities",
     "opportunity_list_table.client_th_text": "Client",
     "opportunity_list_table.initiative_name_th_text": "Initiative Name",
