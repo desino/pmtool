@@ -4,6 +4,7 @@ import TicketDetailDeisgnComponent from "@/Page/SolutionDesign/Ticket/TicketDeta
 import TicketListComponent from "@/Page/SolutionDesign/Ticket/TicketListComponent.vue";
 import ProjectListComponent from "./Project/ProjectListComponent.vue";
 import DownloadSolutionDesignComponent from "./DownloadSolutionDesignComponent.vue";
+import MyTicketListComponent from "./MyTicket/MyTicketListComponent.vue";
 
 export default [
     {
@@ -41,5 +42,11 @@ export default [
         name: 'projects',
         component: ProjectListComponent,
         meta: { requiresAuth: true, title: 'Project' },
-    }
+    },
+    {
+        path: '/solution-design/:id/my-tickets/',
+        name: 'my-tickets',
+        component: MyTicketListComponent,
+        meta: { requiresAuth: true, title: 'My Task List' },
+    },
 ];

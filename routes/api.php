@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\DeploymentCenterController;
 use App\Http\Controllers\Api\HeaderController;
 use App\Http\Controllers\Api\InitiativeController;
+use App\Http\Controllers\Api\MyTicketController;
 use App\Http\Controllers\Api\OpportunityController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\SolutionDesignController;
@@ -96,6 +97,10 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/', 'index');
             Route::post('/change-status', 'changeStatus');
             Route::post('/update', 'update');
+        });
+
+        Route::controller(MyTicketController::class)->prefix('{initiative_id}/my-ticket')->group(function () {
+            Route::get('/', 'index');
         });
     });
 

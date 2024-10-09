@@ -22,6 +22,7 @@ router.beforeEach((to, from, next) => {
         'tasks',
         'task.detail',
         'projects',
+        'my-tickets',
     ];
 
     if (routesWithInitiativeId.includes(to.name)) {
