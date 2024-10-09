@@ -53,7 +53,6 @@ class MyTicketController extends Controller
                     });
             })
             ->groupBy('tickets.id')
-            ->groupBy('tickets.initiative_id')
             ->paginate(10);
         return ApiHelper::response(true, '', $tickets, 200);
     }
