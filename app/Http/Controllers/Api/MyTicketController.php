@@ -43,13 +43,12 @@ class MyTicketController extends Controller
             ->where('tickets.initiative_id', $initiative_id)
             ->where(function ($q) {
                 $q->where('tickets.is_visible', 1)
-                    ->orWhere('ticket_actions.id', function ($q) {
+                    ->orWhereIn('ticket_actions.id', function ($q) {
                         $q->select('id')
                             ->from('ticket_actions')
                             ->where('user_id', Auth::id())
                             ->where('status', '!=', TicketAction::getStatusDone())
-                            ->orderBy('action', 'desc')
-                            ->limit(1);
+                            ->orderBy('action', 'desc');
                     });
             })
             ->groupBy('tickets.id')
