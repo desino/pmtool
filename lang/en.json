@@ -398,6 +398,7 @@
     "header.menu.initiative_links": "Initiative Links",
     "header.menu.initiative.share_point_url": "Share Point URL",
     "header.menu.time_booking": "Time Booking",
+    "header.menu.panning": "Panning",
     "ticket.page_title": "All Ticket",
     "ticket.list.column_task_name": "Ticket",
     "ticket.list.column_task_status": "Macro Status",
@@ -593,5 +594,6 @@
     "time_booking_on_new_initiative_or_ticket.modal_input_hours_label_text": "Hours",
     "time_booking_on_new_initiative_or_ticket.modal_textarea_comments_label_text": "Comments",
     "time_booking_on_new_initiative_or_ticket.modal_submit_but_text": "Book",
-    "time_booking_on_new_initiative_or_ticket.modal_submit_and_close_but_text": "Book & Close"
+    "time_booking_on_new_initiative_or_ticket.modal_submit_and_close_but_text": "Book & Close",
+    "planning.page_title": "Planning"
 }

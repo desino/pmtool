@@ -148,6 +148,15 @@
                             }}
                         </router-link>
                     </li>
+                    <li class="nav-item">
+                        <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('planning') }"
+                            :to="{ name: 'planning' }" class="nav-link text-dark" @click="unselectHeaderInitiative">
+                            <i class="bi bi-calendar-week mx-2"></i>
+                            {{
+                                $t('header.menu.panning')
+                            }}
+                        </router-link>
+                    </li>
                 </ul>
             </nav>
         </div>

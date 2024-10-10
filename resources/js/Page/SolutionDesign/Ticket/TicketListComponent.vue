@@ -98,7 +98,7 @@
         <ul class="list-group list-group-flush mb-3 mt-2">
             <li class="font-weight-bold bg-desino text-white rounded-top list-group-item">
                 <div class="row w-100">
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
+                    <div class="col-lg-3 col-md-6 col-6 fw-bold py-2">
                         <input class="form-check-input mx-2" type="checkbox" id="chk_all_tickets"
                             v-model="isChkAllTickets" @change="handleSelectAllTasks">
                         {{ $t('ticket.list.column_task_name') }}
@@ -115,9 +115,9 @@
                     <div class="col-lg-1 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
                         {{ $t('ticket.list.current_owner') }}
                     </div>
-                    <div class="col-lg-1 col-md-6 col-6 fw-bold py-2 d-none d-lg-block text-center">
+                    <!-- <div class="col-lg-1 col-md-6 col-6 fw-bold py-2 d-none d-lg-block text-center">
                         {{ $t('ticket.list.column_task_created_at') }}
-                    </div>
+                    </div> -->
                     <div class="col-lg-2 col-md-6 col-6 fw-bold py-2 d-none d-lg-block text-lg-end">
                         {{ $t('ticket.list.column_action') }}
                     </div>
@@ -129,7 +129,7 @@
                         style="width: 5px; height: 100%; left: 0; top: 0;">
                     </div>
 
-                    <div class="col-lg-2 col-md-6 col-6 d-flex align-items-center">
+                    <div class="col-lg-3 col-md-6 col-6 d-flex align-items-center">
                         <input class="form-check-input mx-3" type="checkbox" :id="'chk_ticket_' + task.id"
                             v-model="task.isChecked" @change="handleSelectTasks(task)" style="margin-right: 10px;">
                         <span>{{ task.composed_name }}</span>
@@ -168,11 +168,11 @@
                             -
                         </span>
                     </div>
-                    <div class="col-lg-1 col-md-6 col-6 justify-content-center text-center">
+                    <!-- <div class="col-lg-1 col-md-6 col-6 justify-content-center text-center">
                         <span class="d-block d-lg-none fw-bold bg-desino mt-2 p-0 text-white text-center rounded-top">
                             {{ $t('ticket.list.column_task_created_at') }} </span>
                         {{ task.display_created_at }}
-                    </div>
+                    </div> -->
                     <div class="col-lg-2 col-md-12 col-12 justify-content-end text-end">
                         <router-link
                             :to="{ name: 'task.detail', params: { initiative_id: this.initiative_id, ticket_id: task.id } }"

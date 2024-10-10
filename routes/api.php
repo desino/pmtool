@@ -9,12 +9,14 @@ use App\Http\Controllers\Api\HomeMyActionsController;
 use App\Http\Controllers\Api\InitiativeController;
 use App\Http\Controllers\Api\MyTicketController;
 use App\Http\Controllers\Api\OpportunityController;
+use App\Http\Controllers\Api\PlanningController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\SolutionDesignController;
 use App\Http\Controllers\Api\TestCaseController;
 use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\TimeBookingController;
 use App\Http\Controllers\Api\UserController;
+use App\Models\Planning;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Ramsey\Uuid\Type\Time;
@@ -124,6 +126,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/delete-time-bookings', 'deleteTimeBookings');
         Route::get('/fetch-tickets', 'fetchTickets');
         Route::post('/store-time-booking-for-ticket-detail', 'storeTimeBookingForTicketDetail');
+    });
+
+    Route::controller(PlanningController::class)->prefix('planning')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/get-planning-initial-data', 'getPlanningInitialData');
     });
 });
 
