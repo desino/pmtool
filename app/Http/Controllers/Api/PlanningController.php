@@ -29,8 +29,8 @@ class PlanningController extends Controller
             $startWeek = Carbon::parse($request->get('start_date'))->startOfWeek();
             $endWeek = Carbon::parse($request->get('end_date'))->addWeek(4)->startOfWeek();
         } else if ($request->get('previous_or_next_of_week') == '0') {
-            $startWeek = Carbon::now()->subWeek(3)->startOfWeek();
-            $endWeek = Carbon::now()->addWeek(3)->startOfWeek();
+            $startWeek = Carbon::now()->subWeek(4)->startOfWeek();
+            $endWeek = Carbon::now()->addWeek(8)->startOfWeek();
         }
         $startWeekDate = $startWeek->toDateString();
         $endWeekDate = $endWeek->toDateString();
@@ -63,7 +63,6 @@ class PlanningController extends Controller
             ->join('initiatives', 'initiatives.id', 'planning_assignments.initiative_id')
             ->join('users', 'users.id', 'planning_assignments.user_id')
             ->whereBetween('plannings.planning_date', [$startWeekDate, $endWeekDate])
-            // ->where('planning_assignments.user_id', Auth::id())
             ->orderBy('id')
             ->get();
 

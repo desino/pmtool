@@ -153,7 +153,7 @@
                             :to="{ name: 'planning' }" class="nav-link text-dark" @click="unselectHeaderInitiative">
                             <i class="bi bi-calendar-week mx-2"></i>
                             {{
-                                $t('header.menu.panning')
+                                $t('header.menu.planning')
                             }}
                         </router-link>
                     </li>
