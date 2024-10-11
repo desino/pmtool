@@ -54,7 +54,9 @@
                             class="border total_abs1 bg-opacity-25 text-center align-middle p-1" :class="{
                                 'bg-primary': planning.default_row_name == 'heder_total',
                                 'bg-warning': planning.default_row_name == 'plan_new_initiative'
-                            }" colspan="2" :rowspan="planning.users.length">
+                            }" colspan="2" :rowspan="planning.users.length"
+                            :role="planning.default_row_name == 'plan_new_initiative' ? 'button' : ''"
+                            @click="handlePlanNewInitiative(planning, user)">
                             {{ planning.initiative_name }}
                         </th>
                         <!-- below th except for total and plan new initiative -->
@@ -64,8 +66,12 @@
                             {{ planning.initiative_name }}
                         </th>
                         <!-- below td for plan new user -->
-                        <th v-if="planning.default_row_name == ''" class="border abs1 text-left p-1">
+                        <th v-if="planning.default_row_name == '' && user.id != ''" class="border abs1 text-left p-1">
                             {{ user.name }}
+                        </th>
+                        <th v-if="planning.default_row_name == '' && user.id == ''"
+                            class="border abs1 text-left p-1 bg-info text-white text-center" role="button"
+                            v-html="user.name" @click="handlePlanNewUser(planning)">
                         </th>
                         <!-- below td previous week -->
                         <td></td>
@@ -78,12 +84,14 @@
                             </span>
                         </td>
                         <!-- below td except for each week header total -->
-                        <td v-if="planning.default_row_name == ''" class="text-center align-middle p-1 border"
+                        <td v-if="planning.default_row_name == ''" class="border text-center align-middle p-1 border"
                             v-for="(week, index) in loadWeeks" :key="index">
-                            <span class="">
-                                {{ user.hours_per_week[week.date].hours > 0 ? user.hours_per_week[week.date].hours :
-                                    '' }}
-                            </span>
+                            <!-- <input v-if="user.id != ''" type="text" v-model="user.hours_per_week[week.date].hours"
+                                class="form-control form-control-sm text-center"
+                                :placeholder="$t('time_booking_on_new_initiative_or_ticket.modal_input_hours_label_text')"> -->
+                            <input v-if="user.id != ''" type="text" v-model="user.hours_per_week[week.date].hours"
+                                class="form-control form-control-sm text-center"
+                                :placeholder="$t('time_booking_on_new_initiative_or_ticket.modal_input_hours_label_text')">
                         </td>
                     </tr>
                 </template>
@@ -91,6 +99,19 @@
             <!-- </div> -->
             <!-- </div> -->
         </div>
+    </div>
+    <div class="container-fluid mt-3">
+        <div class="row w-100 mx-0">
+            <button class="btn btn-desino text-uppercase" @click="storePlanning">{{
+                $t('planning.store_button_text')
+                }}</button>
+        </div>
+    </div>
+
+    <div id="planNewInitiativeModal" aria-hidden="true" aria-labelledby="planNewInitiativeModalLabel" class="modal fade"
+        tabindex="-1">
+        <PlanNewInitiativeModalComponent ref="planNewInitiativeModalComponent" @pageUpdated="getPlanningData"
+            @add-plan-new-initiative="addPlanNewInitiativeFromModal" />
     </div>
 </template>
 
@@ -100,13 +121,16 @@ import { mapActions } from 'vuex';
 import GlobalMessage from '../../components/GlobalMessage.vue';
 import messageService from '../../services/messageService';
 import PlanningService from '../../services/PlanningService';
-
+import PlanNewInitiativeModalComponent from './PlanNewInitiativeModalComponent.vue';
+import { Modal } from 'bootstrap';
+import showToast from '../../utils/toasts';
 
 export default {
     name: 'PlanningComponent',
     components: {
         GlobalMessage,
-        Multiselect
+        Multiselect,
+        PlanNewInitiativeModalComponent
     },
     data() {
         return {
@@ -117,8 +141,9 @@ export default {
             usersFilterList: [],
             loadWeeks: [],
             plannings: [],
+            passData: [],
             errors: {},
-            showMessage: false
+            showMessage: true
         };
     },
     methods: {
@@ -146,9 +171,84 @@ export default {
                 this.plannings = plannings;
                 this.loadWeeks = loadWeeks;
                 this.setLoading(false);
-                return content;
             } catch (error) {
                 this.handleError(error);
+            }
+        },
+        handlePlanNewInitiative(planning, user) {
+            if (planning.default_row_name != 'plan_new_initiative') {
+                return;
+            }
+            const existingPlannings = this.plannings.filter(item => item.default_row_name == "");
+            const planNewInitiativeModalElement = document.getElementById('planNewInitiativeModal');
+            if (planNewInitiativeModalElement) {
+                this.$refs.planNewInitiativeModalComponent.getPlanNewInitiativeForOpenModalData(existingPlannings);
+                const planNewInitiativeModal = new Modal(planNewInitiativeModalElement);
+                planNewInitiativeModal.show();
+            }
+        },
+        handlePlanNewUser(planning) {
+            console.log('planning :: ', planning.users.filter(item => item.id != ''));
+
+        },
+        addPlanNewInitiativeFromModal(formData) {
+            let addNewPlaning = {
+                'default_row_name': '',
+                'initiative_id': formData.initiative_id,
+                'initiative_name': formData.initiative_name,
+                'users': [],
+            }
+            const hoursPerWeek = [];
+            this.loadWeeks.forEach(week => {
+                hoursPerWeek[week.date] = {
+                    'hours': 0
+                }
+            });
+            addNewPlaning.users.push({
+                'id': formData.user_id,
+                'name': formData.user_name,
+                'hours_per_week': hoursPerWeek,
+            })
+            this.plannings.splice(this.plannings.length - 1, 0, addNewPlaning);
+        },
+        async storePlanning() {
+            const passData = [];
+            this.plannings.forEach(planning => {
+                if (planning.default_row_name == '') {
+                    const passInitiativeData = {
+                        'initiative_id': '',
+                        'initiative_name': '',
+                        'user_id': '',
+                        'user_name': '',
+                        'hours_per_week': [],
+                    }
+                    planning.users.forEach(user => {
+                        this.loadWeeks.forEach(week => {
+                            if (user.hours_per_week[week.date].hours > 0) {
+                                passInitiativeData.initiative_id = planning.initiative_id;
+                                passInitiativeData.initiative_name = planning.initiative_name;
+                                passInitiativeData.user_id = user.id;
+                                passInitiativeData.user_name = user.name;
+                                passInitiativeData.hours_per_week.push({
+                                    'date': week.date,
+                                    'hours': user.hours_per_week[week.date].hours
+                                });
+                            }
+                        });
+                    });
+                    passData.push(passInitiativeData);
+                }
+            })
+            if (passData.length > 0) {
+                this.setLoading(true);
+                try {
+                    const { message } = await PlanningService.storePlanning(passData);
+                    showToast(message, 'success');
+                    this.setLoading(false);
+                    this.getPlanningData();
+                } catch (error) {
+                    this.handleError(error);
+                }
             }
         },
         handleError(error) {

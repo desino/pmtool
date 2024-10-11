@@ -9,6 +9,7 @@ const defaultPath = `${APP_VARIABLES.DEFAULT_API_PATH}/planning`;
 const endpoints = {
     getPlanningData: `${defaultPath}`,
     getPlanningInitialData: `${defaultPath}/get-planning-initial-data`,
+    storePlanning: `${defaultPath}/store-planning`,
 }
 
 const PlanningService = {
@@ -28,6 +29,14 @@ const PlanningService = {
             throw handleError(error);
         }
     },
+    async storePlanning(data) {
+        try {
+            const response = await axiosRequest.post(endpoints.storePlanning, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    }
 }
 
 function handleError(error) {

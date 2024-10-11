@@ -4,13 +4,16 @@ namespace App\Http\Controllers\Api;
 
 use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
+use App\Models\Initiative;
 use App\Models\Planning;
+use App\Models\PlanningAssignment;
 use App\Services\InitiativeService;
 use App\Services\PlanningService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PlanningController extends Controller
 {
@@ -22,15 +25,18 @@ class PlanningController extends Controller
         $endWeek = "";
         $startWeekDate = "";
         $endWeekDate = "";
+
+        $startWeek = Carbon::now()->subWeek(4)->startOfWeek();
+        $endWeek = Carbon::now()->addWeek(8)->startOfWeek();
         if ($request->get('previous_or_next_of_week') == '-1') {
             $startWeek = Carbon::parse($request->get('start_date'))->subWeek(4)->startOfWeek();
             $endWeek = Carbon::parse($request->get('end_date'))->startOfWeek();
         } else if ($request->get('previous_or_next_of_week') == '1') {
             $startWeek = Carbon::parse($request->get('start_date'))->startOfWeek();
             $endWeek = Carbon::parse($request->get('end_date'))->addWeek(4)->startOfWeek();
-        } else if ($request->get('previous_or_next_of_week') == '0') {
-            $startWeek = Carbon::now()->subWeek(4)->startOfWeek();
-            $endWeek = Carbon::now()->addWeek(8)->startOfWeek();
+        } else if ($request->get('previous_or_next_of_week') == '0' && $request->get('start_date') && $request->get('end_date')) {
+            $startWeek = Carbon::parse($request->get('start_date'))->startOfWeek();
+            $endWeek = Carbon::parse($request->get('end_date'))->startOfWeek();
         }
         $startWeekDate = $startWeek->toDateString();
         $endWeekDate = $endWeek->toDateString();
@@ -77,8 +83,9 @@ class PlanningController extends Controller
                 $userData = $groupByPlanningInitiativeUsersValue->firstWhere('user_id', $groupByPlanningInitiativeUsersKey);
                 $userHoursPerWeek = [];
                 foreach ($loadWeeks as $loadWeek) {
+                    $hour = $groupByPlanningInitiativeUsersValue->where('planning_date', $loadWeek['date'])->sum('hours');
                     $userHoursPerWeek[$loadWeek['date']] = [
-                        'hours' => $groupByPlanningInitiativeUsersValue->where('week', $loadWeek['week'])->sum('hours')
+                        'hours' => $hour > 0 ? $hour : '',
                     ];
                 }
                 $initiativeUsersArray[] = [
@@ -87,9 +94,22 @@ class PlanningController extends Controller
                     'hours_per_week' => $userHoursPerWeek,
                 ];
             }
+
+            $userHoursPerWeekForPlanningAddNewUserRow = [];
+            foreach ($loadWeeks as $loadWeek) {
+                $userHoursPerWeekForPlanningAddNewUserRow[$loadWeek['date']] = [
+                    'hours' => ''
+                ];
+            }
+            $planningAddNewUserRow = [
+                'id' => '',
+                'name' => '<i class="bi bi-plus-circle"></i>',
+                'hours_per_week' => $userHoursPerWeekForPlanningAddNewUserRow,
+            ];
+            array_push($initiativeUsersArray, $planningAddNewUserRow);
             $planningUsersRows[] = [
                 'default_row_name' => '',
-                'initiative_id' => $initiativeData->id,
+                'initiative_id' => $initiativeData->initiative_id,
                 'initiative_name' => $initiativeData->initiative_name,
                 'users' => $initiativeUsersArray,
             ];
@@ -119,7 +139,7 @@ class PlanningController extends Controller
         $planningNewInitiativeRowHoursPerWeek = [];
         foreach ($loadWeeks as $loadWeek) {
             $planningTotalRowHoursPerWeek[$loadWeek['date']] = [
-                'hours' => $plannings->where('week', $loadWeek['week'])->sum('hours'),
+                'hours' => $plannings->where('planning_date', $loadWeek['date'])->sum('hours'),
             ];
             $planningNewInitiativeRowHoursPerWeek[$loadWeek['date']] = [
                 'hours' => 0
@@ -147,5 +167,63 @@ class PlanningController extends Controller
             'users' => PlanningService::getUsers(),
         ];
         return ApiHelper::response(true, '', $retData, 200);
+    }
+
+    public function storePlanning(Request $request)
+    {
+        $requestData = $request->all();
+
+        $initiativeIds = array_column($requestData, 'initiative_id');
+
+        $initiatives = Initiative::whereIn('id', $initiativeIds)->get();
+        if ($initiatives->count() != count($initiativeIds)) {
+            return ApiHelper::response(false, __('messages.planning.initiative_not_found'), '', 400);
+        }
+        $status = true;
+        $message = __('messages.planning.create_success');
+        $statusCode = 200;
+        DB::beginTransaction();
+        try {
+            foreach ($requestData as $planning) {
+                $planningAssignmentUpdateCondition = [
+                    'initiative_id' => $planning['initiative_id'],
+                    'user_id' => $planning['user_id']
+                ];
+                $planningAssignmentInsertData = [
+                    'initiative_id' => $planning['initiative_id'],
+                    'user_id' => $planning['user_id'],
+                ];
+                $planningAssignment = PlanningAssignment::updateOrCreate(
+                    $planningAssignmentUpdateCondition,
+                    $planningAssignmentInsertData
+                );
+
+                $deletePlanningIds = [];
+                foreach ($planning['hours_per_week'] as $week) {
+                    $planning = Planning::updateOrCreate(
+                        [
+                            'planning_assignment_id' => $planningAssignment->id,
+                            'planning_date' => $week['date']
+                        ],
+                        [
+                            'planning_assignment_id' => $planningAssignment->id,
+                            'planning_date' => $week['date'],
+                            'hours' => $week['hours']
+                        ]
+                    );
+                    $deletePlanningIds[] = $planning->id;
+                }
+                if (count($deletePlanningIds) > 0) {
+                    Planning::whereNotIn('id', $deletePlanningIds)->where('planning_assignment_id', $planningAssignment->id)->delete();
+                }
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $statusCode = 500;
+            Log::info($e->getMessage());
+        }
+        return ApiHelper::response($status, $message, '', $statusCode);
     }
 }

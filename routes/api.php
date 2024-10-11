@@ -131,6 +131,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(PlanningController::class)->prefix('planning')->group(function () {
         Route::get('/', 'index');
         Route::get('/get-planning-initial-data', 'getPlanningInitialData');
+        Route::post('/store-planning', 'storePlanning');
     });
 });
 

@@ -245,6 +245,8 @@
     "messages.ticket.add_remove_priority_success_alt_remove": "Priority removed successfully.",
     "messages.ticket.visible_success_alt_add": "Visible added successfully.",
     "messages.ticket.visible_success_alt_remove": "Visible removed successfully.",
+    "messages.planning.create_success": "Planning stored successfully.",
+    "messages.planning.initiative_not_found": "Initiative not found.",
     "login_title": "Login",
     "login_page_title": "Login",
     "login_input_email": "Email",
@@ -595,5 +597,10 @@
     "time_booking_on_new_initiative_or_ticket.modal_textarea_comments_label_text": "Comments",
     "time_booking_on_new_initiative_or_ticket.modal_submit_but_text": "Book",
     "time_booking_on_new_initiative_or_ticket.modal_submit_and_close_but_text": "Book & Close",
-    "planning.page_title": "Planning"
+    "planning.page_title": "Planning",
+    "planning.plan_new_initiative_modal_title": "Plan New Initiative",
+    "planning.plan_new_initiative.modal_submit_but_text": "Add New Initiative",
+    "planning.plan_new_initiative.modal_select_initiative_label_text": "Initiative",
+    "planning.plan_new_initiative.modal_select_user_label_text": "User",
+    "planning.store_button_text": "Save"
 }
