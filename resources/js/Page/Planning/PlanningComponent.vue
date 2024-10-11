@@ -90,8 +90,7 @@
                                 class="form-control form-control-sm text-center"
                                 :placeholder="$t('time_booking_on_new_initiative_or_ticket.modal_input_hours_label_text')"> -->
                             <input v-if="user.id != ''" type="text" v-model="user.hours_per_week[week.date].hours"
-                                class="form-control form-control-sm text-center"
-                                :placeholder="$t('time_booking_on_new_initiative_or_ticket.modal_input_hours_label_text')">
+                                class="form-control form-control-sm text-center">
                         </td>
                     </tr>
                 </template>
@@ -204,11 +203,18 @@ export default {
                     'hours': 0
                 }
             });
-            addNewPlaning.users.push({
-                'id': formData.user_id,
-                'name': formData.user_name,
-                'hours_per_week': hoursPerWeek,
-            })
+            addNewPlaning.users.push(
+                {
+                    'id': formData.user_id,
+                    'name': formData.user_name,
+                    'hours_per_week': hoursPerWeek,
+                },
+                {
+                    'id': '',
+                    'name': '<i class="bi bi-plus-circle"></i>',
+                    'hours_per_week': hoursPerWeek,
+                }
+            )
             this.plannings.splice(this.plannings.length - 1, 0, addNewPlaning);
         },
         async storePlanning() {
@@ -224,7 +230,7 @@ export default {
                     }
                     planning.users.forEach(user => {
                         this.loadWeeks.forEach(week => {
-                            if (user.hours_per_week[week.date].hours > 0) {
+                            if (user.hours_per_week[week.date].hours > 0 && user.id != '') {
                                 passInitiativeData.initiative_id = planning.initiative_id;
                                 passInitiativeData.initiative_name = planning.initiative_name;
                                 passInitiativeData.user_id = user.id;
@@ -236,7 +242,9 @@ export default {
                             }
                         });
                     });
-                    passData.push(passInitiativeData);
+                    if (passInitiativeData.initiative_id != '') {
+                        passData.push(passInitiativeData);
+                    }
                 }
             })
             if (passData.length > 0) {
