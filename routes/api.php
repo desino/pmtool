@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\MyTicketController;
 use App\Http\Controllers\Api\OpportunityController;
 use App\Http\Controllers\Api\PlanningController;
 use App\Http\Controllers\Api\ProjectController;
+use App\Http\Controllers\Api\RestApiController;
 use App\Http\Controllers\Api\SolutionDesignController;
 use App\Http\Controllers\Api\TestCaseController;
 use App\Http\Controllers\Api\TicketController;
@@ -140,4 +141,10 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/logout', 'logout');
     Route::post('/forgot-password', 'sendResetLink');
     Route::post('/reset-password', 'resetPassword');
+});
+
+Route::middleware(['checkApiKey'])->group(function () {
+    Route::controller(RestApiController::class)->group(function () {
+        Route::get('/database-table-data', 'databaseTableData');
+    });
 });

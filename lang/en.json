@@ -247,6 +247,7 @@
     "messages.ticket.visible_success_alt_remove": "Visible removed successfully.",
     "messages.planning.create_success": "Planning stored successfully.",
     "messages.planning.initiative_not_found": "Initiative not found.",
+    "messages.invalid_api_key": "Invalid API key.",
     "login_title": "Login",
     "login_page_title": "Login",
     "login_input_email": "Email",

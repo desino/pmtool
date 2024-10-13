@@ -8,4 +8,5 @@ return [
     'asana_workspace_base_uri' => env('ASANA_WORKSPACE_BASE_URI'),
     'ssl_certificate' => env('SSL_CERTIFICATE', ''),
     'default_project_name' => 'Maintenance',
+    'api_key' => env('API_KEY'),
 ];
