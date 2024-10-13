@@ -36,7 +36,7 @@
                         </div>
                         <button class="btn btn-desino w-100" type="submit">{{
                             $t('login_submit_but_text')
-                        }}
+                            }}
                         </button>
                         <p class="mb-1">
                             <router-link :to="{ name: 'forgot-password' }" class="text-decoration-none">

@@ -105,7 +105,7 @@ const AuthService = {
             store.commit("setAuth", false);
             store.commit("setToken", null);
             store.commit("setUser", null);
-            // await router.push({ name: "login" });
+            await router.push({ name: "login" });
         }
     },
 
