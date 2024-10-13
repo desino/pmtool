@@ -19,14 +19,15 @@
                         style="height: 45px;">
                         <multiselect v-model="filter.initiative_id" :options="initiativesFilterList"
                             :placeholder="$t('create_ticket_modal_select_functionality_placeholder')" label="name"
-                            track-by="id">
+                            track-by="id" @select="handleInitiativeFilterChange()"
+                            @remove="handleInitiativeFilterChange()">
                         </multiselect>
                     </th>
                     <th scope="col" class="border abs2 bg-transparent text-left text-white align-middle p-1"
                         style="height: 45px;">
-                        <multiselect v-model="filter.ticket_id" :options="usersFilterList"
+                        <multiselect v-model="filter.user_id" :options="usersFilterList"
                             :placeholder="$t('create_ticket_modal_select_functionality_placeholder')" label="name"
-                            track-by="id">
+                            track-by="id" @select="handleUserFilterChange()" @remove="handleUserFilterChange()">
                         </multiselect>
                     </th>
                     <th scope="col" class="border abs3 bg-dark text-center align-middle p-1" style="height: 45px;">
@@ -141,7 +142,9 @@ export default {
         return {
             filter: {
                 initiative_id: "",
+                user_id: ""
             },
+            forFilterPlannings: [],
             initiativesFilterList: [],
             usersFilterList: [],
             loadWeeks: [],
@@ -153,16 +156,6 @@ export default {
     },
     methods: {
         ...mapActions(['setLoading']),
-        async getPlanningInitialData() {
-            try {
-                const { content: { initiatives, users } } = await PlanningService.getPlanningInitialData();
-                this.initiativesFilterList = initiatives;
-                this.usersFilterList = users;
-            } catch (error) {
-                this.handleError(error);
-            }
-            this.setLoading(false);
-        },
         async getPlanningData(number = 0) {
             this.clearMessages();
             try {
@@ -175,10 +168,30 @@ export default {
                 const { content: { plannings, loadWeeks } } = await PlanningService.getPlanningData(passData);
                 this.plannings = plannings;
                 this.loadWeeks = loadWeeks;
+                this.forFilterPlannings = plannings;
+                this.getPlanningInitialData();
                 this.setLoading(false);
             } catch (error) {
                 this.handleError(error);
             }
+        },
+        async getPlanningInitialData() {
+            this.initiativesFilterList = [];
+            this.forFilterPlannings.forEach(planning => {
+                if (planning.default_row_name == '') {
+                    this.initiativesFilterList.push({
+                        id: planning.initiative_id,
+                        name: planning.initiative_name
+                    });
+                }
+            })
+            try {
+                const { content: { initiatives, users } } = await PlanningService.getPlanningInitialData();
+                this.usersFilterList = users;
+            } catch (error) {
+                this.handleError(error);
+            }
+            this.setLoading(false);
         },
         handlePlanNewInitiative(planning, user) {
             if (planning.default_row_name != 'plan_new_initiative') {
@@ -293,15 +306,84 @@ export default {
                             const { message } = await PlanningService.storePlanning(passData);
                             showToast(message, 'success');
                             this.setLoading(false);
-                            this.getPlanningData();
+                            await this.getPlanningData();
+                            this.handleInitiativeFilterChange();
+                            this.handleUserFilterChange();
                         } catch (error) {
                             this.handleError(error);
                         }
+                    } else {
+                        this.getPlanningData();
                     }
                 } else {
                     this.getPlanningData();
                 }
             })
+        },
+        handleInitiativeFilterChange() {
+            // const filterInitiativeId = this.filter.initiative_id?.id;
+            // const filterUserId = this.filter.user_id?.id;
+            // if (filterInitiativeId != undefined && filterInitiativeId != '') {
+            //     this.plannings = this.forFilterPlannings.filter(planning => planning.initiative_id === filterInitiativeId || planning.default_row_name === 'heder_total' || planning.default_row_name === 'plan_new_initiative');
+            // } else {
+            //     this.plannings = this.forFilterPlannings;
+            // }
+            // this.calculateWeekHours();
+            this.handleFilter()
+        },
+        handleUserFilterChange() {
+            this.handleFilter();
+        },
+        handleFilter() {
+            const filterUserId = this.filter.user_id?.id;
+            const filterInitiativeId = this.filter.initiative_id?.id;
+            if (filterUserId != undefined && filterUserId != '') {
+                let userPlannings = this.forFilterPlannings.filter(planning =>
+                    planning.users.find(user => user.id === filterUserId) ||
+                    planning.default_row_name === 'heder_total' ||
+                    planning.default_row_name === 'plan_new_initiative'
+                );
+                if (filterInitiativeId != undefined && filterInitiativeId != '') {
+                    userPlannings = userPlannings.filter(planning =>
+                        planning.initiative_id === filterInitiativeId ||
+                        planning.default_row_name === 'heder_total' ||
+                        planning.default_row_name === 'plan_new_initiative'
+                    );
+                }
+                this.plannings = userPlannings.map(planning => {
+                    return {
+                        ...planning,
+                        users: planning.users.filter(user => user.id === filterUserId || user.id === '')
+                    }
+                })
+            } else if (filterInitiativeId != undefined && filterInitiativeId != '') {
+                this.plannings = this.forFilterPlannings.filter(planning => planning.initiative_id === filterInitiativeId || planning.default_row_name === 'heder_total' || planning.default_row_name === 'plan_new_initiative');
+            } else {
+                this.plannings = this.forFilterPlannings;
+            }
+            this.calculateWeekHours();
+
+        },
+        calculateWeekHours() {
+            const usersHoursPerWeek = this.plannings.filter(planning => planning.default_row_name == '').flatMap(planning => planning.users).flatMap(user => user.hours_per_week);
+            const sumPerWeek = {};
+            usersHoursPerWeek.forEach((currentUserDates) => {
+                Object.keys(currentUserDates).forEach(date => {
+                    const hours = parseFloat(currentUserDates[date].hours) || 0;
+                    sumPerWeek[date] = (sumPerWeek[date] || 0) + hours;
+                });
+            });
+            this.plannings.map(planning => {
+                if (planning.default_row_name == 'heder_total') {
+                    planning.users.forEach(user => {
+                        if (user.id == '') {
+                            this.loadWeeks.forEach(week => {
+                                user.hours_per_week[week.date].hours = sumPerWeek[week.date] || 0;
+                            })
+                        }
+                    });
+                }
+            });
         },
         handleError(error) {
             if (error.type === 'validation') {

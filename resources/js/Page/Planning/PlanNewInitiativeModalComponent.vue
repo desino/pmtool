@@ -15,7 +15,7 @@
                                 class="form-select">
                                 <option value="">{{
                                     $t('planning.plan_new_initiative.modal_select_initiative_label_text')
-                                    }}</option>
+                                }}</option>
                                 <option v-for="initiative in initiativesList" :key="initiative.id"
                                     :value="initiative.id">{{
                                         initiative.name }}
@@ -30,7 +30,7 @@
                                 class="form-select">
                                 <option value="">{{
                                     $t('planning.plan_new_initiative.modal_select_user_label_text')
-                                    }}</option>
+                                }}</option>
                                 <option v-for="user in usersList" :key="user.id" :value="user.id">{{
                                     user.name }}
                                 </option>
