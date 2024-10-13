@@ -109,8 +109,12 @@
 
     <div id="planNewInitiativeModal" aria-hidden="true" aria-labelledby="planNewInitiativeModalLabel" class="modal fade"
         tabindex="-1">
-        <PlanNewInitiativeModalComponent ref="planNewInitiativeModalComponent" @pageUpdated="getPlanningData"
+        <PlanNewInitiativeModalComponent ref="planNewInitiativeModalComponent"
             @add-plan-new-initiative="addPlanNewInitiativeFromModal" />
+    </div>
+    <div id="planNewUserModal" aria-hidden="true" aria-labelledby="planNewUserModalLabel" class="modal fade"
+        tabindex="-1">
+        <PlanNewUserModalComponent ref="planNewUserModalComponent" @add-plan-new-user="addPlanNewUserFromModal" />
     </div>
 </template>
 
@@ -123,13 +127,15 @@ import PlanningService from '../../services/PlanningService';
 import PlanNewInitiativeModalComponent from './PlanNewInitiativeModalComponent.vue';
 import { Modal } from 'bootstrap';
 import showToast from '../../utils/toasts';
+import PlanNewUserModalComponent from './PlanNewUserModalComponent.vue';
 
 export default {
     name: 'PlanningComponent',
     components: {
         GlobalMessage,
         Multiselect,
-        PlanNewInitiativeModalComponent
+        PlanNewInitiativeModalComponent,
+        PlanNewUserModalComponent
     },
     data() {
         return {
@@ -187,7 +193,13 @@ export default {
             }
         },
         handlePlanNewUser(planning) {
-            console.log('planning :: ', planning.users.filter(item => item.id != ''));
+            const existingUsers = planning.users.filter(item => item.id != '');
+            const planNewUserModalElement = document.getElementById('planNewUserModal');
+            if (planNewUserModalElement) {
+                this.$refs.planNewUserModalComponent.getPlanNewUserForOpenModalData(existingUsers, planning.initiative_id);
+                const planNewUserModal = new Modal(planNewUserModalElement);
+                planNewUserModal.show();
+            }
 
         },
         addPlanNewInitiativeFromModal(formData) {
@@ -200,7 +212,7 @@ export default {
             const hoursPerWeek = [];
             this.loadWeeks.forEach(week => {
                 hoursPerWeek[week.date] = {
-                    'hours': 0
+                    'hours': ''
                 }
             });
             addNewPlaning.users.push(
@@ -217,47 +229,79 @@ export default {
             )
             this.plannings.splice(this.plannings.length - 1, 0, addNewPlaning);
         },
+        addPlanNewUserFromModal(formData) {
+            const hoursPerWeek = [];
+            this.loadWeeks.forEach(week => {
+                hoursPerWeek[week.date] = {
+                    'hours': ''
+                }
+            });
+            let addNewUser = {
+                'id': formData.user_id,
+                'name': formData.user_name,
+                'hours_per_week': hoursPerWeek,
+            }
+            const initiative = this.plannings.find(planning => planning.initiative_id == formData.initiative_id);
+            initiative.users.splice(initiative.users.length - 1, 0, addNewUser);
+        },
         async storePlanning() {
-            const passData = [];
-            this.plannings.forEach(planning => {
-                if (planning.default_row_name == '') {
-                    const passInitiativeData = {
-                        'initiative_id': '',
-                        'initiative_name': '',
-                        'user_id': '',
-                        'user_name': '',
-                        'hours_per_week': [],
-                    }
-                    planning.users.forEach(user => {
-                        this.loadWeeks.forEach(week => {
-                            if (user.hours_per_week[week.date].hours > 0 && user.id != '') {
-                                passInitiativeData.initiative_id = planning.initiative_id;
-                                passInitiativeData.initiative_name = planning.initiative_name;
-                                passInitiativeData.user_id = user.id;
-                                passInitiativeData.user_name = user.name;
-                                passInitiativeData.hours_per_week.push({
-                                    'date': week.date,
-                                    'hours': user.hours_per_week[week.date].hours
+            this.$swal({
+                title: this.$t('planning.confirm_store_alert.title'),
+                text: this.$t('planning.confirm_store_alert.text'),
+                showCancelButton: true,
+                confirmButtonColor: '#1e6abf',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '<i class="bi bi-check-lg"></i>',
+                cancelButtonText: '<i class="bi bi-x-lg"></i>',
+                customClass: {
+                    confirmButton: 'btn-desino',
+                },
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    const passData = [];
+                    this.plannings.forEach(planning => {
+                        if (planning.default_row_name == '') {
+                            planning.users.forEach(user => {
+                                const passInitiativeData = {
+                                    'initiative_id': '',
+                                    'initiative_name': '',
+                                    'user_id': '',
+                                    'user_name': '',
+                                    'hours_per_week': [],
+                                }
+                                this.loadWeeks.forEach(week => {
+                                    if (user.hours_per_week[week.date].hours > 0 && user.id != '') {
+                                        passInitiativeData.initiative_id = planning.initiative_id;
+                                        passInitiativeData.initiative_name = planning.initiative_name;
+                                        passInitiativeData.user_id = user.id;
+                                        passInitiativeData.user_name = user.name;
+                                        passInitiativeData.hours_per_week.push({
+                                            'date': week.date,
+                                            'hours': user.hours_per_week[week.date].hours
+                                        });
+                                    }
                                 });
-                            }
-                        });
-                    });
-                    if (passInitiativeData.initiative_id != '') {
-                        passData.push(passInitiativeData);
+                                if (passInitiativeData.initiative_id != '') {
+                                    passData.push(passInitiativeData);
+                                }
+                            });
+                        }
+                    })
+                    if (passData.length > 0) {
+                        this.setLoading(true);
+                        try {
+                            const { message } = await PlanningService.storePlanning(passData);
+                            showToast(message, 'success');
+                            this.setLoading(false);
+                            this.getPlanningData();
+                        } catch (error) {
+                            this.handleError(error);
+                        }
                     }
+                } else {
+                    this.getPlanningData();
                 }
             })
-            if (passData.length > 0) {
-                this.setLoading(true);
-                try {
-                    const { message } = await PlanningService.storePlanning(passData);
-                    showToast(message, 'success');
-                    this.setLoading(false);
-                    this.getPlanningData();
-                } catch (error) {
-                    this.handleError(error);
-                }
-            }
         },
         handleError(error) {
             if (error.type === 'validation') {

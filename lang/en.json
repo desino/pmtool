@@ -602,5 +602,10 @@
     "planning.plan_new_initiative.modal_submit_but_text": "Add New Initiative",
     "planning.plan_new_initiative.modal_select_initiative_label_text": "Initiative",
     "planning.plan_new_initiative.modal_select_user_label_text": "User",
-    "planning.store_button_text": "Save"
+    "planning.store_button_text": "Save",
+    "planning.plan_new_user_modal_title": "Plan New User",
+    "planning.plan_new_user.modal_select_user_label_text": "User",
+    "planning.plan_new_user.modal_submit_but_text": "Add New User",
+    "planning.confirm_store_alert.title": "Confirm Save",
+    "planning.confirm_store_alert.text": "Are you sure you want to save these planning?"
 }

@@ -172,8 +172,7 @@ class PlanningController extends Controller
     public function storePlanning(Request $request)
     {
         $requestData = $request->all();
-
-        $initiativeIds = array_column($requestData, 'initiative_id');
+        $initiativeIds = array_unique(array_column($requestData, 'initiative_id'));
 
         $initiatives = Initiative::whereIn('id', $initiativeIds)->get();
         if ($initiatives->count() != count($initiativeIds)) {
