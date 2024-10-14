@@ -248,6 +248,7 @@
     "messages.planning.create_success": "Planning stored successfully.",
     "messages.planning.initiative_not_found": "Initiative not found.",
     "messages.invalid_api_key": "Invalid API key.",
+    "messages.ticket.bulk_tickets_created_success": "Bulk tickets created successfully.",
     "login_title": "Login",
     "login_page_title": "Login",
     "login_input_email": "Email",
@@ -398,6 +399,7 @@
     "header.menu.all_ticket": "All Ticket",
     "header.menu.my_ticket": "My Ticket",
     "header.menu.projects": "Projects",
+    "header.menu.bulk_create_tickets": "Bulk Create Tickets",
     "header.menu.initiative_links": "Initiative Links",
     "header.menu.initiative.share_point_url": "Share Point URL",
     "header.menu.time_booking": "Time Booking",
@@ -608,5 +610,14 @@
     "planning.plan_new_user.modal_select_user_label_text": "User",
     "planning.plan_new_user.modal_submit_but_text": "Add New User",
     "planning.confirm_store_alert.title": "Confirm Save",
-    "planning.confirm_store_alert.text": "Are you sure you want to save these planning?"
+    "planning.confirm_store_alert.text": "Are you sure you want to save these planning?",
+    "bulk_create_tickets.page_title": "{INITIATIVE_NAME} - Create Bulk Tickets",
+    "bulk_create_tickets.input_initial_estimation_development_time_placeholder": "Initial Estimation (Development Time)",
+    "bulk_create_tickets.checkbox_clarify_estimation": "Clarify & Estimation",
+    "bulk_create_tickets.button_create_bulk_tickets": "Create Bulk Tickets",
+    "bulk_create_tickets.functionalities_text": "Functionalities",
+    "bulk_create_tickets.hours_text": "Hours",
+    "bulk_create_tickets.clarify_and_estimation_text": "Clarify & Estimation",
+    "bulk_create_tickets.confirm_store_alert.title": "Confirm Save",
+    "bulk_create_tickets.confirm_store_alert.text": "Are you sure you want to save these bulk tickets?"
 }

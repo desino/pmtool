@@ -20,4 +20,9 @@ class Functionality extends Model
     {
         return $this->hasMany(Ticket::class)->where('status', '!=', Ticket::getStatusDone());
     }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
 }

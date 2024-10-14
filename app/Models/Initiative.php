@@ -55,6 +55,11 @@ class Initiative extends Model
         return $this->hasMany(Release::class);
     }
 
+    public function sections()
+    {
+        return $this->hasMany(Section::class);
+    }
+
     public static function statuses()
     {
         return [

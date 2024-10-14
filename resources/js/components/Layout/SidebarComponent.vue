@@ -23,7 +23,7 @@
                 <HeaderInitiativeDropBoxComponent />
             </div>
             <div
-                v-if="isActive('solution-design') || isActive('tasks') || isActive('my-tickets') || isActive('task.detail') || isActive('projects') || isActive('solution-design.detail') || isActive('solution-design.download')">
+                v-if="isActive('solution-design') || isActive('tasks') || isActive('my-tickets') || isActive('task.detail') || isActive('projects') || isActive('solution-design.detail') || isActive('solution-design.download') || isActive('bulk-create-tickets')">
                 <div class="shadow">
                     <div class="p-2 rounded-bottom">
                         <nav class="mt-1">
@@ -78,6 +78,14 @@
                                         :to="{ name: 'projects', params: { id: currentInitiative.id } }">
                                         <i class="bi bi-boxes mx-2"></i>
                                         {{ $t('header.menu.projects') }}
+                                    </router-link>
+                                </li>
+                                <li class="nav-item" v-if="currentInitiative.id">
+                                    <router-link class="nav-link text-dark"
+                                        :class="{ 'bg-opacity-25 bg-primary': isActive('bulk-create-tickets') }"
+                                        :to="{ name: 'bulk-create-tickets', params: { id: currentInitiative.id } }">
+                                        <i class="bi bi-ticket mx-2"></i>
+                                        {{ $t('header.menu.bulk_create_tickets') }}
                                     </router-link>
                                 </li>
                             </ul>

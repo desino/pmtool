@@ -23,6 +23,7 @@ router.beforeEach((to, from, next) => {
         'task.detail',
         'projects',
         'my-tickets',
+        'bulk-create-tickets',
     ];
 
     if (routesWithInitiativeId.includes(to.name)) {

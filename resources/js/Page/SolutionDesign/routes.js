@@ -5,6 +5,7 @@ import TicketListComponent from "@/Page/SolutionDesign/Ticket/TicketListComponen
 import ProjectListComponent from "./Project/ProjectListComponent.vue";
 import DownloadSolutionDesignComponent from "./DownloadSolutionDesignComponent.vue";
 import MyTicketListComponent from "./MyTicket/MyTicketListComponent.vue";
+import BulkCreateTicketsComponent from "./BulkCreateTickets/BulkCreateTicketsComponent.vue";
 
 export default [
     {
@@ -48,5 +49,11 @@ export default [
         name: 'my-tickets',
         component: MyTicketListComponent,
         meta: { requiresAuth: true, title: 'My Task List' },
+    },
+    {
+        path: '/solution-design/:id/bulk-create-tickets/',
+        name: 'bulk-create-tickets',
+        component: BulkCreateTicketsComponent,
+        meta: { requiresAuth: true, title: 'Bulk Create Tickets' },
     },
 ];

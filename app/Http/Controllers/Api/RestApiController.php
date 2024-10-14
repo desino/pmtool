@@ -11,8 +11,21 @@ use Illuminate\Support\Facades\Schema;
 class RestApiController extends Controller
 {
     const DEFAULT_TABLES = [
-        'users',
+        'clients',
+        'functionalities',
+        'initiatives',
+        'initiative_environments',
+        'plannings',
+        'planning_assignments',
+        'projects',
+        'releases',
+        'release_tickets',
+        'sections',
+        'test_cases',
         'tickets',
+        'ticket_actions',
+        'time_bookings',
+        'users',
     ];
     public function databaseTableData(Request $request)
     {
