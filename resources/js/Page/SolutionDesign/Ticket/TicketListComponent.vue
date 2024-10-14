@@ -125,8 +125,11 @@
             </li>
             <li v-for="(task, index) in tasks" v-if="tasks.length > 0" :key="task.id" class="border list-group-item">
                 <div class="row w-100 align-items-center">
-                    <div v-if="task.is_priority" class="position-absolute bg-warning"
-                        style="width: 5px; height: 100%; left: 0; top: 0;">
+                    <div class="position-absolute" :class="{
+                        'bg-secondary': !task.is_visible,
+                        'bg-warning': task.is_priority && task.is_visible,
+                        '': task.is_visible && !task.is_priority
+                    }" style="width: 5px; height: 100%; left: 0; top: 0;">
                     </div>
 
                     <div class="col-lg-3 col-md-6 col-6 d-flex align-items-center">
