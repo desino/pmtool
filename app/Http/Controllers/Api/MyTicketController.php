@@ -33,6 +33,8 @@ class MyTicketController extends Controller
             'tickets.composed_name',
             'tickets.asana_task_id',
             'tickets.macro_status',
+            'tickets.is_visible',
+            'tickets.is_priority',
         )
             ->with([
                 'currentAction' => function ($q) {

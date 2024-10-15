@@ -46,8 +46,14 @@
             <li v-for="(ticket, index) in tickets" v-if="tickets.length > 0" :key="ticket.id"
                 class="border list-group-item">
                 <div class="row w-100 align-items-center">
+                    <div class="position-absolute" :class="{
+                        'bg-secondary': !ticket.is_visible,
+                        'bg-warning': ticket.is_priority && ticket.is_visible,
+                        '': ticket.is_visible && !ticket.is_priority
+                    }" style="width: 5px; height: 100%; left: 0; top: 0;">
+                    </div>
                     <div class="col-lg-3 col-md-6 col-6 py-2">
-                        {{ ticket.composed_name }}
+                        <span class="mx-3">{{ ticket.composed_name }}</span>
                     </div>
                     <div class="col-lg-3 col-md-6 col-6 py-2 text-white text-center p-2"
                         :class="'bg-' + ticket.macro_status_label?.color">
