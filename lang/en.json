@@ -375,6 +375,7 @@
     "ticket_details.estimated_hours.update_but_text": "Submit",
     "ticket_action.move_to_previous_action": "Move to Previous Action",
     "ticket_details_input_initial_estimation_development_time": "Initial Estimation Development Time",
+    "ticket_details_input_dev_estimation_time": "Development Estimation Time",
     "ticket_detail_time_booking_modal.modal_title": "Time Booking",
     "ticket_detail_time_booking_modal.input_booked_date": "Booked Date",
     "ticket_detail_time_booking_modal.input_hours": "Hours",

@@ -24,6 +24,7 @@ class Ticket extends Model
         'is_enable_mark_as_done_but',
         'is_disable_action_user',
         'is_show_pre_action_but',
+        'is_allow_dev_estimation_time',
     ];
 
     public const TYPE_CHANGE_REQUEST = 1;
@@ -180,6 +181,11 @@ class Ticket extends Model
     protected function getIsShowMarkAsDoneButAttribute()
     {
         return $this->initiative_id ? $this->initiative->functional_owner_id == Auth::id() || $this->currentAction?->user_id == Auth::id() ?? false : false;
+    }
+
+    protected function getIsAllowDevEstimationTimeAttribute()
+    {
+        return $this->currentAction && $this->currentAction->user_id == Auth::id() && $this->currentAction->action == TicketAction::getActionClarifyAndEstimate() ? true : false;
     }
 
     protected function getIsEnableMarkAsDoneButAttribute()

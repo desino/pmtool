@@ -67,7 +67,7 @@
                     </div>
                     <div class="card-body border-0 bg-transparent p-1 align-content-center">
                         <div class="badge rounded-3 bg-success-subtle text-success mb-0">
-                            {{ ticketData.initial_dev_time }} hrs
+                            {{ ticketData.dev_estimation_time ?? ticketData.initial_dev_time }} hrs
                         </div>
                     </div>
                 </div>
@@ -170,7 +170,7 @@
                                     <div v-if="errors.release_note" class="text-danger mt-2">
                                         <span v-for="(error, index) in errors.release_note" :key="index">{{
                                             error
-                                        }}</span>
+                                            }}</span>
                                     </div>
                                     <button class="btn w-100 btn-desino text-white fw-bold m-2 rounded"
                                         @click="updateReleaseNote">
@@ -178,8 +178,7 @@
                                     </button>
                                 </div>
                             </div>
-                            <div class="card mt-2"
-                                v-if="currentAction?.action == 2 && currentAction?.user.id == user.id">
+                            <div class="card mt-2" v-if="ticketData.is_allow_dev_estimation_time">
                                 <div class="card-header">
                                     {{ $t('ticket_details.estimated_hours') }}
                                 </div>
@@ -187,17 +186,14 @@
                                     <form @submit.prevent="updateTicketDetailEstimatedHours">
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">{{
-                                                $t('ticket_details_input_initial_estimation_development_time')
-                                                }} <strong class="text-danger">*</strong>
+                                                $t('ticket_details_input_dev_estimation_time')
+                                            }} <strong class="text-danger">*</strong>
                                             </label>
-                                            <input v-model="estimatedHoursFormData.initial_estimation_development_time"
-                                                :class="{ 'is-invalid': errors.initial_estimation_development_time }"
+                                            <input v-model="estimatedHoursFormData.dev_estimation_time"
+                                                :class="{ 'is-invalid': errors.dev_estimation_time }"
                                                 class="form-control" type="text">
-                                            <div v-if="errors.initial_estimation_development_time"
-                                                class="invalid-feedback">
-                                                <span
-                                                    v-for="(error, index) in errors.initial_estimation_development_time"
-                                                    :key="index">
+                                            <div v-if="errors.dev_estimation_time" class="invalid-feedback">
+                                                <span v-for="(error, index) in errors.dev_estimation_time" :key="index">
                                                     {{ error }}
                                                 </span>
                                             </div>
@@ -318,13 +314,14 @@ export default {
             localTicketId: this.$route.params.ticket_id,
             selectedTask: this.$route.params.ticket_id,
             estimatedHoursFormData: {
-                initial_estimation_development_time: '',
+                dev_estimation_time: '',
                 initiative_id: '',
                 ticket_id: '',
             },
             ticketData: {
                 name: '',
                 initial_dev_time: '',
+                dev_estimation_time: '',
                 task_type: '',
                 functionality_name: '',
                 asana_task_link: '',
@@ -342,6 +339,7 @@ export default {
                 is_show_mark_as_done_but: false,
                 is_enable_mark_as_done_but: false,
                 is_show_pre_action_but: false,
+                is_allow_dev_estimation_time: false,
                 user_actions_count: 0
             },
             currentActionFormData: {
@@ -463,6 +461,7 @@ export default {
             this.ticketData.name = content.name;
             this.ticketData.composed_name = content.composed_name;
             this.ticketData.initial_dev_time = content.initial_estimation_development_time;
+            this.ticketData.dev_estimation_time = content.dev_estimation_time;
             this.ticketData.task_type = content.type_label;
             this.ticketData.status_label = content.status_label;
             this.ticketData.functionality_name = content?.functionality?.name.length > 0 ? content.initiative?.name + ' - ' + content?.functionality?.name : content.initiative?.name;
@@ -481,6 +480,7 @@ export default {
             this.ticketData.is_show_mark_as_done_but = content.is_show_mark_as_done_but;
             this.ticketData.is_enable_mark_as_done_but = content.is_enable_mark_as_done_but;
             this.ticketData.is_show_pre_action_but = content.is_show_pre_action_but;
+            this.ticketData.is_allow_dev_estimation_time = content.is_allow_dev_estimation_time;
             this.ticketData.is_disable_action_user = content.is_disable_action_user;
             this.currentAction = content.current_action;
             this.currentActionFormData.user_id = content.current_action?.user_id;
@@ -691,7 +691,7 @@ export default {
         },
         resetEstimatedHoursFormData() {
             this.estimatedHoursFormData = {
-                initial_estimation_development_time: "",
+                dev_estimation_time: "",
             };
             this.errors = {};
         },

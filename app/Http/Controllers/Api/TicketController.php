@@ -737,7 +737,7 @@ class TicketController extends Controller
         ];
         DB::beginTransaction();
         try {
-            $ticket->update(['initial_estimation_development_time' => $requestData['initial_estimation_development_time']]);
+            $ticket->update(['dev_estimation_time' => $requestData['dev_estimation_time']]);
             DB::commit();
             $retData = [
                 'ticket' => $ticket
