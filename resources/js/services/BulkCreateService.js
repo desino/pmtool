@@ -26,7 +26,7 @@ const BulkCreateService = {
         try {
             const endpoint = endpoints.storeNewBulkTickets.replace(':initiative_id', data.initiative_id);
             const response = await axiosRequest.post(endpoint, data);
-            return response;
+            return response.data;
         } catch (error) {
             throw handleError(error);
         }

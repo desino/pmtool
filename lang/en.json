@@ -249,6 +249,7 @@
     "messages.planning.initiative_not_found": "Initiative not found.",
     "messages.invalid_api_key": "Invalid API key.",
     "messages.ticket.bulk_tickets_created_success": "Bulk tickets created successfully.",
+    "messages.solution_design.section.functionality_not_exist": "Functionality does not exist.",
     "login_title": "Login",
     "login_page_title": "Login",
     "login_input_email": "Email",

@@ -69,6 +69,15 @@ class BulkCreateTicketsController extends Controller
             return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
         }
 
+        $functionalityIds = array_unique(array_merge(...array_map(function ($section) {
+            return array_column($section['functionality'], 'functionality_id');
+        }, $request->sections)));
+
+        $functionalities = Functionality::whereIn('id', $functionalityIds)->get();
+        if ($functionalities->count() != count($functionalityIds)) {
+            return ApiHelper::response($status, __('messages.solution_design.section.functionality_not_exist'), '', 400);
+        }
+
         $status = true;
         $message = __('messages.ticket.bulk_tickets_created_success');
         $statusCode = 200;
