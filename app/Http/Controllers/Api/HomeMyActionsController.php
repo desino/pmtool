@@ -18,7 +18,8 @@ class HomeMyActionsController extends Controller
             'initiatives.id',
             'initiatives.client_id',
             'initiatives.name',
-            DB::RAW('count(tickets.id) as tickets_count')
+            DB::RAW('count(tickets.id) as tickets_count'),
+            DB::RAW('count(CASE WHEN tickets.is_priority = 1 THEN 1 END) as is_priority_tickets_count')
         )
             ->with([
                 'client' => function ($query) {

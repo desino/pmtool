@@ -1,5 +1,4 @@
 <template>
-    <!-- <GlobalMessage v-if="showMessage" /> -->
     <div class="card">
         <div class="card-header bg-desino text-white text-center">
             {{ $t('home.my_actions.title') }}
@@ -8,7 +7,10 @@
             <ul class="list-group list-group-flush">
                 <li v-if="initiatives.length > 0" v-for="initiative in initiatives" :key="initiative.id"
                     class="list-group-item" role="button" @click="openMyTickets(initiative)">
-                    <div class="row w-100">
+                    <!-- bg-warning rounded -->
+                    <div class="row w-100" :class="{
+                        'bg-warning rounded p-1': initiative?.is_priority_tickets_count > 0
+                    }">
                         <div class="col-md-8 fw-bold">
                             {{ initiative?.client?.name }} -
                             {{ initiative.name }}
@@ -19,7 +21,7 @@
                                     {{ initiative?.tickets_count }}
                                     <span class="small">{{
                                         $t('home.my_actions.tickets.text')
-                                        }}</span>
+                                    }}</span>
                                 </div>
                             </h6>
                         </div>
@@ -31,7 +33,6 @@
 </template>
 
 <script>
-// import GlobalMessage from '../../components/GlobalMessage.vue';
 import { mapActions } from 'vuex';
 import showToast from '../../utils/toasts';
 import messageService from '../../services/messageService';
@@ -40,7 +41,6 @@ import HomeMyActionsService from '../../services/Home/HomeMyActionsService';
 export default {
     name: 'MyActionsComponent',
     components: {
-        // GlobalMessage
     },
     data() {
         return {
