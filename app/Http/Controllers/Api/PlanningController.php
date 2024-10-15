@@ -26,7 +26,8 @@ class PlanningController extends Controller
         $startWeekDate = "";
         $endWeekDate = "";
 
-        $startWeek = Carbon::now()->subWeek(4)->startOfWeek();
+        // $startWeek = Carbon::now()->subWeek(4)->startOfWeek();
+        $startWeek = Carbon::now()->startOfWeek();
         $endWeek = Carbon::now()->addWeek(8)->startOfWeek();
         if ($request->get('previous_or_next_of_week') == '-1') {
             $startWeek = Carbon::parse($request->get('start_date'))->subWeek(4)->startOfWeek();
@@ -40,8 +41,6 @@ class PlanningController extends Controller
         }
         $startWeekDate = $startWeek->toDateString();
         $endWeekDate = $endWeek->toDateString();
-        // echo "start: " . $startWeekDate . " end: " . $endWeekDate;
-        // exit;
 
         $loadWeeks = [];
         while ($startWeek->lte($endWeek)) {
