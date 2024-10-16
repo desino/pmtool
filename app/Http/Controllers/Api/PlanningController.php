@@ -19,6 +19,10 @@ class PlanningController extends Controller
 {
     public function index(Request $request)
     {
+        $authUser = Auth::user();
+        if (!$authUser->is_admin) {
+            return ApiHelper::response(false, __('messages.planning.dont_have_permission'), null, 404);
+        }
         $requestData = $request->all();
         $currentWeek = Carbon::now()->startOfWeek();
         $startWeek = "";
@@ -171,6 +175,10 @@ class PlanningController extends Controller
     public function storePlanning(Request $request)
     {
         $requestData = $request->all();
+        $authUser = Auth::user();
+        if (!$authUser->is_admin) {
+            return ApiHelper::response(false, __('messages.planning.dont_have_permission'), null, 404);
+        }
         $initiativeIds = array_unique(array_column($requestData, 'initiative_id'));
 
         $initiatives = Initiative::whereIn('id', $initiativeIds)->get();

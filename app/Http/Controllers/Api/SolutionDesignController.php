@@ -14,6 +14,7 @@ use App\Services\MytcpdfService;
 use App\Services\SolutionDesignService;
 use TCPDF;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -21,6 +22,10 @@ class SolutionDesignController extends Controller
 {
     public function index(Request $request)
     {
+        $authUser = Auth::user();
+        if (!$authUser->is_admin) {
+            return ApiHelper::response(false, __('messages.solution_design.dont_have_permission'), null, 404);
+        }
         $getSectionsWithFunctionalities = SolutionDesignService::getSectionsWithFunctionalities($request);
         return ApiHelper::response(true, '', $getSectionsWithFunctionalities, 200);
     }
@@ -106,6 +111,10 @@ class SolutionDesignController extends Controller
 
     public function storeSection(SectionRequest $request)
     {
+        $authUser = Auth::user();
+        if (!$authUser->is_admin) {
+            return ApiHelper::response(false, __('messages.solution_design.dont_have_permission'), null, 404);
+        }
         $status = false;
         $section = collect([]);
 
@@ -136,6 +145,10 @@ class SolutionDesignController extends Controller
 
     public function updateSection(SectionRequest $request)
     {
+        $authUser = Auth::user();
+        if (!$authUser->is_admin) {
+            return ApiHelper::response(false, __('messages.solution_design.dont_have_permission'), null, 404);
+        }
         DB::beginTransaction();
         $status = false;
         $section = collect([]);
@@ -175,6 +188,10 @@ class SolutionDesignController extends Controller
             'functionality' => ""
         ];
 
+        $authUser = Auth::user();
+        if (!$authUser->is_admin) {
+            return ApiHelper::response($status, __('messages.solution_design.dont_have_permission'), null, 404);
+        }
         $initiative = InitiativeService::getInitiative($request);
         if (!$initiative) {
             return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
@@ -227,6 +244,10 @@ class SolutionDesignController extends Controller
     {
         $status = false;
 
+        $authUser = Auth::user();
+        if (!$authUser->is_admin) {
+            return ApiHelper::response(false, __('messages.solution_design.dont_have_permission'), null, 404);
+        }
         $initiative = InitiativeService::getInitiative($request);
         if (!$initiative) {
             return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
@@ -240,9 +261,12 @@ class SolutionDesignController extends Controller
             return ApiHelper::response($status, __('messages.solution_design.functionality.section_not_exist'), '', 400);
         }
 
-        $functionality = Functionality::where('section_id', $request->post('section_id'))->find($request->post('id'));
+        $functionality = Functionality::with('tickets')->where('section_id', $request->post('section_id'))->find($request->post('id'));
         if (!$functionality) {
             return ApiHelper::response($status, __('messages.solution_design.functionality.functionality_not_exist'), '', 400);
+        }
+        if ($functionality->tickets->count() > 0) {
+            return ApiHelper::response($status, __('messages.solution_design.functionality.functionality_has_ticket'), '', 400);
         }
 
         DB::beginTransaction();
@@ -262,7 +286,10 @@ class SolutionDesignController extends Controller
     public function deleteSection(Request $request)
     {
         $status = false;
-
+        $authUser = Auth::user();
+        if (!$authUser->is_admin) {
+            return ApiHelper::response($status, __('messages.solution_design.dont_have_permission'), null, 404);
+        }
         $initiative = InitiativeService::getInitiative($request);
         if (!$initiative) {
             return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
@@ -274,6 +301,10 @@ class SolutionDesignController extends Controller
         $section = SolutionDesignService::getSection($request->post('id'), $request->post('initiative_id'));
         if (!$section) {
             return ApiHelper::response($status, __('messages.solution_design.functionality.section_not_exist'), '', 400);
+        }
+        $hasTickets = $section->functionalities()->whereHas('tickets')->exists();
+        if ($hasTickets) {
+            return ApiHelper::response($status, __('messages.solution_design.section.has_ticket'), '', 400);
         }
 
         DB::beginTransaction();
@@ -295,6 +326,10 @@ class SolutionDesignController extends Controller
 
     public function updateFunctionalityOrderNo(Request $request)
     {
+        $authUser = Auth::user();
+        if (!$authUser->is_admin) {
+            return ApiHelper::response(false, __('messages.solution_design.dont_have_permission'), null, 404);
+        }
         $statusCode = 200;
         $status = false;
         $message = __('messages.solution_design.section.update_functionality_order_no_success');
@@ -336,6 +371,10 @@ class SolutionDesignController extends Controller
 
     public function updateSectionOrderNo(Request $request)
     {
+        $authUser = Auth::user();
+        if (!$authUser->is_admin) {
+            return ApiHelper::response(false, __('messages.solution_design.dont_have_permission'), null, 404);
+        }
         DB::beginTransaction();
         $status = false;
 

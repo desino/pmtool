@@ -13,6 +13,7 @@ use App\Services\ClientService;
 use App\Services\InitiativeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -25,6 +26,10 @@ class OpportunityController extends Controller
     }
     public function index(Request $request)
     {
+        $authUser = Auth::user();
+        if (!$authUser->is_admin) {
+            return ApiHelper::response(false, __('messages.opportunity.dont_have_permission'), null, 404);
+        }
         $perPage = $request->input('per_page', 10);
         $Opportunities = InitiativeService::getOpportunityInitiative($request, $perPage, Initiative::getStatusOpportunity());
         $parsedOpportunities = ApiHelper::parsePagination($Opportunities);
@@ -48,10 +53,15 @@ class OpportunityController extends Controller
     {
         $requestData = $request->all();
 
+        $authUser = Auth::user();
+        if (!$authUser->is_admin) {
+            return ApiHelper::response(false, __('messages.opportunity.dont_have_permission'), null, 400);
+        }
+
         $initiative = Initiative::find($requestData['id']);
 
         if (!$initiative) {
-            return ApiHelper::response(false, __('messages.opportunity.not_found'), null, 404);
+            return ApiHelper::response(false, __('messages.opportunity.not_found'), null, 400);
         }
         $status = false;
 
@@ -95,6 +105,10 @@ class OpportunityController extends Controller
 
     public function updateStatusLost(Request $request)
     {
+        $authUser = Auth::user();
+        if (!$authUser->is_admin) {
+            return ApiHelper::response(false, __('messages.opportunity.dont_have_permission'), null, 404);
+        }
         $initiative = Initiative::find($request->post('id'));
         if (!$initiative) {
             return ApiHelper::response(false, __('messages.opportunity.not_found'), null, 404);

@@ -104,7 +104,7 @@
         <div class="row w-100 mx-0">
             <button class="btn btn-desino text-uppercase" @click="storePlanning">{{
                 $t('planning.store_button_text')
-                }}</button>
+            }}</button>
         </div>
     </div>
 

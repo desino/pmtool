@@ -68,6 +68,12 @@ class TicketController extends Controller
         ];
 
         $initiative = InitiativeService::getInitiative($request);
+
+        $authUser = Auth::user();
+        if (!$authUser->is_admin && $initiative->functional_owner_id != $authUser->id && $initiative->technical_owner_id != $authUser->id) {
+            return ApiHelper::response(false, __('messages.ticket.dont_have_permission'), null, 400);
+        }
+
         if (!$initiative) {
             return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
         }

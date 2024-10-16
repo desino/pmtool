@@ -7,10 +7,12 @@
             <!-- Global Loading Screen -->
             <loading-screen-component></loading-screen-component>
         </div>
-
-
         <main class="app-main">
-            <div v-if="serverError.message">
+            <div v-if="serverError.response?.data?.message && serverError.response?.data?.message != ''">
+                <ApiErrorPageComponent :error-message="serverError.response?.data?.message"
+                    :error-code="serverError.response?.status" />
+            </div>
+            <div v-else-if="serverError.message">
                 <ApiErrorPageComponent :error-message="serverError.message"
                     :error-code="serverError.response?.status" />
             </div>

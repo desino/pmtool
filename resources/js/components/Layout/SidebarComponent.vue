@@ -28,26 +28,35 @@
                     <div class="p-2 rounded-bottom">
                         <nav class="mt-1">
                             <ul class="nav sidebar-menu flex-column">
-                                <li class="nav-item">
+                                <li class="nav-item"
+                                    v-if="user?.is_admin || initiativeData?.functional_owner_id === user?.id || initiativeData?.technical_owner_id === user?.id">
                                     <a class="nav-link text-dark" href="javascript:" @click="showCreateTicketModal">
                                         <i class="bi bi-plus-circle mx-2"></i>
                                         {{ $t('header.menu.create_ticket') }}
                                     </a>
                                 </li>
-                                <li class="nav-item">
+                                <li class="nav-item" v-if="user?.is_admin">
                                     <a class="nav-link text-dark"
-                                        :class="{ 'bg-opacity-25 bg-primary': isActive('solution-design') || isActive('solution-design.detail') }"
+                                        :class="{ 'bg-opacity-25 bg-primary': isActive('solution-design') }"
                                         href="javascript:" @click="showSolutionDesign"><i
                                             class="bi bi-file-pdf-fill mx-2"></i>
                                         {{ $t('header.menu.solution_design') }}
                                     </a>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link class="nav-link text-dark"
+                                        :class="{ 'bg-opacity-25 bg-primary': isActive('solution-design.detail') }"
+                                        :to="{ name: 'solution-design.detail', params: { id: currentInitiative.id } }">
+                                        <i class="bi bi-file-pdf-fill mx-2"></i>
+                                        {{ $t('header.menu.solution_design_detail') }}
+                                    </router-link>
                                 </li>
                                 <li class="nav-item" v-if="currentInitiative.id">
                                     <router-link class="nav-link text-dark"
                                         :class="{ 'bg-opacity-25 bg-primary': isActive('solution-design.download') }"
                                         :to="{ name: 'solution-design.download', params: { id: currentInitiative.id } }">
                                         <i class="bi bi-file-pdf-fill mx-2"></i>
-                                        Solution PDF
+                                        {{ $t('header.menu.solution_design_pdf') }}
                                     </router-link>
                                 </li>
                                 <li class="nav-item">
@@ -125,19 +134,19 @@
                             <i class="bi bi-house mx-2"></i> {{ $t('header.menu.home') }}
                         </router-link>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" v-if="user?.is_admin">
                         <a class="nav-link text-dark" href="javascript:" @click="showCreateClientModal"><i
                                 class="bi bi-people mx-2"></i> {{
                                     $t('header.menu.create_client')
-                                }}</a>
+                                }} </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" v-if="user?.is_admin">
                         <a class="nav-link text-dark" href="javascript:" @click="showCreateInitiativeModal"><i
                                 class="bi bi-gear mx-2"></i> {{
                                     $t('header.menu.create_initiative')
                                 }}</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" v-if="user?.is_admin">
                         <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('opportunities') }"
                             :to="{ name: 'opportunities' }" class="nav-link text-dark"
                             @click="unselectHeaderInitiative"><i class="bi bi-list mx-2"></i>
@@ -156,7 +165,7 @@
                             }}
                         </router-link>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" v-if="user?.is_admin">
                         <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('planning') }"
                             :to="{ name: 'planning' }" class="nav-link text-dark" @click="unselectHeaderInitiative">
                             <i class="bi bi-calendar-week mx-2"></i>

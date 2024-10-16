@@ -9,6 +9,7 @@ use App\Models\Client;
 use App\Models\Project;
 use App\Services\AsanaService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -22,6 +23,11 @@ class ClientController extends Controller
     public function store(ClientRequest $request)
     {
         $validateData = $request->validated();
+
+        $authUser = Auth::user();
+        if (!$authUser->is_admin) {
+            return ApiHelper::response(false, __('messages.client.dont_have_permission'), null, 400);
+        }
 
         $status = false;
         $retData = [

@@ -6,6 +6,9 @@ import ProjectListComponent from "./Project/ProjectListComponent.vue";
 import DownloadSolutionDesignComponent from "./DownloadSolutionDesignComponent.vue";
 import MyTicketListComponent from "./MyTicket/MyTicketListComponent.vue";
 import BulkCreateTicketsComponent from "./BulkCreateTickets/BulkCreateTicketsComponent.vue";
+import { watchEffect } from "vue";
+import store from "../../store";
+import i18n from "../../i18n";
 
 export default [
     {
@@ -13,6 +16,23 @@ export default [
         name: 'solution-design',
         component: SolutionDesignComponent,
         meta: { requiresAuth: true, title: 'Solution Design' },
+        // beforeEnter: (to, from, next) => {
+        //     watchEffect(() => {
+        //         const loggedInUser = store.getters.user;
+        //         if (loggedInUser) {
+        //             if (!loggedInUser?.is_admin) {
+        //                 const passedData = {
+        //                     'type': 'danger',
+        //                     'message': i18n.global.t('solution_design.you_dont_have_permission_to_access_this_page')
+        //                 };
+        //                 store.commit("setPermissionMessage", passedData);
+        //                 next({ name: 'home' });
+        //             } else {
+        //                 next();
+        //             }
+        //         }
+        //     });
+        // }
     },
     {
         path: '/solution-design/detail/:id',

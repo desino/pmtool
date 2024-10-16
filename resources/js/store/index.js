@@ -72,6 +72,10 @@ export default new Vuex.Store({
 
         setPassedData(state, payload) {
             state.passedData = payload;
+        },
+
+        setPermissionMessage(state, messageObj) {
+            state.permissionMessageObj = messageObj;
         }
     },
     actions: {
@@ -95,7 +99,8 @@ export default new Vuex.Store({
         user: state => state.user,
         loading: state => state.loading,
         currentInitiative: state => state.currentInitiative,
-        passedData: state => state.passedData
+        passedData: state => state.passedData,
+        permissionMessage: state => state.permissionMessageObj
     },
 });
 

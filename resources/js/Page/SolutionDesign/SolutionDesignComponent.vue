@@ -77,17 +77,17 @@
                                         <span class="section_name fs-5 fw-bold">{{ section.display_name }}</span>
                                         <span class="section-menu ms-3 d-inline-block">
                                             <span class="hover-menu">
-                                                <a class="btn btn-desino btn-sm border-0 me-1" href="javascript:"
-                                                    @click="toggleSection(section.id)"
+                                                <a v-if="user?.is_admin" class="btn btn-desino btn-sm border-0 me-1"
+                                                    href="javascript:" @click="toggleSection(section.id)"
                                                     :class="isSectionActive(section.id) ? 'd-none' : ''">
                                                     <i class="bi bi-plus-lg"></i>
                                                 </a>
-                                                <a class="btn btn-desino btn-sm border-0 me-1" href="javascript:"
-                                                    @click="editSection(section)">
+                                                <a v-if="user?.is_admin" class="btn btn-desino btn-sm border-0 me-1"
+                                                    href="javascript:" @click="editSection(section)">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </a>
-                                                <a class="btn btn-danger btn-sm border-0 me-1" href="javascript:"
-                                                    @click="deleteSection(section)">
+                                                <a v-if="user?.is_admin" class="btn btn-danger btn-sm border-0 me-1"
+                                                    href="javascript:" @click="deleteSection(section)">
                                                     <i class="bi bi-trash3"></i>
                                                 </a>
                                             </span>
@@ -109,19 +109,19 @@
                                         <span><i class="bi bi-grip-vertical handle-functionality me-2"></i></span>
                                         <span>{{ functionality.display_name }}</span>
                                         <span class="ms-auto d-flex align-items-center">
-                                            <a class="nav-link text-dark" href="javascript:"
+                                            <a v-if="user?.is_admin" class="nav-link text-dark" href="javascript:"
                                                 :title="$t('solution_design.functionality_form.actions_create_ticket_tooltip')"
                                                 @click.stop="showFunctionalityCreateTicketModal(functionality)">
                                                 <i class="bi bi-plus-circle mx-2"></i>
                                             </a>
-                                            <a class="text-danger me-2" href="javascript:"
+                                            <a v-if="user?.is_admin" class="text-danger me-2" href="javascript:"
                                                 :title="$t('solution_design.functionality_form.actions_delete_tooltip')"
                                                 @click.stop="deleteFunctionality(functionality)">
                                                 <i class="bi bi-trash3"></i>
                                             </a>
                                             <span class="badge bg-secondary"
                                                 :title="$t('solution_design.functionality_form.actions_open_tickets_count_tooltip')"
-                                                @click.stop="showFunctionalityDetailModal(functionality)">{{
+                                                @click.stop="user?.is_admin && showFunctionalityDetailModal(functionality)">{{
                                                     functionality?.open_tickets_count
                                                 }}</span>
                                         </span>
@@ -132,10 +132,11 @@
                     </div>
                 </template>
             </draggable>
-            <AddNewSectionComponent class="mb-3" :initiativeData="initiativeData" @sectionAdded="handleSectionAdded" />
+            <AddNewSectionComponent v-if="user?.is_admin" class="mb-3" :initiativeData="initiativeData"
+                @sectionAdded="handleSectionAdded" />
         </div>
         <div class="col-md-8 border-top border-bottom p-3">
-            <form @submit.prevent="storeUpdateFunctionality" v-if="functionalityFormData.section_id">
+            <form @submit.prevent="storeUpdateFunctionality" v-if="functionalityFormData.section_id && user?.is_admin">
                 <input type="hidden" v-model="functionalityFormData.functionality_id">
                 <div class="row w-100">
                     <div class="col-md-6">
