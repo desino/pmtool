@@ -51,7 +51,7 @@
                                         {{ $t('header.menu.solution_design_detail') }}
                                     </router-link>
                                 </li>
-                                <li class="nav-item"
+                                <!-- <li class="nav-item"
                                     v-if="currentInitiative.id && (user?.is_admin || initiativeData?.functional_owner_id === user?.id || initiativeData?.technical_owner_id === user?.id)">
                                     <router-link class="nav-link text-dark"
                                         :class="{ 'bg-opacity-25 bg-primary': isActive('solution-design.download') }"
@@ -59,7 +59,7 @@
                                         <i class="bi bi-file-pdf-fill mx-2"></i>
                                         {{ $t('header.menu.solution_design_pdf') }}
                                     </router-link>
-                                </li>
+                                </li> -->
                                 <li class="nav-item" v-if="user?.is_admin">
                                     <a class="nav-link text-dark" href="javascript:" @click="showEditOpportunityModal">
                                         <i class="bi bi-pencil-square mx-2"></i>
