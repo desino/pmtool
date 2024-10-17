@@ -43,7 +43,7 @@
                                         {{ $t('header.menu.solution_design') }}
                                     </a>
                                 </li>
-                                <li class="nav-item">
+                                <li class="nav-item" v-if="currentInitiative.id">
                                     <router-link class="nav-link text-dark"
                                         :class="{ 'bg-opacity-25 bg-primary': isActive('solution-design.detail') }"
                                         :to="{ name: 'solution-design.detail', params: { id: currentInitiative.id } }">
@@ -60,13 +60,13 @@
                                         {{ $t('header.menu.solution_design_pdf') }}
                                     </router-link>
                                 </li>
-                                <li class="nav-item">
+                                <li class="nav-item" v-if="user?.is_admin">
                                     <a class="nav-link text-dark" href="javascript:" @click="showEditOpportunityModal">
                                         <i class="bi bi-pencil-square mx-2"></i>
                                         {{ $t('header.menu.edit_initiative') }}
                                     </a>
                                 </li>
-                                <li class="nav-item" v-if="currentInitiative.id">
+                                <li class="nav-item" v-if="currentInitiative.id && user?.is_admin">
                                     <router-link class="nav-link text-dark"
                                         :class="{ 'bg-opacity-25 bg-primary': isActive('tasks') || isActive('task.detail') }"
                                         :to="{ name: 'tasks', params: { id: currentInitiative.id } }">
@@ -82,7 +82,7 @@
                                         {{ $t('header.menu.my_ticket') }}
                                     </router-link>
                                 </li>
-                                <li class="nav-item" v-if="currentInitiative.id">
+                                <li class="nav-item" v-if="currentInitiative.id && user?.is_admin">
                                     <router-link class="nav-link text-dark"
                                         :class="{ 'bg-opacity-25 bg-primary': isActive('projects') }"
                                         :to="{ name: 'projects', params: { id: currentInitiative.id } }">
@@ -90,7 +90,7 @@
                                         {{ $t('header.menu.projects') }}
                                     </router-link>
                                 </li>
-                                <li class="nav-item" v-if="currentInitiative.id">
+                                <li class="nav-item" v-if="currentInitiative.id && user?.is_admin">
                                     <router-link class="nav-link text-dark"
                                         :class="{ 'bg-opacity-25 bg-primary': isActive('bulk-create-tickets') }"
                                         :to="{ name: 'bulk-create-tickets', params: { id: currentInitiative.id } }">

@@ -60,8 +60,6 @@ export default [
                     } else {
                         next();
                     }
-                } else {
-                    next();
                 }
             });
         }
@@ -71,6 +69,23 @@ export default [
         name: 'tasks',
         component: TicketListComponent,
         meta: { requiresAuth: true, title: 'Task List' },
+        beforeEnter: (to, from, next) => {
+            watchEffect(() => {
+                const loggedInUser = store.getters.user;
+                if (loggedInUser) {
+                    if (!loggedInUser?.is_admin) {
+                        const passedData = {
+                            'type': 'danger',
+                            'message': i18n.global.t('solution_design.you_dont_have_permission_to_access_this_page')
+                        };
+                        store.commit("setPermissionMessage", passedData);
+                        next({ name: 'home' });
+                    } else {
+                        next();
+                    }
+                }
+            });
+        }
     },
     {
         path: '/solution-design/:initiative_id/ticket-detail/:ticket_id',
@@ -83,6 +98,23 @@ export default [
         name: 'projects',
         component: ProjectListComponent,
         meta: { requiresAuth: true, title: 'Project' },
+        beforeEnter: (to, from, next) => {
+            watchEffect(() => {
+                const loggedInUser = store.getters.user;
+                if (loggedInUser) {
+                    if (!loggedInUser?.is_admin) {
+                        const passedData = {
+                            'type': 'danger',
+                            'message': i18n.global.t('solution_design.you_dont_have_permission_to_access_this_page')
+                        };
+                        store.commit("setPermissionMessage", passedData);
+                        next({ name: 'home' });
+                    } else {
+                        next();
+                    }
+                }
+            });
+        }
     },
     {
         path: '/solution-design/:id/my-tickets/',
@@ -95,5 +127,22 @@ export default [
         name: 'bulk-create-tickets',
         component: BulkCreateTicketsComponent,
         meta: { requiresAuth: true, title: 'Bulk Create Tickets' },
+        beforeEnter: (to, from, next) => {
+            watchEffect(() => {
+                const loggedInUser = store.getters.user;
+                if (loggedInUser) {
+                    if (!loggedInUser?.is_admin) {
+                        const passedData = {
+                            'type': 'danger',
+                            'message': i18n.global.t('solution_design.you_dont_have_permission_to_access_this_page')
+                        };
+                        store.commit("setPermissionMessage", passedData);
+                        next({ name: 'home' });
+                    } else {
+                        next();
+                    }
+                }
+            });
+        }
     },
 ];

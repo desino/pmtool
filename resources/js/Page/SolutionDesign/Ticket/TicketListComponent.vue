@@ -176,7 +176,7 @@
                             {{ $t('ticket.list.column_task_created_at') }} </span>
                         {{ task.display_created_at }}
                     </div> -->
-                    <div class="col-lg-2 col-md-12 col-12 justify-content-end text-end">
+                    <div v-if="user?.is_admin" class="col-lg-2 col-md-12 col-12 justify-content-end text-end">
                         <router-link
                             :to="{ name: 'task.detail', params: { initiative_id: this.initiative_id, ticket_id: task.id } }"
                             class="text-success me-2">

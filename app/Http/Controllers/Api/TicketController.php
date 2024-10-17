@@ -135,6 +135,10 @@ class TicketController extends Controller
 
     public function updateTicket(TicketRequest $request, $initiativeId, $ticketId)
     {
+        $authUser = Auth::user();
+        if (!$authUser->is_admin) {
+            return ApiHelper::response(false, __('messages.initiative.dont_have_permission'), null, 400);
+        }
         $validateData = $request->validated();
         $status = false;
         $retData = [
@@ -209,6 +213,10 @@ class TicketController extends Controller
 
     public function index($initiative_id, Request $request)
     {
+        $authUser = Auth::user();
+        if (!$authUser->is_admin) {
+            return ApiHelper::response(false, __('messages.initiative.dont_have_permission'), null, 404);
+        }
         $filters = $request->filters;
 
         $tickets = Ticket::select(
@@ -313,6 +321,10 @@ class TicketController extends Controller
 
     public function editTicket(Request $request, $initiative_id, $ticket_id)
     {
+        $authUser = Auth::user();
+        if (!$authUser->is_admin) {
+            return ApiHelper::response(false, __('messages.initiative.dont_have_permission'), null, 400);
+        }
         $status = false;
         $initiative = InitiativeService::getInitiative($request, $initiative_id);
         if (!$initiative) {
@@ -360,6 +372,7 @@ class TicketController extends Controller
             'nextAction',
             'previousAction',
             'testCases',
+            'actions'
         ])
             ->withCount([
                 'actions' => function ($query) {
@@ -374,6 +387,12 @@ class TicketController extends Controller
         // If the ticket is not found, return a 404 response
         if (!$ticket) {
             return ApiHelper::response(false, __('messages.ticket.not_found'), [], 404);
+        }
+
+        $actionsUserIds = $ticket->actions->pluck('user_id');
+        $authUser = Auth::user();
+        if (!$authUser->is_admin && !$actionsUserIds->contains($authUser->id) && !$ticket->is_visible) {
+            return ApiHelper::response(false, __('messages.initiative.dont_have_permission'), null, 404);
         }
 
         // Fetch all tickets for the given initiative

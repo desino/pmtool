@@ -8,6 +8,7 @@ use App\Http\Requests\Api\ProjectRequest;
 use App\Models\Project;
 use App\Services\InitiativeService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -15,6 +16,10 @@ class ProjectController extends Controller
 {
     public function index(Request $request)
     {
+        $authUser = Auth::user();
+        if (!$authUser->is_admin) {
+            return ApiHelper::response(false, __('messages.initiative.dont_have_permission'), null, 404);
+        }
         $perPage = $request->input('per_page', 10);
 
         $filters = $request->post('filters');
@@ -66,6 +71,10 @@ class ProjectController extends Controller
 
     public function changeStatus(Request $request)
     {
+        $authUser = Auth::user();
+        if (!$authUser->is_admin) {
+            return ApiHelper::response(false, __('messages.initiative.dont_have_permission'), null, 404);
+        }
         $status = false;
         $requestData = $request->all();
 
@@ -104,6 +113,10 @@ class ProjectController extends Controller
 
     public function update(ProjectRequest $request)
     {
+        $authUser = Auth::user();
+        if (!$authUser->is_admin) {
+            return ApiHelper::response(false, __('messages.initiative.dont_have_permission'), null, 404);
+        }
         $status = false;
         $requestData = $request->all();
         $project = Project::where('initiative_id', $requestData['initiative_id'])->find($requestData['id']);

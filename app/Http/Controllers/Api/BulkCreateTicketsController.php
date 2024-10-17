@@ -27,6 +27,10 @@ class BulkCreateTicketsController extends Controller
     }
     public function index(Request $request)
     {
+        $authUser = Auth::user();
+        if (!$authUser->is_admin) {
+            return ApiHelper::response(false, __('messages.initiative.dont_have_permission'), null, 404);
+        }
         $initiative = Initiative::find($request->initiative_id);
 
         $sectionsWithFunctionalities = Section::select(
@@ -63,6 +67,10 @@ class BulkCreateTicketsController extends Controller
 
     public function storeNewBulkTickets(Request $request)
     {
+        $authUser = Auth::user();
+        if (!$authUser->is_admin) {
+            return ApiHelper::response(false, __('messages.initiative.dont_have_permission'), null, 404);
+        }
         $status = false;
         $initiative = InitiativeService::getInitiative($request);
         if (!$initiative) {
