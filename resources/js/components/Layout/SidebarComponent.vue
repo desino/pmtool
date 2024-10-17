@@ -51,7 +51,8 @@
                                         {{ $t('header.menu.solution_design_detail') }}
                                     </router-link>
                                 </li>
-                                <li class="nav-item" v-if="currentInitiative.id">
+                                <li class="nav-item"
+                                    v-if="currentInitiative.id && (user?.is_admin || initiativeData?.functional_owner_id === user?.id || initiativeData?.technical_owner_id === user?.id)">
                                     <router-link class="nav-link text-dark"
                                         :class="{ 'bg-opacity-25 bg-primary': isActive('solution-design.download') }"
                                         :to="{ name: 'solution-design.download', params: { id: currentInitiative.id } }">
@@ -214,6 +215,7 @@ import EditOpportunityModalComponent from './../../Page/Opportunity/EditOpportun
 import { Modal } from "bootstrap";
 import eventBus from "@/eventBus.js";
 import OpportunityService from "../../services/OpportunityService";
+import store from "../../store";
 
 export default {
     name: 'SidebarComponent',
@@ -298,6 +300,7 @@ export default {
             if (this.sidebar_selected_initiative_id) {
                 const response = await OpportunityService.getOpportunity(this.sidebar_selected_initiative_id);
                 this.initiativeData = response.content;
+                store.commit("setCurrentInitiative", response.content);
             }
         },
     },

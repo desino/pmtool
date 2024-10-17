@@ -16,23 +16,23 @@ export default [
         name: 'solution-design',
         component: SolutionDesignComponent,
         meta: { requiresAuth: true, title: 'Solution Design' },
-        // beforeEnter: (to, from, next) => {
-        //     watchEffect(() => {
-        //         const loggedInUser = store.getters.user;
-        //         if (loggedInUser) {
-        //             if (!loggedInUser?.is_admin) {
-        //                 const passedData = {
-        //                     'type': 'danger',
-        //                     'message': i18n.global.t('solution_design.you_dont_have_permission_to_access_this_page')
-        //                 };
-        //                 store.commit("setPermissionMessage", passedData);
-        //                 next({ name: 'home' });
-        //             } else {
-        //                 next();
-        //             }
-        //         }
-        //     });
-        // }
+        beforeEnter: (to, from, next) => {
+            watchEffect(() => {
+                const loggedInUser = store.getters.user;
+                if (loggedInUser) {
+                    if (!loggedInUser?.is_admin) {
+                        const passedData = {
+                            'type': 'danger',
+                            'message': i18n.global.t('solution_design.you_dont_have_permission_to_access_this_page')
+                        };
+                        store.commit("setPermissionMessage", passedData);
+                        next({ name: 'home' });
+                    } else {
+                        next();
+                    }
+                }
+            });
+        }
     },
     {
         path: '/solution-design/detail/:id',
@@ -45,6 +45,26 @@ export default [
         name: 'solution-design.download',
         component: DownloadSolutionDesignComponent,
         meta: { requiresAuth: true, title: 'Solution Design Download' },
+        beforeEnter: (to, from, next) => {
+            watchEffect(() => {
+                const loggedInUser = store.getters.user;
+                const currentInitiative = store.getters.currentInitiative;
+                if (loggedInUser && currentInitiative) {
+                    if (!loggedInUser?.is_admin && currentInitiative?.functional_owner_id != loggedInUser?.id && currentInitiative.technical_owner_id != loggedInUser?.id) {
+                        const passedData = {
+                            'type': 'danger',
+                            'message': i18n.global.t('solution_design.you_dont_have_permission_to_access_this_page')
+                        };
+                        store.commit("setPermissionMessage", passedData);
+                        next({ name: 'home' });
+                    } else {
+                        next();
+                    }
+                } else {
+                    next();
+                }
+            });
+        }
     },
     {
         path: '/solution-design/:id/tickets/',

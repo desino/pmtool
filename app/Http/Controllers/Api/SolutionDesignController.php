@@ -22,21 +22,36 @@ class SolutionDesignController extends Controller
 {
     public function index(Request $request)
     {
-        $authUser = Auth::user();
-        if (!$authUser->is_admin) {
-            return ApiHelper::response(false, __('messages.solution_design.dont_have_permission'), null, 404);
-        }
+        // $authUser = Auth::user();
+        // if (!$authUser->is_admin) {
+        //     return ApiHelper::response(false, __('messages.solution_design.dont_have_permission'), null, 404);
+        // }
         $getSectionsWithFunctionalities = SolutionDesignService::getSectionsWithFunctionalities($request);
         return ApiHelper::response(true, '', $getSectionsWithFunctionalities, 200);
     }
     public function downloadList(Request $request)
     {
+        $authUser = Auth::user();
+        $initiative = InitiativeService::getInitiative($request);
+        if (!$initiative) {
+            return ApiHelper::response(false, __('messages.solution_design.initial_data_not_found'), '', 200);
+        }
+        if (!$authUser->is_admin && $initiative->functional_owner_id != $authUser->id && $initiative->technical_owner_id != $authUser->id) {
+            return ApiHelper::response(false, __('messages.solution_design.dont_have_permission'), null, 404);
+        }
         $getSectionsWithFunctionalities = SolutionDesignService::getSectionsWithFunctionalitiesForDownloadList($request);
         return ApiHelper::response(true, '', $getSectionsWithFunctionalities, 200);
     }
     public function downloadPDF(Request $request)
     {
+        $authUser = Auth::user();
         $initiative = InitiativeService::getInitiative($request);
+        if (!$initiative) {
+            return ApiHelper::response(false, __('messages.solution_design.initial_data_not_found'), '', 200);
+        }
+        if (!$authUser->is_admin && $initiative->functional_owner_id != $authUser->id && $initiative->technical_owner_id != $authUser->id) {
+            return ApiHelper::response(false, __('messages.solution_design.dont_have_permission'), null, 404);
+        }
         $sectionsWithFunctionalities = SolutionDesignService::getSectionsWithFunctionalitiesForDownloadList($request);
 
         $pdfTitle = trans('messages.solution_design_pdf_title', ['INITIATIVE_NAME' => $initiative->name]);

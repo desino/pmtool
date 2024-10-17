@@ -90,6 +90,7 @@ export default {
             collapsedSections: {}, // for collapse and expand
             initiativeId: this.$route.params.id,
             initiativeData: {},
+            selectedFunctionalityId: "",
             sectionsWithFunctionalities: [],
             showMessage: true,
         };

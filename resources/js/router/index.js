@@ -4,6 +4,7 @@ import { routes } from "../router/routes.js";
 import NotFoundComponent from "../components/Errors/NotFoundComponent.vue";
 import { APP_VARIABLES } from './../constants.js';
 import eventBus from "./../eventBus.js";
+import OpportunityService from '../services/OpportunityService.js';
 
 const router = createRouter({
     history: createWebHistory(),
@@ -28,7 +29,13 @@ router.beforeEach((to, from, next) => {
 
     if (routesWithInitiativeId.includes(to.name)) {
         let initiativeId = to.params.initiative_id ?? to.params.id;
-        store.commit("setCurrentInitiative", { id: initiativeId });
+
+        OpportunityService.getOpportunity(initiativeId)
+            .then(response => {
+                if (response && response.content) {
+                    store.commit("setCurrentInitiative", response.content);
+                }
+            });
     }
 
     // Update document title based on route meta
@@ -44,10 +51,10 @@ router.beforeEach((to, from, next) => {
     } else {
         next();  // Continue navigation
     }
-
-
-
 });
 
 
+function test() {
+
+}
 export default router;
