@@ -374,7 +374,7 @@
     "ticket_details.next_action_title": "Next Actions",
     "ticket_details.next_action_user": "Next Action User",
     "ticket_details.next_action_status": "Next Action Status",
-    "ticket_details.task_details": "Task Details",
+    "ticket_details.task_details": "Feature Information",
     "ticket_details.test_cases": "Test Cases",
     "ticket_details.client_release_notes": "Release Notes For Client",
     "ticket_details.client_release_notes_description": "Describe & Document the change done for the client. Use print-screen so that the client has clarity on how the functionality has changed",

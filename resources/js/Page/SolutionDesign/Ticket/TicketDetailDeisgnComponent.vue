@@ -148,10 +148,9 @@
                     <div class="row w-100">
                         <div class="col-md-6 my-2">
                             <div class="card h-100">
-                                <div class="card-header fw-bold">
-                                    <span class="badge bg-desino">{{ ticketData.initiative_name }}</span>
-                                    <span v-if="ticketData.display_functionality_name">
-                                        : {{ ticketData.display_functionality_name }}
+                                <div class="card-header fw-bold" v-if="ticketData.display_functionality_name">
+                                    <span>
+                                        {{ ticketData.display_functionality_name }}
                                     </span>
                                 </div>
                                 <div class="card-body">
