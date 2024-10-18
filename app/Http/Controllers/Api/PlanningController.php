@@ -109,7 +109,7 @@ class PlanningController extends Controller
                 'name' => '<i class="bi bi-plus-circle"></i>',
                 'hours_per_week' => $userHoursPerWeekForPlanningAddNewUserRow,
             ];
-            array_push($initiativeUsersArray, $planningAddNewUserRow);
+            // array_push($initiativeUsersArray, $planningAddNewUserRow);            
             $planningUsersRows[] = [
                 'default_row_name' => '',
                 'initiative_id' => $initiativeData->initiative_id,

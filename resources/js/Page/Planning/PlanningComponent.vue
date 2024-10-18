@@ -64,7 +64,9 @@
                         <th v-if="planning.default_row_name == '' && userIndex == 0"
                             class="border total_abs1 bg-opacity-25 text-center align-middle p-1"
                             :rowspan="planning.users.length">
-                            {{ planning.initiative_name }}
+                            <span>{{ planning.initiative_name }}</span>
+                            <button class="btn btn-info text-white bg-opacity-25 btn-sm w-100 mt-auto"
+                                @click="handlePlanNewUser(planning)"><i class="bi bi-plus-circle"></i></button>
                         </th>
                         <!-- below td for plan new user -->
                         <th v-if="planning.default_row_name == '' && user.id != ''" class="border abs1 text-left p-1">
@@ -234,11 +236,11 @@ export default {
                     'name': formData.user_name,
                     'hours_per_week': hoursPerWeek,
                 },
-                {
-                    'id': '',
-                    'name': '<i class="bi bi-plus-circle"></i>',
-                    'hours_per_week': hoursPerWeek,
-                }
+                // {
+                //     'id': '',
+                //     'name': '<i class="bi bi-plus-circle"></i>',
+                //     'hours_per_week': hoursPerWeek,
+                // }
             )
             this.plannings.splice(this.plannings.length - 1, 0, addNewPlaning);
         },
@@ -255,7 +257,8 @@ export default {
                 'hours_per_week': hoursPerWeek,
             }
             const initiative = this.plannings.find(planning => planning.initiative_id == formData.initiative_id);
-            initiative.users.splice(initiative.users.length - 1, 0, addNewUser);
+            // initiative.users.splice(initiative.users.length - 1, 0, addNewUser);
+            initiative.users.splice(initiative.users.length, 0, addNewUser);
         },
         async storePlanning() {
             this.$swal({
