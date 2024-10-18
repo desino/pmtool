@@ -4,13 +4,6 @@
             <div class="row w-100">
                 <div class="col-sm-12 mb-3">
                     <h3 class="m-0">{{ $t('solution_design_download.page_title') }} - {{ initiativeData.name }}</h3>
-                    <!-- <h5>
-                        <span class="badge rounded bg-desino text-light my-3">
-                            {{ $t('solution_design_download.development_ballpark') }}: {{
-                                initiativeData.ballpark_development_hours }} {{
-                                $t('solution_design_download.development_ballpark_hrs') }}
-                        </span>
-                    </h5> -->
                 </div>
             </div>
         </div>
