@@ -47,19 +47,40 @@
             </div>
         </div>
 
-        <div class="col-md-8 border-start border-bottom border-top">
+        <!-- <div class="col-md-8 border-start border-bottom border-top">
             <section class="p-2 border-bottom section_detail" v-for="section in sectionsWithFunctionalities"
                 :key="section.id" :id="'section_' + section.id">
-                <h5 class="mb-2 text-primary"># {{ section.display_name }}</h5>
+                <h5 class="mb-2 text-desino"> {{ section.display_name }}</h5>
                 <div v-if="section.functionalities.length > 0" class="px-4"
                     v-for="functionality in section.functionalities" :key="functionality.id"
                     :id="'functionality_' + functionality.id">
-                    <h6># {{ functionality.display_name }}</h6>
+                    <h6> {{ functionality.display_name }}</h6>
 
                     <p class="ps-3 text-break mw-100" v-html="functionality.description">
                     </p>
                 </div>
             </section>
+        </div> -->
+        <div class="col-md-8 border-start border-bottom border-top">
+            <div class="p-3">
+                <div v-for="section in sectionsWithFunctionalities" :key="section.id" :id="'section_' + section.id"
+                    class="mb-4">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-desino text-white">
+                            <h5 class="mb-0">{{ section.display_name }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul v-if="section.functionalities.length > 0" class="list-group list-group-flush">
+                                <li v-for="functionality in section.functionalities" :key="functionality.id"
+                                    :id="'functionality_' + functionality.id" class="list-group-item">
+                                    <h6 class="fw-semibold text-dark">{{ functionality.display_name }}</h6>
+                                    <p class="text-muted text-break mw-100" v-html="functionality.description"></p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
