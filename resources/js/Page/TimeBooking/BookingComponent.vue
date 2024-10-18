@@ -103,6 +103,9 @@
                                         {{ ticket.hours_per_day[weekDay.date]?.hours > 0 ?
                                             ticket.hours_per_day[weekDay.date]?.hours : ' ' }}
                                     </span>
+                                    <span v-if="timeBooking.initiative_id && ticket.ticket_id == '' && ticketIndex != 0"
+                                        class="badge text-secondary" v-html="ticket.hours_per_day[weekDay.date]?.hours">
+                                    </span>
                                     <span v-if="!timeBooking.initiative_id" class="badge text-secondary"
                                         v-html="ticket.hours_per_day[weekDay.date]?.hours">
                                     </span>

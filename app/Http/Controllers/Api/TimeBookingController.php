@@ -158,7 +158,7 @@ class TimeBookingController extends Controller
             ];
             $initiativeLevelTicketBookingHoursPerDay = [];
             foreach ($weekDays as $weekDay) {
-                $initiativeLevelTicketBookingHoursPerDay[$weekDay['date']]['hours'] = '';
+                $initiativeLevelTicketBookingHoursPerDay[$weekDay['date']]['hours'] = '<i class="bi bi-plus-circle"></i>';
                 $initiativeLevelTicketBookingHoursPerDay[$weekDay['date']]['is_allow_booking'] = $weekDay['date'] <= Carbon::now()->format('Y-m-d') ?? false;
             }
             $initiativeLevelTicketBookingRowData['hours_per_day'] = $initiativeLevelTicketBookingHoursPerDay;
