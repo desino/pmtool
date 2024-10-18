@@ -53,7 +53,7 @@
                     }" style="width: 5px; height: 100%; left: 0; top: 0;">
                     </div>
                     <div class="col-lg-3 col-md-6 col-6 py-2">
-                        <span class="mx-3">{{ ticket.composed_name }}</span>
+                        <span class="mx-3 d-flex">{{ ticket.composed_name }}</span>
                     </div>
                     <div class="col-lg-3 col-md-6 col-6 py-2 text-white text-center p-2"
                         :class="'bg-' + ticket.macro_status_label?.color">
