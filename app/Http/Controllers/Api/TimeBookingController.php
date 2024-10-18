@@ -12,6 +12,7 @@ use App\Models\Initiative;
 use App\Models\Ticket;
 use App\Models\TimeBooking;
 use App\Services\InitiativeService;
+use App\Services\ProjectService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -167,135 +168,9 @@ class TimeBookingController extends Controller
             $ticketRowsCount += count($initiativeTickets);
         }
         array_push($timeBookingRowData, $defaultRowData);
-        $retData['ticketRowsCount'] = $ticketRowsCount + 1;//adding last row
+        $retData['ticketRowsCount'] = $ticketRowsCount + 1; //adding last row
         $retData['initiativeWithTicketsAndTimeBooking'] = $timeBookingRowData;
-        return ApiHelper::response(true, '', $retData, 200);    
-
-
-
-        // =============== OLD logic for a time booking ==============
-        // $initiative = Initiative::select(
-        //     'initiatives.id',
-        //     'initiatives.name'
-        // )
-        //     ->with([
-        //         'timeBookings' => function ($q) use ($startOfWeek, $endOfWeek) {
-        //             $q->select(
-        //                 'initiative_id',
-        //                 'booked_date',
-        //                 DB::RAW('SUM(hours) as duration'),
-        //             )
-        //                 ->where('user_id', Auth::id())
-        //                 ->whereBetween('booked_date', [$startOfWeek, $endOfWeek])
-        //                 ->groupBy('initiative_id')
-        //                 ->groupBy('booked_date');
-        //         },
-        //         'timeBookingsWithoutTickets' => function ($q) use ($startOfWeek, $endOfWeek) {
-        //             $q->select(
-        //                 'initiative_id',
-        //                 'booked_date',
-        //                 DB::RAW('SUM(hours) as duration'),
-        //             )
-        //                 ->where('user_id', Auth::id())
-        //                 ->whereBetween('booked_date', [$startOfWeek, $endOfWeek])
-        //                 ->groupBy('initiative_id')
-        //                 ->groupBy('booked_date');
-        //         },
-        //         'tickets' => function ($q) use ($startOfWeek, $endOfWeek) {
-        //             $q->select(
-        //                 'id',
-        //                 'initiative_id',
-        //                 'name',
-        //                 'composed_name',
-        //             )
-        //                 ->with([
-        //                     'timeBookings' => function ($query) use ($startOfWeek, $endOfWeek) {
-        //                         $query->select(
-        //                             'ticket_id',
-        //                             'booked_date',
-        //                             DB::RAW('SUM(hours) as duration')
-        //                         )
-        //                             ->where('user_id', Auth::id())
-        //                             ->whereBetween('booked_date', [$startOfWeek, $endOfWeek])
-        //                             ->groupBy('ticket_id')
-        //                             ->groupBy('booked_date');
-        //                     }
-        //                 ])
-        //                 ->whereHas('actions', function ($query) {
-        //                     $query->where('user_id', Auth::id());
-        //                 });
-        //         },
-        //     ])
-        //     ->where(function ($query) use ($startOfWeek, $endOfWeek) {
-        //         $query->whereHas('tickets', function ($query) {
-        //             $query->where('tickets.status', '!=', Ticket::getStatusDone())
-        //                 ->whereHas('actions', function ($query) {
-        //                     $query->where('user_id', Auth::id());
-        //                 });
-        //         })
-        //             ->orWhereHas('timeBookings', function ($query) use ($startOfWeek, $endOfWeek) {
-        //                 $query->where('user_id', Auth::id())
-        //                     ->whereBetween('booked_date', [$startOfWeek, $endOfWeek]);
-        //             });
-        //     })
-        //     ->orderBy('initiatives.id')
-        //     ->get();
-        // $initiativeCount = $initiative->count();
-        // $initiativeData = [];
-        // $totalTicketCount = 0;
-        // foreach ($initiative as $initiative) {
-        //     $row = [
-        //         'initiative_id' => $initiative->id,
-        //         'initiative_name' => $initiative->name,
-        //         'initiative_booking' => [],
-        //         'tickets' => [],
-        //     ];
-
-        //     $totalTicketCount += $initiative->tickets->count();
-        //     $initiativeLevelHours = [];
-        //     foreach ($weekDays as $weekDay) {
-        //         $booked = $initiative->timeBookings->firstWhere('booked_date', $weekDay['date']);
-        //         $hours = $booked ? $booked->duration : 0;
-        //         $initiativeLevelHours[$weekDay['date']] = $hours;
-        //         $retData['weekDays'][array_search($weekDay, $weekDays)]['total_hours'] += $hours;
-        //     }
-        //     $row['initiative_booking'] = $initiativeLevelHours;
-
-        //     $initiativeLevelBookingRowData = [
-        //         'ticket_id' => '',
-        //         'ticket_name' => __('messages.time_booking.list_table.initiative_level_booking'),
-        //         'hours_per_day' => [],
-        //     ];
-        //     $initiativeLevelBookingHoursPerDay = [];
-
-        //     foreach ($weekDays as $weekDay) {
-        //         $initiativeTimeBookingBooked = $initiative->timeBookingsWithoutTickets->firstWhere('booked_date', $weekDay['date']);
-        //         $initiativeLevelBookingHoursPerDay[$weekDay['date']]['hours'] = $initiativeTimeBookingBooked ? $initiativeTimeBookingBooked->duration : '';
-        //         $initiativeLevelBookingHoursPerDay[$weekDay['date']]['is_allow_booking'] = $weekDay['date'] <= Carbon::now()->format('Y-m-d') ?? false;
-        //     }
-        //     $initiativeLevelBookingRowData['hours_per_day'] = $initiativeLevelBookingHoursPerDay;
-        //     $row['tickets'][] = $initiativeLevelBookingRowData;
-
-        //     foreach ($initiative->tickets as $ticketKey => $ticket) {
-        //         $ticketRow = [
-        //             'ticket_id' => $ticket->id,
-        //             'ticket_name' => $ticket->name,
-        //             'hours_per_day' => [],
-        //         ];
-        //         $hoursPerDay = [];
-        //         foreach ($weekDays as $weekDay) {
-        //             $booked = $ticket->timeBookings->firstWhere('booked_date', $weekDay['date']);
-        //             $hoursPerDay[$weekDay['date']]['hours'] = $booked ? $booked->duration : '';
-        //             $hoursPerDay[$weekDay['date']]['is_allow_booking'] = $weekDay['date'] <= Carbon::now()->format('Y-m-d') ?? false;
-        //         }
-        //         $ticketRow['hours_per_day'] = $hoursPerDay;
-        //         $row['tickets'][] = $ticketRow;
-        //     }
-        //     $initiativeData[] = $row;
-        // }
-        // $retData['thRowSpanCount'] = $totalTicketCount + $initiativeCount + 1;
-        // $retData['initiativeWithTicketsAndTimeBooking'] = $initiativeData;
-        // return ApiHelper::response(true, '', $retData, 200);
+        return ApiHelper::response(true, '', $retData, 200);
     }
 
     public function getTimeBookingModalInitialData(Request $request)
@@ -313,6 +188,8 @@ class TimeBookingController extends Controller
                 return ApiHelper::response($status, __('messages.ticket.not_found'), '', 400);
             }
         }
+
+        $projects = ProjectService::getInitiativeProjects($initiative->id);
 
         $status = true;
         $statusCode = 200;
@@ -335,6 +212,7 @@ class TimeBookingController extends Controller
         $data = [
             'timeBookings' => $timeBookings,
             'totalTimeBookingHours' => $timeBookings->sum('hours'),
+            'projects' => $projects
         ];
         return ApiHelper::response($status, '', $data, $statusCode);
     }
@@ -388,6 +266,7 @@ class TimeBookingController extends Controller
         $endDate = Carbon::parse($requestData['end_date'])->format('Y-m-d');
         $initiatives = Initiative::whereDoesntHave('timeBookings', function ($query) use ($startDate, $endDate) {
             $query->whereNotNull('initiative_id')
+                ->where('user_id', Auth::id())
                 ->whereBetween('booked_date', [$startDate, $endDate]);
         })
             ->get();

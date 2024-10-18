@@ -590,6 +590,7 @@
     "time_booking.modal_submit_but_text": "Book",
     "time_booking.modal_submit_and_close_but_text": "Book & Close",
     "time_booking.modal_input_hours_label_text": "Hours",
+    "time_booking.modal_input_project_label_text": "Project",
     "time_booking.modal_textarea_Comments_label_text": "Comments",
     "time_booking.modal.list_table.hours": "Hours",
     "time_booking.modal.list_table.action": "Action",

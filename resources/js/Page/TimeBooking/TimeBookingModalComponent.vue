@@ -15,15 +15,33 @@
                 <form @submit.prevent="storeTimeBooking">
                     <div class="mb-3 p-3 shadow">
                         <div class="row w-100">
-                            <div class="col-2 mb-3">
-                                <input type="text" v-model="formData.hours" :class="{ 'is-invalid': errors.hours }"
-                                    class="form-control" :placeholder="$t('time_booking.modal_input_hours_label_text')">
-                                <small v-if="errors.hours" class="invalid-feedback">
-                                    <span v-for="(error, index) in errors.hours" :key="index">{{ error
-                                        }}</span>
-                                </small>
+                            <div class="col-4">
+                                <div class="mb-3">
+                                    <input type="text" v-model="formData.hours" :class="{ 'is-invalid': errors.hours }"
+                                        class="form-control"
+                                        :placeholder="$t('time_booking.modal_input_hours_label_text')">
+                                    <small v-if="errors.hours" class="invalid-feedback">
+                                        <span v-for="(error, index) in errors.hours" :key="index">{{ error
+                                            }}</span>
+                                    </small>
+                                </div>
+                                <div class="mb-3" v-if="user?.is_admin && formData.ticket_id == ''">
+                                    <select v-model="formData.project_id" :class="{ 'is-invalid': errors.project_id }"
+                                        class="form-select">
+                                        <option value="">{{
+                                            $t('time_booking.modal_input_project_label_text')
+                                            }}</option>
+                                        <option v-for="project in projects" :key="project.id" :value="project.id">{{
+                                            project.name }}
+                                        </option>
+                                    </select>
+                                    <div v-if="errors.project_id" class="invalid-feedback">
+                                        <span v-for="(error, index) in errors.project_id" :key="index">{{ error
+                                            }}</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-10 mb-3">
+                            <div class="col-8 mb-3">
                                 <textarea class="form-control" rows="3" v-model="formData.comments"
                                     :class="{ 'is-invalid': errors.comments }"
                                     :placeholder="$t('time_booking.modal_textarea_Comments_label_text')"
@@ -128,7 +146,7 @@
 <script>
 import GlobalMessage from '../../components/GlobalMessage.vue';
 import messageService from '../../services/messageService';
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import TimeBookingService from '../../services/TimeBookingService';
 import { Modal } from 'bootstrap';
 
@@ -145,12 +163,14 @@ export default {
                 hours: '',
                 comments: '',
                 booked_date: '',
+                project_id: ''
             },
             timeBooking: {},
             weekDay: {},
             weekDays: [],
             ticket: {},
             timeBookings: [],
+            projects: [],
             totalTimeBookingHours: 0,
             isChkAllTimeBookings: false,
             selectedTimeBookings: [],
@@ -159,6 +179,9 @@ export default {
             errors: {},
             showMessage: true
         }
+    },
+    computed: {
+        ...mapGetters(['user']),
     },
     methods: {
         ...mapActions(['setLoading']),
@@ -197,6 +220,7 @@ export default {
                 this.getTimeBookingModalInitialData();
                 this.formData.hours = '';
                 this.formData.comments = '';
+                this.formData.project_id = '';
             } catch (error) {
                 this.handleError(error);
             }
@@ -212,9 +236,10 @@ export default {
                     'ticket_id': this.formData.ticket_id,
                     'booked_date': this.formData.booked_date
                 }
-                const { content: { timeBookings, totalTimeBookingHours } } = await TimeBookingService.getTimeBookingModalInitialData(passData);
+                const { content: { timeBookings, totalTimeBookingHours, projects } } = await TimeBookingService.getTimeBookingModalInitialData(passData);
                 this.timeBookings = timeBookings;
                 this.totalTimeBookingHours = totalTimeBookingHours;
+                this.projects = projects;
                 this.setLoading(false);
             } catch (error) {
                 this.handleError(error);
@@ -310,6 +335,7 @@ export default {
                 hours: '',
                 comments: '',
                 booked_date: '',
+                project_id: ''
             };
         },
         hideModal() {
