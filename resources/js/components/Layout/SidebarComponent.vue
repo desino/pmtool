@@ -18,7 +18,7 @@
                 </div>
             </div>
         </div>
-        <div class="p-2 border rounded m-2 shadow">
+        <div class="p-2 border rounded m-1 shadow">
             <div class="form-group pb-0">
                 <HeaderInitiativeDropBoxComponent />
             </div>
@@ -31,7 +31,7 @@
                                 <li class="nav-item"
                                     v-if="user?.is_admin || initiativeData?.functional_owner_id === user?.id || initiativeData?.technical_owner_id === user?.id">
                                     <a class="nav-link text-dark" href="javascript:" @click="showCreateTicketModal">
-                                        <i class="bi bi-plus-circle mx-2"></i>
+                                        <i class="bi bi-plus-circle"></i>
                                         {{ $t('header.menu.create_ticket') }}
                                     </a>
                                 </li>
@@ -39,7 +39,7 @@
                                     <a class="nav-link text-dark"
                                         :class="{ 'bg-opacity-25 bg-primary': isActive('solution-design') }"
                                         href="javascript:" @click="showSolutionDesign"><i
-                                            class="bi bi-file-pdf-fill mx-2"></i>
+                                            class="bi bi-file-pdf-fill"></i>
                                         {{ $t('header.menu.solution_design') }}
                                     </a>
                                 </li>
@@ -47,7 +47,7 @@
                                     <router-link class="nav-link text-dark"
                                         :class="{ 'bg-opacity-25 bg-primary': isActive('solution-design.detail') }"
                                         :to="{ name: 'solution-design.detail', params: { id: currentInitiative.id } }">
-                                        <i class="bi bi-file-pdf-fill mx-2"></i>
+                                        <i class="bi bi-file-pdf-fill"></i>
                                         {{ $t('header.menu.solution_design_detail') }}
                                     </router-link>
                                 </li>
@@ -62,7 +62,7 @@
                                 </li> -->
                                 <li class="nav-item" v-if="user?.is_admin">
                                     <a class="nav-link text-dark" href="javascript:" @click="showEditOpportunityModal">
-                                        <i class="bi bi-pencil-square mx-2"></i>
+                                        <i class="bi bi-pencil-square"></i>
                                         {{ $t('header.menu.edit_initiative') }}
                                     </a>
                                 </li>
@@ -70,7 +70,7 @@
                                     <router-link class="nav-link text-dark"
                                         :class="{ 'bg-opacity-25 bg-primary': isActive('tasks') || isActive('task.detail') }"
                                         :to="{ name: 'tasks', params: { id: currentInitiative.id } }">
-                                        <i class="bi bi-card-checklist mx-2"></i>
+                                        <i class="bi bi-card-checklist"></i>
                                         {{ $t('header.menu.all_ticket') }}
                                     </router-link>
                                 </li>
@@ -78,7 +78,7 @@
                                     <router-link class="nav-link text-dark"
                                         :class="{ 'bg-opacity-25 bg-primary': isActive('my-tickets') }"
                                         :to="{ name: 'my-tickets', params: { id: currentInitiative.id } }">
-                                        <i class="bi bi-card-checklist mx-2"></i>
+                                        <i class="bi bi-card-checklist"></i>
                                         {{ $t('header.menu.my_ticket') }}
                                     </router-link>
                                 </li>
@@ -86,7 +86,7 @@
                                     <router-link class="nav-link text-dark"
                                         :class="{ 'bg-opacity-25 bg-primary': isActive('projects') }"
                                         :to="{ name: 'projects', params: { id: currentInitiative.id } }">
-                                        <i class="bi bi-boxes mx-2"></i>
+                                        <i class="bi bi-boxes"></i>
                                         {{ $t('header.menu.projects') }}
                                     </router-link>
                                 </li>
@@ -94,7 +94,7 @@
                                     <router-link class="nav-link text-dark"
                                         :class="{ 'bg-opacity-25 bg-primary': isActive('bulk-create-tickets') }"
                                         :to="{ name: 'bulk-create-tickets', params: { id: currentInitiative.id } }">
-                                        <i class="bi bi-ticket mx-2"></i>
+                                        <i class="bi bi-ticket"></i>
                                         {{ $t('header.menu.bulk_create_tickets') }}
                                     </router-link>
                                 </li>
