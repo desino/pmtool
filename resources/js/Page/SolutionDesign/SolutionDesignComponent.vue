@@ -3,7 +3,7 @@
         <div class="container-fluid">
             <div class="row w-100">
                 <div class="col-sm-6">
-                    <h3 class="m-0">{{ $t('solution_design.page_title') }} - {{ initiativeData.name }}
+                    <h3 class="m-0 mb-3">{{ $t('solution_design.page_title') }} - {{ initiativeData.name }}
                         <span>
                             <router-link :to="{ name: 'solution-design.detail', params: { id: initiativeData.id } }">
                                 <i class="bi bi-link-45deg"></i>
@@ -13,12 +13,12 @@
                             </router-link>
                         </span>
                     </h3>
-                    <h5>
+                    <!-- <h5>
                         <span class="badge rounded bg-desino text-light my-3">
                             {{ $t('solution_design.development_ballpark') }}: {{
                                 initiativeData.ballpark_development_hours }} hours
                         </span>
-                    </h5>
+                    </h5> -->
                 </div>
             </div>
         </div>
