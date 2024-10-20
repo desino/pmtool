@@ -16,7 +16,7 @@ export default [
                     if (!loggedInUser?.is_admin) {
                         const passedData = {
                             'type': 'danger',
-                            'message': i18n.global.t('opportunities.you_dont_have_permission_to_access_this_page')
+                            'message': i18n.global.t('initiative_time_booking.you_dont_have_permission_to_access_this_page')
                         };
                         store.commit("setPermissionMessage", passedData);
                         next({ name: 'home' });

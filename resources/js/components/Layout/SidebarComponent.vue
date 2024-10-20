@@ -175,6 +175,16 @@
                             }}
                         </router-link>
                     </li>
+                    <li class="nav-item" v-if="user?.is_admin">
+                        <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('initiative-time-booking') }"
+                            :to="{ name: 'initiative-time-booking' }" class="nav-link text-dark"
+                            @click="unselectHeaderInitiative">
+                            <i class="bi bi-clock-history mx-2"></i>
+                            {{
+                                $t('header.menu.initiative_time_booking')
+                            }}
+                        </router-link>
+                    </li>
                 </ul>
             </nav>
         </div>

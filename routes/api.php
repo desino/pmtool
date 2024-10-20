@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\DeploymentCenterController;
 use App\Http\Controllers\Api\HeaderController;
 use App\Http\Controllers\Api\HomeMyActionsController;
 use App\Http\Controllers\Api\InitiativeController;
+use App\Http\Controllers\Api\InitiativeTimeBookingController;
 use App\Http\Controllers\Api\MyTicketController;
 use App\Http\Controllers\Api\OpportunityController;
 use App\Http\Controllers\Api\PlanningController;
@@ -139,6 +140,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', 'index');
         Route::get('/get-planning-initial-data', 'getPlanningInitialData');
         Route::post('/store-planning', 'storePlanning');
+    });
+
+    Route::controller(InitiativeTimeBookingController::class)->prefix('initiative-time-booking')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/get-initial-data-for-initiative-time-bookings', 'getInitialDataForInitiativeTimeBookings');
+        Route::get('/get-project-list-for-initiative-time-bookings', 'getProjectListForInitiativeTimeBookings');
     });
 });
 

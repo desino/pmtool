@@ -9,4 +9,5 @@ return [
     'ssl_certificate' => env('SSL_CERTIFICATE', ''),
     'default_project_name' => 'Maintenance',
     'api_key' => env('API_KEY'),
+    'initiative_time_booking_load_default_data_days' => 45,
 ];
