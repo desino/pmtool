@@ -48,6 +48,7 @@ class InitiativeTimeBookingController extends Controller
                 }
             ])
             ->whereBetween('booked_date', [$startDate, $endDate])
+            ->where('initiative_id', '!=', '-1')
             ->when($filter['initiative_id'] != '', function ($query) use ($filter) {
                 $query->where('initiative_id', $filter['initiative_id']);
             })
