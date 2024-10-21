@@ -14,7 +14,8 @@
     <div class="app-content row position-relative">
         <div class="col-md-4 border-top border-bottom sticky top-0 d-none d-lg-block">
             <div class="input-group sticky-top pt-3 pb-1 bg-white">
-                <input aria-label="Search" class="form-control" placeholder="Search" type="text">
+                <input v-model="solutionDesignFilters.name" aria-label="Search" class="form-control"
+                    placeholder="Search" type="text" @keyup="getSectionsWithFunctionalities">
                 <span class="input-group-text"><i class="bi bi-search"></i></span>
             </div>
             <hr>
@@ -108,6 +109,9 @@ export default {
             initiativeData: {},
             selectedFunctionalityId: "",
             sectionsWithFunctionalities: [],
+            solutionDesignFilters: {
+                name: '',
+            },
             showMessage: true,
         };
     },
@@ -140,13 +144,22 @@ export default {
         },
         async getSectionsWithFunctionalities() {
             try {
-                this.setLoading(true);
-                const { content } = await SolutionDesignService.getSectionsWithFunctionalities({ initiative_id: this.initiativeId });
+                const hasValue = this.objectInValueExistOrNot(this.solutionDesignFilters);
+                hasValue ?? this.setLoading(true);
+                const passData = {
+                    initiative_id: this.initiativeId,
+                    name: this.solutionDesignFilters.name
+                }
+                const { content } = await SolutionDesignService.getSectionsWithFunctionalities(passData);
                 this.sectionsWithFunctionalities = content;
                 this.setLoading(false);
             } catch (error) {
                 this.handleError(error);
             }
+        },
+        objectInValueExistOrNot(obj) {
+            const hasValue = Object.values(obj).some(value => value);
+            return hasValue;
         },
         handleError(error) {
             if (error.type === 'validation') {
