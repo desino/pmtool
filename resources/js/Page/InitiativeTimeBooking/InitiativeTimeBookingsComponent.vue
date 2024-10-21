@@ -21,7 +21,7 @@
                 </select>
             </div>
             <div class="col-md-2">
-                <select v-model="filter.project_id" class="form-select" :disabled="!filter.initiative_id"
+                <select v-model="filter.project_id" class="form-select" :disabled="disabledProjectList()"
                     @change="getInitiativeTimeBookings">
                     <option value="">{{ $t('initiative_time_booking.list_filter.project') }}</option>
                     <option v-for="project in projects" :key="project.id" :value="project.id">
@@ -249,6 +249,13 @@ export default {
         allowOnlyNumbers(event) {
             const value = event.target.value.replace(/\D/g, '');
             this.filter.days = value;
+        },
+        disabledProjectList() {
+            if (!this.filter.initiative_id || !this.filter.include_mapped) {
+                this.filter.project_id = '';
+                return true;
+            }
+            return false;
         },
         handleError(error) {
             if (error.type === 'validation') {

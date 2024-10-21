@@ -21,7 +21,6 @@ class InitiativeTimeBookingController extends Controller
     {
         $requestData = $request->all();
         $filter = $requestData['filter'];
-
         $defaultDays = Config::get('myapp.initiative_time_booking_load_default_data_days');
         if (isset($filter['days']) && $filter['days'] != '') {
             $defaultDays = (int) $filter['days'];
@@ -50,15 +49,14 @@ class InitiativeTimeBookingController extends Controller
             ->when($filter['initiative_id'] != '', function ($query) use ($filter) {
                 $query->where('initiative_id', $filter['initiative_id']);
             })
-            ->when(function ($query) use ($filter) {
-                if ($filter['project_id'] != '') {
-                    $query->where('project_id', $filter['project_id']);
-                } else if ($filter['include_mapped'] == 'false') {
-                    $query->whereNull('project_id');
-                }
-            })
             ->when($filter['user_id'] != '', function ($query) use ($filter) {
                 $query->where('user_id', $filter['user_id']);
+            })
+            ->when($filter['project_id'] != '' && $filter['include_mapped'] == 'true', function ($query) use ($filter) {
+                $query->where('project_id', $filter['project_id']);
+            })
+            ->when($filter['include_mapped'] == 'false', function ($query) use ($filter) {
+                $query->whereNull('project_id');
             })
             ->paginate(50);
         return ApiHelper::response(true, '', $timeBookings, 200);
