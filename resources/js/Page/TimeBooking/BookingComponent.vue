@@ -77,6 +77,24 @@
                             <th :rowspan="ticketRowsCount" class="border total_abs3">&nbsp;</th>
                         </tr>
 
+                        <tr class="bg-danger bg-opacity-25" v-if="unBillableRowData">
+                            <th class="border total_abs1 bg-opacity-25 bg-danger text-center align-middle p-1"
+                                colspan="2">
+                                {{ unBillableRowData.initiative_name }}
+                            </th>
+                            <th :rowspan="ticketRowsCount" class="border total_abs2 border">&nbsp;</th>
+                            <td class="text-center align-middle p-1 border" v-for="(weekDay, index) in weekDays"
+                                :key="index"
+                                :role="unBillableRowData.hours_per_day[weekDay.date]?.is_allow_booking ? 'button' : false"
+                                @click="openUnBillableTimeBookingModal(unBillableRowData, weekDay, unBillableRowData.hours_per_day[weekDay.date]?.is_allow_booking)">
+                                <span v-if="unBillableRowData.hours_per_day" class="badge text-secondary">
+                                    {{ unBillableRowData.hours_per_day[weekDay.date]?.hours > 0 ?
+                                        unBillableRowData.hours_per_day[weekDay.date]?.hours : ' ' }}
+                                </span>
+                            </td>
+                            <th :rowspan="ticketRowsCount" class="border total_abs3">&nbsp;</th>
+                        </tr>
+
                         <template v-for="(timeBooking, timeBookingIndex) in timeBookings" :key="timeBookingIndex">
                             <tr v-for="(ticket, ticketIndex) in timeBooking.tickets" :key="ticketIndex">
                                 <th v-if="timeBooking.initiative_id && ticketIndex == 0"
@@ -130,6 +148,11 @@
             <TimeBookingOnNewInitiativeOrTicketModalComponent ref="timeBookingOnNewInitiativeOrTicketModalComponent"
                 @pageUpdated="getTimeBookingEmitData" />
         </div>
+        <div id="timeBookingUnBillableModal" aria-hidden="true" aria-labelledby="timeBookingUnBillableModalLabel"
+            class="modal fade" tabindex="-1">
+            <TimeBookingUnBillableModalComponent ref="timeBookingUnBillableModalComponent"
+                @pageUpdated="getTimeBookingEmitData" />
+        </div>
     </div>
 </template>
 
@@ -147,6 +170,7 @@ import TimeBookingOnNewTicketModalComponent from './TimeBookingOnNewTicketModalC
 import TimeBookingOnNewInitiativeOrTicketModalComponent from './TimeBookingOnNewInitiativeOrTicketModalComponent.vue';
 import { handleError, nextTick } from 'vue';
 import Multiselect from 'vue-multiselect';
+import TimeBookingUnBillableModalComponent from './TimeBookingUnBillableModalComponent.vue';
 export default {
     name: 'BookingComponent',
     mixins: [globalMixin],
@@ -155,6 +179,7 @@ export default {
         TimeBookingModalComponent,
         TimeBookingOnNewTicketModalComponent,
         TimeBookingOnNewInitiativeOrTicketModalComponent,
+        TimeBookingUnBillableModalComponent,
         Multiselect
     },
     data() {
@@ -170,6 +195,8 @@ export default {
             initiativesFilterList: [],
             ticketsFilterList: [],
             selectBoxTicketsFilterList: [],
+            unBillableRowData: [],
+            unBillableProjects: [],
             errors: {},
             showMessage: true,
         }
@@ -185,11 +212,13 @@ export default {
                     start_date: this.weekDays[0]?.date,
                     end_date: this.weekDays[this.weekDays.length - 1]?.date,
                 }
-                const { content: { weekDays, initiativeWithTicketsAndTimeBooking, ticketRowsCount } } = await TimeBookingService.getTimeBookingData(passData);
+                const { content: { weekDays, initiativeWithTicketsAndTimeBooking, ticketRowsCount, unBillableRowData, unBillableProjects } } = await TimeBookingService.getTimeBookingData(passData);
                 this.ticketRowsCount = ticketRowsCount;
                 this.weekDays = weekDays;
                 this.timeBookings = initiativeWithTicketsAndTimeBooking;
                 this.forFilterTimeBooking = initiativeWithTicketsAndTimeBooking;
+                this.unBillableRowData = unBillableRowData;
+                this.unBillableProjects = unBillableProjects;
                 this.getInitiativesAndTicketsFilterList();
                 this.setLoading(false);
                 this.handleInitiativeFilterChange();
@@ -318,8 +347,20 @@ export default {
                 });
             });
             this.weekDays.forEach(weekDay => {
-                weekDay.total_hours = sumPerDate[weekDay.date] || 0;
+                weekDay.total_hours = sumPerDate[weekDay.date] + parseFloat(this.unBillableRowData?.hours_per_day[weekDay.date]?.hours) || 0;
             });
+        },
+        openUnBillableTimeBookingModal(timeBooking, weekDay, isAllowBooking) {
+            if (!isAllowBooking) {
+                return;
+            }
+
+            const timeBookingUnBillableModalElement = document.getElementById('timeBookingUnBillableModal');
+            if (timeBookingUnBillableModalElement) {
+                this.$refs.timeBookingUnBillableModalComponent.getTimeBookingData(timeBooking, weekDay, this.weekDays, this.unBillableProjects);
+                const timeBookingUnBillableModal = new Modal(timeBookingUnBillableModalElement);
+                timeBookingUnBillableModal.show();
+            }
         },
         handleError(error) {
             if (error.type === 'validation') {

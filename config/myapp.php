@@ -10,4 +10,34 @@ return [
     'default_project_name' => 'Maintenance',
     'api_key' => env('API_KEY'),
     'initiative_time_booking_load_default_data_days' => 45,
+    'un_billable_internal_time_booking' => [
+        'initiative_id' => '-1',
+        'initiative_name' => 'Internal Initiative',
+        'projects' => [
+            [
+                'project_id' => '-1',
+                'project_name' => 'Admin & Management'
+            ],
+            [
+                'project_id' => '-2',
+                'project_name' => 'Sick Leave'
+            ],
+            [
+                'project_id' => '-3',
+                'project_name' => 'Planned Leave'
+            ],
+            [
+                'project_id' => '-4',
+                'project_name' => 'Away - Outside Office'
+            ],
+            [
+                'project_id' => '-5',
+                'project_name' => 'Research & Training'
+            ],
+            [
+                'project_id' => '-6',
+                'project_name' => 'Sales'
+            ],
+        ]
+    ]
 ];

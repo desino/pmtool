@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\TimeBookingForTicketDetailRequest;
+use App\Http\Requests\Api\TimeBookingForUnBillableRequest;
 use App\Http\Requests\Api\TimeBookingOnNewInitiativeOrTicketRequest;
 use App\Http\Requests\Api\TimeBookingOnNewTicketRequest;
 use App\Http\Requests\Api\TimeBookingRequest;
@@ -17,6 +18,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Ramsey\Uuid\Type\Time;
@@ -89,6 +91,11 @@ class TimeBookingController extends Controller
             ->LEFTJOIN('tickets', 'tickets.id', 'time_bookings.ticket_id')
             ->where('user_id', Auth::id())
             ->whereBetween('booked_date', [$startOfWeek, $endOfWeek])
+            ->get();
+
+        $unBillableTimeBookings = TimeBooking::where('user_id', Auth::id())
+            ->whereBetween('booked_date', [$startOfWeek, $endOfWeek])
+            ->where('initiative_id', '-1')
             ->get();
 
         $defaultRowData = [
@@ -168,8 +175,26 @@ class TimeBookingController extends Controller
             $ticketRowsCount += count($initiativeTickets);
         }
         array_push($timeBookingRowData, $defaultRowData);
+
+        $unBillableInternalTimeBookingArray = Config::get('myapp.un_billable_internal_time_booking');
+        $unBillableInternalTimeBookingProjectList = $unBillableInternalTimeBookingArray['projects'];
+
+        $unBillableRowDataTicketsHoursPerDay = [];
+        foreach ($weekDays as $weekDay) {
+            $unBillableRowDataTicketsHoursPerDay[$weekDay['date']]['hours'] = $unBillableTimeBookings->Where('booked_date', $weekDay['date'])->sum('hours') ?? '';
+            $unBillableRowDataTicketsHoursPerDay[$weekDay['date']]['is_allow_booking'] = $weekDay['date'] <= Carbon::now()->format('Y-m-d') ?? false;
+        }
+        $unBillableRowData = [
+            'initiative_id' => $unBillableInternalTimeBookingArray['initiative_id'],
+            'initiative_name' => $unBillableInternalTimeBookingArray['initiative_name'],
+            'hours_per_day' => $unBillableRowDataTicketsHoursPerDay,
+        ];
+        $retData['unBillableRowData'] = $unBillableRowData;
+        $retData['unBillableProjects'] = $unBillableInternalTimeBookingProjectList;
+
         $retData['ticketRowsCount'] = $ticketRowsCount + 1; //adding last row
         $retData['initiativeWithTicketsAndTimeBooking'] = $timeBookingRowData;
+
         return ApiHelper::response(true, '', $retData, 200);
     }
 
@@ -454,5 +479,52 @@ class TimeBookingController extends Controller
             Log::info($e->getMessage());
         }
         return ApiHelper::response($status, $message, '', $statusCode);
+    }
+
+    public function storeTimeBookingForUnBillable(TimeBookingForUnBillableRequest $request)
+    {
+        $validData = $request->validated();
+        $validData['user_id'] = Auth::id();
+
+        $message = __('messages.time_booking.store_success');
+        $statusCode = 200;
+        $status = true;
+        DB::beginTransaction();
+        try {
+            TimeBooking::create($validData);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $statusCode = 500;
+            Log::info($e->getMessage());
+        }
+        return ApiHelper::response($status, $message, '', $statusCode);
+    }
+
+    public function getTimeBookingUnBillableModalInitialData(Request $request)
+    {
+        $requestData = $request->all();
+        $status = false;
+        $projects = Config::get('myapp.un_billable_internal_time_booking')['projects'];
+
+        $caseStatement = 'CASE ';
+        foreach ($projects as $project) {
+            $caseStatement .= "WHEN project_id = {$project['project_id']} THEN '{$project['project_name']}' ";
+        }
+        $caseStatement .= 'ELSE "N/A" END AS project_name';
+
+        $timeBookings = TimeBooking::select(
+            '*',
+            DB::RAW($caseStatement)
+        )
+            ->where('initiative_id', $requestData['initiative_id'])
+            ->where('booked_date', $requestData['booked_date'])
+            ->get();
+        $retData = [
+            'timeBookings' => $timeBookings,
+            'totalTimeBookingHours' => $timeBookings->sum('hours'),
+        ];
+        return ApiHelper::response($status, '', $retData, 200);
     }
 }

@@ -17,6 +17,8 @@ const endpoints = {
     storeTimeBookingOnNewInitiativeOrTicket: `${defaultPath}/store-time-booking-on-new-initiative-or-ticket`,
     fetchTickets: `${defaultPath}/fetch-tickets`,
     storeTimeBookingForTicketDetail: `${defaultPath}/store-time-booking-for-ticket-detail`,
+    storeTimeBookingForUnBillable: `${defaultPath}/store-time-booking-for-un-billable`,
+    getTimeBookingUnBillableModalInitialData: `${defaultPath}/get-time-booking-un-billable-modal-initial-data`,
 }
 
 const TimeBookingService = {
@@ -61,6 +63,14 @@ const TimeBookingService = {
             throw handleError(error);
         }
     },
+    async storeTimeBookingForUnBillable(data) {
+        try {
+            const response = await axiosRequest.post(endpoints.storeTimeBookingForUnBillable, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
     async getTimeBookingModalInitialData(data) {
         try {
             const response = await axiosRequest.get(endpoints.getTimeBookingModalInitialData, { params: data });
@@ -80,6 +90,14 @@ const TimeBookingService = {
     async getTimeBookingOnNewInitiativeOrTicketModalInitialData(data) {
         try {
             const response = await axiosRequest.get(endpoints.getTimeBookingOnNewInitiativeOrTicketModalInitialData, { params: data });
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async getTimeBookingUnBillableModalInitialData(data) {
+        try {
+            const response = await axiosRequest.get(endpoints.getTimeBookingUnBillableModalInitialData, { params: data });
             return response.data;
         } catch (error) {
             throw handleError(error);

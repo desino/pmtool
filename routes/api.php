@@ -134,6 +134,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/delete-time-bookings', 'deleteTimeBookings');
         Route::get('/fetch-tickets', 'fetchTickets');
         Route::post('/store-time-booking-for-ticket-detail', 'storeTimeBookingForTicketDetail');
+        Route::post('/store-time-booking-for-un-billable', 'storeTimeBookingForUnBillable');
+        Route::get('/get-time-booking-un-billable-modal-initial-data', 'getTimeBookingUnBillableModalInitialData');
     });
 
     Route::controller(PlanningController::class)->prefix('planning')->group(function () {
