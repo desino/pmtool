@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\AssignProjectForInitiativeTimeBookingRequest;
 use App\Models\Initiative;
 use App\Models\Project;
 use App\Models\TimeBooking;
@@ -13,6 +14,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Ramsey\Uuid\Type\Time;
 
 class InitiativeTimeBookingController extends Controller
@@ -77,5 +79,40 @@ class InitiativeTimeBookingController extends Controller
     {
         $projectList = Project::where('initiative_id', $request->initiative_id)->get();
         return ApiHelper::response(true, '', $projectList, 200);
+    }
+
+    public function assignProjectForInitiativeTimeBookings(AssignProjectForInitiativeTimeBookingRequest $request)
+    {
+        $status = false;
+        $requestData = $request->all();
+
+        $initiative = InitiativeService::getInitiative($request);
+        if (!$initiative) {
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
+        }
+
+        $project = Project::where('initiative_id', $requestData['initiative_id'])->find($requestData['project_id']);
+        if (!$project) {
+            return ApiHelper::response($status, __('messages.project.not_found'), '', 400);
+        }
+
+        $status = true;
+        $message = __('messages.project.update_success');
+        $statusCode = 200;
+        DB::beginTransaction();
+        try {
+            DB::commit();
+            TimeBooking::whereIn('id', $requestData['time_booking_ids'])
+                ->where('initiative_id', $requestData['initiative_id'])
+                ->update([
+                    'project_id' => $requestData['project_id']
+                ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $statusCode = 500;
+            Log::info($e->getMessage());
+        }
+        return ApiHelper::response($status, $message, null, $statusCode);
     }
 }

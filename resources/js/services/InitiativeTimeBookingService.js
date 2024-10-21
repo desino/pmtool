@@ -11,6 +11,7 @@ const endpoints = {
     getInitiativeTimeBooking: `${defaultPath}`,
     getInitialDataForInitiativeTimeBookings: `${defaultPath}/get-initial-data-for-initiative-time-bookings`,
     getProjectListForInitiativeTimeBookings: `${defaultPath}/get-project-list-for-initiative-time-bookings`,
+    assignProjectForInitiativeTimeBookings: `${defaultPath}/assign-project-for-initiative-time-bookings`,
 }
 
 const InitiativeTimeBookingService = {
@@ -33,6 +34,14 @@ const InitiativeTimeBookingService = {
     async getProjectListForInitiativeTimeBookings(data) {
         try {
             const response = await axiosRequest.get(endpoints.getProjectListForInitiativeTimeBookings, { params: data });
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async assignProjectForInitiativeTimeBookings(data) {
+        try {
+            const response = await axiosRequest.post(endpoints.assignProjectForInitiativeTimeBookings, data);
             return response.data;
         } catch (error) {
             throw handleError(error);

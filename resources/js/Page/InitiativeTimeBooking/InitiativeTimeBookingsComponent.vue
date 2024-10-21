@@ -121,7 +121,7 @@
         <div id="initiativeTimeBookingForAssignProjectModal" aria-hidden="true"
             aria-labelledby="initiativeTimeBookingForAssignProjectLabel" class="modal fade" tabindex="-1">
             <InitiativeTimeBookingForAssignProjectModalComponent
-                ref="initiativeTimeBookingForAssignProjectModalComponent" />
+                ref="initiativeTimeBookingForAssignProjectModalComponent" @pageUpdated="getInitiativeTimeBookings" />
         </div>
     </div>
 </template>

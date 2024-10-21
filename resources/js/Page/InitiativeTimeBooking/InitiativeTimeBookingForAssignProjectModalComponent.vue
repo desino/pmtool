@@ -13,17 +13,17 @@
                             <label class="form-label fw-bold">{{
                                 $t('initiative_time_booking_for_assign_project.popup_project_select_label_text') }}
                                 <strong class="text-danger">*</strong></label>
-                            <select v-model="formData.project_id" :class="{ 'is-invalid': errors.type }"
+                            <select v-model="formData.project_id" :class="{ 'is-invalid': errors.project_id }"
                                 class="form-select">
                                 <option value="">{{
                                     $t('initiative_time_booking_for_assign_project.popup_project_select_placeholder_text')
-                                    }}</option>
+                                }}</option>
                                 <option v-for="project in projects" :key="project.id" :value="project.id">{{
                                     project.name }}
                                 </option>
                             </select>
-                            <div v-if="errors.type" class="invalid-feedback">
-                                <span v-for="(error, index) in errors.type" :key="index">{{ error }}</span>
+                            <div v-if="errors.project_id" class="invalid-feedback">
+                                <span v-for="(error, index) in errors.project_id" :key="index">{{ error }}</span>
                             </div>
                         </div>
                     </div>
@@ -52,6 +52,8 @@
 import { mapActions, mapGetters } from 'vuex';
 import InitiativeTimeBookingService from '../../services/InitiativeTimeBookingService';
 import messageService from '../../services/messageService';
+import showToast from '../../utils/toasts';
+import { Modal } from 'bootstrap';
 
 export default {
     name: 'InitiativeTimeBookingForAssignProjectModalComponent',
@@ -82,11 +84,33 @@ export default {
                 this.setLoading(true);
                 this.formData.time_booking_ids = this.timeBookingIds;
                 this.formData.initiative_id = this.initiativeId;
-                // const { content } = await InitiativeTimeBookingService.getProjectListForInitiativeTimeBookings(formData);                
+                const { message } = await InitiativeTimeBookingService.assignProjectForInitiativeTimeBookings(this.formData);
+                showToast(message, 'success');
+                this.hideModal();
                 this.setLoading(false);
+                this.$emit('pageUpdated');
+                this.resetForm();
             } catch (error) {
                 this.handleError(error);
             }
+        },
+        hideModal() {
+            const modalElement = document.getElementById('initiativeTimeBookingForAssignProjectModal');
+            if (modalElement) {
+                const modal = Modal.getInstance(modalElement);
+                if (modal) {
+                    this.setLoading(false);
+                    modal.hide();
+                }
+            }
+        },
+        resetForm() {
+            this.formData = {
+                initiative_id: '',
+                project_id: '',
+                time_booking_ids: []
+            };
+            this.errors = {};
         },
         handleError(error) {
             if (error.type === 'validation') {

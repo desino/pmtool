@@ -146,6 +146,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', 'index');
         Route::get('/get-initial-data-for-initiative-time-bookings', 'getInitialDataForInitiativeTimeBookings');
         Route::get('/get-project-list-for-initiative-time-bookings', 'getProjectListForInitiativeTimeBookings');
+        Route::post('/assign-project-for-initiative-time-bookings', 'assignProjectForInitiativeTimeBookings');
     });
 });
 
