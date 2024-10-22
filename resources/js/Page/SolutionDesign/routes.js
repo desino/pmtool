@@ -49,7 +49,7 @@ export default [
             watchEffect(() => {
                 const loggedInUser = store.getters.user;
                 const currentInitiative = store.getters.currentInitiative;
-                if (loggedInUser && currentInitiative) {
+                if (loggedInUser && Object.keys(currentInitiative).length > 0) {
                     if (!loggedInUser?.is_admin && currentInitiative?.functional_owner_id != loggedInUser?.id && currentInitiative.technical_owner_id != loggedInUser?.id) {
                         const passedData = {
                             'type': 'danger',
