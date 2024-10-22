@@ -26,7 +26,7 @@ class TimeBookingRequest extends FormRequest
             'initiative_id' => 'nullable',
             'ticket_id' => 'nullable',
             'project_id' => 'nullable',
-            'hours' => 'required|numeric|between:0,99999.99',
+            'hours' => 'required|numeric|between:1,99999.99',
             'comments' => 'nullable|string|max:500',
             'booked_date' => 'required|date',
         ];

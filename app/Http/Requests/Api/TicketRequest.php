@@ -27,7 +27,7 @@ class TicketRequest extends FormRequest
         return [
             'name' => 'required|string',
             'functionality_id' => 'nullable|exists:functionalities,id',
-            'initial_estimation_development_time' => 'required|numeric|min:0|between:0,99999.99',
+            'initial_estimation_development_time' => 'required|numeric|min:0|between:1,99999.99',
             'initiative_id' => 'nullable',
             'type' => 'required',
             'auto_wait_for_client_approval' => 'nullable',

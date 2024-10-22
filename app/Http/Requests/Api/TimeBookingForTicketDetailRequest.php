@@ -25,7 +25,7 @@ class TimeBookingForTicketDetailRequest extends FormRequest
         return [
             'initiative_id' => 'required',
             'ticket_id' => 'required',
-            'hours' => 'required|numeric|between:0,99999.99',
+            'hours' => 'required|numeric|between:1,99999.99',
             'comments' => 'nullable|string|max:500',
             'booked_date' => 'required|date',
         ];
