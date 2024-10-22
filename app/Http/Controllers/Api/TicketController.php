@@ -402,8 +402,12 @@ class TicketController extends Controller
         if ($testAction->count() > 0 && (
             $initiative->functional_owner_id == Auth::id() ||
             $initiative->technical_owner_id == Auth::id() ||
-            $initiative->quality_owner_id == Auth::id() ||
-            ($ticket->currentAction->action == TicketAction::getActionTest() && $ticket->currentAction->user_id == Auth::id())
+            ($ticket->macro_status == Ticket::MACRO_STATUS_TEST
+                && (
+                    $ticket->currentAction->user_id == Auth::id() ||
+                    $initiative->quality_owner_id == Auth::id()
+                )
+            )
         )) {
             $isAllowCaseAddTestSection = true;
         } else if ($initiative->functional_owner_id == Auth::id() || $initiative->technical_owner_id == Auth::id()) {
@@ -411,10 +415,7 @@ class TicketController extends Controller
         }
 
         $isAllowCaseUpdateTestSection = false;
-        if ($testAction->count() > 0 && (
-            $initiative->quality_owner_id == Auth::id() ||
-            ($ticket->currentAction->action == TicketAction::getActionTest() && $ticket->currentAction->user_id == Auth::id())
-        )) {
+        if ($ticket->macro_status == Ticket::MACRO_STATUS_TEST && ($ticket->currentAction->user_id == Auth::id() || $initiative->quality_owner_id == Auth::id())) {
             $isAllowCaseUpdateTestSection = true;
         }
 
