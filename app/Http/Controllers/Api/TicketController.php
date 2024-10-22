@@ -360,8 +360,15 @@ class TicketController extends Controller
      * @param  int  $ticket_id
      * @return JsonResponse
      */
-    public function show(int $initiative_id, int $ticket_id): JsonResponse
+    public function show(Request $request, int $initiative_id, int $ticket_id): JsonResponse
     {
+        $status = false;
+
+        $initiative = InitiativeService::getInitiative($request, $initiative_id);
+        if (!$initiative) {
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
+        }
+
         $ticket = Ticket::with([
             'functionality',
             'initiative',
@@ -384,10 +391,33 @@ class TicketController extends Controller
                 ['initiative_id', '=', $initiative_id]
             ])
             ->first();
+
         // If the ticket is not found, return a 404 response
         if (!$ticket) {
             return ApiHelper::response(false, __('messages.ticket.not_found'), [], 404);
         }
+
+        $testAction = $ticket->actions->where('action', TicketAction::getActionTest());
+        $isAllowCaseAddTestSection = false;
+        if ($testAction->count() > 0 && (
+            $initiative->functional_owner_id == Auth::id() ||
+            $initiative->technical_owner_id == Auth::id() ||
+            $initiative->quality_owner_id == Auth::id() ||
+            ($ticket->currentAction->action == TicketAction::getActionTest() && $ticket->currentAction->user_id == Auth::id())
+        )) {
+            $isAllowCaseAddTestSection = true;
+        } else if ($initiative->functional_owner_id == Auth::id() || $initiative->technical_owner_id == Auth::id()) {
+            $isAllowCaseAddTestSection = true;
+        }
+
+        $isAllowCaseUpdateTestSection = false;
+        if ($testAction->count() > 0 && (
+            $initiative->quality_owner_id == Auth::id() ||
+            ($ticket->currentAction->action == TicketAction::getActionTest() && $ticket->currentAction->user_id == Auth::id())
+        )) {
+            $isAllowCaseUpdateTestSection = true;
+        }
+
 
         $actionsUserIds = $ticket->actions->pluck('user_id');
         $authUser = Auth::user();
@@ -415,6 +445,8 @@ class TicketController extends Controller
         $meta_data['all_tickets'] = $allTickets;
         $meta_data['users'] = TicketService::getUsers();
         $meta_data['action_status'] = TicketAction::getAllActionStatus();
+        $meta_data['is_allow_case_add_test_section'] = $isAllowCaseAddTestSection;
+        $meta_data['is_allow_case_update_test_section'] = $isAllowCaseUpdateTestSection;
 
         // Return the ticket and related meta data in a success response
         return ApiHelper::response(true, __('messages.ticket.fetched'), $ticket, 200, $meta_data);

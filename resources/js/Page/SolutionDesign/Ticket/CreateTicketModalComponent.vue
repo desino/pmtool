@@ -50,7 +50,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">{{
                             $t('create_ticket_modal_modal_input_initial_estimation_development_time')
-                            }} <strong class="text-danger">*</strong>
+                        }} <strong class="text-danger">*</strong>
                         </label>
                         <input v-model="formData.initial_estimation_development_time"
                             :class="{ 'is-invalid': errors.initial_estimation_development_time }" class="form-control"
@@ -229,7 +229,6 @@ export default {
             this.initiative = initiative;
             this.formData.ticket_actions = actions;
             this.ticketActions = JSON.parse(JSON.stringify(actions));
-            console.log('actions :: ', actions);
             this.setLoading(false);
 
         },

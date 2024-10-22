@@ -169,7 +169,7 @@
                                     <div v-if="errors.release_note" class="text-danger mt-2">
                                         <span v-for="(error, index) in errors.release_note" :key="index">{{
                                             error
-                                            }}</span>
+                                        }}</span>
                                     </div>
                                     <button class="btn w-100 btn-desino text-white fw-bold m-2 rounded"
                                         @click="updateReleaseNote">
@@ -186,7 +186,7 @@
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">{{
                                                 $t('ticket_details_input_dev_estimation_time')
-                                            }} <strong class="text-danger">*</strong>
+                                                }} <strong class="text-danger">*</strong>
                                             </label>
                                             <input v-model="estimatedHoursFormData.dev_estimation_time"
                                                 :class="{ 'is-invalid': errors.dev_estimation_time }"
@@ -211,7 +211,7 @@
                     <div class="col-md-12 my-2">
                         <div class="card">
                             <div class="card-header fw-bold">
-                                <label class="mt-2">Define Test</label>
+                                <label class="mt-2">{{ $t('ticket_detail_test_case_section_detail_title') }}</label>
                                 <div id="createTestCaseModal" aria-hidden="true"
                                     aria-labelledby="createTestCaseModalLabel" class="modal fade" tabindex="-1">
                                     <CreateTestCaseModalComponent ref="createTestCaseModalComponent"
@@ -226,7 +226,7 @@
                                 </div>
 
                                 <button class="float-end btn btn-primary" @click="showTestCaseModal"
-                                    v-if="showHideTestSectionButton()"> Add Test Section
+                                    v-if="is_allow_case_add_test_section"> Add Test Section
                                 </button>
                             </div>
                             <div v-if="test_cases?.length > 0" class="card-body pt-0">
@@ -239,16 +239,19 @@
                                                     test_case.status !== -1 ? (test_case.status === 1 ? 'success' :
                                                         'failed') : 'pending'
                                                 }})</label> <br>
-                                            <small class="mt-2 fw-bold">Expected Behaviour</small> <br>
+                                            <small class="mt-2 fw-bold">{{
+                                                $t('ticket_detail_test_case_section_expected_behaviour') }}</small> <br>
                                             <small v-html="test_case.expected_behaviour">
                                             </small>
                                             <div v-if="test_case.observations">
-                                                <small class="mt-2 fw-bold">Actual Behaviour</small> <br>
+                                                <small class="mt-2 fw-bold">{{
+                                                    $t('ticket_detail_test_case_section_actual_behaviour') }}</small>
+                                                <br>
                                                 <small v-html="test_case.observations">
                                                 </small>
                                             </div>
                                         </div>
-                                        <div v-if="showHideProcessingButton()"
+                                        <div v-if="is_allow_case_update_test_section"
                                             class="col-md-2 d-flex justify-content-end align-items-center">
                                             <button class="btn btn-success btn-sm">
                                                 <i class="bi-check-lg text-white"
@@ -265,9 +268,8 @@
                                 </div>
                             </div>
                             <div v-else class="p-5 text-center fw-bold">
-                                No Test Case found !
+                                {{ $t('ticket_detail_test_case_section_no_test_case') }}
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -339,7 +341,7 @@ export default {
                 is_enable_mark_as_done_but: false,
                 is_show_pre_action_but: false,
                 is_allow_dev_estimation_time: false,
-                user_actions_count: 0
+                user_actions_count: 0,
             },
             currentActionFormData: {
                 ticket_id: '',
@@ -369,6 +371,8 @@ export default {
             },
             test_cases: [],
             tasksForDropdown: [],
+            is_allow_case_add_test_section: false,
+            is_allow_case_update_test_section: false,
             errors: {},
             showMessage: true,
         };
@@ -415,6 +419,8 @@ export default {
                     this.tasksForDropdown = response.meta_data.all_tickets;
                     this.users = response.meta_data.users;
                     this.actionStatus = response.meta_data.action_status;
+                    this.is_allow_case_add_test_section = response.meta_data.is_allow_case_add_test_section;
+                    this.is_allow_case_update_test_section = response.meta_data.is_allow_case_update_test_section;
                 }
                 this.setLoading(false);
             } catch (error) {
@@ -645,19 +651,6 @@ export default {
                 this.handleError(error);
                 this.tasks[index].project = this.previousProject;
             }
-        },
-        showHideTestSectionButton() {
-            let isTestSectionBut = false;
-            if (this.user?.id === this.ticketData.functional_owner_id || this.user?.id === this.ticketData.technical_owner_id) {
-                isTestSectionBut = true;
-            }
-            if (this.user?.id === this.ticketData.quality_owner_id || (this.currentAction?.action == 4 && this.user?.id === this.currentAction?.user?.id && this.currentAction.status == 1)) {
-                isTestSectionBut = true;
-            }
-            if ((this.currentAction?.action == 3 && this.user?.id === this.currentAction?.user?.id && this.currentAction.status == 1)) {
-                isTestSectionBut = true;
-            }
-            return isTestSectionBut;
         },
         showHideProcessingButton() {
             return true;

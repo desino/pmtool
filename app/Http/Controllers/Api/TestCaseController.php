@@ -26,7 +26,7 @@ class TestCaseController extends Controller
     public function store(StoreTestCaseRequest $request, int $initiative_id, int $ticket_id): JsonResponse
     {
         // Fetch ticket and initiative data with validation checks
-        $ticketData = Ticket::with('currentAction')->find($ticket_id);
+        $ticketData = Ticket::with('currentAction', 'actions')->find($ticket_id);
         $initiativeData = Initiative::find($initiative_id);
 
         if (!$ticketData || !$initiativeData) {
@@ -93,7 +93,7 @@ class TestCaseController extends Controller
      * @param StoreTestCaseRequest $request
      * @return JsonResponse
      */
-    public function update(int $initiative_id,int $ticket_id, int $test_case_id, StoreTestCaseRequest $request): JsonResponse
+    public function update(int $initiative_id, int $ticket_id, int $test_case_id, StoreTestCaseRequest $request): JsonResponse
     {
         $ticketData = Ticket::find($ticket_id);
 
@@ -138,20 +138,21 @@ class TestCaseController extends Controller
      * @param Ticket $ticketData
      * @return bool
      */
-    private function isAuthorizedToCreateTestCase(Initiative $initiativeData, Ticket $ticketData): bool
+    private function isAuthorizedToCreateTestCase(Initiative $initiative, Ticket $ticket): bool
     {
-        $isFunctionalOwner = Auth::id() === $initiativeData->functional_owner_id;
-        $isTechnicalOwner = Auth::id() === $initiativeData->technical_owner_id;
-        $isQualityOwner = Auth::id() === $initiativeData->quality_owner_id;
-
-        $isTestAction = $ticketData->currentAction->action === TicketAction::getActionTest();
-        $isActionable = $ticketData->currentAction->status === TicketAction::getStatusActionable();
-
-        if ($isFunctionalOwner || $isTechnicalOwner) {
-            return true;
+        $testAction = $ticket->actions->where('action', TicketAction::getActionTest());
+        $isAllowCaseAddTestSection = false;
+        if ($testAction->count() > 0 && (
+            $initiative->functional_owner_id == Auth::id() ||
+            $initiative->technical_owner_id == Auth::id() ||
+            $initiative->quality_owner_id == Auth::id() ||
+            ($ticket->currentAction->action == TicketAction::getActionTest() && $ticket->currentAction->user_id == Auth::id())
+        )) {
+            $isAllowCaseAddTestSection = true;
+        } else if ($initiative->functional_owner_id == Auth::id() || $initiative->technical_owner_id == Auth::id()) {
+            $isAllowCaseAddTestSection = true;
         }
-
-        return $isQualityOwner && $isTestAction && $isActionable;
+        return $isAllowCaseAddTestSection;
     }
 
     /**
@@ -161,13 +162,16 @@ class TestCaseController extends Controller
      * @param Ticket $ticketData
      * @return bool
      */
-    private function isAuthorizedToProcessTestCase(Initiative $initiativeData, Ticket $ticketData): bool
+    private function isAuthorizedToProcessTestCase(Initiative $initiative, Ticket $ticket): bool
     {
-        return true;
-        $isQualityOwner = Auth::id() === $initiativeData->quality_owner_id;
-        $isTestAction = $ticketData->currentAction->action === TicketAction::getActionTest();
-        $isActionable = $ticketData->currentAction->status === TicketAction::getStatusActionable();
-
-        return $isQualityOwner || ($isTestAction && $isActionable);
+        $testAction = $ticket->actions->where('action', TicketAction::getActionTest());
+        $isAllowCaseUpdateTestSection = false;
+        if ($testAction->count() > 0 && (
+            $initiative->quality_owner_id == Auth::id() ||
+            ($ticket->currentAction->action == TicketAction::getActionTest() && $ticket->currentAction->user_id == Auth::id())
+        )) {
+            $isAllowCaseUpdateTestSection = true;
+        }
+        return $isAllowCaseUpdateTestSection;
     }
 }
