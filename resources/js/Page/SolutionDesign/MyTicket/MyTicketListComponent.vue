@@ -117,6 +117,7 @@ import messageService from '../../../services/messageService';
 import MyTicketService from '../../../services/MyTicketService';
 import PaginationComponent from '../../../components/PaginationComponent.vue';
 import TimeBookingForTicketDetailComponent from '../Ticket/TimeBookingForTicketDetailComponent.vue';
+import eventBus from '../../../eventBus';
 export default {
     name: 'MyTicketListComponent',
     mixins: [globalMixin],
@@ -145,6 +146,17 @@ export default {
     },
     methods: {
         ...mapActions(['setLoading']),
+        async fetchData() {
+            try {
+                await Promise.all([
+                    this.getMyTickets(),
+                    eventBus.$emit('selectHeaderInitiativeId', this.$route.params.id),
+                ]);
+                this.clearMessages();
+            } catch (error) {
+                this.handleError(error);
+            }
+        },
         async getMyTickets(page = 1) {
             this.clearMessages();
             try {
@@ -184,7 +196,7 @@ export default {
         },
     },
     mounted() {
-        this.getMyTickets();
+        this.fetchData();
     },
 }
 </script>
