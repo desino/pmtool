@@ -396,8 +396,23 @@ class TicketController extends Controller
         }
 
         // Fetch all tickets for the given initiative
-        $meta_data['all_tickets'] = Ticket::where('initiative_id', $initiative_id)
-            ->get(['id', 'name', 'composed_name']);
+        $allTickets = Ticket::select(
+            'tickets.id',
+            'tickets.name',
+            'tickets.composed_name'
+        )
+            ->where('initiative_id', $initiative_id)
+            ->when(!Auth::user()->is_admin, function (Builder $query) {
+                $query->LEFTJOIN(DB::raw(
+                    "(SELECT `ticket_id`, MIN(ACTION) AS first_action, `user_id` FROM ticket_actions WHERE `status` != " . TicketAction::getStatusDone() . " GROUP BY `ticket_id` HAVING `user_id` = " . Auth::id() . ") as ta"
+                ), 'ta.ticket_id', '=', 'tickets.id')
+                    ->where(function ($q) {
+                        $q->where('tickets.is_visible', 1)
+                            ->orWhereNotNull('ta.first_action');
+                    });
+            })
+            ->get();
+        $meta_data['all_tickets'] = $allTickets;
         $meta_data['users'] = TicketService::getUsers();
         $meta_data['action_status'] = TicketAction::getAllActionStatus();
 
