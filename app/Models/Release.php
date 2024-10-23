@@ -11,12 +11,24 @@ class Release extends Model
 
     protected $guarded = ['id'];
 
+
     protected $appends = [
-        'status_name'
+        'status_name',
+        'request_date_format',
+        'deployment_date_format',
+    ];
+
+    protected $casts = [
+        'processed_at' => 'datetime',
     ];
 
     public const UNPROCESSED_RELEASE = 0;
     public const PROCESSED_RELEASE = 1;
+
+    public function tickets()
+    {
+        return $this->hasMany(ReleaseTicket::class);
+    }
 
     public function getAllStatus()
     {
@@ -37,15 +49,20 @@ class Release extends Model
 
     public function getStatusNameAttribute()
     {
-        return match ($this->action) {
+        return match ($this->status) {
             self::UNPROCESSED_RELEASE => __('release_status.unprocessed'),
             self::PROCESSED_RELEASE => __('release_status.processed'),
             default => '-'
         };
     }
 
-    public function tickets()
+    public function getRequestDateFormatAttribute()
     {
-        return $this->hasMany(ReleaseTicket::class);
+        return $this->created_at ? $this->created_at->format('d/m/Y') : '';
+    }
+
+    public function getDeploymentDateFormatAttribute()
+    {
+        return $this->processed_at ? $this->processed_at->format('d/m/Y') : '';
     }
 }

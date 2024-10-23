@@ -23,7 +23,7 @@
                 <HeaderInitiativeDropBoxComponent />
             </div>
             <div
-                v-if="isActive('solution-design') || isActive('tasks') || isActive('my-tickets') || isActive('task.detail') || isActive('projects') || isActive('solution-design.detail') || isActive('solution-design.download') || isActive('bulk-create-tickets')">
+                v-if="isActive('solution-design') || isActive('tasks') || isActive('my-tickets') || isActive('task.detail') || isActive('projects') || isActive('solution-design.detail') || isActive('solution-design.download') || isActive('bulk-create-tickets') || isActive('deployments')">
                 <div class="shadow">
                     <div class="p-2 rounded-bottom">
                         <nav class="mt-1">
@@ -96,6 +96,14 @@
                                         :to="{ name: 'bulk-create-tickets', params: { id: currentInitiative.id } }">
                                         <i class="bi bi-ticket"></i>
                                         {{ $t('header.menu.bulk_create_tickets') }}
+                                    </router-link>
+                                </li>
+                                <li class="nav-item" v-if="currentInitiative.id && user?.is_admin">
+                                    <router-link class="nav-link text-dark"
+                                        :class="{ 'bg-opacity-25 bg-primary': isActive('deployments') }"
+                                        :to="{ name: 'deployments', params: { id: currentInitiative.id } }">
+                                        <i class="bi bi-card-list"></i>
+                                        {{ $t('header.menu.deployments') }}
                                     </router-link>
                                 </li>
                             </ul>

@@ -10,7 +10,9 @@ use App\Models\ReleaseTicket;
 use App\Models\Ticket;
 use App\Services\InitiativeService;
 use App\Services\TicketService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -174,7 +176,7 @@ class DeploymentCenterController extends Controller
         DB::beginTransaction();
         try {
             Ticket::whereIn('id', $request->input('ticketIds'))->update(['status' => Ticket::getStatusDone()]);
-            $release->update(['status' => Release::PROCESSED_RELEASE]);
+            $release->update(['status' => Release::PROCESSED_RELEASE, 'processed_by' => Auth::id(), 'processed_at' => Carbon::now()]);
 
             $tickets = Ticket::whereIn('id', $request->input('ticketIds'))->get();
             foreach ($tickets as $ticket) {

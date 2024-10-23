@@ -25,6 +25,7 @@ router.beforeEach((to, from, next) => {
         'projects',
         'my-tickets',
         'bulk-create-tickets',
+        'deployments',
     ];
 
     if (routesWithInitiativeId.includes(to.name)) {

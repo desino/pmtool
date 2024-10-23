@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\Auth\SocialiteController;
 use App\Http\Controllers\Api\BulkCreateTicketsController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\DeploymentCenterController;
+use App\Http\Controllers\Api\DeploymentController;
 use App\Http\Controllers\Api\HeaderController;
 use App\Http\Controllers\Api\HomeMyActionsController;
 use App\Http\Controllers\Api\InitiativeController;
@@ -116,6 +117,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::controller(BulkCreateTicketsController::class)->prefix('{initiative_id}/bulk-create-tickets')->group(function () {
             Route::get('/', 'index');
             Route::post('/store-new-bulk-tickets', 'storeNewBulkTickets');
+        });
+
+        Route::controller(DeploymentController::class)->prefix('{initiative_id}/deployments')->group(function () {
+            Route::get('/', 'index');
+            Route::get('/get-initiative-data-for-deployments', 'getInitiativeDataForDeployments');
         });
     });
 

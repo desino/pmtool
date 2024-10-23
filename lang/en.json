@@ -423,6 +423,7 @@
     "header.menu.time_booking": "Time Booking",
     "header.menu.planning": "Planning",
     "header.menu.initiative_time_booking": "Initiative Time Booking",
+    "header.menu.deployments": "Deployments",
     "ticket.page_title": "All Ticket",
     "ticket.list.column_task_name": "Ticket",
     "ticket.list.column_task_status": "Macro Status",
@@ -679,5 +680,15 @@
     "initiative_time_booking_for_assign_project.popup_title": "Assign Project",
     "initiative_time_booking_for_assign_project.popup_submit_but_text": "Assign",
     "initiative_time_booking_for_assign_project.popup_project_select_label_text": "Project",
-    "initiative_time_booking_for_assign_project.popup_project_select_placeholder_text": "Project"
+    "initiative_time_booking_for_assign_project.popup_project_select_placeholder_text": "Project",
+    "deployments.page_title": "Deployments",
+    "deployments.list.column_request_date": "Request Date",
+    "deployments.list.column_deployment_date": "Deployment Date",
+    "deployments.list.column_name": "Name",
+    "deployments.list.column_tickets_included": "Tickets Included",
+    "deployments.list.column_status": "Status",
+    "deployments.list.column_actions": "Actions",
+    "deployments.filter.deployment_name": "Deployment Name",
+    "deployments.filter.ticket_name": "Ticket Name",
+    "deployments.list.not_record_found": "No record found"
 }

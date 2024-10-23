@@ -9,6 +9,7 @@ import BulkCreateTicketsComponent from "./BulkCreateTickets/BulkCreateTicketsCom
 import { watchEffect } from "vue";
 import store from "../../store";
 import i18n from "../../i18n";
+import DeploymentsComponent from "./Deployments/DeploymentsComponent.vue";
 
 export default [
     {
@@ -127,6 +128,29 @@ export default [
         name: 'bulk-create-tickets',
         component: BulkCreateTicketsComponent,
         meta: { requiresAuth: true, title: 'Bulk Create Tickets' },
+        beforeEnter: (to, from, next) => {
+            watchEffect(() => {
+                const loggedInUser = store.getters.user;
+                if (loggedInUser) {
+                    if (!loggedInUser?.is_admin) {
+                        const passedData = {
+                            'type': 'danger',
+                            'message': i18n.global.t('solution_design.you_dont_have_permission_to_access_this_page')
+                        };
+                        store.commit("setPermissionMessage", passedData);
+                        next({ name: 'home' });
+                    } else {
+                        next();
+                    }
+                }
+            });
+        }
+    },
+    {
+        path: '/solution-design/:id/deployments/',
+        name: 'deployments',
+        component: DeploymentsComponent,
+        meta: { requiresAuth: true, title: 'Deployments' },
         beforeEnter: (to, from, next) => {
             watchEffect(() => {
                 const loggedInUser = store.getters.user;
