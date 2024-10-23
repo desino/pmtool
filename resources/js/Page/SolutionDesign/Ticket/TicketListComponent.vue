@@ -66,6 +66,15 @@
                     @select="fetchAllTasks" @Remove="fetchAllTasks">
                 </multiselect>
             </div>
+            <div class="col-12 col-md-3 mb-2 mb-md-0 mt-3">
+                <div class="form-check ms-auto">
+                    <input v-model="filter.is_include_done" @change="fetchAllTasks" class="form-check-input"
+                        type="checkbox" id="is_include_done">
+                    <label class="form-check-label" for="is_include_done">
+                        {{ $t('ticket.filter.is_include_done') }}
+                    </label>
+                </div>
+            </div>
         </div>
         <div class="row w-100 mb-3">
             <div class="col-12 col-md-12 mb-2 mb-md-0">
@@ -93,12 +102,6 @@
                     @click="markAsVisibleInvisible(0)">
                     {{ $t('ticket.mark_as_invisible.button_text') }}
                 </button>
-                <span class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                    <label class="form-check-label" for="flexCheckDefault">
-                        Default checkbox
-                    </label>
-                </span>
             </div>
         </div>
         <ul class="list-group list-group-flush mb-3 mt-2">
@@ -290,7 +293,8 @@ export default {
                 functionalities: [],
                 projects: [],
                 macro_status: [],
-                is_open_task: false
+                is_open_task: false,
+                is_include_done: false
             },
             isChkAllTickets: false,
             selectedTasks: [],

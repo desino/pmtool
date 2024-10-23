@@ -44,19 +44,28 @@ class MyTicketController extends Controller
                     $q->select('id', 'name', 'display_name');
                 }
             ])
-            ->LEFTJOIN(DB::raw(
-                "(SELECT `ticket_id`, MIN(ACTION) AS first_action, `user_id` FROM ticket_actions WHERE `status` != " . TicketAction::getStatusDone() . " GROUP BY `ticket_id` HAVING `user_id` = " . Auth::id() . ") as ta"
-            ), 'ta.ticket_id', '=', 'tickets.id')
+            // ->LEFTJOIN(DB::raw(
+            //     "(SELECT `ticket_id`, MIN(ACTION) AS first_action, `user_id` FROM ticket_actions WHERE `status` != " . TicketAction::getStatusDone() . " GROUP BY `ticket_id` HAVING `user_id` = " . Auth::id() . ") as ta"
+            // ), 'ta.ticket_id', '=', 'tickets.id')
             ->where('tickets.initiative_id', $initiative_id)
+            ->where('tickets.is_visible', 1)
             ->where(function ($q) {
-                $q->where('tickets.is_visible', 1)
-                    ->orWhereNotNull('ta.first_action');
+                // $q->whereNotNull('ta.first_action')
+                $q->whereHas('currentAction', function ($q) {
+                    $q->where('user_id', Auth::id());
+                })
+                    ->orWhereHas('actions', function ($q) {
+                        $q->where('user_id', Auth::id());
+                    });
             })
             ->when($filters['task_name'] != '', function ($query) use ($filters) {
                 $query->whereLike('composed_name', '%' . $filters['task_name'] . '%');
             })
             ->when($filters['task_type'] != '', function ($query) use ($filters) {
                 $query->where('type', $filters['task_type']);
+            })
+            ->when($filters['is_include_done'] == 'false', function ($query) use ($filters) {
+                $query->where('tickets.macro_status', '!=', Ticket::MACRO_STATUS_DONE);
             })
             ->groupBy('tickets.id', 'tickets.initiative_id', 'tickets.name', 'tickets.functionality_id', 'tickets.composed_name', 'tickets.asana_task_id', 'tickets.macro_status')
             ->orderBy('tickets.id')

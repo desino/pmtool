@@ -10,7 +10,7 @@
     </div>
     <GlobalMessage v-if="showMessage" />
     <div class="app-content">
-        <div class="row w-100 mb-3">
+        <div class="row w-100 mb-3 align-items-center">
             <div class="col-12 col-md-3 mb-2 mb-md-0">
                 <input v-model="filter.task_name" :placeholder="$t('my_ticket.filter.task_name')" class="form-control"
                     type="text" @keyup="getMyTickets">
@@ -21,6 +21,15 @@
                     <option v-for="type in filterTaskTypes" :key="type.id" :value="type.id">{{ type.name }}
                     </option>
                 </select>
+            </div>
+            <div class="col-12 col-md-3 mb-2 mb-md-0">
+                <div class="form-check ms-auto">
+                    <input v-model="filter.is_include_done" @change="getMyTickets" class="form-check-input"
+                        type="checkbox" id="is_include_done">
+                    <label class="form-check-label" for="is_include_done">
+                        {{ $t('my_ticket.filter.is_include_done') }}
+                    </label>
+                </div>
             </div>
         </div>
         <ul class="list-group list-group-flush mb-3 mt-2">
@@ -133,6 +142,7 @@ export default {
             filter: {
                 task_name: "",
                 task_type: "",
+                is_include_done: false
             },
             tickets: [],
             currentPage: "",
@@ -168,6 +178,8 @@ export default {
                 }
                 const { content, meta_data } = await MyTicketService.getMyTickets(params);
                 this.tickets = content.data;
+                this.currentPage = content.current_page;
+                this.totalPages = content.last_page;
                 this.filterTaskTypes = meta_data.task_type;
                 this.setLoading(false);
             } catch (error) {

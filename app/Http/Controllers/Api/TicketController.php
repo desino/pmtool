@@ -306,6 +306,9 @@ class TicketController extends Controller
             ->when(!empty($filters['macro_status']) != '', function (Builder $query) use ($filters) {
                 $query->whereIn('macro_status', array_column($filters['macro_status'], 'id'));
             })
+            ->when($filters['is_include_done'] == 'false', function (Builder $query) use ($filters) {
+                $query->where('macro_status', '!=', Ticket::MACRO_STATUS_DONE);
+            })
             ->paginate(10);
         $meta['task_type'] = Ticket::getAllTypes();
         $meta['functionalities'] = Functionality::whereHas('section', function ($query) use ($initiative_id) {
