@@ -259,6 +259,7 @@
     "messages.planning.dont_have_permission": "You don't have permission to perform this action.",
     "messages.ticket.dont_have_permission": "You don't have permission to perform this action.",
     "messages.solution_design.dont_have_permission": "You don't have permission to perform this action.",
+    "messages.ticket.process_testcase_not_allowed": "You are not allowed to process test cases.",
     "login_title": "Login",
     "login_page_title": "Login",
     "login_input_email": "Email",
