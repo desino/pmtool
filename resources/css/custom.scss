@@ -134,6 +134,22 @@
     text-overflow: ellipsis;
 }
 
+.multiselect__tag_for_macro_status {
+    position: relative;
+    display: inline-block;
+    padding: 4px 26px 4px 10px;
+    border-radius: 5px;
+    margin-right: 10px;
+    color: #fff;
+    line-height: 1;
+    background: $desino;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 100%;
+    text-overflow: ellipsis;
+}
+
 .multiselect__tag-icon::after {
     content: "×";
     color: white;
@@ -207,25 +223,80 @@
     flex-wrap: wrap;
     /* Allow wrapping for small screens */
 }
-#timeBookingPageSection .outer {position: relative}
-#timeBookingPageSection .inner {overflow-x: auto;overflow-y: hidden;}
-#timeBookingPageSection .scrolling table {width: auto;}
-#timeBookingPageSection .scrolling td, #timeBookingPageSection .scrolling th {
-    vertical-align: top  !important;
-    padding: 10px 5px !important;
-    min-width: 100px  !important;
+
+#timeBookingPageSection .outer {
+    position: relative
 }
-#timeBookingPageSection .scrolling th.abs1, #timeBookingPageSection .scrolling th.abs2, #timeBookingPageSection .scrolling th.abs3, #timeBookingPageSection .scrolling th.abs4, #timeBookingPageSection .scrolling th.total_abs1, #timeBookingPageSection .scrolling th.total_abs2, #timeBookingPageSection .scrolling th.total_abs3, #timeBookingPageSection .scrolling th.lastrow_abs{
+
+#timeBookingPageSection .inner {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+#timeBookingPageSection .scrolling table {
+    width: auto;
+}
+
+#timeBookingPageSection .scrolling td,
+#timeBookingPageSection .scrolling th {
+    vertical-align: top !important;
+    padding: 10px 5px !important;
+    min-width: 100px !important;
+}
+
+#timeBookingPageSection .scrolling th.abs1,
+#timeBookingPageSection .scrolling th.abs2,
+#timeBookingPageSection .scrolling th.abs3,
+#timeBookingPageSection .scrolling th.abs4,
+#timeBookingPageSection .scrolling th.total_abs1,
+#timeBookingPageSection .scrolling th.total_abs2,
+#timeBookingPageSection .scrolling th.total_abs3,
+#timeBookingPageSection .scrolling th.lastrow_abs {
     position: absolute;
 }
-#timeBookingPageSection .inner {margin-left: 540px;}
-#timeBookingPageSection .scrolling th.abs1{left: 0;width: 200px;}
-#timeBookingPageSection .scrolling th.abs2 {left: 200px;width: 300px;}
-#timeBookingPageSection .scrolling th.abs3 {left: 500px;width: 40px;min-width: auto !important;}
-#timeBookingPageSection .scrolling th.abs4 {width: 40px;min-width: auto !important;}
 
-#timeBookingPageSection .scrolling th.total_abs1{left: 0;width: 500px;}
-#timeBookingPageSection .scrolling th.total_abs2{left: 500px;width: 40px;min-width: auto !important;}
-#timeBookingPageSection .scrolling th.total_abs3{width: 40px;min-width: auto !important;}
+#timeBookingPageSection .inner {
+    margin-left: 540px;
+}
 
-#timeBookingPageSection .scrolling th.lastrow_abs{left: 0;width: 500px;}
+#timeBookingPageSection .scrolling th.abs1 {
+    left: 0;
+    width: 200px;
+}
+
+#timeBookingPageSection .scrolling th.abs2 {
+    left: 200px;
+    width: 300px;
+}
+
+#timeBookingPageSection .scrolling th.abs3 {
+    left: 500px;
+    width: 40px;
+    min-width: auto !important;
+}
+
+#timeBookingPageSection .scrolling th.abs4 {
+    width: 40px;
+    min-width: auto !important;
+}
+
+#timeBookingPageSection .scrolling th.total_abs1 {
+    left: 0;
+    width: 500px;
+}
+
+#timeBookingPageSection .scrolling th.total_abs2 {
+    left: 500px;
+    width: 40px;
+    min-width: auto !important;
+}
+
+#timeBookingPageSection .scrolling th.total_abs3 {
+    width: 40px;
+    min-width: auto !important;
+}
+
+#timeBookingPageSection .scrolling th.lastrow_abs {
+    left: 0;
+    width: 500px;
+}

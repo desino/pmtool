@@ -46,7 +46,7 @@
                     :placeholder="$t('ticket.filter.macro_status_placeholder')" track-by="id" @select="fetchAllTasks"
                     @Remove="fetchAllTasks">
                     <template #tag="{ option, remove }">
-                        <span class="multiselect__tag" :class="'bg-' + option.color">
+                        <span class="multiselect__tag_for_macro_status" :class="'bg-' + option.color">
                             <span>{{ option.name }}</span>
                             <i tabindex="1" class="multiselect__tag-icon" @click="remove(option)"></i>
                         </span>
@@ -93,6 +93,12 @@
                     @click="markAsVisibleInvisible(0)">
                     {{ $t('ticket.mark_as_invisible.button_text') }}
                 </button>
+                <span class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        Default checkbox
+                    </label>
+                </span>
             </div>
         </div>
         <ul class="list-group list-group-flush mb-3 mt-2">
@@ -137,7 +143,7 @@
                             v-model="task.isChecked" @change="handleSelectTasks(task)" style="margin-right: 10px;">
                         <span>{{ task.composed_name }}</span>
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6 text-white text-center p-2"
+                    <div class="col-lg-2 col-md-6 col-6 text-white text-center rounded p-2"
                         :class="'bg-' + task.macro_status_label?.color">
                         {{ task.macro_status_label?.label }}
                     </div>
