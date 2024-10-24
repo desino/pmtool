@@ -71,11 +71,11 @@
                     </div>
                     <div class="col-lg-2 col-md-6 col-6 text-end">
                         <!-- target="_blank" -->
-                        <router-link
+                        <!-- <router-link
                             :to="{ name: 'tasks', params: { id: deployment?.initiative_id }, query: { deployment_id: deployment?.id } }"
                             class="text-success me-2">
                             <i class="bi bi-box-arrow-up-right fw-bold"></i>
-                        </router-link>
+                        </router-link> -->
                         <a href="javascript:" :title="$t('deployments.list.column.action.download_release_note_text')"
                             @click="downloadReleaseNotes(deployment)" class="text-info me-2">
                             <i class="bi bi-file-pdf"></i>
