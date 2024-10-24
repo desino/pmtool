@@ -213,6 +213,8 @@ class TicketController extends Controller
 
     public function index($initiative_id, Request $request)
     {
+        // echo $request->get('deployment_id');
+        // exit;
         $authUser = Auth::user();
         if (!$authUser->is_admin) {
             return ApiHelper::response(false, __('messages.initiative.dont_have_permission'), null, 404);
@@ -260,6 +262,13 @@ class TicketController extends Controller
             }, 'initiative', 'currentAction'])
             ->withCount(['actions', 'doneActions'])
             ->where('initiative_id', $initiative_id)
+            ->when($request->get('deployment_id') != '', function ($query) use ($request) {
+                $query->whereIn('id', function ($query) use ($request) {
+                    $query->select('ticket_id')
+                        ->from('release_tickets')
+                        ->where('release_id', $request->get('deployment_id'));
+                });
+            })
             ->when($filters['task_name'] != '', function (Builder $query) use ($filters) {
                 $query->whereLike('composed_name', '%' . $filters['task_name'] . '%');
             })->when($filters['task_type'] != '', function (Builder $query) use ($filters) {

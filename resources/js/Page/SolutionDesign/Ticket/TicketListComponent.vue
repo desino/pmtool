@@ -319,9 +319,16 @@ export default {
                     this.filter.is_open_task = true;
                     store.commit("setPassedData", {});
                 }
+                let deploymentId = "";
+                console.log('this.$route.query :: ', this.$route.query);
+                if ('deployment_id' in this.$route.query) {
+                    deploymentId = this.$route.query.deployment_id;
+                    // this.resetFilter();
+                }
                 const params = {
                     page: page,
-                    filters: this.filter
+                    filters: this.filter,
+                    deployment_id: deploymentId
                 }
                 await this.setLoading(true);
                 const response = await ticketService.fetchAllTickets(this.initiative_id, params);
@@ -553,6 +560,19 @@ export default {
             this.errors = {};
             messageService.clearMessage();
         },
+        resetFilter() {
+            this.filter = {
+                task_name: "",
+                task_type: "",
+                action_owner: "",
+                next_action_owner: "",
+                functionalities: [],
+                projects: [],
+                macro_status: [],
+                is_open_task: false,
+                is_include_done: true
+            }
+        }
     },
     mounted() {
         this.fetchAllTasks();

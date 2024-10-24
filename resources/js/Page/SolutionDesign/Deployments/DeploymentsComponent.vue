@@ -70,7 +70,20 @@
                         {{ deployment?.status_name }}
                     </div>
                     <div class="col-lg-2 col-md-6 col-6 text-end">
-
+                        <!-- target="_blank" -->
+                        <router-link
+                            :to="{ name: 'tasks', params: { id: deployment?.initiative_id }, query: { deployment_id: deployment?.id } }"
+                            class="text-success me-2">
+                            <i class="bi bi-box-arrow-up-right fw-bold"></i>
+                        </router-link>
+                        <a href="javascript:" :title="$t('deployments.list.column.action.download_release_note_text')"
+                            @click="downloadReleaseNotes(deployment)" class="text-info me-2">
+                            <i class="bi bi-file-pdf"></i>
+                        </a>
+                        <!-- <a href="javascript:" :title="$t('deployments.list.column.action.download_test_results_text')"
+                            @click="downloadTestResults(deployment)" class="text-secondary">
+                            <i class="bi bi-file-pdf"></i>
+                        </a> -->
                     </div>
                 </div>
             </li>
@@ -93,6 +106,7 @@ import eventBus from '../../../eventBus';
 import DeploymentService from '../../../services/DeploymentsService';
 import PaginationComponent from '../../../components/PaginationComponent.vue';
 import Multiselect from "vue-multiselect";
+import store from '../../../store';
 export default {
     name: 'DeploymentsComponent',
     mixins: [globalMixin],
@@ -104,6 +118,7 @@ export default {
     data() {
         return {
             initiative_id: this.$route.params.id,
+            currentInitiative: store.getters.currentInitiative,
             functionalities: [],
             filter: {
                 name: "",
@@ -125,7 +140,7 @@ export default {
                 await Promise.all([
                     this.getDeployments(),
                     this.getInitiativeDataForDeployments(),
-                    eventBus.$emit('selectHeaderInitiativeId', this.$route.params.id),
+                    this.$route.name == 'deployments' ? eventBus.$emit('selectHeaderInitiativeId', this.$route.params.id) : '',
                 ]);
             } catch (error) {
                 this.handleError(error);
@@ -162,6 +177,50 @@ export default {
             } catch (error) {
                 this.handleError(error);
             }
+        },
+        async downloadReleaseNotes(release) {
+            this.clearMessages();
+            try {
+                this.setLoading(true);
+                const currentInitiative = await store.getters.currentInitiative;
+                const passData = {
+                    initiative_id: this.initiative_id,
+                    release_id: release?.id,
+                }
+                const response = await DeploymentService.downloadReleaseNotes(passData);
+
+                const blob = new Blob([response.data], { type: 'application/pdf' });
+                const link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = 'Release Notes - ' + currentInitiative?.name + ' - ' + release?.name + '.pdf';
+                link.click();
+                this.setLoading(false);
+            } catch (error) {
+                error.message = this.$t('deployments.download_release_note.error_message');
+                this.handleError(error);
+            }
+        },
+        async downloadTestResults(release) {
+            // this.clearMessages();
+            // try {
+            //     this.setLoading(true);
+            //     const passData = {
+            //         initiative_id: this.initiative_id,
+            //         release_id: release?.id,
+            //     }
+            //     const response = await DeploymentService.downloadTestResults(passData);
+
+            //     const blob = new Blob([response.data], { type: 'application/pdf' });
+            //     const link = document.createElement('a');
+            //     link.href = window.URL.createObjectURL(blob);
+            //     // link.download = release?.name + '_test_results.pdf';
+            //     link.download = 'Release Notes : ';
+            //     link.click();
+            //     this.setLoading(false);
+            // } catch (error) {
+            //     error.message = this.$t('deployments.download_release_note.error_message');
+            //     this.handleError(error);
+            // }
         },
         handleError(error) {
             if (error.type === 'validation') {

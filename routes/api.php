@@ -122,6 +122,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::controller(DeploymentController::class)->prefix('{initiative_id}/deployments')->group(function () {
             Route::get('/', 'index');
             Route::get('/get-initiative-data-for-deployments', 'getInitiativeDataForDeployments');
+            Route::post('/download-release-notes', 'downloadReleaseNotes');
+            Route::post('/download-test-results', 'downloadTestResults');
         });
     });
 

@@ -260,6 +260,13 @@
     "messages.ticket.dont_have_permission": "You don't have permission to perform this action.",
     "messages.solution_design.dont_have_permission": "You don't have permission to perform this action.",
     "messages.ticket.process_testcase_not_allowed": "You are not allowed to process test cases.",
+    "messages.deployment.download_release_notes_pdf_title": "Release Notes - :INITIATIVE_NAME - :RELEASE_NAME",
+    "messages.deployment.download_test_case_pdf_title": "Test Case - :RELEASE_NAME",
+    "messages.release_note_pdf_cover_page_title": "Release Notes",
+    "messages.release_note_pdf_cover_page_release_name": "Release Name: :RELEASE_NAME",
+    "messages.release_note_pdf_cover_page_client_title": "Client Name: :CLIENT_NAME",
+    "messages.release_note_pdf_cover_page_initiative_title": "Initiative Name: :INITIATIVE_NAME",
+    "messages.release_note_pdf_cover_page_export_at": "Exported at: :DATE",
     "login_title": "Login",
     "login_page_title": "Login",
     "login_input_email": "Email",
@@ -690,5 +697,8 @@
     "deployments.list.column_actions": "Actions",
     "deployments.filter.deployment_name": "Deployment Name",
     "deployments.filter.ticket_name": "Ticket Name",
-    "deployments.list.not_record_found": "No record found"
+    "deployments.list.not_record_found": "No record found",
+    "deployments.list.column.action.download_release_note_text": "Download Release Note",
+    "deployments.list.column.action.download_test_results_text": "Download Test Results",
+    "deployments.download_release_note.error_message": "Something went wrong. Please try again later."
 }

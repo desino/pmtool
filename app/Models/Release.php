@@ -30,6 +30,11 @@ class Release extends Model
         return $this->hasMany(ReleaseTicket::class);
     }
 
+    public function initiative()
+    {
+        return $this->belongsTo(Initiative::class);
+    }
+
     public function getAllStatus()
     {
         return [
