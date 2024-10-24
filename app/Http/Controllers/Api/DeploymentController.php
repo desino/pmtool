@@ -6,6 +6,7 @@ use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Functionality;
 use App\Models\Release;
+use App\Models\TestCase;
 use App\Services\InitiativeService;
 use Illuminate\Http\Request;
 use App\Services\MytcpdfService;
@@ -206,10 +207,10 @@ class DeploymentController extends Controller
             return ApiHelper::response($status, __('messages.solution_design.section.release_not_exist'), '', 400);
         }
 
-        // $pdfTitle = trans('messages.deployment.download_release_notes_pdf_title', ['RELEASE_NAME' => $release->name]);
-        $pdfTitle = trans('messages.deployment.download_test_case_pdf_title', ['RELEASE_NAME' => $release->name]);
-
-        $pdf = new MytcpdfService();
+        $pdfTitle = trans('messages.deployment.download_test_case_pdf_title', ['INITIATIVE_NAME' => $initiative->name, 'RELEASE_NAME' => $release->name]);
+        echo $pdfTitle;
+        exit;
+        $pdf = new TestCasePdfService();
         $pdf->SetTitle($pdfTitle);
         $pdf->SetHeaderMargin(0);
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);

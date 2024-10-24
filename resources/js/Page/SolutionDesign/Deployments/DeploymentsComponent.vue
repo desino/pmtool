@@ -201,26 +201,25 @@ export default {
             }
         },
         async downloadTestResults(release) {
-            // this.clearMessages();
-            // try {
-            //     this.setLoading(true);
-            //     const passData = {
-            //         initiative_id: this.initiative_id,
-            //         release_id: release?.id,
-            //     }
-            //     const response = await DeploymentService.downloadTestResults(passData);
+            this.clearMessages();
+            try {
+                this.setLoading(true);
+                const passData = {
+                    initiative_id: this.initiative_id,
+                    release_id: release?.id,
+                }
+                const response = await DeploymentService.downloadTestResults(passData);
 
-            //     const blob = new Blob([response.data], { type: 'application/pdf' });
-            //     const link = document.createElement('a');
-            //     link.href = window.URL.createObjectURL(blob);
-            //     // link.download = release?.name + '_test_results.pdf';
-            //     link.download = 'Release Notes : ';
-            //     link.click();
-            //     this.setLoading(false);
-            // } catch (error) {
-            //     error.message = this.$t('deployments.download_release_note.error_message');
-            //     this.handleError(error);
-            // }
+                const blob = new Blob([response.data], { type: 'application/pdf' });
+                const link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = release?.name + '_test_results.pdf';
+                link.click();
+                this.setLoading(false);
+            } catch (error) {
+                error.message = this.$t('deployments.download_release_note.error_message');
+                this.handleError(error);
+            }
         },
         handleError(error) {
             if (error.type === 'validation') {
