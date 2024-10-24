@@ -136,7 +136,7 @@ class DeploymentController extends Controller
         $fontname = \TCPDF_FONTS::addTTFfont(public_path() . '/fonts/Nunito/Nunito-BoldItalic.ttf', 'TrueTypeUnicode');
         $pdf->SetFont($fontname);
 
-        $pdf->data = compact('release');
+        $pdf->data = compact('release', 'initiative');
 
         $coverHtml = view('deployment.release-note-pdf.cover_html', compact('initiative', 'release'))->render();
 

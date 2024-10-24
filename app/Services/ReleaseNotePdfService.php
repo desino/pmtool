@@ -25,7 +25,7 @@ class ReleaseNotePdfService extends TCPDF
 			<tr>
 				<td width="8%">&nbsp;</td>
 				<td width="25%" valign="middle" align="left" style="color: #929292;font-size: 10px;font-family: Nunito-Bold;">
-					' . $this->data['release']->name . '
+					' . $this->data['initiative']->name . '
 				</td>
 				<td width="50%" valign="middle" align="center">
 

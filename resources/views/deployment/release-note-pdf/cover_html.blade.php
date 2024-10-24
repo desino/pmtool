@@ -1,5 +1,5 @@
 <p style="font-size: 32px;color: #FFFFFF;font-family: Nunito-Bold;">
-    {{ __('messages.solution_design_pdf_cover_page_title') }}
+    {{ __('messages.release_note_pdf_cover_page_title') }}
 </p>
 <p style="font-size: 15px;font-family: Nunito-Bold;color: #FFFFFF;">
     {{ __('messages.release_note_pdf_cover_page_release_name', ['RELEASE_NAME' => $release->name]) }}
