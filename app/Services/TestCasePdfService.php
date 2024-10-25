@@ -11,7 +11,7 @@ class TestCasePdfService extends TCPDF
     public function Header()
     {
         // $headerHTML = view('solution-design-pdf.header', $this->data)->render();
-        $headerHTML = view('deployment.release-note-pdf.header', $this->data)->render();
+        $headerHTML = view('deployment.test-case-pdf.header', $this->data)->render();
         $this->writeHTML($headerHTML);
     }
 

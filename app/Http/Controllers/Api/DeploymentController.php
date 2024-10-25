@@ -11,6 +11,7 @@ use App\Services\InitiativeService;
 use Illuminate\Http\Request;
 use App\Services\MytcpdfService;
 use App\Services\ReleaseNotePdfService;
+use App\Services\TestCasePdfService;
 
 class DeploymentController extends Controller
 {
@@ -106,7 +107,7 @@ class DeploymentController extends Controller
         if (!$release) {
             return ApiHelper::response($status, __('messages.solution_design.section.release_not_exist'), '', 400);
         }
-        $pdfTitle = trans('messages.deployment.download_release_notes_pdf_title', ['INITIATIVE_NAME' => $initiative->name, 'RELEASE_NAME' => $release->name]);
+        $pdfTitle = trans('messages.deployment.release_notes_pdf_title', ['INITIATIVE_NAME' => $initiative->name, 'RELEASE_NAME' => $release->name]);
 
         $pdf = new ReleaseNotePdfService();
         $pdf->SetTitle($pdfTitle);
@@ -207,9 +208,8 @@ class DeploymentController extends Controller
             return ApiHelper::response($status, __('messages.solution_design.section.release_not_exist'), '', 400);
         }
 
-        $pdfTitle = trans('messages.deployment.download_test_case_pdf_title', ['INITIATIVE_NAME' => $initiative->name, 'RELEASE_NAME' => $release->name]);
-        echo $pdfTitle;
-        exit;
+        $pdfTitle = trans('messages.deployment.test_case_pdf_title', ['INITIATIVE_NAME' => $initiative->name, 'RELEASE_NAME' => $release->name]);
+
         $pdf = new TestCasePdfService();
         $pdf->SetTitle($pdfTitle);
         $pdf->SetHeaderMargin(0);
@@ -239,9 +239,9 @@ class DeploymentController extends Controller
         $fontname = \TCPDF_FONTS::addTTFfont(public_path() . '/fonts/Nunito/Nunito-BoldItalic.ttf', 'TrueTypeUnicode');
         $pdf->SetFont($fontname);
 
-        $pdf->data = compact('initiative');
+        $pdf->data = compact('initiative', 'release');
 
-        $coverHtml = view('deployment.release-note-pdf.cover_html', compact('initiative'))->render();
+        $coverHtml = view('deployment.test-case-pdf.cover_html', compact('initiative', 'release'))->render();
 
         $pdf->setPrintHeader(false);
         $pdf->SetMargins(0, 0, 0);
@@ -250,6 +250,21 @@ class DeploymentController extends Controller
         $img_file = public_path() . '/images/pdf_cover2.png';
         $pdf->Image($img_file, 0, 50, 90);
         $pdf->writeHTMLCell(0, 0, 95, 72, $coverHtml);
+
+        $pdf->SetMargins(0, 30, 0);
+        $pdf->setPrintHeader(true);
+
+        $tickets = $release->tickets;
+
+        $tableContentHTML = view('deployment.test-case-pdf.table_content_html', compact('tickets'));
+        $pdf->AddPage();
+        $pdf->WriteHTML($tableContentHTML);
+
+        foreach ($tickets as $ticket) {
+            $pdfHtml = view('deployment.test-case-pdf.main_content_pdf_html', compact('ticket'));
+            $pdf->AddPage();
+            $pdf->WriteHTML($pdfHtml, true, 0, true, 0);
+        }
 
         $pdfContent = $pdf->Output($pdfTitle . '.pdf', 'S');
         return response($pdfContent)

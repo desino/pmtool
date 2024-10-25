@@ -4,7 +4,7 @@
         <td width="2%" style="background-color: #f6cf47;">&nbsp;</td>
         <td width="2%">&nbsp;</td>
         <td width="84%" align="left" valign="middle" style="font-size:21px;color:#3D62A6;font-family: Nunito-Bold;">
-            {{ trans('messages.deployment.release_note_pdf_table_of_content_section_title') }}
+            {{ trans('messages.deployment.test_case_pdf_table_of_content_section_title') }}
         </td>
         <td width="8%" align="left" valign="middle">&nbsp;</td>
     </tr>

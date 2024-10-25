@@ -80,10 +80,10 @@
                             @click="downloadReleaseNotes(deployment)" class="text-info me-2">
                             <i class="bi bi-file-pdf"></i>
                         </a>
-                        <!-- <a href="javascript:" :title="$t('deployments.list.column.action.download_test_results_text')"
+                        <a href="javascript:" :title="$t('deployments.list.column.action.download_test_results_text')"
                             @click="downloadTestResults(deployment)" class="text-secondary">
                             <i class="bi bi-file-pdf"></i>
-                        </a> -->
+                        </a>
                     </div>
                 </div>
             </li>
@@ -204,6 +204,7 @@ export default {
             this.clearMessages();
             try {
                 this.setLoading(true);
+                const currentInitiative = await store.getters.currentInitiative;
                 const passData = {
                     initiative_id: this.initiative_id,
                     release_id: release?.id,
@@ -213,7 +214,7 @@ export default {
                 const blob = new Blob([response.data], { type: 'application/pdf' });
                 const link = document.createElement('a');
                 link.href = window.URL.createObjectURL(blob);
-                link.download = release?.name + '_test_results.pdf';
+                link.download = 'Test Case - ' + currentInitiative?.name + ' - ' + release?.name + '.pdf';
                 link.click();
                 this.setLoading(false);
             } catch (error) {
