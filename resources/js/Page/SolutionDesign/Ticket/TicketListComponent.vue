@@ -142,7 +142,8 @@
                     </div>
                 </div>
             </li>
-            <li v-for="(task, index) in tasks" v-if="tasks.length > 0" :key="task.id" class="border list-group-item">
+            <li v-for="(task, index) in tasks" v-if="tasks.length > 0" :key="task.id" class="border list-group-item"
+                :class="backgroundClass(task)">
                 <div class="row w-100 align-items-center">
                     <div class="position-absolute" :class="{
                         'bg-secondary': !task.is_visible,
@@ -313,6 +314,7 @@ export default {
             selectedTasks: [],
             previousProject: null,
             initiative: {},
+            prdMacroStatus: "",
             errors: {},
             showMessage: true
         }
@@ -348,6 +350,7 @@ export default {
                 this.nextActionOwners = response.meta_data.users;
                 this.initiative = response.meta_data.initiative;
                 this.filterMacroStatus = response.meta_data.macro_status;
+                this.prdMacroStatus = response.meta_data.prd_macro_status;
                 this.tasks = response.content.data.map(task => ({
                     ...task,
                     isChecked: false,
@@ -586,6 +589,11 @@ export default {
                 deploymentId = this.$route.query.deployment_id;
                 this.filter.deployment_id = deploymentId;
                 this.filter.is_include_done = true;
+            }
+        },
+        backgroundClass(ticket) {
+            if (ticket.release_tickets.length > 0 && this.prdMacroStatus == ticket.macro_status) {
+                return 'bg-warning-subtle';
             }
         }
     },

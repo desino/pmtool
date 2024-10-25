@@ -221,9 +221,6 @@ class TicketController extends Controller
         $filters = $request->filters;
 
         $deploymentId = "";
-        // if ($request->get('deployment_id') != '') {
-        //     $deploymentId = $request->get('deployment_id');
-        // } else 
         if ($filters['deployment_id'] != '') {
             $deploymentId = $filters['deployment_id'];
         }
@@ -270,14 +267,20 @@ class TicketController extends Controller
                         );
                     }]);
                 }]);
-            }, 'initiative', 'currentAction'])
-            ->withCount(['actions', 'doneActions'])
+            }, 'initiative', 'currentAction', 'releaseTickets'])
+            ->withCount([
+                'actions',
+                'doneActions',
+            ])
             ->where('initiative_id', $initiative_id)
             ->when($deploymentId != '', function ($query) use ($deploymentId) {
-                $query->whereIn('id', function ($query) use ($deploymentId) {
-                    $query->select('ticket_id')
-                        ->from('release_tickets')
-                        ->where('release_id', $deploymentId);
+                // $query->whereIn('id', function ($query) use ($deploymentId) {
+                //     $query->select('ticket_id')
+                //         ->from('release_tickets')
+                //         ->where('release_id', $deploymentId);
+                // });
+                $query->whereHas('releaseTickets', function ($query) use ($deploymentId) {
+                    $query->where('release_id', $deploymentId);
                 });
             })
             ->when($filters['task_name'] != '', function (Builder $query) use ($filters) {
@@ -339,6 +342,7 @@ class TicketController extends Controller
         $meta['initiative'] = TicketService::getInitiative($initiative_id);
         $meta['macro_status'] = Ticket::getAllMacroStatus();
         $meta['deployments'] = Release::getAllReleases($initiative_id);
+        $meta['prd_macro_status'] = Ticket::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_PRD;
 
         return ApiHelper::response('false', __('messages.ticket.fetched'), $tickets, 200, $meta);
     }

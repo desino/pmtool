@@ -281,6 +281,11 @@ class Ticket extends Model
         return $this->hasMany(TimeBooking::class);
     }
 
+    public function releaseTickets()
+    {
+        return $this->hasMany(ReleaseTicket::class);
+    }
+
     public function scopeReadyForTestStatus($query)
     {
         return $query->where('status', Self::getStatusReadyForTest());
