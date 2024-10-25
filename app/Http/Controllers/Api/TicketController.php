@@ -213,22 +213,23 @@ class TicketController extends Controller
 
     public function index($initiative_id, Request $request)
     {
-        // echo $request->get('deployment_id');
-        // exit;
+
         $authUser = Auth::user();
         if (!$authUser->is_admin) {
             return ApiHelper::response(false, __('messages.initiative.dont_have_permission'), null, 404);
         }
         $filters = $request->filters;
-        // print('<pre>');
-        // print_r($filters);
-        // print('</pre>');
-        // exit;
+
         $deploymentId = "";
-        if ($request->get('deployment_id') != '') {
-            $deploymentId = $request->get('deployment_id');
-        } else if ($filters['deployment_id'] != '') {
+        // if ($request->get('deployment_id') != '') {
+        //     $deploymentId = $request->get('deployment_id');
+        // } else 
+        if ($filters['deployment_id'] != '') {
             $deploymentId = $filters['deployment_id'];
+        }
+        $release = Release::where('initiative_id', $initiative_id)->find($deploymentId);
+        if (!$release && $deploymentId != "") {
+            return ApiHelper::response(false, __('messages.release.not_found'), null, 404);
         }
 
         $tickets = Ticket::select(

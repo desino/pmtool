@@ -255,6 +255,7 @@
 
 <script>
 import globalMixin from '@/globalMixin';
+import { nextTick } from 'vue';
 import PaginationComponent from '../../../components/PaginationComponent.vue';
 import messageService from '../../../services/messageService';
 import GlobalMessage from '../../../components/GlobalMessage.vue';
@@ -331,16 +332,9 @@ export default {
                     this.filter.is_open_task = true;
                     store.commit("setPassedData", {});
                 }
-                let deploymentId = "";
-                console.log('this.$route.query :: ', this.$route.query);
-                if ('deployment_id' in this.$route.query) {
-                    deploymentId = this.$route.query.deployment_id;
-                    // this.resetFilter();
-                }
                 const params = {
                     page: page,
                     filters: this.filter,
-                    deployment_id: deploymentId
                 }
                 await this.setLoading(true);
                 const response = await ticketService.fetchAllTickets(this.initiative_id, params);
@@ -585,9 +579,18 @@ export default {
                 is_open_task: false,
                 is_include_done: true
             }
+        },
+        setDeploymentIdForFilter() {
+            let deploymentId = "";
+            if ('deployment_id' in this.$route.query) {
+                deploymentId = this.$route.query.deployment_id;
+                this.filter.deployment_id = deploymentId;
+                this.filter.is_include_done = true;
+            }
         }
     },
     mounted() {
+        this.setDeploymentIdForFilter();
         this.fetchAllTasks();
         eventBus.$on('refreshTickets', this.fetchAllTasks);
     },
