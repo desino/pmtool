@@ -66,7 +66,17 @@
                     @select="fetchAllTasks" @Remove="fetchAllTasks">
                 </multiselect>
             </div>
-            <div class="col-12 col-md-3 mb-2 mb-md-0 mt-3">
+        </div>
+        <div class="row w-100 mb-3 align-items-center">
+            <div class="col-12 col-md-3 mb-2 mb-md-0">
+                <select v-model="filter.deployment_id" class="form-select" @change="fetchAllTasks">
+                    <option value="">{{ $t('ticket.filter.deployments_placeholder') }}</option>
+                    <option v-for="deployment in filterDeployments" :key="deployment.id" :value="deployment.id">{{
+                        deployment.name }}
+                    </option>
+                </select>
+            </div>
+            <div class="col-12 col-md-3 mb-2 mb-md-0">
                 <div class="form-check ms-auto">
                     <input v-model="filter.is_include_done" @change="fetchAllTasks" class="form-check-input"
                         type="checkbox" id="is_include_done">
@@ -285,6 +295,7 @@ export default {
             actionOwners: [],
             nextActionOwners: [],
             filterMacroStatus: [],
+            filterDeployments: [],
             filter: {
                 task_name: "",
                 task_type: "",
@@ -294,7 +305,8 @@ export default {
                 projects: [],
                 macro_status: [],
                 is_open_task: false,
-                is_include_done: false
+                is_include_done: false,
+                deployment_id: "",
             },
             isChkAllTickets: false,
             selectedTasks: [],
@@ -335,6 +347,7 @@ export default {
                 this.currentPage = response.content.current_page;
                 this.totalPages = response.content.last_page;
                 this.filterTaskTypes = response.meta_data.task_type;
+                this.filterDeployments = response.meta_data.deployments;
                 this.functionalities = response.meta_data.functionalities;
                 this.projects = response.meta_data.projects;
                 this.actionOwners = response.meta_data.users;

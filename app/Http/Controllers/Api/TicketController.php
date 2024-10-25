@@ -220,6 +220,16 @@ class TicketController extends Controller
             return ApiHelper::response(false, __('messages.initiative.dont_have_permission'), null, 404);
         }
         $filters = $request->filters;
+        // print('<pre>');
+        // print_r($filters);
+        // print('</pre>');
+        // exit;
+        $deploymentId = "";
+        if ($request->get('deployment_id') != '') {
+            $deploymentId = $request->get('deployment_id');
+        } else if ($filters['deployment_id'] != '') {
+            $deploymentId = $filters['deployment_id'];
+        }
 
         $tickets = Ticket::select(
             'id',
@@ -262,11 +272,11 @@ class TicketController extends Controller
             }, 'initiative', 'currentAction'])
             ->withCount(['actions', 'doneActions'])
             ->where('initiative_id', $initiative_id)
-            ->when($request->get('deployment_id') != '', function ($query) use ($request) {
-                $query->whereIn('id', function ($query) use ($request) {
+            ->when($deploymentId != '', function ($query) use ($deploymentId) {
+                $query->whereIn('id', function ($query) use ($deploymentId) {
                     $query->select('ticket_id')
                         ->from('release_tickets')
-                        ->where('release_id', $request->get('deployment_id'));
+                        ->where('release_id', $deploymentId);
                 });
             })
             ->when($filters['task_name'] != '', function (Builder $query) use ($filters) {
@@ -327,6 +337,7 @@ class TicketController extends Controller
         $meta['users'] = TicketService::getUsers();
         $meta['initiative'] = TicketService::getInitiative($initiative_id);
         $meta['macro_status'] = Ticket::getAllMacroStatus();
+        $meta['deployments'] = Release::getAllReleases($initiative_id);
 
         return ApiHelper::response('false', __('messages.ticket.fetched'), $tickets, 200, $meta);
     }

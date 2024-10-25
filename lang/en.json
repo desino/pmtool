@@ -462,6 +462,7 @@
     "ticket.filter.functionalities_placeholder": "Functionality",
     "ticket.filter.projects_placeholder": "Project",
     "ticket.filter.is_include_done": "Include Done",
+    "ticket.filter.deployments_placeholder": "Deployments",
     "ticket.assign.project.button_text": "Assign Project",
     "ticket.assign.project.modal_title": "Assign Project",
     "ticket.assign.project.modal_submit_but_text": "Assign",

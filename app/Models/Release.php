@@ -70,4 +70,10 @@ class Release extends Model
     {
         return $this->processed_at ? $this->processed_at->format('d/m/Y') : '';
     }
+
+    public static function getAllReleases($initiativeId)
+    {
+        $releases = self::where('initiative_id', $initiativeId)->get();
+        return $releases;
+    }
 }
