@@ -169,7 +169,7 @@
                                     <div v-if="errors.release_note" class="text-danger mt-2">
                                         <span v-for="(error, index) in errors.release_note" :key="index">{{
                                             error
-                                            }}</span>
+                                        }}</span>
                                     </div>
                                     <button class="btn w-100 btn-desino text-white fw-bold m-2 rounded"
                                         @click="updateReleaseNote">
@@ -186,7 +186,7 @@
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">{{
                                                 $t('ticket_details_input_dev_estimation_time')
-                                            }} <strong class="text-danger">*</strong>
+                                                }} <strong class="text-danger">*</strong>
                                             </label>
                                             <input v-model="estimatedHoursFormData.dev_estimation_time"
                                                 :class="{ 'is-invalid': errors.dev_estimation_time }"
@@ -226,7 +226,8 @@
                                 </div>
 
                                 <button class="float-end btn btn-primary" @click="showTestCaseModal"
-                                    v-if="is_allow_case_add_test_section"> Add Test Section
+                                    v-if="is_allow_case_add_test_section"> {{
+                                        $t('ticket_detail_test_case_add_test_section_but_text') }}
                                 </button>
                             </div>
                             <div v-if="test_cases?.length > 0" class="card-body pt-0">
@@ -241,7 +242,8 @@
                                                             : 'failed') : 'pending' }}</span>
                                                 </label>
                                             </div>
-                                            <div class="card-body">
+                                            <!-- <div class="card-body overflow-auto" style="max-height: 180px;"> -->
+                                            <div class="card-body max-h-250">
                                                 <span class="bg-desino text-white rounded fw-bold p-2">
                                                     {{ $t('ticket_detail_test_case_section_expected_behaviour') }}
                                                 </span>
@@ -249,7 +251,7 @@
                                                 <div v-if="test_case.observations">
                                                     <span class="bg-desino text-white rounded fw-bold p-2">{{
                                                         $t('ticket_detail_test_case_section_actual_behaviour')
-                                                    }}</span>
+                                                        }}</span>
                                                     <div class="p-2" v-html="test_case.observations">
                                                     </div>
                                                 </div>

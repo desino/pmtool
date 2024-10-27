@@ -415,6 +415,7 @@
     "ticket_detail_test_case_section_expected_behaviour": "Expected Behaviour",
     "ticket_detail_test_case_section_actual_behaviour": "Actual Behaviour",
     "ticket_detail_test_case_section_no_test_case": "No Test Case found !",
+    "ticket_detail_test_case_add_test_section_but_text": "Add Test Section",
     "ticket_action.validate": "Validate",
     "create_ticket_modal_select_action_user_placeholder": "Select Action User",
     "initiative.status.opportunity": "Opportunity",

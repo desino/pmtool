@@ -300,3 +300,8 @@
     left: 0;
     width: 500px;
 }
+
+.max-h-250 {
+    max-height: 250px;
+    overflow-y: auto;
+}
