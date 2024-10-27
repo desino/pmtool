@@ -52,6 +52,10 @@
                         </li>
                     </ul>
                 </li>
+                <li v-else class="list-group-item border p-4">
+                    <div class="col h4 fw-bold text-center">{{ $t('bulk_create_tickets.list.not_record_found') }}
+                    </div>
+                </li>
             </ul>
             <button type="submit" class="btn btn-desino mt-3 w-100">{{
                 $t('bulk_create_tickets.button_create_bulk_tickets')
@@ -66,6 +70,7 @@ import { mapActions, mapGetters } from 'vuex';
 import messageService from '../../../services/messageService';
 import BulkCreateService from '../../../services/BulkCreateService';
 import showToast from '../../../utils/toasts';
+import eventBus from '../../../eventBus';
 
 export default {
     name: 'BulkCreateTicketsComponent',
@@ -94,6 +99,7 @@ export default {
                 this.sectionsWithFunctionalities = sectionsWithFunctionalities;
                 this.initiativeData = initiative;
                 this.setLoading(false);
+                eventBus.$emit('selectHeaderInitiativeId', this.$route.params.id);
             } catch (error) {
                 this.handleError(error);
             }
@@ -172,6 +178,11 @@ export default {
     },
     mounted() {
         this.getInitialDataForBulkCreate();
-    }
+    },
+    beforeRouteUpdate(to, from, next) {
+        this.initiative_id = to.params.id;
+        this.getInitialDataForBulkCreate();
+        next();
+    },
 }
 </script>

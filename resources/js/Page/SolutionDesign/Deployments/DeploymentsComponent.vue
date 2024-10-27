@@ -238,6 +238,11 @@ export default {
     mounted() {
         this.clearMessages();
         this.fetchData();
-    }
+    },
+    beforeRouteUpdate(to, from, next) {
+        this.initiative_id = to.params.id;
+        this.fetchData();
+        next();
+    },
 }
 </script>

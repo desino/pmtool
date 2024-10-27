@@ -64,7 +64,7 @@
                     <div class="col-lg-3 col-md-6 col-6 py-2">
                         <span class="mx-3 d-flex">{{ ticket.composed_name }}</span>
                     </div>
-                    <div class="col-lg-3 col-md-6 col-6 py-2 text-white text-center p-2"
+                    <div class="col-lg-3 col-md-6 col-6 py-2 text-white text-center p-2 rounded"
                         :class="'bg-' + ticket.macro_status_label?.color">
                         {{ ticket.macro_status_label?.label }}
                     </div>
@@ -209,6 +209,11 @@ export default {
     },
     mounted() {
         this.fetchData();
+    },
+    beforeRouteUpdate(to, from, next) {
+        this.initiative_id = to.params.id;
+        this.fetchData();
+        next();
     },
 }
 </script>

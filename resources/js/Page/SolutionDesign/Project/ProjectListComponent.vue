@@ -186,6 +186,11 @@ export default {
     },
     beforeUnmount() {
         this.showMessage = false;
-    }
+    },
+    beforeRouteUpdate(to, from, next) {
+        this.initiative_id = to.params.id;
+        this.getProjectList();
+        next();
+    },
 };
 </script>

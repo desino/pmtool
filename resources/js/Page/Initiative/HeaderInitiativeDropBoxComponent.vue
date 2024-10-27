@@ -13,9 +13,11 @@ import HeaderService from '../../services/HeaderService';
 import { mapActions, mapGetters } from "vuex";
 import store from "../../store/index.js";
 import OpportunityService from '../../services/OpportunityService.js';
+import globalMixin from '@/globalMixin';
 
 export default {
     name: 'HeaderInitiativeDropBoxComponent',
+    mixins: [globalMixin],
     data() {
         return {
             initiatives: [],
@@ -51,10 +53,20 @@ export default {
         },
         async navigate(event, userData) {
             const initiativeId = event.target.value;
-            const currentInitiative = this.initiatives.find(initiative => initiative.id == initiativeId)
+            const currentInitiative = this.initiatives.find(initiative => initiative.id == initiativeId);
             store.commit("setCurrentInitiative", currentInitiative);
             eventBus.$emit('sidebarSelectHeaderInitiativeId', initiativeId);
-            if (initiativeId && userData.is_admin) {
+
+            const routesWithInitiativeId = this.appVariables.ROUTES_NAME_WITH_INITIATIVE_ID;
+            if (routesWithInitiativeId.includes(this.$route.name)) {
+                if (this.$route.name == 'task.detail' && userData.is_admin) {
+                    this.$router.push({ name: 'tasks', params: { id: initiativeId } });
+                } else if (this.$route.name == 'my-tickets' && !userData.is_admin) {
+                    this.$router.push({ name: 'my-tickets', params: { id: initiativeId } });
+                } else {
+                    this.$router.push({ name: this.$route.name, params: { id: initiativeId } });
+                }
+            } else if (initiativeId && userData.is_admin) {
                 this.$router.push({ name: 'solution-design', params: { id: initiativeId } });
             } else if (initiativeId && !userData.is_admin) {
                 this.$router.push({ name: 'solution-design.detail', params: { id: initiativeId } });

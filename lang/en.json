@@ -683,6 +683,7 @@
     "bulk_create_tickets.clarify_and_estimation_text": "Clarify & Estimation",
     "bulk_create_tickets.confirm_store_alert.title": "Confirm Save",
     "bulk_create_tickets.confirm_store_alert.text": "Are you sure you want to save these bulk tickets?",
+    "bulk_create_tickets.list.not_record_found": "No record found",
     "initiative_time_booking.you_dont_have_permission_to_access_this_page": "You don't have permission to access this page.",
     "initiative_time_booking.page_title": "Initiative Time Booking",
     "initiative_time_booking.list_table.date": "Date",

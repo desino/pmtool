@@ -16,17 +16,18 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
     let isAuthenticated = store.getters.isAuthenticated;
 
-    const routesWithInitiativeId = [
-        'solution-design',
-        'solution-design.detail',
-        'solution-design.download',
-        'tasks',
-        'task.detail',
-        'projects',
-        'my-tickets',
-        'bulk-create-tickets',
-        'deployments',
-    ];
+    // const routesWithInitiativeId = [
+    //     'solution-design',
+    //     'solution-design.detail',
+    //     'solution-design.download',
+    //     'tasks',
+    //     'task.detail',
+    //     'projects',
+    //     'my-tickets',
+    //     'bulk-create-tickets',
+    //     'deployments',
+    // ];
+    const routesWithInitiativeId = APP_VARIABLES.ROUTES_NAME_WITH_INITIATIVE_ID;
 
     if (routesWithInitiativeId.includes(to.name)) {
         let initiativeId = to.params.initiative_id ?? to.params.id;
