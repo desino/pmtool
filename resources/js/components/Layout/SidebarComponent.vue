@@ -193,6 +193,15 @@
                             }}
                         </router-link>
                     </li>
+                    <!-- <li class="nav-item" v-if="user?.is_admin">
+                        <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('profile') }"
+                            :to="{ name: 'profile' }" class="nav-link text-dark" @click="unselectHeaderInitiative">
+                            <i class="bi bi-person-lines-fill mx-2"></i>
+                            {{
+                                $t('header.menu.profile')
+                            }}
+                        </router-link>
+                    </li> -->
                 </ul>
             </nav>
         </div>

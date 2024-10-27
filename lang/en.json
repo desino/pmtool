@@ -444,6 +444,7 @@
     "header.menu.planning": "Planning",
     "header.menu.initiative_time_booking": "Initiative Time Booking",
     "header.menu.deployments": "Deployments",
+    "header.menu.profile": "Profile",
     "ticket.page_title": "All Ticket",
     "ticket.list.column_task_name": "Ticket",
     "ticket.list.column_task_status": "Macro Status",
