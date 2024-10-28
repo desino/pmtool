@@ -1,5 +1,5 @@
 <template>
-    <div class="app-content-header">
+    <!-- <div class="app-content-header">
         <div class="container-fluid">
             <div class="row w-100">
                 <div class="col-sm-6">
@@ -7,9 +7,9 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <GlobalMessage v-if="showMessage" />
-    <div class="app-content" id="timeBookingPageSection">
+    <div class="app-content mt-3" id="timeBookingPageSection">
         <div class="w-100">
             <div class="scrolling outer">
                 <div class="inner">
@@ -171,6 +171,7 @@ import TimeBookingOnNewInitiativeOrTicketModalComponent from './TimeBookingOnNew
 import { handleError, nextTick } from 'vue';
 import Multiselect from 'vue-multiselect';
 import TimeBookingUnBillableModalComponent from './TimeBookingUnBillableModalComponent.vue';
+import store from '../../store';
 export default {
     name: 'BookingComponent',
     mixins: [globalMixin],
@@ -378,6 +379,10 @@ export default {
     mounted() {
         this.clearMessages();
         this.getTimeBookingData();
+        const setHeaderData = {
+            page_title: this.$t('time_booking.page_title')
+        }
+        store.commit("setHeaderData", setHeaderData);
     },
 }
 </script>

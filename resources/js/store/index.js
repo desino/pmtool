@@ -8,7 +8,8 @@ export default new Vuex.Store({
         loading: false,
         currentInitiative: {},
         serverError: {},
-        passedData: {}
+        passedData: {},
+        headerData: {},
     },
     mutations: {
         /**
@@ -76,6 +77,9 @@ export default new Vuex.Store({
 
         setPermissionMessage(state, messageObj) {
             state.permissionMessageObj = messageObj;
+        },
+        setHeaderData(state, data) {
+            state.headerData = data;
         }
     },
     actions: {
@@ -90,6 +94,9 @@ export default new Vuex.Store({
         },
         savePassedData({ commit }, data) {
             commit('setPassedData', data);
+        },
+        setHeaderData({ commit }, data) {
+            commit('setHeaderData', data);
         }
     },
     getters: {
@@ -100,7 +107,8 @@ export default new Vuex.Store({
         loading: state => state.loading,
         currentInitiative: state => state.currentInitiative,
         passedData: state => state.passedData,
-        permissionMessage: state => state.permissionMessageObj
+        permissionMessage: state => state.permissionMessageObj,
+        headerData: state => state.headerData
     },
 });
 

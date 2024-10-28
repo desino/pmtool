@@ -340,6 +340,10 @@ export default {
                     this.$router.push({ name: 'home' });
                 } else {
                     this.initiativeData = content;
+                    const setHeaderData = {
+                        page_title: this.$t('solution_design.page_title') + ' - ' + this.initiativeData?.name
+                    }
+                    store.commit("setHeaderData", setHeaderData);
                 }
                 this.setLoading(false);
             } catch (error) {

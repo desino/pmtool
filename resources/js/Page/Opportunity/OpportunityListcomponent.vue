@@ -1,15 +1,6 @@
 <template>
-    <div class="app-content-header">
-        <div class="container-fluid">
-            <div class="row w-100">
-                <div class="col-sm-6">
-                    <h3 class="m-0">{{ $t('opportunity.page_title') }}</h3>
-                </div>
-            </div>
-        </div>
-    </div>
     <GlobalMessage v-if="showMessage" />
-    <div class="app-content">
+    <div class="app-content mt-3">
         <div class="row w-100 mb-3">
             <div class="col-12 col-md-3 mb-2 mb-md-0">
                 <input v-model="filter.initiative_name"
@@ -31,7 +22,7 @@
                     </div>
                     <div class="col-lg-3 col-md-6 col-6 fw-bold py-2">{{
                         $t('opportunity_list_table.initiative_name_th_text')
-                    }}
+                        }}
                     </div>
                     <div class="col-lg-3 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
                         {{ $t('opportunity_list_table.ballpark_development_hours_th_text') }}
@@ -56,7 +47,7 @@
                     <div class="col-lg-2 col-md-6 col-4">
                         <span class="d-block d-lg-none fw-bold bg-light-subtle mt-2 text-white text-center"> {{
                             $t('opportunity_list_table.actions_th_text')
-                        }} </span>
+                            }} </span>
                         <a :title="$t('opportunity_list_table.actions_edit_tooltip')" class="text-desino me-2"
                             href="javascript:" @click="editOpportunity(opportunity)">
                             <i class="bi bi-pencil-square"></i>
@@ -106,6 +97,7 @@ import { Modal } from 'bootstrap';
 import showToast from '../../utils/toasts';
 import eventBus from './../../eventBus';
 import { mapActions } from 'vuex';
+import store from '../../store';
 
 export default {
     name: 'OpportunityListComponent',
@@ -219,6 +211,10 @@ export default {
         this.getPageInitialData();
 
         eventBus.$on('reloadOpportunityList', this.handleReloadOpportunityList);
+        const setHeaderData = {
+            page_title: this.$t('opportunity.page_title')
+        }
+        store.commit("setHeaderData", setHeaderData);
     },
     beforeUnmount() {
         // Hide the message when the component is unmounted
