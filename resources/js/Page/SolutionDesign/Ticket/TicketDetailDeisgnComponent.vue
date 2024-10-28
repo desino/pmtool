@@ -242,7 +242,6 @@
                                                             : 'failed') : 'pending' }}</span>
                                                 </label>
                                             </div>
-                                            <!-- <div class="card-body overflow-auto" style="max-height: 180px;"> -->
                                             <div class="card-body max-h-250">
                                                 <span class="bg-desino text-white rounded fw-bold p-2">
                                                     {{ $t('ticket_detail_test_case_section_expected_behaviour') }}
