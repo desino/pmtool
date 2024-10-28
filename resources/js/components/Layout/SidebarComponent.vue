@@ -2,8 +2,7 @@
     <aside ref="sidebar" class="app-sidebar bg-white border">
         <div class="sidebar-brand">
             <router-link class="brand-link" :to="{ name: 'home' }" @click="unselectHeaderInitiative">
-                <img alt="Brand Image" class="brand-image"
-                    src="https://www.desino.be/wp-content/uploads/2024/01/Logo_Finaloriginal-black.png" />
+                <img alt="Brand Image" class="brand-image" :src="logoPath" />
             </router-link>
         </div>
         <div class="p-2 border-bottom">
@@ -262,6 +261,7 @@ export default {
         return {
             sidebar_selected_initiative_id: null,
             initiativeData: "",
+            logoPath: '/images/logo.png',
         }
     },
     computed: {

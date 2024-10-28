@@ -111,7 +111,7 @@ class TimeBookingController extends Controller
         ];
         $defaultRowDataTicketsHoursPerDay = [];
         foreach ($weekDays as $weekDay) {
-            $defaultRowDataTicketsHoursPerDay[$weekDay['date']]['hours'] = '<i class="bi bi-plus-circle"></i>';
+            $defaultRowDataTicketsHoursPerDay[$weekDay['date']]['hours'] = '<i class="bi bi-plus-square-fill fs-5 text-desino"></i>';
             $defaultRowDataTicketsHoursPerDay[$weekDay['date']]['is_allow_booking'] = $weekDay['date'] <= Carbon::now()->format('Y-m-d') ?? false;
             $retData['weekDays'][array_search($weekDay, $weekDays)]['total_hours'] = $timeBookings->where('booked_date', $weekDay['date'])->sum('hours');
         }
@@ -165,7 +165,7 @@ class TimeBookingController extends Controller
             ];
             $initiativeLevelTicketBookingHoursPerDay = [];
             foreach ($weekDays as $weekDay) {
-                $initiativeLevelTicketBookingHoursPerDay[$weekDay['date']]['hours'] = '<i class="bi bi-plus-circle"></i>';
+                $initiativeLevelTicketBookingHoursPerDay[$weekDay['date']]['hours'] = '<i class="bi bi-plus-square-fill fs-5 text-desino"></i>';
                 $initiativeLevelTicketBookingHoursPerDay[$weekDay['date']]['is_allow_booking'] = $weekDay['date'] <= Carbon::now()->format('Y-m-d') ?? false;
             }
             $initiativeLevelTicketBookingRowData['hours_per_day'] = $initiativeLevelTicketBookingHoursPerDay;
