@@ -39,7 +39,8 @@
                         :class="week.is_current_week ? 'bg-black' : 'bg-desino'" v-for="(week, index) in loadWeeks"
                         :key="index" style="height: 45px;">
                         <small class="small text-white" style="font-size: 0.8rem;">
-                            {{ week.display_week_name }}
+                            <span class="d-block mb-1">{{ $t('Week') }}</span>
+                            <span class="d-block mt-1">{{ week.display_week_name }}</span>
                         </small>
                     </td>
                     <th scope="col" class="border abs4 bg-dark text-center align-middle p-1" style="height: 45px;">
@@ -58,15 +59,21 @@
                             }" colspan="2" :rowspan="planning.users.length"
                             :role="planning.default_row_name == 'plan_new_initiative' ? 'button' : ''"
                             @click="handlePlanNewInitiative(planning, user)">
+                            <span v-if="planning.default_row_name == 'plan_new_initiative'"><i class="bi bi-plus-lg"></i> </span>
                             {{ planning.initiative_name }}
                         </th>
                         <!-- below th except for total and plan new initiative -->
                         <th v-if="planning.default_row_name == '' && userIndex == 0"
-                            class="border total_abs1 bg-opacity-25 text-center align-middle p-1"
+                            class="border total_abs1 bg-opacity-25 text-left align-middle p-1"
                             :rowspan="planning.users.length">
-                            <span>{{ planning.initiative_name }}</span>
-                            <button class="btn btn-info text-white bg-opacity-25 btn-sm w-100 mt-auto"
-                                @click="handlePlanNewUser(planning)"><i class="bi bi-plus-circle"></i></button>
+                            <div class="row h-100 align-items-center">
+                                <div class="col-auto me-1" style="width:20px">
+                                    <a href="javascript:void(0);" class="link-btn" @click="handlePlanNewUser(planning)"><i class="bi bi-plus-square-fill text-desino fs-5"></i></a>
+                                </div>
+                                <div class="col-auto" style="width: calc(100% - 30px)">
+                                    {{ planning.initiative_name }}
+                                </div>
+                            </div>
                         </th>
                         <!-- below td for plan new user -->
                         <th v-if="planning.default_row_name == '' && user.id != ''" class="border abs1 text-left p-1">

@@ -12,7 +12,7 @@ return [
     'initiative_time_booking_load_default_data_days' => 45,
     'un_billable_internal_time_booking' => [
         'initiative_id' => '-1',
-        'initiative_name' => 'Internal Initiative',
+        'initiative_name' => 'Other Bookings',
         'projects' => [
             [
                 'project_id' => '-1',

@@ -51,7 +51,7 @@ class PlanningController extends Controller
             $loadWeeks[] = [
                 'date' => $startWeek->toDateString(),
                 'week' => $startWeek->weekOfYear,
-                'display_week_name' => 'Week ' . $startWeek->format('d/m'),
+                'display_week_name' => $startWeek->format('d/m'),
                 'is_current_week' => $startWeek->toDateString() == $currentWeek->toDateString(),
             ];
             $startWeek->addWeek();
