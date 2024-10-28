@@ -7,11 +7,14 @@
                         <i class="bi bi-list me-4"></i>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <h3 class="m-0">{{ headerData.page_title }}</h3>
+                </li>
             </ul>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
                     <button class="btn btn-danger btn-sm" type="button" @click="logout"><i
-                        class="bi bi-box-arrow-right"></i> {{ $t('logout_but_text') }}</button>
+                            class="bi bi-box-arrow-right"></i> {{ $t('logout_but_text') }}</button>
                 </li>
             </ul>
         </div>
@@ -27,6 +30,9 @@ export default {
         return {
             sidebarBreakpoint: 992,
         }
+    },
+    computed: {
+        ...mapGetters(['user', 'headerData']),
     },
     methods: {
         logout() {
@@ -49,9 +55,6 @@ export default {
                 body.classList.remove('sidebar-open');
             }
         },
-    },
-    computed: {
-        ...mapGetters(['user'])
     },
     mounted() {
         this.handleResize();
