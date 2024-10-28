@@ -15,8 +15,8 @@
                 <div class="inner">
                     <table border="0" cellspacing="0" cellpadding="0">
                         <tr class="header_row bg-transparent">
-                            <th scope="col" class="border abs1 bg-transparent text-left text-white align-middle p-1"
-                                style="height: 45px;">
+                            <th scope="col" class="abs1 bg-transparent text-left text-white align-middle p-1"
+                                style="height: 55px;">
                                 <multiselect v-model="filter.initiative_id" :options="initiativesFilterList"
                                     :placeholder="$t('create_ticket_modal_select_functionality_placeholder')"
                                     label="initiative_name" track-by="initiative_id"
@@ -24,16 +24,8 @@
                                     @remove="handleInitiativeFilterChange(true)">
                                 </multiselect>
                             </th>
-                            <th scope="col" class="border abs2 bg-transparent text-left text-white align-middle p-1"
-                                style="height: 45px;">
-                                <!-- <select class="form-select form-select-sm" v-model="filter.ticket_id"
-                                    @change="handleTicketFilterChange">
-                                    <option value="">{{ $t('time_booking.list_table.ticket_column') }}</option>
-                                    <option v-for="ticket in selectBoxTicketsFilterList" :key="ticket.id"
-                                        :value="ticket.ticket_id">
-                                        {{ ticket.ticket_name }}
-                                    </option>
-                                </select> -->
+                            <th scope="col" class="abs2 bg-transparent text-left text-white align-middle p-1"
+                                style="height: 55px;">
                                 <multiselect v-model="filter.ticket_id" :options="selectBoxTicketsFilterList"
                                     :placeholder="$t('create_ticket_modal_select_functionality_placeholder')"
                                     label="ticket_name" track-by="ticket_id" @select="handleTicketFilterChange"
@@ -41,20 +33,20 @@
                                 </multiselect>
                             </th>
                             <th scope="col" class="border abs3 bg-dark text-center align-middle p-1"
-                                style="height: 45px;">
+                                style="height: 55px;">
                                 <a class="text-white" href="javascript:void(0);" @click="getTimeBookingData(-1)">
                                     <i class="bi bi-caret-left"></i>
                                 </a>
                             </th>
                             <td scope="col" class="border text-center align-middle p-1"
                                 :class="weekDay.is_today ? 'bg-black' : 'bg-desino'"
-                                v-for="(weekDay, index) in weekDays" :key="index" style="height: 45px;">
+                                v-for="(weekDay, index) in weekDays" :key="index" style="height: 55px;">
                                 <small class="small text-white" style="font-size: 0.8rem;">
                                     {{ weekDay.format_date }}
                                 </small>
                             </td>
                             <th scope="col" class="border abs4 bg-dark text-center align-middle p-1"
-                                style="height: 45px;">
+                                style="height: 55px;">
                                 <a class="text-white" href="javascript:void(0);" @click="getTimeBookingData(1)">
                                     <i class="bi bi-caret-right"></i>
                                 </a>
@@ -76,31 +68,35 @@
                             </td>
                             <th :rowspan="ticketRowsCount" class="total_abs3">&nbsp;</th>
                         </tr>
-                        <tr><td colspan="2"></td><td :colspan="weekDays.length"></td></tr>
+                        <tr><th class="lastrow_abs" colspan="2"></th><td :colspan="weekDays.length"></td></tr>
 
-                        <tr class="bg-danger bg-opacity-25" v-if="unBillableRowData">
-                            <th class="border total_abs1 bg-opacity-25 bg-danger text-center align-middle p-1"
+                        <tr class="bg-secondary bg-opacity-75" v-if="unBillableRowData">
+                            <th class="border total_abs1 bg-secondary bg-opacity-75 text-center align-middle p-1 text-white"
                                 colspan="2">
                                 {{ unBillableRowData.initiative_name }} <i class="bi bi-arrow-right"></i>
                             </th>
-                            <td class="text-center align-middle p-1 border" v-for="(weekDay, index) in weekDays"
+                            <td class="text-center align-middle p-1 border border-secondary-subtle" v-for="(weekDay, index) in weekDays"
                                 :key="index"
                                 :role="unBillableRowData.hours_per_day[weekDay.date]?.is_allow_booking ? 'button' : false"
                                 @click="openUnBillableTimeBookingModal(unBillableRowData, weekDay, unBillableRowData.hours_per_day[weekDay.date]?.is_allow_booking)">
-                                <span v-if="unBillableRowData.hours_per_day" class="badge text-secondary">
+                                <span v-if="unBillableRowData.hours_per_day" class="badge text-white">
                                     {{ unBillableRowData.hours_per_day[weekDay.date]?.hours > 0 ?
                                         unBillableRowData.hours_per_day[weekDay.date]?.hours : ' ' }}
                                 </span>
                             </td>
                         </tr>
-                        <tr><td colspan="2"></td><td :colspan="weekDays.length"></td></tr>
+                        <tr><th class="lastrow_abs" colspan="2"></th><td :colspan="weekDays.length"></td></tr>
 
                         <template v-for="(timeBooking, timeBookingIndex) in timeBookings" :key="timeBookingIndex">
-                            <tr v-if="!timeBooking.initiative_id"><td colspan="2"></td><td :colspan="weekDays.length"></td></tr>
+                            <tr v-if="!timeBooking.initiative_id"><th class="lastrow_abs" colspan="2"></th><td :colspan="weekDays.length"></td></tr>
                             <tr v-for="(ticket, ticketIndex) in timeBooking.tickets" :key="ticketIndex">
-                                <th v-if="timeBooking.initiative_id && ticketIndex == 0"
-                                    class="border abs1 text-left p-1" :rowspan="timeBooking.tickets.length">
-                                    <small>{{ timeBooking.initiative_name }}</small>
+                                <th v-if="timeBooking.initiative_id" class="border abs1 text-left p-1" 
+                                :class="{
+                                    'border-bottom-0': ticketIndex == 0 || timeBooking.tickets.length - 2 == ticketIndex,
+                                    'border-top-0': ticketIndex > 0
+                                }">
+                                    <small v-if="ticketIndex == 0">{{ timeBooking.initiative_name }}</small>
+                                    <small v-else>&nbsp;</small>
                                 </th>
                                 <th v-if="timeBooking.initiative_id" class="border abs2 text-left align-middle p-1"
                                     :class="{
