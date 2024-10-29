@@ -142,16 +142,20 @@ class SolutionDesignController extends Controller
             return ApiHelper::response($status, __('messages.solution_design.section.client_not_exist'), '', 400);
         }
 
+        $status = true;
+        $message = __('messages.solution_design.section.store_success');
+        $statusCode = 200;
+        DB::beginTransaction();
         try {
             $postData = $request->post();
             $postData['name'] = $request->post('section_name');
             $section = Section::create($postData);
             $section->functionalities;
-            $status = true;
-            $message = __('messages.solution_design.section.store_success');
-            $statusCode = 200;
+            DB::commit();
         } catch (\Exception $e) {
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            DB::rollBack();
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }
@@ -164,7 +168,6 @@ class SolutionDesignController extends Controller
         if (!$authUser->is_admin) {
             return ApiHelper::response(false, __('messages.solution_design.dont_have_permission'), null, 404);
         }
-        DB::beginTransaction();
         $status = false;
         $section = collect([]);
 
@@ -181,14 +184,17 @@ class SolutionDesignController extends Controller
             return ApiHelper::response($status, __('messages.solution_design.section.client_not_exist'), '', 400);
         }
 
+        $status = true;
+        $statusCode = 200;
+        $message = __('messages.solution_design.section.update_success');
+        DB::beginTransaction();
         try {
             $section = SolutionDesignService::updateSection($request, $section);
-            $statusCode = 200;
-            $message = __('messages.solution_design.section.update_success');
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }
@@ -248,7 +254,8 @@ class SolutionDesignController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }
@@ -284,15 +291,17 @@ class SolutionDesignController extends Controller
             return ApiHelper::response($status, __('messages.solution_design.functionality.functionality_has_ticket'), '', 400);
         }
 
+        $status = true;
+        $statusCode = 200;
+        $message = __('messages.solution_design.functionality.delete_success');
         DB::beginTransaction();
         try {
             $functionality->delete();
             DB::commit();
-            $statusCode = 200;
-            $message = __('messages.solution_design.functionality.delete_success');
         } catch (\Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }
@@ -322,17 +331,19 @@ class SolutionDesignController extends Controller
             return ApiHelper::response($status, __('messages.solution_design.section.has_ticket'), '', 400);
         }
 
+        $status = true;
+        $statusCode = 200;
+        $message = __('messages.solution_design.section.delete_success');
         DB::beginTransaction();
         try {
             $section->functionalities()->delete();
             $section->delete();
             // SolutionDesignService::deleteSection($request);
-            $statusCode = 200;
-            $message = __('messages.solution_design.section.delete_success');
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }
@@ -374,7 +385,8 @@ class SolutionDesignController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
             return ApiHelper::response($status, $message, collect([]), $statusCode);
@@ -390,7 +402,6 @@ class SolutionDesignController extends Controller
         if (!$authUser->is_admin) {
             return ApiHelper::response(false, __('messages.solution_design.dont_have_permission'), null, 404);
         }
-        DB::beginTransaction();
         $status = false;
 
         $initiative = InitiativeService::getInitiative($request);
@@ -405,14 +416,18 @@ class SolutionDesignController extends Controller
         if (!$section) {
             return ApiHelper::response($status, __('messages.solution_design.functionality.section_not_exist'), '', 400);
         }
+
+        $status = true;
+        $statusCode = 200;
+        $message = __('messages.solution_design.section.update_section_order_no_success');
+        DB::beginTransaction();
         try {
             $retData = SolutionDesignService::updateSectionOrderNo($request);
-            $statusCode = 200;
-            $message = __('messages.solution_design.section.update_section_order_no_success');
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }

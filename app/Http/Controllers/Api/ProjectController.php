@@ -92,19 +92,20 @@ class ProjectController extends Controller
             return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
         }
 
+        $status = true;
+        $message = __('messages.project.update_status_success');
+        $statusCode = 200;
         DB::beginTransaction();
         try {
             $updateData = [
                 'status' => $requestData['status'] ? 1 : 0,
             ];
             $project->update($updateData);
-            $status = true;
-            $message = __('messages.project.update_status_success');
-            $statusCode = 200;
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }
@@ -128,16 +129,17 @@ class ProjectController extends Controller
             return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
         }
 
+        $status = true;
+        $message = __('messages.project.update_success');
+        $statusCode = 200;
         DB::beginTransaction();
         try {
             $project->update($requestData);
-            $status = true;
-            $message = __('messages.project.update_success');
-            $statusCode = 200;
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }

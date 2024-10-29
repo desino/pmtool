@@ -331,7 +331,7 @@ class TimeBookingController extends Controller
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }
@@ -360,7 +360,7 @@ class TimeBookingController extends Controller
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }
@@ -382,15 +382,17 @@ class TimeBookingController extends Controller
                 return ApiHelper::response($status, __('messages.ticket.not_found'), '', 400);
             }
         }
-        DB::beginTransaction();
+        $status = true;
         $message = __('messages.time_booking.store_success');
         $statusCode = 200;
+        DB::beginTransaction();
         try {
             TimeBooking::create($validData);
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }
@@ -444,7 +446,8 @@ class TimeBookingController extends Controller
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }
@@ -466,15 +469,18 @@ class TimeBookingController extends Controller
             return ApiHelper::response($status, __('messages.ticket.not_found'), '', 400);
         }
         $validData['booked_date'] = Carbon::parse($validData['booked_date'])->addDay(1)->format('Y-m-d');
-        DB::beginTransaction();
+
+        $status = true;
         $message = __('messages.time_booking.store_success');
         $statusCode = 200;
+        DB::beginTransaction();
         try {
             TimeBooking::create($validData);
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }
@@ -495,7 +501,8 @@ class TimeBookingController extends Controller
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }

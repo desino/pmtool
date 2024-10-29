@@ -279,6 +279,7 @@
     "messages.deployment.test_case_pdf_main_content_page_expected_behaviour": "Expected Behaviour",
     "messages.deployment.test_case_pdf_main_content_page_observerd_behaviour": "Observerd Behaviour",
     "messages.release.not_found": "Release not found.",
+    "messages.something_went_wrong": "Something went wrong.",
     "login_title": "Login",
     "login_page_title": "Login",
     "login_input_email": "Email",

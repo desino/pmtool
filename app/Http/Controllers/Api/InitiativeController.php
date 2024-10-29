@@ -56,15 +56,15 @@ class InitiativeController extends Controller
             return ApiHelper::response($status, __('messages.asana.initiative.store_error'), $retData, 500);
         }
 
+        $status = true;
+        $message = __('messages.initiative.store_success');
+        $statusCode = 200;
         DB::beginTransaction();
         try {
             $validateData['asana_project_id'] = $project['data']['data']['gid'];
             $initiative = Initiative::create($validateData);
             $validateData['name'] = Project::getDefaultProjectName();
             $initiative->project()->create($validateData);
-            $status = true;
-            $message = __('messages.initiative.store_success');
-            $statusCode = 200;
             $initiative->client;
             $retData = [
                 'initiative' => $initiative,
@@ -72,7 +72,8 @@ class InitiativeController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = true;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }

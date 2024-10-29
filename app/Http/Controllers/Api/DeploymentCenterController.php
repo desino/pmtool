@@ -62,19 +62,20 @@ class DeploymentCenterController extends Controller
             return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
         }
         DB::beginTransaction();
+        $status = true;
+        $message = __('message.home.deployment_center.test_deployment.update_status_success');
+        $statusCode = 200;
         try {
             Ticket::whereIn('id', $request->input('ticketIds'))->update(['status' => Ticket::getStatusOngoing()]);
             $tickets = Ticket::whereIn('id', $request->input('ticketIds'))->get();
             foreach ($tickets as $ticket) {
                 TicketService::createMacroStatusAndUpdateTicket($ticket);
             }
-            $status = true;
-            $message = __('message.home.deployment_center.test_deployment.update_status_success');
-            $statusCode = 200;
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }
@@ -124,7 +125,8 @@ class DeploymentCenterController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }
@@ -185,7 +187,8 @@ class DeploymentCenterController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }

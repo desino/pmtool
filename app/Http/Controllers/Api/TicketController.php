@@ -108,6 +108,10 @@ class TicketController extends Controller
             return ApiHelper::response($status, __('messages.asana.create_ticket.store_error'), '', 500);
         }
         $validateData['asana_task_id'] = $task['data']['data']['gid'];
+
+        $status = true;
+        $message = __('messages.create_ticket.store_success');
+        $statusCode = 200;
         DB::beginTransaction();
         try {
             $ticket = Ticket::create($validateData);
@@ -116,9 +120,6 @@ class TicketController extends Controller
                 TicketService::updateTicketStatus($ticket);
                 TicketService::createMacroStatusAndUpdateTicket($ticket);
             }
-            $status = true;
-            $message = __('messages.create_ticket.store_success');
-            $statusCode = 200;
             $retData = [
                 'ticket' => $ticket,
                 'asanaTaskData' => $task['data']['data'],
@@ -126,7 +127,8 @@ class TicketController extends Controller
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }
@@ -186,6 +188,10 @@ class TicketController extends Controller
             }
             $validateData['asana_task_id'] = $task['data']['data']['gid'];
         }
+
+        $status = true;
+        $message = __('messages.create_ticket.update_success');
+        $statusCode = 200;
         DB::beginTransaction();
         try {
             $ticket->update($validateData);
@@ -196,9 +202,6 @@ class TicketController extends Controller
                 TicketService::updateTicketStatus($ticket);
                 TicketService::createMacroStatusAndUpdateTicket($ticket);
             }
-            $status = true;
-            $message = __('messages.create_ticket.update_success');
-            $statusCode = 200;
             $retData = [
                 'ticket' => $ticket,
                 // 'asanaTaskData' => $task['data']['data'],
@@ -206,7 +209,8 @@ class TicketController extends Controller
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }
@@ -542,6 +546,10 @@ class TicketController extends Controller
                 return ApiHelper::response($status, __('messages.project.project_not_exist'), '', 400);
             }
         }
+
+        $status = true;
+        $message = __('messages.project.assign_success');
+        $statusCode = 200;
         DB::beginTransaction();
         try {
             if ($request->has('project_id') && !empty($request->input('project_id'))) {
@@ -550,13 +558,11 @@ class TicketController extends Controller
             if ($request->has('project_name') && !empty($request->input('project_name'))) {
                 ProjectService::createAndAssignProjectForTasks($request);
             }
-            $status = true;
-            $message = __('messages.project.assign_success');
-            $statusCode = 200;
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }
@@ -576,6 +582,8 @@ class TicketController extends Controller
             return ApiHelper::response($status, __('messages.project.project_not_exist'), '', 400);
         }
 
+        $status = true;
+        $statusCode = 200;
         DB::beginTransaction();
         try {
             $request->merge(['project_id' => $request->input('selectedOption')['id']]);
@@ -589,12 +597,11 @@ class TicketController extends Controller
                 ProjectService::removeProjectForTasks($request);
                 $message = __('messages.project.remove_success');
             }
-            $status = true;
-            $statusCode = 200;
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }
@@ -616,19 +623,20 @@ class TicketController extends Controller
         if (!$ticket) {
             return ApiHelper::response($status, __('messages.ticket.ticket_not_exist'), '', 400);
         }
+        $status = true;
+        $message = __('messages.ticket.change_action_user_success');
+        $statusCode = 200;
         DB::beginTransaction();
         try {
             TicketAction::where('id', $request->input('action_id'))
                 ->where('ticket_id', $ticketId)
                 ->where('action', $request->input('action'))
                 ->update(['user_id' => $request->input('user_id')]);
-            $status = true;
-            $message = __('messages.ticket.change_action_user_success');
-            $statusCode = 200;
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }
@@ -667,18 +675,19 @@ class TicketController extends Controller
             return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed_du_to_status_not_ongoing'), '', 400);
         }
 
+        $status = true;
+        $message = __('messages.ticket.change_current_action_status_success');
+        $statusCode = 200;
         DB::beginTransaction();
         try {
             TicketService::updateTicketActions($ticket, $request->input('action_id'), TicketAction::getStatusDone());
             TicketService::updateTicketStatus($ticket);
             TicketService::createMacroStatusAndUpdateTicket($ticket);
-            $status = true;
-            $message = __('messages.ticket.change_current_action_status_success');
-            $statusCode = 200;
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }
@@ -713,18 +722,19 @@ class TicketController extends Controller
             return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed_du_to_waiting_for_client_approval'), '', 400);
         }
 
+        $status = true;
+        $message = __('messages.ticket.change_previous_action_status_success');
+        $statusCode = 200;
         DB::beginTransaction();
         try {
             TicketService::updateTicketPreviousActions($ticket, $request->input('action_id'), TicketAction::getStatusWaitingForDependantAction());
             TicketService::updateTicketStatus($ticket);
             TicketService::createMacroStatusAndUpdateTicket($ticket);
-            $status = true;
-            $message = __('messages.ticket.change_previous_action_status_success');
-            $statusCode = 200;
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }
@@ -801,7 +811,8 @@ class TicketController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }
@@ -847,7 +858,8 @@ class TicketController extends Controller
             ];
         } catch (\Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }
@@ -878,7 +890,8 @@ class TicketController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }
@@ -908,7 +921,8 @@ class TicketController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }

@@ -76,6 +76,9 @@ class OpportunityController extends Controller
             }
             $requestData['asana_project_id'] = $project['data']['data']['gid'];
         }
+        $status = true;
+        $message = __('messages.opportunity.update_success');
+        $statusCode = 200;
         DB::beginTransaction();
         try {
             $initiative->update($requestData);
@@ -90,13 +93,11 @@ class OpportunityController extends Controller
                     InitiativeEnvironment::updateOrCreate($attributes, $environment);
                 }
             }
-            $status = true;
-            $message = __('messages.opportunity.update_success');
-            $statusCode = 200;
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }
@@ -113,20 +114,20 @@ class OpportunityController extends Controller
         if (!$initiative) {
             return ApiHelper::response(false, __('messages.opportunity.not_found'), null, 404);
         }
-        $status = false;
+        $status = true;
+        $message = __('messages.opportunity.update_status_lost_success');
+        $statusCode = 200;
         DB::beginTransaction();
         try {
             $updateData = [
                 'status' => Initiative::getStatusLost()
             ];
             $initiative->update($updateData);
-            $status = true;
-            $message = __('messages.opportunity.update_status_lost_success');
-            $statusCode = 200;
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $message = env('APP_ENV') == 'local' ? $e->getMessage() : 'Something went wrong!';
+            $status = false;
+            $message = __('messages.something_went_wrong');
             $statusCode = 500;
             Log::info($e->getMessage());
         }
