@@ -30,7 +30,7 @@
                                         class="form-select">
                                         <option value="">{{
                                             $t('time_booking.modal_input_project_label_text')
-                                            }}</option>
+                                        }}</option>
                                         <option v-for="project in projects" :key="project.id" :value="project.id">{{
                                             project.name }}
                                         </option>
@@ -200,7 +200,7 @@ export default {
         formattedModalTitleForNewTimeBooking() {
             if (this.formData?.ticket_id == '') {
                 const title = this.$t('time_booking.popup_title_initiative_level', { 'DATE': this.weekDay?.format_date_dd_mm_yyyy, 'INITIATIVE_NAME': this.timeBooking?.initiative_name });
-                return title.replace(this.weekDay?.format_date_dd_mm_yyyy, `<span class='badge bg-secondary'>${this.weekDay?.format_date_dd_mm_yyyy}</span>`);
+                return title.replace(this.weekDay?.format_date_dd_mm_yyyy, `<span class='badge bg-secondary'>${this.weekDay?.format_date_dd_mm_yyyy}</span>`).replace(this.timeBooking?.initiative_name, `<span class='badge bg-secondary'>${this.timeBooking?.initiative_name}</span>`);
             } else if (this.formData?.ticket_id != '') {
                 const title = this.$t('time_booking.popup_title_ticket_level', { 'DATE': this.weekDay?.format_date_dd_mm_yyyy, 'TICKET_NAME': this.ticket?.ticket_name });
                 return title.replace(this.weekDay?.format_date_dd_mm_yyyy, `<span class='badge bg-secondary'>${this.weekDay?.format_date_dd_mm_yyyy}</span>`);

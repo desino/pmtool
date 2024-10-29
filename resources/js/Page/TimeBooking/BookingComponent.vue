@@ -68,15 +68,18 @@
                             </td>
                             <th :rowspan="ticketRowsCount" class="total_abs3">&nbsp;</th>
                         </tr>
-                        <tr><th class="lastrow_abs" colspan="2"></th><td :colspan="weekDays.length"></td></tr>
+                        <tr>
+                            <th class="lastrow_abs" colspan="2"></th>
+                            <td :colspan="weekDays.length"></td>
+                        </tr>
 
                         <tr class="bg-secondary bg-opacity-75" v-if="unBillableRowData">
                             <th class="border total_abs1 bg-secondary bg-opacity-75 text-center align-middle p-1 text-white"
                                 colspan="2">
                                 {{ unBillableRowData.initiative_name }} <i class="bi bi-arrow-right"></i>
                             </th>
-                            <td class="text-center align-middle p-1 border border-secondary-subtle" v-for="(weekDay, index) in weekDays"
-                                :key="index"
+                            <td class="text-center align-middle p-1 border border-secondary-subtle"
+                                v-for="(weekDay, index) in weekDays" :key="index"
                                 :role="unBillableRowData.hours_per_day[weekDay.date]?.is_allow_booking ? 'button' : false"
                                 @click="openUnBillableTimeBookingModal(unBillableRowData, weekDay, unBillableRowData.hours_per_day[weekDay.date]?.is_allow_booking)">
                                 <span v-if="unBillableRowData.hours_per_day" class="badge text-white">
@@ -85,13 +88,18 @@
                                 </span>
                             </td>
                         </tr>
-                        <tr><th class="lastrow_abs" colspan="2"></th><td :colspan="weekDays.length"></td></tr>
+                        <tr>
+                            <th class="lastrow_abs" colspan="2"></th>
+                            <td :colspan="weekDays.length"></td>
+                        </tr>
 
                         <template v-for="(timeBooking, timeBookingIndex) in timeBookings" :key="timeBookingIndex">
-                            <tr v-if="!timeBooking.initiative_id"><th class="lastrow_abs" colspan="2"></th><td :colspan="weekDays.length"></td></tr>
+                            <tr v-if="!timeBooking.initiative_id">
+                                <th class="lastrow_abs" colspan="2"></th>
+                                <td :colspan="weekDays.length"></td>
+                            </tr>
                             <tr v-for="(ticket, ticketIndex) in timeBooking.tickets" :key="ticketIndex">
-                                <th v-if="timeBooking.initiative_id" class="border abs1 text-left p-1" 
-                                :class="{
+                                <th v-if="timeBooking.initiative_id" class="border abs1 text-left p-1" :class="{
                                     'border-bottom-0': ticketIndex == 0 || timeBooking.tickets.length - 2 == ticketIndex,
                                     'border-top-0': ticketIndex > 0
                                 }">
@@ -118,7 +126,8 @@
                                         class="badge text-secondary" v-html="ticket.hours_per_day[weekDay.date]?.hours">
                                     </span>
                                     <span v-else-if="timeBooking.initiative_id" class="badge text-secondary">
-                                        {{ ticket.hours_per_day[weekDay.date]?.hours > 0 ? ticket.hours_per_day[weekDay.date]?.hours : ' ' }}
+                                        {{ ticket.hours_per_day[weekDay.date]?.hours > 0 ?
+                                            ticket.hours_per_day[weekDay.date]?.hours : ' ' }}
                                     </span>
                                     <span v-if="!timeBooking.initiative_id" class="badge text-secondary"
                                         v-html="ticket.hours_per_day[weekDay.date]?.hours">

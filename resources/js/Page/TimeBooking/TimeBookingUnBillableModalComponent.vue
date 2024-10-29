@@ -187,6 +187,7 @@ export default {
             selectedTimeBookings: [],
             isChkAllTimeBookings: false,
             totalTimeBookingHours: 0,
+            timeBooking: {},
             showErrorMessage: "",
             errors: {},
             showMessage: true
@@ -197,6 +198,7 @@ export default {
         getTimeBookingData(timeBooking, weekDay, weekDays, projects) {
             this.clearFormData();
             this.clearMessages();
+            this.timeBooking = timeBooking;
             this.formData.initiative_id = timeBooking.initiative_id;
             this.formData.booked_date = weekDay.date;
             this.weekDays = weekDays;
@@ -220,8 +222,8 @@ export default {
             }
         },
         formattedModalTitleForNewTicket() {
-            const title = this.$t('time_booking_un_billable.popup_title', { DATE: this.weekDay?.format_date_dd_mm_yyyy });
-            return title.replace(this.weekDay?.format_date_dd_mm_yyyy, `<span class='badge bg-secondary'>${this.weekDay?.format_date_dd_mm_yyyy}</span>`);
+            const title = this.$t('time_booking_un_billable.popup_title', { DATE: this.weekDay?.format_date_dd_mm_yyyy, INITIATIVE_NAME: this.timeBooking?.initiative_name });
+            return title.replace(this.weekDay?.format_date_dd_mm_yyyy, `<span class='badge bg-secondary'>${this.weekDay?.format_date_dd_mm_yyyy}</span>`).replace(this.timeBooking?.initiative_name, `<span class='badge bg-secondary'>${this.timeBooking?.initiative_name}</span>`);
         },
         async storeTimeBookingForUnBillable() {
             this.setLoading(true);

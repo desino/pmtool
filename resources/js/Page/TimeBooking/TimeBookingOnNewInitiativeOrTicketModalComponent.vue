@@ -156,7 +156,7 @@ export default {
                 const { content } = await TimeBookingService.storeTimeBookingOnNewInitiativeOrTicket(this.formData);
                 this.$emit('pageUpdated', this.weekDays);
                 this.getTimeBookingOnNewInitiativeOrTicketModalInitialData();
-                // this.fetchTickets();
+                this.fetchTickets();
                 if (this.submitButtonClickedValue == 'create_close') {
                     this.hideModal();
                 }
@@ -166,7 +166,6 @@ export default {
                 this.formData.ticket_id = '';
                 this.formData.hours = '';
                 this.formData.comments = '';
-                this.tickets = [];
             } catch (error) {
                 this.handleError(error);
             }
