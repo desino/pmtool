@@ -173,16 +173,19 @@ class TicketController extends Controller
         $generateTicketComposedNameData = TicketService::updateTicketComposedName($ticket, $validateData['name'], $validateData['type']);
         $ticketComposedName = $generateTicketComposedNameData['composed_name'];
         $validateData['composed_name'] = $ticketComposedName;
-        $data = [
-            'name' => $validateData['composed_name'],
-            'resource_type' => 'task',
-            'resource_subtype' => 'default_task',
-        ];
-        $task = $this->asanaService->updateTask($ticket->asana_task_id, $data);
-        if ($task['error_status']) {
-            return ApiHelper::response($status, __('messages.asana.update_ticket.update_error'), '', 500);
+
+        if ($validateData['name'] != $ticket->name || $validateData['type'] != $ticket->type) {
+            $data = [
+                'name' => $validateData['composed_name'],
+                'resource_type' => 'task',
+                'resource_subtype' => 'default_task',
+            ];
+            $task = $this->asanaService->updateTask($ticket->asana_task_id, $data);
+            if ($task['error_status']) {
+                return ApiHelper::response($status, __('messages.asana.update_ticket.update_error'), '', 500);
+            }
+            $validateData['asana_task_id'] = $task['data']['data']['gid'];
         }
-        $validateData['asana_task_id'] = $task['data']['data']['gid'];
 
         DB::beginTransaction();
         try {
@@ -199,7 +202,7 @@ class TicketController extends Controller
             $statusCode = 200;
             $retData = [
                 'ticket' => $ticket,
-                'asanaTaskData' => $task['data']['data'],
+                // 'asanaTaskData' => $task['data']['data'],
             ];
             DB::commit();
         } catch (Exception $e) {

@@ -65,7 +65,7 @@ class OpportunityController extends Controller
         }
         $status = false;
 
-        if ($initiative->asana_project_id) {
+        if ($initiative->asana_project_id && $requestData['name'] != $initiative->name) {
             $data = [
                 'name' => $requestData['name'],
             ];
