@@ -186,7 +186,6 @@ class TicketController extends Controller
             }
             $validateData['asana_task_id'] = $task['data']['data']['gid'];
         }
-
         DB::beginTransaction();
         try {
             $ticket->update($validateData);
