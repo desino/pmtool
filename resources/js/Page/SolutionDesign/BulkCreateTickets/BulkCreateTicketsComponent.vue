@@ -1,16 +1,6 @@
 <template>
-    <div class="app-content-header">
-        <div class="container-fluid">
-            <div class="row w-100">
-                <div class="col-sm-6">
-                    <h3 class="m-0">{{ $t('bulk_create_tickets.page_title', { 'INITIATIVE_NAME': initiativeData.name })
-                        }}</h3>
-                </div>
-            </div>
-        </div>
-    </div>
     <GlobalMessage v-if="showMessage" />
-    <div class="app-content">
+    <div class="app-content mt-3">
         <form @submit.prevent="createBulkTickets">
             <ul class="list-group">
                 <li class="list-group-item font-weight-bold bg-desino text-white rounded-top">
@@ -71,6 +61,7 @@ import messageService from '../../../services/messageService';
 import BulkCreateService from '../../../services/BulkCreateService';
 import showToast from '../../../utils/toasts';
 import eventBus from '../../../eventBus';
+import store from '../../../store';
 
 export default {
     name: 'BulkCreateTicketsComponent',
@@ -100,6 +91,10 @@ export default {
                 this.initiativeData = initiative;
                 this.setLoading(false);
                 eventBus.$emit('selectHeaderInitiativeId', this.$route.params.id);
+                const setHeaderData = {
+                    page_title: this.$t('bulk_create_tickets.page_title', { 'INITIATIVE_NAME': this.initiativeData.name }),
+                }
+                store.commit("setHeaderData", setHeaderData);
             } catch (error) {
                 this.handleError(error);
             }

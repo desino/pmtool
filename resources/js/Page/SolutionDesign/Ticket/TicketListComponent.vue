@@ -1,15 +1,6 @@
 <template>
-    <div class="app-content-header">
-        <div class="container-fluid">
-            <div class="row w-100">
-                <div class="col-sm-6">
-                    <h3 class="m-0">{{ $t('ticket.page_title') }}</h3>
-                </div>
-            </div>
-        </div>
-    </div>
     <GlobalMessage v-if="showMessage" />
-    <div class="app-content">
+    <div class="app-content mt-3">
         <div class="row w-100 mb-3">
             <div class="col-12 col-md-3 mb-2 mb-md-0">
                 <input v-model="filter.task_name" :placeholder="$t('ticket.filter.task_name')" class="form-control"
@@ -355,6 +346,10 @@ export default {
                     ...task,
                     isChecked: false,
                 }));
+                const setHeaderData = {
+                    page_title: this.$t('ticket.page_title') + ' - ' + this.initiative?.name,
+                }
+                store.commit("setHeaderData", setHeaderData);
                 await this.setLoading(false);
             } catch (error) {
                 this.handleError(error);

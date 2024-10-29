@@ -1,15 +1,6 @@
 <template>
-    <div class="app-content-header">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-sm-6">
-                    <h3 class="m-0">{{ $t('project.list.page_title') }}</h3>
-                </div>
-            </div>
-        </div>
-    </div>
     <GlobalMessage v-if="showMessage" />
-    <div class="app-content">
+    <div class="app-content mt-3">
         <div class="row w-100 mb-3">
             <div class="col-12 col-md-3 mb-2 mb-md-0">
                 <div class="form-check form-check-inline">
@@ -87,6 +78,7 @@ import PaginationComponent from './../../../components/PaginationComponent.vue';
 import showToast from './../../../utils/toasts';
 import EditProjectModalComponent from './EditProjectModalComponent.vue';
 import { Modal } from 'bootstrap';
+import store from '../../../store';
 export default {
     name: 'ProjectList',
     components: {
@@ -183,6 +175,10 @@ export default {
     mounted() {
         this.clearMessages();
         this.getProjectList();
+        const setHeaderData = {
+            page_title: this.$t('project.list.page_title'),
+        }
+        store.commit("setHeaderData", setHeaderData);
     },
     beforeUnmount() {
         this.showMessage = false;

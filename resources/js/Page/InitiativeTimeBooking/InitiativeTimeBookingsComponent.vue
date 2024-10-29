@@ -1,5 +1,5 @@
 <template>
-    <div class="app-content-header">
+    <!-- <div class="app-content-header">
         <div class="container-fluid">
             <div class="row w-100">
                 <div class="col-sm-6">
@@ -7,9 +7,9 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <GlobalMessage v-if="showMessage" />
-    <div class="app-content">
+    <div class="app-content mt-3">
         <div class="row w-100 mb-3 align-items-center">
             <div class="col-md-2">
                 <select v-model="filter.initiative_id" class="form-select"
@@ -135,6 +135,7 @@ import messageService from '../../services/messageService';
 import InitiativeTimeBookingService from '../../services/InitiativeTimeBookingService';
 import PaginationComponent from '../../components/PaginationComponent.vue';
 import InitiativeTimeBookingForAssignProjectModalComponent from './InitiativeTimeBookingForAssignProjectModalComponent.vue';
+import store from '../../store';
 export default {
     name: 'InitiativeTimeBookingsComponent',
     components: {
@@ -274,6 +275,10 @@ export default {
         this.getInitiativeTimeBookings();
         this.clearMessages();
         this.getInitialDataForInitiativeTimeBookings();
+        const setHeaderData = {
+            page_title: this.$t('initiative_time_booking.page_title')
+        }
+        store.commit("setHeaderData", setHeaderData);
     },
 }
 </script>

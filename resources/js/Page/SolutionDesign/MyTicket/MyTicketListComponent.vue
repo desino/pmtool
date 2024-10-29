@@ -1,15 +1,6 @@
 <template>
-    <div class="app-content-header">
-        <div class="container-fluid">
-            <div class="row w-100">
-                <div class="col-sm-6">
-                    <h3 class="m-0">{{ $t('my_ticket.page_title') }}</h3>
-                </div>
-            </div>
-        </div>
-    </div>
     <GlobalMessage v-if="showMessage" />
-    <div class="app-content">
+    <div class="app-content mt-3">
         <div class="row w-100 mb-3 align-items-center">
             <div class="col-12 col-md-3 mb-2 mb-md-0">
                 <input v-model="filter.task_name" :placeholder="$t('my_ticket.filter.task_name')" class="form-control"
@@ -127,6 +118,7 @@ import MyTicketService from '../../../services/MyTicketService';
 import PaginationComponent from '../../../components/PaginationComponent.vue';
 import TimeBookingForTicketDetailComponent from '../Ticket/TimeBookingForTicketDetailComponent.vue';
 import eventBus from '../../../eventBus';
+import store from '../../../store';
 export default {
     name: 'MyTicketListComponent',
     mixins: [globalMixin],
@@ -209,6 +201,10 @@ export default {
     },
     mounted() {
         this.fetchData();
+        const setHeaderData = {
+            page_title: this.$t('my_ticket.page_title'),
+        }
+        store.commit("setHeaderData", setHeaderData);
     },
     beforeRouteUpdate(to, from, next) {
         this.initiative_id = to.params.id;

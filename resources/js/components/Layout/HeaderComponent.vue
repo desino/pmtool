@@ -10,6 +10,18 @@
                 <li class="nav-item">
                     <h3 class="m-0">{{ headerData.page_title }}</h3>
                 </li>
+                <li class="nav-item">
+                    <span>
+                        <router-link v-if="headerData?.is_solution_design_detail_path"
+                            :to="{ name: 'solution-design.detail', params: { id: headerData.initiative_id } }">
+                            <i class="bi bi-link-45deg fs-3 ms-2"></i>
+                        </router-link>
+                        <router-link v-if="headerData?.is_solution_design_download"
+                            :to="{ name: 'solution-design.download', params: { id: headerData.initiative_id } }">
+                            <i class="bi bi-file-earmark-pdf fs-3 ms-2"></i>
+                        </router-link>
+                    </span>
+                </li>
             </ul>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">

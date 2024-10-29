@@ -1,15 +1,6 @@
 <template>
-    <div class="app-content-header">
-        <div class="container-fluid">
-            <div class="row w-100">
-                <div class="col-sm-6">
-                    <h3 class="m-0">{{ $t('planning.page_title') }}</h3>
-                </div>
-            </div>
-        </div>
-    </div>
     <GlobalMessage v-if="showMessage" />
-    <div class="app-content" id="timeBookingPageSection">
+    <div class="app-content mt-3" id="timeBookingPageSection">
         <div class="w-100">
             <!-- <div class="scrolling outer"> -->
             <!-- <div class="inner"> -->
@@ -59,7 +50,8 @@
                             }" colspan="2" :rowspan="planning.users.length"
                             :role="planning.default_row_name == 'plan_new_initiative' ? 'button' : ''"
                             @click="handlePlanNewInitiative(planning, user)">
-                            <span v-if="planning.default_row_name == 'plan_new_initiative'"><i class="bi bi-plus-lg"></i> </span>
+                            <span v-if="planning.default_row_name == 'plan_new_initiative'"><i
+                                    class="bi bi-plus-lg"></i> </span>
                             {{ planning.initiative_name }}
                         </th>
                         <!-- below th except for total and plan new initiative -->
@@ -68,7 +60,9 @@
                             :rowspan="planning.users.length">
                             <div class="row h-100 align-items-center">
                                 <div class="col-auto me-1" style="width:20px">
-                                    <a href="javascript:void(0);" class="link-btn" @click="handlePlanNewUser(planning)"><i class="bi bi-plus-square-fill text-desino fs-5"></i></a>
+                                    <a href="javascript:void(0);" class="link-btn"
+                                        @click="handlePlanNewUser(planning)"><i
+                                            class="bi bi-plus-square-fill text-desino fs-5"></i></a>
                                 </div>
                                 <div class="col-auto" style="width: calc(100% - 30px)">
                                     {{ planning.initiative_name }}
@@ -138,6 +132,7 @@ import PlanNewInitiativeModalComponent from './PlanNewInitiativeModalComponent.v
 import { Modal } from 'bootstrap';
 import showToast from '../../utils/toasts';
 import PlanNewUserModalComponent from './PlanNewUserModalComponent.vue';
+import store from '../../store';
 
 export default {
     name: 'PlanningComponent',
@@ -412,6 +407,10 @@ export default {
         this.clearMessages();
         this.getPlanningInitialData();
         this.getPlanningData();
+        const setHeaderData = {
+            page_title: this.$t('planning.page_title')
+        }
+        store.commit("setHeaderData", setHeaderData);
     },
 
 };

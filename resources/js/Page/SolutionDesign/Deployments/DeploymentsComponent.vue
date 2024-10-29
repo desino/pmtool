@@ -1,15 +1,6 @@
 <template>
-    <div class="app-content-header">
-        <div class="container-fluid">
-            <div class="row w-100">
-                <div class="col-sm-6">
-                    <h3 class="m-0">{{ $t('deployments.page_title') }}</h3>
-                </div>
-            </div>
-        </div>
-    </div>
     <GlobalMessage />
-    <div class="app-content">
+    <div class="app-content mt-3">
         <div class="row w-100 mb-3 align-items-center">
             <div class="col-12 col-md-3 mb-2 mb-md-0">
                 <input v-model="filter.name" :placeholder="$t('deployments.filter.deployment_name')"
@@ -238,6 +229,10 @@ export default {
     mounted() {
         this.clearMessages();
         this.fetchData();
+        const setHeaderData = {
+            page_title: this.$t('deployments.page_title'),
+        }
+        store.commit("setHeaderData", setHeaderData);
     },
     beforeRouteUpdate(to, from, next) {
         this.initiative_id = to.params.id;

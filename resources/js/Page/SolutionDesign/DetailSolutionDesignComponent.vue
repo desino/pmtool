@@ -1,18 +1,8 @@
 <template>
-    <div class="app-content-header pb-0">
-        <div class="container-fluid">
-            <div class="row w-100">
-                <div class="col-sm-6 mb-3">
-                    <h3 class="m-0">{{ $t('solution_design.page_title') }} - {{ initiativeData.name }}</h3>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <GlobalMessage v-if="showMessage" />
 
     <div class="app-content row position-relative">
-        <div class="col-md-4 border-top border-bottom sticky top-0 d-none d-lg-block">
+        <div class="col-md-4 border-end border-bottom sticky top-0 d-none d-lg-block">
             <div class="input-group sticky-top pt-3 pb-1 bg-white">
                 <input v-model="solutionDesignFilters.name" aria-label="Search" class="form-control"
                     placeholder="Search" type="text" @keyup="getSectionsWithFunctionalities">
@@ -62,7 +52,7 @@
                 </div>
             </section>
         </div> -->
-        <div class="col-md-8 border-start border-bottom border-top">
+        <div class="col-md-8 border-start border-bottom">
             <div class="p-3">
                 <div v-for="section in sectionsWithFunctionalities" :key="section.id" :id="'section_' + section.id"
                     class="mb-4">
@@ -94,6 +84,7 @@ import SolutionDesignService from './../../services/SolutionDesignService';
 import eventBus from '../../eventBus';
 import draggable from 'vuedraggable';
 import { mapActions } from 'vuex';
+import store from '../../store';
 
 export default {
     name: 'SolutionDesignComponent',
@@ -137,6 +128,10 @@ export default {
                     this.$router.push({ name: 'home' });
                 } else {
                     this.initiativeData = content;
+                    const setHeaderData = {
+                        page_title: this.$t('solution_design.page_title') + ' - ' + this.initiativeData?.name,
+                    }
+                    store.commit("setHeaderData", setHeaderData);
                 }
             } catch (error) {
                 this.handleError(error);

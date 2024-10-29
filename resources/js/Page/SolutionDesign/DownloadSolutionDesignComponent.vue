@@ -1,32 +1,21 @@
 <template>
-    <div class="app-content-header pb-0">
-        <div class="container-fluid">
-            <div class="row w-100">
-                <div class="col-sm-12 mb-3">
-                    <h3 class="m-0">{{ $t('solution_design_download.page_title') }} - {{ initiativeData.name }}</h3>
-                </div>
-            </div>
-        </div>
-    </div>
     <GlobalMessage v-if="showMessage" />
     <div class="app-content position-relative">
-        <div class="border-top">
-            <div class="row w-100 mb-3 mt-3">
-                <div class="col-md-10">
-                    <div class="form-check">
-                        <input v-model="downloadFilters.include_in_solution_design" class="form-check-input"
-                            type="checkbox" id="include_in_solution_design" @change="getSectionsWithFunctionalities">
-                        <label class="form-check-label fw-bold" for="include_in_solution_design">
-                            {{ $t('solution_design.functionality_form.include_in_solution_design_text') }}
-                        </label>
-                    </div>
+        <div class="row w-100 mb-3 mt-3">
+            <div class="col-md-10">
+                <div class="form-check">
+                    <input v-model="downloadFilters.include_in_solution_design" class="form-check-input" type="checkbox"
+                        id="include_in_solution_design" @change="getSectionsWithFunctionalities">
+                    <label class="form-check-label fw-bold" for="include_in_solution_design">
+                        {{ $t('solution_design.functionality_form.include_in_solution_design_text') }}
+                    </label>
                 </div>
-                <div class="col-md-2">
-                    <button class="btn btn-desino" @click="downloadPDF"
-                        :title="$t('solution_design_download.but_title_text')">
-                        <i class="bi bi-download"></i>
-                    </button>
-                </div>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-desino" @click="downloadPDF"
+                    :title="$t('solution_design_download.but_title_text')">
+                    <i class="bi bi-download"></i>
+                </button>
             </div>
         </div>
     </div>
@@ -70,6 +59,7 @@ import SolutionDesignService from './../../services/SolutionDesignService';
 import eventBus from '../../eventBus';
 import { mapActions } from 'vuex';
 import messageService from '../../services/messageService';
+import store from '../../store';
 export default {
     name: 'DownloadSolutionDesignComponent',
     mixins: [globalMixin],
@@ -112,6 +102,10 @@ export default {
                     this.$router.push({ name: 'home' });
                 } else {
                     this.initiativeData = content;
+                    const setHeaderData = {
+                        page_title: this.$t('solution_design_download.page_title') + ' - ' + this.initiativeData?.name,
+                    }
+                    store.commit("setHeaderData", setHeaderData);
                 }
             } catch (error) {
                 this.handleError(error);

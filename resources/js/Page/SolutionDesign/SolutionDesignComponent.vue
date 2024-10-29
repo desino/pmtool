@@ -1,5 +1,5 @@
 <template>
-    <div class="app-content-header pb-0">
+    <!-- <div class="app-content-header pb-0">
         <div class="container-fluid">
             <div class="row w-100">
                 <div class="col-sm-6">
@@ -16,12 +16,12 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <GlobalMessage v-if="showMessage" />
 
-    <div class="app-content row">
-        <div class="col-md-4 border">
+    <div class="app-content mt-3 row">
+        <div class="col-md-4 border-end">
             <div class="input-group my-3">
                 <input v-model="solutionDesignFilters.name" type="text" class="form-control" placeholder="Search"
                     aria-label="Recipient's username" aria-describedby="basic-addon2"
@@ -129,7 +129,7 @@
             <AddNewSectionComponent v-if="user?.is_admin" class="mb-3" :initiativeData="initiativeData"
                 @sectionAdded="handleSectionAdded" />
         </div>
-        <div class="col-md-8 border-top border-bottom p-3">
+        <div class="col-md-8 border-bottom p-3">
             <form @submit.prevent="storeUpdateFunctionality" v-if="functionalityFormData.section_id && user?.is_admin">
                 <input type="hidden" v-model="functionalityFormData.functionality_id">
                 <div class="row w-100">
@@ -341,7 +341,10 @@ export default {
                 } else {
                     this.initiativeData = content;
                     const setHeaderData = {
-                        page_title: this.$t('solution_design.page_title') + ' - ' + this.initiativeData?.name
+                        page_title: this.$t('solution_design.page_title') + ' - ' + this.initiativeData?.name,
+                        is_solution_design_detail_path: true,
+                        is_solution_design_download: true,
+                        initiative_id: this.initiativeData?.id,
                     }
                     store.commit("setHeaderData", setHeaderData);
                 }
