@@ -165,6 +165,7 @@ export default {
                 booked_date: '',
                 project_id: ''
             },
+            userId: '',
             timeBooking: {},
             weekDay: {},
             weekDays: [],
@@ -185,13 +186,14 @@ export default {
     },
     methods: {
         ...mapActions(['setLoading']),
-        getTimeBookingData(timeBooking, weekDay, weekDays, ticket = {}) {
+        getTimeBookingData(timeBooking, weekDay, weekDays, userId, ticket = {}) {
             this.clearFormData();
             this.clearMessages();
             this.timeBooking = timeBooking;
             this.weekDay = weekDay;
             this.weekDays = weekDays;
             this.ticket = ticket;
+            this.userId = userId;
             this.formData.initiative_id = timeBooking.initiative_id;
             this.formData.ticket_id = ticket?.ticket_id ?? null;
             this.formData.booked_date = weekDay.date;
@@ -210,6 +212,7 @@ export default {
             this.setLoading(true);
             this.clearMessages();
             try {
+                this.formData.user_id = this.userId;
                 const { content } = await TimeBookingService.storeTimeBooking(this.formData);
                 this.$emit('pageUpdated', this.weekDays);
                 if (this.submitButtonClickedValue == 'create_close') {
@@ -232,6 +235,7 @@ export default {
             this.setLoading(true);
             try {
                 const passData = {
+                    'user_id': this.userId,
                     'initiative_id': this.formData.initiative_id,
                     'ticket_id': this.formData.ticket_id,
                     'booked_date': this.formData.booked_date

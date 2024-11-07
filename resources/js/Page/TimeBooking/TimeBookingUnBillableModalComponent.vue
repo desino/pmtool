@@ -188,6 +188,7 @@ export default {
             isChkAllTimeBookings: false,
             totalTimeBookingHours: 0,
             timeBooking: {},
+            userId: '',
             showErrorMessage: "",
             errors: {},
             showMessage: true
@@ -195,7 +196,7 @@ export default {
     },
     methods: {
         ...mapActions(['setLoading']),
-        getTimeBookingData(timeBooking, weekDay, weekDays, projects) {
+        getTimeBookingData(timeBooking, weekDay, weekDays, projects, userId) {
             this.clearFormData();
             this.clearMessages();
             this.timeBooking = timeBooking;
@@ -204,12 +205,14 @@ export default {
             this.weekDays = weekDays;
             this.weekDay = weekDay;
             this.projects = projects;
+            this.userId = userId;
             this.getTimeBookingUnBillableModalInitialData();
         },
         async getTimeBookingUnBillableModalInitialData() {
             this.setLoading(true);
             try {
                 const passData = {
+                    user_id: this.userId,
                     initiative_id: this.formData.initiative_id,
                     booked_date: this.formData.booked_date,
                 }
@@ -229,6 +232,7 @@ export default {
             this.setLoading(true);
             this.clearMessages();
             try {
+                this.formData.user_id = this.userId;
                 const { message } = await TimeBookingService.storeTimeBookingForUnBillable(this.formData);
                 showToast(message, 'success');
                 this.$emit('pageUpdated', this.weekDays);

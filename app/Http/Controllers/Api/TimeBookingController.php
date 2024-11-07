@@ -12,6 +12,7 @@ use App\Http\Requests\Api\TimeBookingRequest;
 use App\Models\Initiative;
 use App\Models\Ticket;
 use App\Models\TimeBooking;
+use App\Models\User;
 use App\Services\InitiativeService;
 use App\Services\ProjectService;
 use Carbon\Carbon;
@@ -89,11 +90,12 @@ class TimeBookingController extends Controller
         )
             ->JOIN('initiatives', 'initiatives.id', 'time_bookings.initiative_id')
             ->LEFTJOIN('tickets', 'tickets.id', 'time_bookings.ticket_id')
-            ->where('user_id', Auth::id())
+            // ->where('user_id', Auth::id())
+            ->where('user_id', $request->get('user_id') ?? Auth::id())
             ->whereBetween('booked_date', [$startOfWeek, $endOfWeek])
             ->get();
 
-        $unBillableTimeBookings = TimeBooking::where('user_id', Auth::id())
+        $unBillableTimeBookings = TimeBooking::where('user_id', $request->get('user_id') ?? Auth::id())
             ->whereBetween('booked_date', [$startOfWeek, $endOfWeek])
             ->where('initiative_id', '-1')
             ->get();
@@ -198,6 +200,15 @@ class TimeBookingController extends Controller
         return ApiHelper::response(true, '', $retData, 200);
     }
 
+    public function getTimeBookingInitialData(Request $request)
+    {
+        $users = User::get();
+        $retData = [
+            'users' => $users
+        ];
+        return ApiHelper::response(true, '', $retData, 200);
+    }
+
     public function getTimeBookingModalInitialData(Request $request)
     {
         $requestData = $request->all();
@@ -227,7 +238,7 @@ class TimeBookingController extends Controller
             'hours',
             DB::RAW('false as is_checked')
         )
-            ->where('user_id', Auth::id())
+            ->where('user_id', $request->get('user_id') ?? Auth::id())
             ->where('initiative_id', $requestData['initiative_id'])
             ->where('ticket_id', $requestData['ticket_id'])
             ->whereDate('booked_date', $requestData['booked_date'])
@@ -259,8 +270,8 @@ class TimeBookingController extends Controller
         $startDate = Carbon::parse($requestData['start_date'])->format('Y-m-d');
         $endDate = Carbon::parse($requestData['end_date'])->format('Y-m-d');
         $tickets = Ticket::where('initiative_id', $requestData['initiative_id'])
-            ->whereHas('actions', function ($query) {
-                $query->where('user_id', Auth::id());
+            ->whereHas('actions', function ($query) use ($requestData) {
+                $query->where('user_id', $requestData['user_id'] ?? Auth::id());
             })
             ->whereDoesntHave('timeBookings', function ($query) use ($requestData, $startDate, $endDate) {
                 $query->where('initiative_id', $requestData['initiative_id'])
@@ -278,7 +289,6 @@ class TimeBookingController extends Controller
     public function getTimeBookingOnNewInitiativeOrTicketModalInitialData(Request $request)
     {
         $requestData = $request->all();
-        $status = false;
 
         $status = true;
         $statusCode = 200;
@@ -289,9 +299,9 @@ class TimeBookingController extends Controller
 
         $startDate = Carbon::parse($requestData['start_date'])->format('Y-m-d');
         $endDate = Carbon::parse($requestData['end_date'])->format('Y-m-d');
-        $initiatives = Initiative::whereDoesntHave('timeBookings', function ($query) use ($startDate, $endDate) {
+        $initiatives = Initiative::whereDoesntHave('timeBookings', function ($query) use ($startDate, $endDate, $requestData) {
             $query->whereNotNull('initiative_id')
-                ->where('user_id', Auth::id())
+                ->where('user_id', $requestData['user_id'] ?? Auth::id())
                 ->whereBetween('booked_date', [$startDate, $endDate]);
         })
             ->get();
@@ -305,8 +315,11 @@ class TimeBookingController extends Controller
     public function store(TimeBookingRequest $request)
     {
         $validData = $request->validated();
-        $validData['user_id'] = Auth::id();
         $status = false;
+        if (!Auth::user()->is_admin && $validData['user_id'] != Auth::id()) {
+            return ApiHelper::response($status, __('messages.time_booking.not_allowed_to_store_other_user'), '', 400);
+        }
+        $validData['user_id'] = $validData['user_id'] ?? Auth::id();
 
         if ($validData['booked_date'] > Carbon::now()->format('Y-m-d')) {
             return ApiHelper::response($status, __('messages.time_booking.booked_date_error'), '', 400);
@@ -341,9 +354,12 @@ class TimeBookingController extends Controller
     public function storeTimeBookingOnNewTicket(TimeBookingOnNewTicketRequest $request)
     {
         $validData = $request->validated();
-        $validData['user_id'] = Auth::id();
-
         $status = false;
+        if (!Auth::user()->is_admin && $validData['user_id'] != Auth::id()) {
+            return ApiHelper::response($status, __('messages.time_booking.not_allowed_to_store_other_user'), '', 400);
+        }
+        $validData['user_id'] = $validData['user_id'] ?? Auth::id();
+
         $initiative = InitiativeService::getInitiative($request);
         if (!$initiative) {
             return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
@@ -370,8 +386,12 @@ class TimeBookingController extends Controller
     public function storeTimeBookingOnNewInitiativeOrTicket(TimeBookingOnNewInitiativeOrTicketRequest $request)
     {
         $validData = $request->validated();
-        $validData['user_id'] = Auth::id();
         $status = false;
+        if (!Auth::user()->is_admin && $validData['user_id'] != Auth::id()) {
+            return ApiHelper::response($status, __('messages.time_booking.not_allowed_to_store_other_user'), '', 400);
+        }
+        $validData['user_id'] = $validData['user_id'] ?? Auth::id();
+
         $initiative = InitiativeService::getInitiative($request);
         if (!$initiative) {
             return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
@@ -490,7 +510,12 @@ class TimeBookingController extends Controller
     public function storeTimeBookingForUnBillable(TimeBookingForUnBillableRequest $request)
     {
         $validData = $request->validated();
-        $validData['user_id'] = Auth::id();
+
+        $status = false;
+        if (!Auth::user()->is_admin && $validData['user_id'] != Auth::id()) {
+            return ApiHelper::response($status, __('messages.time_booking.not_allowed_to_store_other_user'), '', 400);
+        }
+        $validData['user_id'] = $validData['user_id'] ?? Auth::id();
 
         $message = __('messages.time_booking.store_success');
         $statusCode = 200;
@@ -527,6 +552,7 @@ class TimeBookingController extends Controller
         )
             ->where('initiative_id', $requestData['initiative_id'])
             ->where('booked_date', $requestData['booked_date'])
+            ->where('user_id', $requestData['user_id'] ?? Auth::id())
             ->get();
         $retData = [
             'timeBookings' => $timeBookings,
