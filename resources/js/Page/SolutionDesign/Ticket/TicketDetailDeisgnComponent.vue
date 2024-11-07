@@ -159,48 +159,69 @@
                             </div>
                         </div>
                         <div class="col-md-6 my-2">
-                            <div class="card">
-                                <div class="card-header">
-                                    {{ $t('ticket_details.client_release_notes') }}
-                                </div>
-                                <div class="card-body">
-                                    <p> {{ $t('ticket_details.client_release_notes_description') }}</p>
-                                    <TinyMceEditor v-model="releaseNoteForm.release_note" />
-                                    <div v-if="errors.release_note" class="text-danger mt-2">
-                                        <span v-for="(error, index) in errors.release_note" :key="index">{{
-                                            error
-                                        }}</span>
-                                    </div>
-                                    <button class="btn w-100 btn-desino text-white fw-bold m-2 rounded"
-                                        @click="updateReleaseNote">
-                                        {{ $t('ticket_details.update') }}
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="card mt-2" v-if="ticketData.is_allow_dev_estimation_time">
-                                <div class="card-header">
-                                    {{ $t('ticket_details.estimated_hours') }}
-                                </div>
-                                <div class="card-body">
-                                    <form @submit.prevent="updateTicketDetailEstimatedHours">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">{{
-                                                $t('ticket_details_input_dev_estimation_time')
-                                                }} <strong class="text-danger">*</strong>
-                                            </label>
-                                            <input v-model="estimatedHoursFormData.dev_estimation_time"
-                                                :class="{ 'is-invalid': errors.dev_estimation_time }"
-                                                class="form-control" type="text">
-                                            <div v-if="errors.dev_estimation_time" class="invalid-feedback">
-                                                <span v-for="(error, index) in errors.dev_estimation_time" :key="index">
-                                                    {{ error }}
-                                                </span>
+                            <ul id="custom-tabs-five-tab" class="nav nav-tabs border-bottom-0" role="tablist">
+                                <li class="nav-item">
+                                    <a id="ticket_detail_tab" aria-controls="ticket_detail_tab" aria-selected="true"
+                                        class="nav-link border active" data-bs-toggle="pill"
+                                        href="#ticket_detail_tab_release_notes" role="tab">{{
+                                            $t('ticket_details.client_release_notes')
+                                        }}</a>
+                                </li>
+                                <li class="nav-item" v-if="ticketData.is_allow_dev_estimation_time">
+                                    <a id="test_cases_tab" aria-controls="test_cases_tab" aria-selected="false"
+                                        class="nav-link border" data-bs-toggle="pill"
+                                        href="#test_cases_tab_estimation_time" role="tab">{{
+                                            $t('ticket_details.estimated_hours')
+                                        }}</a>
+                                </li>
+                            </ul>
+                            <div id="custom-tabs-five-tabContent" class="tab-content">
+                                <div id="ticket_detail_tab_release_notes"
+                                    aria-labelledby="ticket_detail_tab_release_notes" class="tab-pane fade active show"
+                                    role="tabpanel">
+                                    <div class="card mt-2">
+                                        <div class="card-body">
+                                            <p> {{ $t('ticket_details.client_release_notes_description') }}</p>
+                                            <TinyMceEditor v-model="releaseNoteForm.release_note" />
+                                            <div v-if="errors.release_note" class="text-danger mt-2">
+                                                <span v-for="(error, index) in errors.release_note" :key="index">{{
+                                                    error
+                                                    }}</span>
                                             </div>
+                                            <button class="btn w-100 btn-desino text-white fw-bold m-2 rounded"
+                                                @click="updateReleaseNote">
+                                                {{ $t('ticket_details.update') }}
+                                            </button>
                                         </div>
-                                        <button type="submit" class="btn w-100 btn-desino fw-bold m-2 rounded">
-                                            {{ $t('ticket_details.estimated_hours.update_but_text') }}
-                                        </button>
-                                    </form>
+                                    </div>
+                                </div>
+                                <div id="test_cases_tab_estimation_time"
+                                    aria-labelledby="test_cases_tab_estimation_time" class="tab-pane fade"
+                                    role="tabpanel" v-if="ticketData.is_allow_dev_estimation_time">
+                                    <div class="card mt-2">
+                                        <div class="card-body">
+                                            <form @submit.prevent="updateTicketDetailEstimatedHours">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">{{
+                                                        $t('ticket_details_input_dev_estimation_time')
+                                                    }} <strong class="text-danger">*</strong>
+                                                    </label>
+                                                    <input v-model="estimatedHoursFormData.dev_estimation_time"
+                                                        :class="{ 'is-invalid': errors.dev_estimation_time }"
+                                                        class="form-control" type="text">
+                                                    <div v-if="errors.dev_estimation_time" class="invalid-feedback">
+                                                        <span v-for="(error, index) in errors.dev_estimation_time"
+                                                            :key="index">
+                                                            {{ error }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <button type="submit" class="btn w-100 btn-desino fw-bold m-2 rounded">
+                                                    {{ $t('ticket_details.estimated_hours.update_but_text') }}
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
