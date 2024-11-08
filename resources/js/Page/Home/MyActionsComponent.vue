@@ -6,11 +6,11 @@
         <div class="card-body p-0">
             <ul class="list-group list-group-flush">
                 <li v-if="initiatives.length > 0" v-for="initiative in initiatives" :key="initiative.id"
-                    class="list-group-item" role="button" @click="openMyTickets(initiative)" 
-                    :class="{'bg-warning': initiative?.is_priority_tickets_count > 0}" >
-                    <div class="row g-1 w-100 align-items-center" >
+                    class="list-group-item" role="button" @click="openMyTickets(initiative)"
+                    :class="{ 'bg-warning': initiative?.is_priority_tickets_count > 0 }">
+                    <div class="row g-1 w-100 align-items-center">
                         <div class="col-9 fw-bold">
-                            {{ initiative?.client?.name }} -
+                            {{ initiative?.client_name }} -
                             {{ initiative.name }}
                         </div>
                         <div class="col-3 text-end">
@@ -18,7 +18,7 @@
                                 {{ initiative?.tickets_count }}
                                 <span class="small">{{
                                     $t('home.my_actions.tickets.text')
-                                }}</span>
+                                    }}</span>
                             </div>
                         </div>
                     </div>
