@@ -301,7 +301,15 @@ class TicketController extends Controller
                 $query->where('status', '!=', Ticket::getStatusDone());
             })
             ->when(!empty($filters['projects']) != '', function (Builder $query) use ($filters) {
-                $query->whereIn('project_id', array_column($filters['projects'], 'id'));
+                $exceptProjects = array_filter($filters['projects'], fn($v) => $v['id'] != 0);
+                $notAllocatedProjects = array_filter($filters['projects'], fn($v) => $v['id'] == 0);
+
+                $query->where(function ($query) use ($notAllocatedProjects, $exceptProjects) {
+                    $query->whereIn('project_id', array_column($exceptProjects, 'id'))
+                        ->when(count($notAllocatedProjects) > 0, function ($query) {
+                            $query->orWhereNull('project_id');
+                        });
+                });
             })
             ->when(!empty($filters['action_owner']) != '', function (Builder $query) use ($filters) {
                 $query->whereHas('actions', function ($query) use ($filters) {
@@ -343,7 +351,16 @@ class TicketController extends Controller
         $meta['functionalities'] = Functionality::whereHas('section', function ($query) use ($initiative_id) {
             $query->where('initiative_id', $initiative_id);
         })->get(['id', 'display_name']);
-        $meta['projects'] = ProjectService::getInitiativeProjects($initiative_id);
+
+        $projects = ProjectService::getInitiativeProjects($initiative_id);
+        $staticProject = array(
+            'id' => 0,
+            'initiative_id' => $initiative_id,
+            'name' => __('messages.static_not_allocated_project_text'),
+        );
+        $projects->prepend($staticProject);
+
+        $meta['projects'] = $projects;
         $meta['users'] = TicketService::getUsers();
         $meta['initiative'] = TicketService::getInitiative($initiative_id);
         $meta['macro_status'] = Ticket::getAllMacroStatus();
