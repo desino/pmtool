@@ -8,7 +8,7 @@
                 <li v-if="initiatives.length > 0" v-for="initiative in initiatives" :key="initiative.id"
                     class="list-group-item" role="button" @click="openMyTickets(initiative)">
                     <!-- bg-warning rounded -->
-                    <div class="row w-100" :class="{
+                    <div class="row w-100 col-md-12 align-items-center" :class="{
                         'bg-warning rounded p-1': initiative?.is_priority_tickets_count > 0
                     }">
                         <div class="col-md-8 fw-bold">

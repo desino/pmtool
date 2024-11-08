@@ -27,12 +27,21 @@ class HomeMyActionsController extends Controller
                 }
             ])
             ->join('tickets', 'tickets.initiative_id', '=', 'initiatives.id')
-            ->LEFTJOIN(DB::raw(
-                "(SELECT `ticket_id`, MIN(ACTION) AS first_action, `user_id` FROM ticket_actions WHERE `status` != " . TicketAction::getStatusDone() . " GROUP BY `ticket_id` HAVING `user_id` = " . Auth::id() . ") as ta"
-            ), 'ta.ticket_id', '=', 'tickets.id')
+            // ->LEFTJOIN(DB::raw(
+            //     "(SELECT `ticket_id`, MIN(ACTION) AS first_action, `user_id` FROM ticket_actions WHERE `status` != " . TicketAction::getStatusDone() . " GROUP BY `ticket_id` HAVING `user_id` = " . Auth::id() . ") as ta"
+            // ), 'ta.ticket_id', '=', 'tickets.id')
+            // ->where(function ($q) {
+            //     $q->where('tickets.is_visible', 1)
+            //         ->orWhereNotNull('ta.first_action');
+            // })
+            ->where('tickets.is_visible', 1)
             ->where(function ($q) {
-                $q->where('tickets.is_visible', 1)
-                    ->orWhereNotNull('ta.first_action');
+                $q->whereHas('tickets.currentAction', function ($q) {
+                    $q->where('user_id', Auth::id());
+                })
+                    ->orWhereHas('tickets.actions', function ($q) {
+                        $q->where('user_id', Auth::id());
+                    });
             })
             ->groupBy('initiatives.id')
             ->get();
