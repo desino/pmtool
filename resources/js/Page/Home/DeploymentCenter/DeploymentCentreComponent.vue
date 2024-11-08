@@ -29,7 +29,7 @@
                             </div>
                         </li>
                         <li v-else class="list-group-item">
-                            <div class="w-100">
+                            <div class="w-100 fst-italic small text-secondary">
                                 {{ $t('home.deployment_center.test_deployment.record_does_not_exist') }}
                             </div>
                         </li>
@@ -61,7 +61,7 @@
                             </div>
                         </li>
                         <li v-else class="list-group-item">
-                            <div class="w-100">
+                            <div class="w-100 fst-italic small text-secondary">
                                 {{ $t('home.deployment_center.test_deployment.record_does_not_exist') }}
                             </div>
                         </li>
@@ -91,7 +91,7 @@
                             </div>
                         </li>
                         <li v-else class="list-group-item">
-                            <div class="w-100">
+                            <div class="w-100 fst-italic small text-secondary">
                                 {{ $t('home.deployment_center.test_deployment.record_does_not_exist') }}
                             </div>
                         </li>
