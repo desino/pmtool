@@ -138,10 +138,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold small">
+                    <div class="col-lg-2 col-md-3 col-6 fw-bold small">
                         {{ $t('ticket.list.column_task_status') }}
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold small d-none d-lg-block">
+                    <div class="col-lg-2 col-md-3 fw-bold small d-none d-md-block">
                         {{ $t('ticket.list.column_project') }}
                     </div>
                     <div class="col-lg-2 col-md-6 col-6 fw-bold small d-none d-lg-block">
@@ -177,12 +177,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6 text-center">
+                    <div class="col-lg-2 col-md-3 col-6 text-center">
                         <span class="badge p-2 w-100 text-wrap" :class="'bg-' + task.macro_status_label?.color">{{ task.macro_status_label?.label }}</span>
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6">
-                        <span class="d-block d-lg-none fw-bold bg-desino text-white text-center rounded-top">
-                            {{ $t('ticket.list.column_project') }} </span>
+                    <div class="offset-1 offset-md-0 col-lg-2 col-md-3 col-12">
+                        <span class="badge text-desino d-block d-md-none p-2 fw-bold text-center rounded-top">
+                            {{ $t('ticket.list.column_project') }}
+                        </span>
                         <multiselect v-model="task.project" :options="projects" :searchable="true" deselect-label=""
                             label="name" :placeholder="$t('ticket.filter.projects_placeholder')" track-by="id"
                             :ref="'taskProjectDropdowns-' + index" @open="storePreviousProject(task.project, index)"
@@ -190,9 +191,10 @@
                             @Remove="assignOrRemoveProjectForTask(task.id, 'remove', index, $event)">
                         </multiselect>
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6">
-                        <span class="d-block d-lg-none fw-bold bg-desino text-white text-center rounded-top">
-                            {{ $t('ticket.list.current_action') }} </span>
+                    <div class="offset-1 offset-md-1 offset-lg-0 col-lg-2 col-md-4 col-4 text-start text-md-center">
+                        <span class="badge text-desino d-block d-lg-none p-2 fw-bold text-center rounded-top">
+                            {{ $t('ticket.list.current_action') }}
+                        </span>
                         <span v-if="task?.actions_count != task?.done_actions_count">
                             {{ task?.current_action?.action_name }}
                         </span>
@@ -200,9 +202,10 @@
                             -
                         </span>
                     </div>
-                    <div class="col-lg-1 col-md-6 col-6">
-                        <span class="d-block d-lg-none fw-bold bg-desino text-white text-center rounded-top">
-                            {{ $t('ticket.list.current_owner') }} </span>
+                    <div class="col-lg-2 col-md-4 col-4">
+                        <span class="badge text-desino d-block d-lg-none p-2 fw-bold text-center rounded-top">
+                            {{ $t('ticket.list.current_owner') }}
+                        </span>
                         <span v-if="task?.actions_count != task?.done_actions_count">
                             {{ task?.current_action?.user?.name }}
                         </span>
@@ -210,17 +213,20 @@
                             -
                         </span>
                     </div>
-                    <div v-if="user?.is_admin" class="col-lg-2 col-md-12 col-12 justify-content-end text-end">
+                    <div v-if="user?.is_admin" class="col-lg-1 col-md-3 col-3 justify-content-end text-end">
+                        <span class="badge text-desino d-block d-lg-none p-2 fw-bold text-center rounded-top">
+                            {{ $t('ticket.list.column_action') }}
+                        </span>
                         <router-link
                             :to="{ name: 'task.detail', params: { initiative_id: this.initiative_id, ticket_id: task.id } }"
-                            class="text-success me-2">
+                            class="text-success me-1">
                             <i class="bi bi-box-arrow-up-right fw-bold"></i>
                         </router-link>
-                        <a :title="$t('ticket.list.column.action.edit_text')" class="text-desino me-2"
+                        <a :title="$t('ticket.list.column.action.edit_text')" class="text-desino me-1"
                             href="javascript:" @click="editTaskPopup(task)">
                             <i class="bi bi-pencil-square"></i>
                         </a>
-                        <a v-if="task.asana_task_link" :href="task.asana_task_link" target="_blank">
+                        <a class="me-1" v-if="task.asana_task_link" :href="task.asana_task_link" target="_blank">
                             <svg fill="none" height="21px" viewBox="0 0 24 24" width="21px"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path clip-rule="evenodd"
@@ -234,7 +240,7 @@
                                     fill="#ffc107" fill-rule="evenodd" />
                             </svg>
                         </a>
-                        <a class="ms-2" href="javascript:" @click="handleTimeBooking(task)"
+                        <a href="javascript:" @click="handleTimeBooking(task)"
                             :title="$t('ticket_details.time_booking')">
                             <i class="bi bi-clock-history"></i>
                         </a>
