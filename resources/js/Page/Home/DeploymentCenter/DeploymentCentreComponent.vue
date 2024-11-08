@@ -13,7 +13,7 @@
                         <li class="list-group-item" v-if="productionDeployments.length > 0"
                             v-for="productionDeployment in productionDeployments" :key="productionDeployment.id"
                             @click="openProductionDeploymentModal(productionDeployment)" role="button">
-                            <div class="row g-1 w-100 align-items-center" >
+                            <div class="row g-1 w-100 align-items-center">
                                 <div class="col-9">
                                     {{ productionDeployment?.client?.name }} -
                                     {{ productionDeployment?.name }}
@@ -22,7 +22,7 @@
                                     <span class="badge bg-desino">{{ productionDeployment?.tickets_count
                                         }}
                                         <span class="small">{{
-                                            $t('home.deployment_center.test_deployment.tickets.text')
+                                            $t('home.deployment_center.production_deployment.tickets.text')
                                             }}</span>
                                     </span>
                                 </div>
@@ -30,7 +30,7 @@
                         </li>
                         <li v-else class="list-group-item">
                             <div class="w-100 fst-italic small text-secondary">
-                                {{ $t('home.deployment_center.test_deployment.record_does_not_exist') }}
+                                {{ $t('home.deployment_center.production_deployment.record_does_not_exist') }}
                             </div>
                         </li>
                     </ul>
@@ -45,7 +45,7 @@
                         <li class="list-group-item" v-if="acceptanceDeployments.length > 0"
                             v-for="acceptanceDeployment in acceptanceDeployments" :key="acceptanceDeployment.id"
                             @click="openAcceptanceDeploymentModal(acceptanceDeployment)" role="button">
-                            <div class="row g-1 w-100 align-items-center" >
+                            <div class="row g-1 w-100 align-items-center">
                                 <div class="col-9">
                                     {{ acceptanceDeployment?.client?.name }} -
                                     {{ acceptanceDeployment?.name }}
@@ -54,7 +54,7 @@
                                     <span class="badge bg-desino">{{ acceptanceDeployment?.tickets_count
                                         }}
                                         <span class="small">{{
-                                            $t('home.deployment_center.test_deployment.tickets.text')
+                                            $t('home.deployment_center.acceptance_deployment.tickets.text')
                                             }}</span>
                                     </span>
                                 </div>
@@ -62,7 +62,7 @@
                         </li>
                         <li v-else class="list-group-item">
                             <div class="w-100 fst-italic small text-secondary">
-                                {{ $t('home.deployment_center.test_deployment.record_does_not_exist') }}
+                                {{ $t('home.deployment_center.acceptance_deployment.record_does_not_exist') }}
                             </div>
                         </li>
                     </ul>
@@ -77,7 +77,7 @@
                         <li class="list-group-item" v-if="testDeployments.length > 0"
                             v-for="testDeployment in testDeployments" :key="testDeployment.id"
                             @click="openTestDeploymentModal(testDeployment)" role="button">
-                            <div class="row g-1 w-100 align-items-center" >
+                            <div class="row g-1 w-100 align-items-center">
                                 <div class="col-9">
                                     {{ testDeployment?.client?.name }} - {{ testDeployment?.name }}
                                 </div>

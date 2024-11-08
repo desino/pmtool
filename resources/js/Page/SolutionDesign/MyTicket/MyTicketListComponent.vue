@@ -44,20 +44,27 @@
                 </div>
             </li>
             <li v-for="(ticket, index) in tickets" v-if="tickets.length > 0" :key="ticket.id"
-                class="border list-group-item">
+                class="border list-group-item px-0 py-1 list-group-item-action" role="button"
+                @click="redirectTaskDetailPage(ticket)">
                 <div class="row w-100 align-items-center">
-                    <div class="position-absolute" :class="{
-                        'bg-secondary': !ticket.is_visible,
-                        'bg-warning': ticket.is_priority && ticket.is_visible,
-                        '': ticket.is_visible && !ticket.is_priority
-                    }" style="width: 5px; height: 100%; left: 0; top: 0;">
+                    <div class="col-lg-3 col-md-6 col-6">
+                        <div class="row g-0 h-100 align-items-center">
+                            <div class="col-auto me-1" style="width:10px">
+                                <div class="position-absolute" :class="{
+                                    'bg-secondary': !ticket.is_visible,
+                                    'bg-warning': ticket.is_priority && ticket.is_visible,
+                                    '': ticket.is_visible && !ticket.is_priority
+                                }" style="width: 10px; height: 100%; left: 0; top: 0;">
+                                </div>
+                            </div>
+                            <div class="col-auto" style="width: calc(100% - 40px)">
+                                {{ ticket.composed_name }}
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-lg-3 col-md-6 col-6 py-2">
-                        <span class="mx-3 d-flex">{{ ticket.composed_name }}</span>
-                    </div>
-                    <div class="col-lg-3 col-md-6 col-6 py-2 text-white text-center p-2 rounded"
-                        :class="'bg-' + ticket.macro_status_label?.color">
-                        {{ ticket.macro_status_label?.label }}
+                    <div class="col-lg-3 col-md-3 col-6 text-center">
+                        <span class="badge p-2 w-100 text-wrap" :class="'bg-' + ticket.macro_status_label?.color">{{
+                            ticket.macro_status_label?.label }}</span>
                     </div>
                     <div class="col-lg-3 col-md-6 col-6 py-2">
                         {{ ticket?.functionality?.display_name }}
@@ -66,11 +73,6 @@
                         {{ ticket?.current_action?.action_name }}
                     </div>
                     <div class="col-lg-1 col-md-6 col-6 py-2 d-none d-lg-block text-lg-end">
-                        <router-link
-                            :to="{ name: 'task.detail', params: { initiative_id: this.initiative_id, ticket_id: ticket.id } }"
-                            class="text-success me-2">
-                            <i class="bi bi-box-arrow-up-right fw-bold"></i>
-                        </router-link>
                         <a v-if="ticket.asana_task_link" :href="ticket.asana_task_link" target="_blank">
                             <svg fill="none" height="21px" viewBox="0 0 24 24" width="21px"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -85,7 +87,7 @@
                                     fill="#ffc107" fill-rule="evenodd" />
                             </svg>
                         </a>
-                        <a class="ms-2" href="javascript:" @click="handleTimeBooking(ticket)"
+                        <a class="ms-2" href="javascript:" @click.stop="handleTimeBooking(ticket)"
                             :title="$t('ticket_details.time_booking')">
                             <i class="bi bi-clock-history"></i>
                         </a>
@@ -185,6 +187,9 @@ export default {
                 const modal = new Modal(modalElement);
                 modal.show();
             }
+        },
+        redirectTaskDetailPage(ticket) {
+            this.$router.push({ name: 'task.detail', params: { initiative_id: this.initiative_id, ticket_id: ticket.id } });
         },
         handleError(error) {
             if (error.type === 'validation') {

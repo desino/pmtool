@@ -159,7 +159,8 @@
             </li>
             <li v-for="(task, index) in tasks" v-if="tasks.length > 0" :key="task.id"
                 class="border list-group-item px-0 py-1 list-group-item-action" role="button"
-                :class="backgroundClass(task) + ' ' + (index > 0 ? 'border-top-0' : '')">
+                :class="backgroundClass(task) + ' ' + (index > 0 ? 'border-top-0' : '')"
+                @click="redirectTaskDetailPage(task)">
                 <div class="row w-100 align-items-center">
                     <div class="col-lg-3 col-md-6 col-6">
                         <div class="row g-0 h-100 align-items-center">
@@ -173,7 +174,7 @@
                             </div>
                             <div class="col-auto me-1" style="width:20px">
                                 <input class="form-check-input" type="checkbox" :id="'chk_ticket_' + task.id"
-                                    v-model="task.isChecked" @change="handleSelectTasks(task)">
+                                    v-model="task.isChecked" @click.stop @change="handleSelectTasks(task)">
                             </div>
                             <div class="col-auto" style="width: calc(100% - 40px)">
                                 {{ task.composed_name }}
@@ -221,13 +222,13 @@
                         <span class="badge text-desino d-block d-lg-none p-2 fw-bold text-center rounded-top">
                             {{ $t('ticket.list.column_action') }}
                         </span>
-                        <router-link
+                        <!-- <router-link
                             :to="{ name: 'task.detail', params: { initiative_id: this.initiative_id, ticket_id: task.id } }"
                             class="text-success me-1">
                             <i class="bi bi-box-arrow-up-right fw-bold"></i>
-                        </router-link>
+                        </router-link> -->
                         <a :title="$t('ticket.list.column.action.edit_text')" class="text-desino me-1"
-                            href="javascript:" @click="editTaskPopup(task)">
+                            href="javascript:" @click.stop="editTaskPopup(task)">
                             <i class="bi bi-pencil-square"></i>
                         </a>
                         <a class="me-1" v-if="task.asana_task_link" :href="task.asana_task_link" target="_blank">
@@ -244,7 +245,7 @@
                                     fill="#ffc107" fill-rule="evenodd" />
                             </svg>
                         </a>
-                        <a href="javascript:" @click="handleTimeBooking(task)"
+                        <a href="javascript:" @click.stop="handleTimeBooking(task)"
                             :title="$t('ticket_details.time_booking')">
                             <i class="bi bi-clock-history"></i>
                         </a>
@@ -624,6 +625,9 @@ export default {
                 return 'bg-warning-subtle';
             }
             return '';
+        },
+        redirectTaskDetailPage(task) {
+            this.$router.push({ name: 'task.detail', params: { initiative_id: this.initiative_id, ticket_id: task.id } });
         }
     },
     mounted() {
