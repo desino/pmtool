@@ -5,13 +5,13 @@
             <div class="col-12 col-md-12 col-lg-3">
                 <div class="w-100 p-1">
                     <input v-model="filter.task_name" :placeholder="$t('ticket.filter.task_name')" class="form-control"
-                    type="text" @keyup="fetchAllTasks">
+                        type="text" @keyup="fetchAllTasks">
                 </div>
                 <div class="w-100 p-1">
                     <multiselect v-model="filter.macro_status" ref="multiselect" :multiple="true"
                         :options="filterMacroStatus" :searchable="true" deselect-label="" label="name"
-                        :placeholder="$t('ticket.filter.macro_status_placeholder')" track-by="id" @select="fetchAllTasks"
-                        @Remove="fetchAllTasks">
+                        :placeholder="$t('ticket.filter.macro_status_placeholder')" track-by="id"
+                        @select="fetchAllTasks" @Remove="fetchAllTasks">
                         <template #tag="{ option, remove }">
                             <span class="multiselect__tag_for_macro_status" :class="'bg-' + option.color">
                                 <span>{{ option.name }}</span>
@@ -40,8 +40,8 @@
                 <div class="w-100 p-1">
                     <multiselect v-model="filter.functionalities" ref="multiselect" :multiple="true"
                         :options="functionalities" :searchable="true" deselect-label="" label="display_name"
-                        :placeholder="$t('ticket.filter.functionalities_placeholder')" track-by="id" @select="fetchAllTasks"
-                        @Remove="fetchAllTasks">
+                        :placeholder="$t('ticket.filter.functionalities_placeholder')" track-by="id"
+                        @select="fetchAllTasks" @Remove="fetchAllTasks">
                     </multiselect>
                 </div>
             </div>
@@ -58,7 +58,8 @@
                     <select v-model="filter.next_action_owner" class="form-select" @change="fetchAllTasks">
                         <option value="">{{ $t('ticket.filter.next_action_owner_placeholder') }}</option>
                         <option v-for="nextActionOwner in nextActionOwners" :key="nextActionOwner.id"
-                            :value="nextActionOwner.id">{{ nextActionOwner.name }}
+                            :value="nextActionOwner.id">{{
+                                nextActionOwner.name }}
                         </option>
                     </select>
                 </div>
@@ -74,8 +75,8 @@
                 </div>
                 <div class="w-100 p-1">
                     <multiselect v-model="filter.projects" :multiple="true" :options="projects" :searchable="true"
-                        deselect-label="" label="name" :placeholder="$t('ticket.filter.projects_placeholder')" track-by="id"
-                        @select="fetchAllTasks" @Remove="fetchAllTasks">
+                        deselect-label="" label="name" :placeholder="$t('ticket.filter.projects_placeholder')"
+                        track-by="id" @select="fetchAllTasks" @Remove="fetchAllTasks">
                     </multiselect>
                 </div>
             </div>
@@ -89,8 +90,8 @@
                     </button>
                 </div>
                 <div class="w-100 p-1" v-if="createReleaseAllowOrNot()">
-                    <button class="btn btn-desino w-100"
-                        :disabled="selectedTasks.length === 0" type="button" @click="openCreateReleaseModal">
+                    <button class="btn btn-desino w-100" :disabled="selectedTasks.length === 0" type="button"
+                        @click="openCreateReleaseModal">
                         {{ $t('ticket.release.create.button_text') }}
                     </button>
                 </div>
@@ -131,7 +132,8 @@
                         <div class="row g-0 h-100 align-items-center">
                             <div class="col-auto me-1" style="width:10px"></div>
                             <div class="col-auto me-1" style="width:20px">
-                                <input class="form-check-input" type="checkbox" id="chk_all_tickets" v-model="isChkAllTickets" @change="handleSelectAllTasks">
+                                <input class="form-check-input" type="checkbox" id="chk_all_tickets"
+                                    v-model="isChkAllTickets" @change="handleSelectAllTasks">
                             </div>
                             <div class="col-auto fw-bold small" style="width: calc(100% - 40px)">
                                 {{ $t('ticket.list.column_task_name') }}
@@ -155,7 +157,8 @@
                     </div>
                 </div>
             </li>
-            <li v-for="(task, index) in tasks" v-if="tasks.length > 0" :key="task.id" class="border list-group-item px-0 py-1"
+            <li v-for="(task, index) in tasks" v-if="tasks.length > 0" :key="task.id"
+                class="border list-group-item px-0 py-1 list-group-item-action" role="button"
                 :class="backgroundClass(task) + ' ' + (index > 0 ? 'border-top-0' : '')">
                 <div class="row w-100 align-items-center">
                     <div class="col-lg-3 col-md-6 col-6">
@@ -178,7 +181,8 @@
                         </div>
                     </div>
                     <div class="col-lg-2 col-md-3 col-6 text-center">
-                        <span class="badge p-2 w-100 text-wrap" :class="'bg-' + task.macro_status_label?.color">{{ task.macro_status_label?.label }}</span>
+                        <span class="badge p-2 w-100 text-wrap" :class="'bg-' + task.macro_status_label?.color">{{
+                            task.macro_status_label?.label }}</span>
                     </div>
                     <div class="offset-1 offset-md-0 col-lg-2 col-md-3 col-12">
                         <span class="badge text-desino d-block d-md-none p-2 fw-bold text-center rounded-top">
