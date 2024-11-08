@@ -281,6 +281,7 @@
     "messages.deployment.test_case_pdf_main_content_page_observerd_behaviour": "Observerd Behaviour",
     "messages.release.not_found": "Release not found.",
     "messages.something_went_wrong": "Something went wrong.",
+    "messages.static_not_allocated_project_text": "Not allocated",
     "login_title": "Login",
     "login_page_title": "Login",
     "login_input_email": "Email",
