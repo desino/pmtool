@@ -26,6 +26,17 @@
             </div>
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="w-100 p-1">
+                    <select v-model="filter.visible" class="form-select" @change="getAllTicketsWithoutInitiative">
+                        <option value="">{{ $t('all_ticket_without_initiative_list.filter.visible') }}
+                        </option>
+                        <option v-for="visible in visibleList" :key="visible.value" :value="visible.value">{{
+                            visible.label }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="w-100 p-1">
                     <multiselect v-model="filter.macro_status" ref="multiselect" :multiple="true" :options="macroStatus"
                         :searchable="true" deselect-label="" label="name"
                         :placeholder="$t('all_ticket_without_initiative_list.filter.macro_status_placeholder')"
@@ -37,6 +48,47 @@
                             </span>
                         </template>
                     </multiselect>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="w-100 p-1">
+                    <div class="form-check ms-auto">
+                        <input v-model="filter.is_priority" @change="getAllTicketsWithoutInitiative"
+                            class="form-check-input" type="checkbox" id="is_include_done">
+                        <label class="form-check-label fw-bold" for="is_include_done">
+                            {{ $t('all_ticket_without_initiative_list.filter.is_priority') }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row g-0 w-100 py-2">
+            <div class="col-12 col-md-12 col-lg-4">
+                <div class="w-100 p-1">
+                    <button class="btn btn-desino w-100" :disabled="selectedTickets.length === 0" type="button"
+                        @click="addRemovePriority(1)">
+                        {{ $t('all_ticket_without_initiative_list.add_priority.button_text') }}
+                    </button>
+                </div>
+                <div class="w-100 p-1">
+                    <button class="btn btn-desino w-100" :disabled="selectedTickets.length === 0" type="button"
+                        @click="addRemovePriority(0)">
+                        {{ $t('ticket.remove_priority.button_text') }}
+                    </button>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="w-100 p-1">
+                    <button class="btn btn-desino w-100" :disabled="selectedTickets.length === 0" type="button"
+                        @click="markAsVisibleInvisible(1)">
+                        {{ $t('ticket.mark_as_visible.button_text') }}
+                    </button>
+                </div>
+                <div class="w-100 p-1">
+                    <button class="btn btn-desino w-100" :disabled="selectedTickets.length === 0" type="button"
+                        @click="markAsVisibleInvisible(0)">
+                        {{ $t('ticket.mark_as_invisible.button_text') }}
+                    </button>
                 </div>
             </div>
         </div>
@@ -155,6 +207,8 @@ import AllTicketsWithoutInitiativeService from '../../services/AllTicketsWithout
 import EditTicketModalComponent from '../SolutionDesign/Ticket/EditTicketModalComponent.vue';
 import { Modal } from 'bootstrap';
 import Multiselect from "vue-multiselect";
+import MyTicketService from '../../services/MyTicketService';
+import showToast from '../../utils/toasts';
 export default {
     name: 'AllTicketsComponent',
     components: {
@@ -171,6 +225,8 @@ export default {
                 action_owner: '',
                 initiative_id: '',
                 macro_status: '',
+                visible: '',
+                is_priority: false,
             },
             tickets: [],
             currentPage: "",
@@ -178,6 +234,7 @@ export default {
             actionOwners: [],
             initiatives: [],
             macroStatus: [],
+            visibleList: [],
             showMessage: true,
             errors: {},
         }
@@ -199,13 +256,15 @@ export default {
             }
         },
         async getInitialData() {
-            const { content: { users, initiatives, macroStatus } } = await AllTicketsWithoutInitiativeService.getInitialData();
+            const { content: { users, initiatives, macroStatus, visibleList } } = await AllTicketsWithoutInitiativeService.getInitialData();
             this.actionOwners = users;
             this.initiatives = initiatives;
             this.macroStatus = macroStatus;
+            this.visibleList = visibleList;
         },
         async getAllTicketsWithoutInitiative(page = 1) {
             this.isChkAllTickets = false;
+            this.selectedTickets = [];
             this.clearMessages();
             try {
                 this.setLoading(true);
@@ -246,6 +305,80 @@ export default {
                 }
                 return ticket;
             });
+        },
+        async addRemovePriority(isPriority) {
+            let alertText = '';
+            if (isPriority) {
+                alertText = this.$t('all_ticket_without_initiative_list.add_priority.conformation_popup_text');
+            } else {
+                alertText = this.$t('all_ticket_without_initiative_list.remove_priority.conformation_popup_text');
+            }
+            this.$swal({
+                title: this.$t('all_ticket_without_initiative_list.priority.conformation_popup_title'),
+                text: alertText,
+                showCancelButton: true,
+                confirmButtonColor: '#1e6abf',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '<i class="bi bi-check-lg"></i>',
+                cancelButtonText: '<i class="bi bi-x-lg"></i>',
+                customClass: {
+                    confirmButton: 'btn-desino',
+                },
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        const passData = {
+                            is_priority: isPriority,
+                            ticket_ids: this.selectedTickets
+                        }
+                        this.setLoading(true);
+                        const { message, status } = await AllTicketsWithoutInitiativeService.addRemovePriority(passData);
+                        showToast(message, 'success');
+                        this.setLoading(false);
+                        this.clearMessages();
+                        this.getAllTicketsWithoutInitiative();
+                    } catch (error) {
+                        this.handleError(error);
+                    }
+                }
+            })
+        },
+        async markAsVisibleInvisible(isVisible) {
+            let alertText = '';
+            if (isVisible) {
+                alertText = this.$t('all_ticket_without_initiative_list.is_visible.conformation_popup_text');
+            } else {
+                alertText = this.$t('all_ticket_without_initiative_list.is_invisible.conformation_popup_text');
+            }
+            this.$swal({
+                title: this.$t('all_ticket_without_initiative_list.visible.conformation_popup_title'),
+                text: alertText,
+                showCancelButton: true,
+                confirmButtonColor: '#1e6abf',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '<i class="bi bi-check-lg"></i>',
+                cancelButtonText: '<i class="bi bi-x-lg"></i>',
+                customClass: {
+                    confirmButton: 'btn-desino',
+                },
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        const passData = {
+                            is_visible: isVisible,
+                            ticket_ids: this.selectedTickets
+                        }
+                        this.setLoading(true);
+                        const { message, status } = await AllTicketsWithoutInitiativeService.markAsVisibleInvisible(passData);
+                        showToast(message, 'success');
+                        this.setLoading(false);
+                        this.clearMessages();
+                        this.getAllTicketsWithoutInitiative();
+                    } catch (error) {
+                        this.handleError(error);
+                    }
+                }
+            })
         },
         handleSelectTickets(ticket) {
             if (ticket.isChecked) {

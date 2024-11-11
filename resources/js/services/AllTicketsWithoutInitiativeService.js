@@ -10,6 +10,8 @@ const defaultPath = `${APP_VARIABLES.DEFAULT_API_PATH}/all-tickets-without-initi
 const endpoints = {
     getInitialData: `${defaultPath}/get-initial-data`,
     getAllTicketsWithoutInitiative: `${defaultPath}`,
+    addRemovePriority: `${defaultPath}/add-remove-priority`,
+    markAsVisibleInvisible: `${defaultPath}/mark-as-visible-invisible`,
 }
 
 const AllTicketsWithoutInitiativeService = {
@@ -24,6 +26,22 @@ const AllTicketsWithoutInitiativeService = {
     async getAllTicketsWithoutInitiative(data) {
         try {
             const response = await axiosRequest.get(endpoints.getAllTicketsWithoutInitiative, { params: data });
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async addRemovePriority(data) {
+        try {
+            const response = await axiosRequest.post(endpoints.addRemovePriority, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async markAsVisibleInvisible(data) {
+        try {
+            const response = await axiosRequest.post(endpoints.markAsVisibleInvisible, data);
             return response.data;
         } catch (error) {
             throw handleError(error);

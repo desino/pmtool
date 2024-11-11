@@ -164,6 +164,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(AllTicketsWithoutInitiativeController::class)->prefix('all-tickets-without-initiative')->group(function () {
         Route::get('/', 'index');
         Route::get('get-initial-data', 'getInitialData');
+        Route::post('add-remove-priority', 'addRemovePriority');
+        Route::post('mark-as-visible-invisible', 'markAsVisibleInvisible');
     });
 });
 

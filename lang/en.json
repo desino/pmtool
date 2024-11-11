@@ -282,6 +282,10 @@
     "messages.release.not_found": "Release not found.",
     "messages.something_went_wrong": "Something went wrong.",
     "messages.static_not_allocated_project_text": "Not allocated",
+    "messages.all_ticket_without_initiative.add_remove_priority_success_alt_add": "Priority added successfully.",
+    "messages.all_ticket_without_initiative.add_remove_priority_success_alt_remove": "Priority removed successfully.",
+    "messages.all_ticket_without_initiative.visible_success_alt_add": "Visible added successfully.",
+    "messages.all_ticket_without_initiative.visible_success_alt_remove": "Visible removed successfully.",
     "login_title": "Login",
     "login_page_title": "Login",
     "login_input_email": "Email",
@@ -738,5 +742,14 @@
     "all_ticket_without_initiative_list.not_ticket": "No Result Found",
     "all_ticket_without_initiative_list.filter.action_owner_placeholder": "Action Owner",
     "all_ticket_without_initiative_list.filter.initiative_placeholder": "Initiative",
-    "all_ticket_without_initiative_list.filter.macro_status_placeholder": "Macro Status"
+    "all_ticket_without_initiative_list.filter.macro_status_placeholder": "Macro Status",
+    "all_ticket_without_initiative_list.filter.visible": "Select",
+    "all_ticket_without_initiative_list.filter.is_priority": "Priority",
+    "all_ticket_without_initiative_list.add_priority.button_text": "Add Priority Flag",
+    "all_ticket_without_initiative_list.add_priority.conformation_popup_text": "Are you sure you want to add priority flag?",
+    "all_ticket_without_initiative_list.remove_priority.conformation_popup_text": "Are you sure you want to remove priority flag?",
+    "all_ticket_without_initiative_list.priority.conformation_popup_title": "Change Priority",
+    "all_ticket_without_initiative_list.is_visible.conformation_popup_text": "Are you sure you want to mark as visible?",
+    "all_ticket_without_initiative_list.is_invisible.conformation_popup_text": "Are you sure you want to mark as invisible?",
+    "all_ticket_without_initiative_list.visible.conformation_popup_title": "Mark as Visible"
 }
