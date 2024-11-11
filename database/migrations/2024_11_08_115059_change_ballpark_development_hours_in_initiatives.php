@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('initiatives', function (Blueprint $table) {
-            $table->decimal('ballpark_development_hours', 8, 2)->change();
+            // $table->decimal('ballpark_development_hours', 8, 2)->change();
+            $table->float('ballpark_development_hours')->change();
         });
     }
 
@@ -22,8 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('initiatives', function (Blueprint $table) {
-            $table->float('ballpark_development_hours')->change();
-            // $table->float('ballpark_development_hours', 8, 2);
+            $table->float('ballpark_development_hours', 8, 2);
         });
     }
 };
