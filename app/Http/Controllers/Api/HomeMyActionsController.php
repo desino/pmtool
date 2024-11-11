@@ -27,12 +27,24 @@ class HomeMyActionsController extends Controller
             ->leftjoin('clients', 'initiatives.client_id', '=', 'clients.id')
             ->where('tickets.is_visible', 1)
             ->where('tickets.macro_status', '!=', Ticket::MACRO_STATUS_DONE)
-            ->where(function ($q) {
-                $q->whereHas('currentAction', function ($q) {
-                    $q->where('user_id', Auth::id());
-                })
-                    ->orWhereHas('actions', function ($q) {
-                        $q->where('user_id', Auth::id());
+            // ->where(function ($q) {
+            //     // $q->whereHas('currentAction', function ($q) {
+            //     //     $q->where('user_id', Auth::id());
+            //     // });
+            //     // ->orWhereHas('actions', function ($q) {
+            //     //     $q->where('user_id', Auth::id());
+            //     // });
+            // })
+            ->whereHas('actions', function ($query) {
+                $query->where('user_id', Auth::id())
+                    ->where('action', function ($subQuery) {
+                        $subQuery->selectRaw('MIN(action)')
+                            ->from('ticket_actions as ta_inner')
+                            ->whereColumn('ta_inner.ticket_id', 'ticket_actions.ticket_id')
+                            ->where('status', '!=', TicketAction::getStatusDone())
+                            ->groupBy('action')
+                            ->orderBy('action', 'ASC')
+                            ->limit(1);
                     });
             })
             ->groupBy('tickets.initiative_id')

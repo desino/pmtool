@@ -192,6 +192,16 @@
                             }}
                         </router-link>
                     </li>
+                    <li class="nav-item" v-if="user?.is_admin">
+                        <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('all-ticket-without-initiative') }"
+                            :to="{ name: 'all-ticket-without-initiative' }" class="nav-link text-dark"
+                            @click="unselectHeaderInitiative">
+                            <i class="bi bi-card-checklist mx-2"></i>
+                            {{
+                                $t('header.menu.all_ticket_without_initiative')
+                            }}
+                        </router-link>
+                    </li>
                     <!-- <li class="nav-item" v-if="user?.is_admin">
                         <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('profile') }"
                             :to="{ name: 'profile' }" class="nav-link text-dark" @click="unselectHeaderInitiative">

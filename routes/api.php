@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AllTicketsWithoutInitiativeController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\SocialiteController;
 use App\Http\Controllers\Api\BulkCreateTicketsController;
@@ -158,6 +159,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/get-initial-data-for-initiative-time-bookings', 'getInitialDataForInitiativeTimeBookings');
         Route::get('/get-project-list-for-initiative-time-bookings', 'getProjectListForInitiativeTimeBookings');
         Route::post('/assign-project-for-initiative-time-bookings', 'assignProjectForInitiativeTimeBookings');
+    });
+
+    Route::controller(AllTicketsWithoutInitiativeController::class)->prefix('all-tickets-without-initiative')->group(function () {
+        Route::get('/', 'index');
+        Route::get('get-initial-data', 'getInitialData');
     });
 });
 

@@ -7,6 +7,7 @@ import TimeBookingRoutes from "../Page/TimeBooking/routes";
 import PlaningRoutes from "../Page/Planning/routes";
 import InitiativeTimeBookingsRoutes from "../Page/InitiativeTimeBooking/routes";
 import ProfileRoutes from "../Page/Profile/routes";
+import AllTicketsRoutes from "../Page/AllTickets/routes";
 
 export let routes = [
     ...authRoutes,
@@ -17,6 +18,7 @@ export let routes = [
     ...PlaningRoutes,
     ...InitiativeTimeBookingsRoutes,
     ...ProfileRoutes,
+    ...AllTicketsRoutes,
     {
         path: '/:catchAll(.*)',
         name: 'not-found',

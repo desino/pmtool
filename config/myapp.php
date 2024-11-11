@@ -38,6 +38,16 @@ return [
                 'project_id' => '-6',
                 'project_name' => 'Sales'
             ],
+        ],
+        'ticket_filters_visible_in_visible' => [
+            [
+                'value' => 1,
+                'label' => 'Visible'
+            ],
+            [
+                'value' => 0,
+                'label' => 'In Visible'
+            ],
         ]
     ]
 ];

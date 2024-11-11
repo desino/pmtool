@@ -446,6 +446,7 @@
     "header.menu.time_booking": "Time Booking",
     "header.menu.planning": "Planning",
     "header.menu.initiative_time_booking": "Initiative Time Booking",
+    "header.menu.all_ticket_without_initiative": "All Tickets",
     "header.menu.deployments": "Deployments",
     "header.menu.profile": "Profile",
     "ticket.page_title": "All Ticket",
@@ -727,5 +728,15 @@
     "deployments.list.not_record_found": "No record found",
     "deployments.list.column.action.download_release_note_text": "Download Release Note",
     "deployments.list.column.action.download_test_results_text": "Download Test Results",
-    "deployments.download_release_note.error_message": "Something went wrong. Please try again later."
+    "deployments.download_release_note.error_message": "Something went wrong. Please try again later.",
+    "all_ticket_without_initiative_list.page_title": "All Tickets",
+    "all_ticket_without_initiative_list.list.column_ticket_name": "Ticket",
+    "all_ticket_without_initiative_list.list.column_macro_status": "Macro Status",
+    "all_ticket_without_initiative_list.current_owner": "Current Owner",
+    "all_ticket_without_initiative_list.estimated_hours": "Estimated Hours",
+    "all_ticket_without_initiative_list.column_action": "Actions",
+    "all_ticket_without_initiative_list.not_ticket": "No Result Found",
+    "all_ticket_without_initiative_list.filter.action_owner_placeholder": "Action Owner",
+    "all_ticket_without_initiative_list.filter.initiative_placeholder": "Initiative",
+    "all_ticket_without_initiative_list.filter.macro_status_placeholder": "Macro Status"
 }

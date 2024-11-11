@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('tickets', function (Blueprint $table) {
-            $table->float('dev_estimation_time')->change();
+            $table->float('dev_estimation_time')->nullable()->change();
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('tickets', function (Blueprint $table) {
-            $table->float('dev_estimation_time', 8, 2);
+            $table->float('dev_estimation_time', 8, 2)->nullable()->change();
         });
     }
 };

@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('time_bookings', function (Blueprint $table) {
-            $table->float('hours', 8, 2);
+            $table->float('hours', 8, 2)->change();
         });
     }
 };
