@@ -11,7 +11,7 @@
                 <div class="modal-body">
                     <GlobalMessage v-if="showMessage" />
                     <label>Test Case </label>
-                    <p class="text-muted">{{ testCase }}</p>
+                    <p class="text-muted" v-html="testCase"></p>
                     <hr>
                     <div class="mb-3">
                         <label class="form-label fw-bold">{{
