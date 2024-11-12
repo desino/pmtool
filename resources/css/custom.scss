@@ -82,9 +82,16 @@
     color: $white !important;
 }
 
+.multiselect {
+    height: 38px !important;
+}
+
 .multiselect__tags {
+    min-height: 38px !important;
+    height: 38px !important;
     display: block;
     width: 100%;
+    padding: 4px 40px 0px 12px !important;
     line-height: normal !important;
     color: var(--bs-body-color);
     -webkit-appearance: none;
@@ -116,6 +123,11 @@
 
 .dropdown-menu {
     min-width: 7rem !important;
+}
+
+
+.multiselect {
+    height: 44px !important;
 }
 
 .multiselect__tag {
