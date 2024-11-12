@@ -182,19 +182,23 @@ class TicketService
         }
     }
 
-    public static function updateTicketPreviousActions($ticket, $actionId, $status)
+    public static function updateTicketPreviousActions($ticket, $actionId, $status, $isReadyForDeploymentToPrd = false)
     {
         $ticketActions = $ticket->actions;
         $previousTicketAction = null;
-        foreach ($ticketActions as $key => $ticketAction) {
-            if ($ticketAction->id == $actionId) {
-                $ticketAction->status = $status;
-                $ticketAction->save();
-                if ($key > 0) {
-                    $previousTicketAction = $ticketActions[$key - 1];
+        if (!$isReadyForDeploymentToPrd) {
+            foreach ($ticketActions as $key => $ticketAction) {
+                if ($ticketAction->id == $actionId) {
+                    $ticketAction->status = $status;
+                    $ticketAction->save();
+                    if ($key > 0) {
+                        $previousTicketAction = $ticketActions[$key - 1];
+                    }
+                    break;
                 }
-                break;
             }
+        } else if ($isReadyForDeploymentToPrd) {
+            $previousTicketAction = $ticketActions->sortByDesc('action')->first();
         }
 
         if ($previousTicketAction) {

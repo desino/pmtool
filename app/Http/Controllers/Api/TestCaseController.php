@@ -142,19 +142,21 @@ class TestCaseController extends Controller
     {
         $testAction = $ticket->actions->where('action', TicketAction::getActionTest());
         $isAllowCaseAddTestSection = false;
-        if ($testAction->count() > 0 && (
-            $initiative->functional_owner_id == Auth::id() ||
-            $initiative->technical_owner_id == Auth::id() ||
-            ($ticket->macro_status == Ticket::MACRO_STATUS_TEST
-                && (
-                    $ticket->currentAction->user_id == Auth::id() ||
-                    $initiative->quality_owner_id == Auth::id()
+        if ($ticket->macro_status != Ticket::MACRO_STATUS_DONE) {
+            if ($testAction->count() > 0 && (
+                $initiative->functional_owner_id == Auth::id() ||
+                $initiative->technical_owner_id == Auth::id() ||
+                ($ticket->macro_status == Ticket::MACRO_STATUS_TEST
+                    && (
+                        $ticket->currentAction->user_id == Auth::id() ||
+                        $initiative->quality_owner_id == Auth::id()
+                    )
                 )
-            )
-        )) {
-            $isAllowCaseAddTestSection = true;
-        } else if ($initiative->functional_owner_id == Auth::id() || $initiative->technical_owner_id == Auth::id()) {
-            $isAllowCaseAddTestSection = true;
+            )) {
+                $isAllowCaseAddTestSection = true;
+            } else if ($initiative->functional_owner_id == Auth::id() || $initiative->technical_owner_id == Auth::id()) {
+                $isAllowCaseAddTestSection = true;
+            }
         }
         return $isAllowCaseAddTestSection;
     }

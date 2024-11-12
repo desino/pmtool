@@ -180,7 +180,14 @@ class Ticket extends Model
 
     protected function getIsShowMarkAsDoneButAttribute()
     {
-        return $this->initiative_id ? $this->initiative->functional_owner_id == Auth::id() || $this->currentAction?->user_id == Auth::id() ?? false : false;
+
+        if ($this->initiative_id) {
+            if (($this->initiative->functional_owner_id == Auth::id() || $this->currentAction?->user_id == Auth::id()) && $this->macro_status != self::MACRO_STATUS_DONE) {
+                return true;
+            }
+        }
+        return false;
+        // return $this->initiative_id ? $this->initiative->functional_owner_id == Auth::id() || $this->currentAction?->user_id == Auth::id() ?? false : false;
     }
 
     protected function getIsAllowDevEstimationTimeAttribute()
@@ -201,6 +208,7 @@ class Ticket extends Model
     {
         if (
             $this->previousAction &&
+            $this->macro_status != Self::MACRO_STATUS_DONE &&
             (
                 ($this->currentAction && $this->currentAction->user_id == Auth::id()) &&
                 (

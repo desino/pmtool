@@ -724,12 +724,12 @@ class TicketController extends Controller
         if (Auth::id() != $request->input('user_id') && Auth::id() != $initiative->functional_owner_id) {
             return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed'), '', 400);
         }
-        $ticket = Ticket::find($ticketId);
+        $ticket = Ticket::with('actions')->find($ticketId);
         if (!$ticket) {
             return ApiHelper::response($status, __('messages.ticket.ticket_not_exist'), '', 400);
         }
 
-        if ($request->input('status') == TicketAction::getStatusWaitingForDependantAction()) {
+        if (!empty($request->input('status')) && $request->input('status') == TicketAction::getStatusWaitingForDependantAction()) {
             return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed_du_to_waiting_for_dependant'), '', 400);
         }
 
@@ -741,12 +741,21 @@ class TicketController extends Controller
             return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed_du_to_waiting_for_client_approval'), '', 400);
         }
 
+        $isReadyForDeploymentToPrd = false;
+        if ($ticket->macro_status == Ticket::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_PRD && $ticket->macro_status != Ticket::MACRO_STATUS_DONE) {
+            $releaseTicket = ReleaseTicket::where('ticket_id', $ticket->id)->first();
+            if ($releaseTicket) {
+                return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed_du_to_ticket_in_ready_for_deployment'), '', 400);
+            }
+            $isReadyForDeploymentToPrd = true;
+        }
+
         $status = true;
         $message = __('messages.ticket.change_previous_action_status_success');
         $statusCode = 200;
         DB::beginTransaction();
         try {
-            TicketService::updateTicketPreviousActions($ticket, $request->input('action_id'), TicketAction::getStatusWaitingForDependantAction());
+            TicketService::updateTicketPreviousActions($ticket, $request->input('action_id'), TicketAction::getStatusWaitingForDependantAction(), $isReadyForDeploymentToPrd);
             TicketService::updateTicketStatus($ticket);
             TicketService::createMacroStatusAndUpdateTicket($ticket);
             DB::commit();
