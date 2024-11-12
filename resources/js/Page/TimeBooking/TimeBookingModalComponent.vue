@@ -1,6 +1,6 @@
 <template>
     <div class="modal-dialog modal-lg">
-        <div class="modal-content">
+        <div class="modal-content border-0">
             <div class="modal-header text-white bg-desino border-0 py-2 justify-content-center">
                 <h5 class="modal-title font-italic" id="createTicketModalLabel"
                     v-html="formattedModalTitleForNewTimeBooking()">
@@ -14,7 +14,7 @@
                 </div>
                 <form @submit.prevent="storeTimeBooking">
                     <div class="mb-3 p-3 shadow">
-                        <div class="row w-100">
+                        <div class="row w-100 g-1">
                             <div class="col-4">
                                 <div class="mb-3">
                                     <input type="text" v-model="formData.hours" :class="{ 'is-invalid': errors.hours }"
@@ -30,7 +30,7 @@
                                         class="form-select">
                                         <option value="">{{
                                             $t('time_booking.modal_input_project_label_text')
-                                        }}</option>
+                                            }}</option>
                                         <option v-for="project in projects" :key="project.id" :value="project.id">{{
                                             project.name }}
                                         </option>
@@ -51,6 +51,8 @@
                                         }}</span>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row w-100 g-1">
                             <div class="col-6">
                                 <button type="submit" class="btn btn-desino w-100"
                                     @click="handleSubmitButtonClickForTimeBooking('create')">{{
@@ -133,11 +135,13 @@
                     </ul>
                 </div>
             </div>
-            <div class="modal-footer">
-                <div class="col-12 col-md-12 col-lg-3 w-100">
-                    <button class="btn btn-danger w-100 border-0" data-bs-dismiss="modal" type="button">
-                        <i class="bi bi-x-lg"></i>
-                    </button>
+            <div class="modal-footer border-0 p-0 justify-content-center">
+                <div class="row w-100 g-1">
+                    <div class="col-12 col-md-12 col-lg-3 w-100">
+                        <button class="btn btn-danger w-100 border-0" data-bs-dismiss="modal" type="button">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

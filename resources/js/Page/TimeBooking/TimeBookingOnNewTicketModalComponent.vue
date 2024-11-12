@@ -1,6 +1,6 @@
 <template>
     <div class="modal-dialog modal-lg">
-        <div class="modal-content">
+        <div class="modal-content border-0">
             <div class="modal-header text-white bg-desino border-0 py-2 justify-content-center">
                 <h5 class="modal-title" id="timeBookingOnNewTicketModalLabel"
                     v-html="formattedModalTitleForNewTicket()">
@@ -50,8 +50,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <div class="row w-100">
+                <div class="modal-footer border-0 p-0 justify-content-center">
+                    <div class="row w-100 g-1">
                         <div class="col-12 col-md-12 col-lg-4">
                             <button type="submit" class="btn btn-desino w-100"
                                 @click="handleSubmitButtonClickForNewTicket('create')">{{
