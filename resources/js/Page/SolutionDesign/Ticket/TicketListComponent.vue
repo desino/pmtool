@@ -1,160 +1,194 @@
 <template>
     <GlobalMessage v-if="showMessage" />
-    <div class="app-content mt-3">
-        <div class="row w-100 mb-3">
-            <div class="col-12 col-md-3 mb-2 mb-md-0">
-                <input v-model="filter.task_name" :placeholder="$t('ticket.filter.task_name')" class="form-control"
-                    type="text" @keyup="fetchAllTasks">
+    <div class="app-content my-3">
+        <div class="row g-0 w-100 py-2">
+            <div class="col-12 col-md-12 col-lg-3">
+                <div class="w-100 p-1">
+                    <input v-model="filter.task_name" :placeholder="$t('ticket.filter.task_name')" class="form-control"
+                        type="text" @keyup="fetchAllTasks">
+                </div>
+                <div class="w-100 p-1">
+                    <multiselect v-model="filter.macro_status" ref="multiselect" :multiple="true"
+                        :options="filterMacroStatus" :searchable="true" deselect-label="" label="name"
+                        :placeholder="$t('ticket.filter.macro_status_placeholder')" track-by="id"
+                        @select="fetchAllTasks" @Remove="fetchAllTasks">
+                        <template #tag="{ option, remove }">
+                            <span class="multiselect__tag_for_macro_status" :class="'bg-' + option.color">
+                                <span>{{ option.name }}</span>
+                                <i tabindex="1" class="multiselect__tag-icon" @click="remove(option)"></i>
+                            </span>
+                        </template>
+                    </multiselect>
+                </div>
+                <div class="w-100 p-1">
+                    <div class="form-check ms-auto">
+                        <input v-model="filter.is_include_done" @change="fetchAllTasks" class="form-check-input"
+                            type="checkbox" id="is_include_done">
+                        <label class="form-check-label fw-bold" for="is_include_done">
+                            {{ $t('ticket.filter.is_include_done') }}
+                        </label>
+                    </div>
+                </div>
             </div>
-            <div class="col-12 col-md-3 mb-2 mb-md-0">
-                <select v-model="filter.task_type" class="form-select" @change="fetchAllTasks">
-                    <option value="">{{ $t('ticket.filter.task_type_placeholder') }}</option>
-                    <option v-for="type in filterTaskTypes" :key="type.id" :value="type.id">{{ type.name }}
-                    </option>
-                </select>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="w-100 p-1">
+                    <select v-model="filter.task_type" class="form-select" @change="fetchAllTasks">
+                        <option value="">{{ $t('ticket.filter.task_type_placeholder') }}</option>
+                        <option v-for="type in filterTaskTypes" :key="type.id" :value="type.id">{{ type.name }}</option>
+                    </select>
+                </div>
+                <div class="w-100 p-1">
+                    <multiselect v-model="filter.functionalities" ref="multiselect" :multiple="true"
+                        :options="functionalities" :searchable="true" deselect-label="" label="display_name"
+                        :placeholder="$t('ticket.filter.functionalities_placeholder')" track-by="id"
+                        @select="fetchAllTasks" @Remove="fetchAllTasks">
+                    </multiselect>
+                </div>
             </div>
-            <div class="col-12 col-md-3 mb-2 mb-md-0">
-                <select v-model="filter.action_owner" class="form-select" @change="fetchAllTasks">
-                    <option value="">{{ $t('ticket.filter.action_owner_placeholder') }}</option>
-                    <option v-for="actionOwner in actionOwners" :key="actionOwner.id" :value="actionOwner.id">{{
-                        actionOwner.name }}
-                    </option>
-                </select>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="w-100 p-1">
+                    <select v-model="filter.action_owner" class="form-select" @change="fetchAllTasks">
+                        <option value="">{{ $t('ticket.filter.action_owner_placeholder') }}</option>
+                        <option v-for="actionOwner in actionOwners" :key="actionOwner.id" :value="actionOwner.id">{{
+                            actionOwner.name }}
+                        </option>
+                    </select>
+                </div>
+                <div class="w-100 p-1">
+                    <select v-model="filter.next_action_owner" class="form-select" @change="fetchAllTasks">
+                        <option value="">{{ $t('ticket.filter.next_action_owner_placeholder') }}</option>
+                        <option v-for="nextActionOwner in nextActionOwners" :key="nextActionOwner.id"
+                            :value="nextActionOwner.id">{{
+                                nextActionOwner.name }}
+                        </option>
+                    </select>
+                </div>
             </div>
-            <div class="col-12 col-md-3 mb-2 mb-md-0">
-                <select v-model="filter.next_action_owner" class="form-select" @change="fetchAllTasks">
-                    <option value="">{{ $t('ticket.filter.next_action_owner_placeholder') }}</option>
-                    <option v-for="nextActionOwner in nextActionOwners" :key="nextActionOwner.id"
-                        :value="nextActionOwner.id">{{ nextActionOwner.name }}
-                    </option>
-                </select>
-            </div>
-        </div>
-        <div class="row w-100 mb-3">
-            <div class="col-12 col-md-6 mb-2 mb-md-0">
-                <multiselect v-model="filter.macro_status" ref="multiselect" :multiple="true"
-                    :options="filterMacroStatus" :searchable="true" deselect-label="" label="name"
-                    :placeholder="$t('ticket.filter.macro_status_placeholder')" track-by="id" @select="fetchAllTasks"
-                    @Remove="fetchAllTasks">
-                    <template #tag="{ option, remove }">
-                        <span class="multiselect__tag_for_macro_status" :class="'bg-' + option.color">
-                            <span>{{ option.name }}</span>
-                            <i tabindex="1" class="multiselect__tag-icon" @click="remove(option)"></i>
-                        </span>
-                    </template>
-                </multiselect>
-            </div>
-            <div class="col-12 col-md-3 mb-2 mb-md-0">
-                <multiselect v-model="filter.functionalities" ref="multiselect" :multiple="true"
-                    :options="functionalities" :searchable="true" deselect-label="" label="display_name"
-                    :placeholder="$t('ticket.filter.functionalities_placeholder')" track-by="id" @select="fetchAllTasks"
-                    @Remove="fetchAllTasks">
-                </multiselect>
-            </div>
-            <div class="col-12 col-md-3 mb-2 mb-md-0">
-                <multiselect v-model="filter.projects" :multiple="true" :options="projects" :searchable="true"
-                    deselect-label="" label="name" :placeholder="$t('ticket.filter.projects_placeholder')" track-by="id"
-                    @select="fetchAllTasks" @Remove="fetchAllTasks">
-                </multiselect>
-            </div>
-        </div>
-        <div class="row w-100 mb-3 align-items-center">
-            <div class="col-12 col-md-3 mb-2 mb-md-0">
-                <select v-model="filter.deployment_id" class="form-select" @change="fetchAllTasks">
-                    <option value="">{{ $t('ticket.filter.deployments_placeholder') }}</option>
-                    <option v-for="deployment in filterDeployments" :key="deployment.id" :value="deployment.id">{{
-                        deployment.name }}
-                    </option>
-                </select>
-            </div>
-            <div class="col-12 col-md-3 mb-2 mb-md-0">
-                <div class="form-check ms-auto">
-                    <input v-model="filter.is_include_done" @change="fetchAllTasks" class="form-check-input"
-                        type="checkbox" id="is_include_done">
-                    <label class="form-check-label" for="is_include_done">
-                        {{ $t('ticket.filter.is_include_done') }}
-                    </label>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="w-100 p-1">
+                    <select v-model="filter.deployment_id" class="form-select" @change="fetchAllTasks">
+                        <option value="">{{ $t('ticket.filter.deployments_placeholder') }}</option>
+                        <option v-for="deployment in filterDeployments" :key="deployment.id" :value="deployment.id">{{
+                            deployment.name }}
+                        </option>
+                    </select>
+                </div>
+                <div class="w-100 p-1">
+                    <multiselect v-model="filter.projects" :multiple="true" :options="projects" :searchable="true"
+                        deselect-label="" label="name" :placeholder="$t('ticket.filter.projects_placeholder')"
+                        track-by="id" @select="fetchAllTasks" @Remove="fetchAllTasks">
+                    </multiselect>
                 </div>
             </div>
         </div>
-        <div class="row w-100 mb-3">
-            <div class="col-12 col-md-12 mb-2 mb-md-0">
-                <button class="btn btn-desino" :disabled="selectedTasks.length === 0" type="button"
-                    @click="openAssignProjectModal">
-                    {{ $t('ticket.assign.project.button_text') }}
-                </button>
-                <button v-if="createReleaseAllowOrNot()" class="btn btn-desino mx-2"
-                    :disabled="selectedTasks.length === 0" type="button" @click="openCreateReleaseModal">
-                    {{ $t('ticket.release.create.button_text') }}
-                </button>
-                <button class="btn btn-desino mx-2" :disabled="selectedTasks.length === 0" type="button"
-                    @click="addRemovePriority(1)">
-                    {{ $t('ticket.add_priority.button_text') }}
-                </button>
-                <button class="btn btn-desino mx-2" :disabled="selectedTasks.length === 0" type="button"
-                    @click="addRemovePriority(0)">
-                    {{ $t('ticket.remove_priority.button_text') }}
-                </button>
-                <button class="btn btn-desino mx-2" :disabled="selectedTasks.length === 0" type="button"
-                    @click="markAsVisibleInvisible(1)">
-                    {{ $t('ticket.mark_as_visible.button_text') }}
-                </button>
-                <button class="btn btn-desino mx-2" :disabled="selectedTasks.length === 0" type="button"
-                    @click="markAsVisibleInvisible(0)">
-                    {{ $t('ticket.mark_as_invisible.button_text') }}
-                </button>
+        <div class="row g-0 w-100 py-2">
+            <div class="col-12 col-md-12 col-lg-4">
+                <div class="w-100 p-1">
+                    <button class="btn btn-desino  w-100" :disabled="selectedTasks.length === 0" type="button"
+                        @click="openAssignProjectModal">
+                        {{ $t('ticket.assign.project.button_text') }}
+                    </button>
+                </div>
+                <div class="w-100 p-1" v-if="createReleaseAllowOrNot()">
+                    <button class="btn btn-desino w-100" :disabled="selectedTasks.length === 0" type="button"
+                        @click="openCreateReleaseModal">
+                        {{ $t('ticket.release.create.button_text') }}
+                    </button>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="w-100 p-1">
+                    <button class="btn btn-desino w-100" :disabled="selectedTasks.length === 0" type="button"
+                        @click="addRemovePriority(1)">
+                        {{ $t('ticket.add_priority.button_text') }}
+                    </button>
+                </div>
+                <div class="w-100 p-1">
+                    <button class="btn btn-desino w-100" :disabled="selectedTasks.length === 0" type="button"
+                        @click="addRemovePriority(0)">
+                        {{ $t('ticket.remove_priority.button_text') }}
+                    </button>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="w-100 p-1">
+                    <button class="btn btn-desino w-100" :disabled="selectedTasks.length === 0" type="button"
+                        @click="markAsVisibleInvisible(1)">
+                        {{ $t('ticket.mark_as_visible.button_text') }}
+                    </button>
+                </div>
+                <div class="w-100 p-1">
+                    <button class="btn btn-desino w-100" :disabled="selectedTasks.length === 0" type="button"
+                        @click="markAsVisibleInvisible(0)">
+                        {{ $t('ticket.mark_as_invisible.button_text') }}
+                    </button>
+                </div>
             </div>
         </div>
         <ul class="list-group list-group-flush mb-3 mt-2">
-            <li class="font-weight-bold bg-desino text-white rounded-top list-group-item">
-                <div class="row w-100">
-                    <div class="col-lg-3 col-md-6 col-6 fw-bold py-2">
-                        <input class="form-check-input mx-2" type="checkbox" id="chk_all_tickets"
-                            v-model="isChkAllTickets" @change="handleSelectAllTasks">
-                        {{ $t('ticket.list.column_task_name') }}
+            <li class="list-group-item bg-desino text-white border-0 rounded-top px-0 py-3">
+                <div class="row w-100 align-items-center">
+                    <div class="col-lg-3 col-md-6 col-6">
+                        <div class="row g-0 h-100 align-items-center">
+                            <div class="col-auto me-1" style="width:10px"></div>
+                            <div class="col-auto me-1" style="width:20px">
+                                <input class="form-check-input" type="checkbox" id="chk_all_tickets"
+                                    v-model="isChkAllTickets" @change="handleSelectAllTasks">
+                            </div>
+                            <div class="col-auto fw-bold small" style="width: calc(100% - 40px)">
+                                {{ $t('ticket.list.column_task_name') }}
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
+                    <div class="col-lg-2 col-md-3 col-6 fw-bold small">
                         {{ $t('ticket.list.column_task_status') }}
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
+                    <div class="col-lg-2 col-md-3 fw-bold small d-none d-md-block">
                         {{ $t('ticket.list.column_project') }}
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
+                    <div class="col-lg-2 col-md-6 col-6 fw-bold small d-none d-lg-block">
                         {{ $t('ticket.list.current_action') }}
                     </div>
-                    <div class="col-lg-1 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
+                    <div class="col-lg-1 col-md-6 col-6 fw-bold small d-none d-lg-block">
                         {{ $t('ticket.list.current_owner') }}
                     </div>
-                    <!-- <div class="col-lg-1 col-md-6 col-6 fw-bold py-2 d-none d-lg-block text-center">
-                        {{ $t('ticket.list.column_task_created_at') }}
-                    </div> -->
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2 d-none d-lg-block text-lg-end">
+                    <div class="col-lg-2 col-md-6 col-6 fw-bold small d-none d-lg-block text-lg-end">
                         {{ $t('ticket.list.column_action') }}
                     </div>
                 </div>
             </li>
-            <li v-for="(task, index) in tasks" v-if="tasks.length > 0" :key="task.id" class="border list-group-item"
-                :class="backgroundClass(task)">
+            <li v-for="(task, index) in tasks" v-if="tasks.length > 0" :key="task.id"
+                class="border list-group-item px-0 py-1 list-group-item-action" role="button"
+                :class="backgroundClass(task) + ' ' + (index > 0 ? 'border-top-0' : '')"
+                @click="redirectTaskDetailPage(task)">
                 <div class="row w-100 align-items-center">
-                    <div class="position-absolute" :class="{
-                        'bg-secondary': !task.is_visible,
-                        'bg-warning': task.is_priority && task.is_visible,
-                        '': task.is_visible && !task.is_priority
-                    }" style="width: 5px; height: 100%; left: 0; top: 0;">
+                    <div class="col-lg-3 col-md-6 col-6">
+                        <div class="row g-0 h-100 align-items-center">
+                            <div class="col-auto me-1" style="width:10px">
+                                <div class="position-absolute" :class="{
+                                    'bg-secondary': !task.is_visible,
+                                    'bg-warning': task.is_priority && task.is_visible,
+                                    '': task.is_visible && !task.is_priority
+                                }" style="width: 10px; height: 100%; left: 0; top: 0;">
+                                </div>
+                            </div>
+                            <div class="col-auto me-1" style="width:20px">
+                                <input class="form-check-input" type="checkbox" :id="'chk_ticket_' + task.id"
+                                    v-model="task.isChecked" @click.stop @change="handleSelectTasks(task)">
+                            </div>
+                            <div class="col-auto" style="width: calc(100% - 40px)">
+                                {{ task.composed_name }}
+                            </div>
+                        </div>
                     </div>
-
-                    <div class="col-lg-3 col-md-6 col-6 d-flex align-items-center">
-                        <input class="form-check-input mx-3" type="checkbox" :id="'chk_ticket_' + task.id"
-                            v-model="task.isChecked" @change="handleSelectTasks(task)" style="margin-right: 10px;">
-                        <span>{{ task.composed_name }}</span>
+                    <div class="col-lg-2 col-md-3 col-6 text-center">
+                        <span class="badge p-2 w-100 text-wrap" :class="'bg-' + task.macro_status_label?.color">{{
+                            task.macro_status_label?.label }}</span>
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6 text-white text-center rounded p-2"
-                        :class="'bg-' + task.macro_status_label?.color">
-                        {{ task.macro_status_label?.label }}
-                    </div>
-                    <div class="col-lg-2 col-md-6 col-6">
-                        <span class="d-block d-lg-none fw-bold bg-desino mt-2 p-0 text-white text-center rounded-top">
-                            {{ $t('ticket.list.column_project') }} </span>
+                    <div class="offset-1 offset-md-0 col-lg-2 col-md-3 col-12">
+                        <span class="badge text-desino d-block d-md-none p-2 fw-bold text-center rounded-top">
+                            {{ $t('ticket.list.column_project') }}
+                        </span>
                         <multiselect v-model="task.project" :options="projects" :searchable="true" deselect-label=""
                             label="name" :placeholder="$t('ticket.filter.projects_placeholder')" track-by="id"
                             :ref="'taskProjectDropdowns-' + index" @open="storePreviousProject(task.project, index)"
@@ -162,9 +196,10 @@
                             @Remove="assignOrRemoveProjectForTask(task.id, 'remove', index, $event)">
                         </multiselect>
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6">
-                        <span class="d-block d-lg-none fw-bold bg-desino mt-2 p-0 text-white text-center rounded-top">
-                            {{ $t('ticket.list.current_action') }} </span>
+                    <div class="offset-1 offset-md-1 offset-lg-0 col-lg-2 col-md-4 col-4 text-start text-md-center">
+                        <span class="badge text-desino d-block d-lg-none p-2 fw-bold text-center rounded-top">
+                            {{ $t('ticket.list.current_action') }}
+                        </span>
                         <span v-if="task?.actions_count != task?.done_actions_count">
                             {{ task?.current_action?.action_name }}
                         </span>
@@ -172,9 +207,10 @@
                             -
                         </span>
                     </div>
-                    <div class="col-lg-1 col-md-6 col-6">
-                        <span class="d-block d-lg-none fw-bold bg-desino mt-2 p-0 text-white text-center rounded-top">
-                            {{ $t('ticket.list.current_owner') }} </span>
+                    <div class="col-lg-2 col-md-4 col-4">
+                        <span class="badge text-desino d-block d-lg-none p-2 fw-bold text-center rounded-top">
+                            {{ $t('ticket.list.current_owner') }}
+                        </span>
                         <span v-if="task?.actions_count != task?.done_actions_count">
                             {{ task?.current_action?.user?.name }}
                         </span>
@@ -182,22 +218,20 @@
                             -
                         </span>
                     </div>
-                    <!-- <div class="col-lg-1 col-md-6 col-6 justify-content-center text-center">
-                        <span class="d-block d-lg-none fw-bold bg-desino mt-2 p-0 text-white text-center rounded-top">
-                            {{ $t('ticket.list.column_task_created_at') }} </span>
-                        {{ task.display_created_at }}
-                    </div> -->
-                    <div v-if="user?.is_admin" class="col-lg-2 col-md-12 col-12 justify-content-end text-end">
-                        <router-link
+                    <div v-if="user?.is_admin" class="col-lg-1 col-md-3 col-3 justify-content-end text-end">
+                        <span class="badge text-desino d-block d-lg-none p-2 fw-bold text-center rounded-top">
+                            {{ $t('ticket.list.column_action') }}
+                        </span>
+                        <!-- <router-link
                             :to="{ name: 'task.detail', params: { initiative_id: this.initiative_id, ticket_id: task.id } }"
-                            class="text-success me-2">
+                            class="text-success me-1">
                             <i class="bi bi-box-arrow-up-right fw-bold"></i>
-                        </router-link>
-                        <a :title="$t('ticket.list.column.action.edit_text')" class="text-desino me-2"
-                            href="javascript:" @click="editTaskPopup(task)">
+                        </router-link> -->
+                        <a :title="$t('ticket.list.column.action.edit_text')" class="text-desino me-1"
+                            href="javascript:" @click.stop="editTaskPopup(task)">
                             <i class="bi bi-pencil-square"></i>
                         </a>
-                        <a v-if="task.asana_task_link" :href="task.asana_task_link" target="_blank">
+                        <a class="me-1" v-if="task.asana_task_link" :href="task.asana_task_link" target="_blank">
                             <svg fill="none" height="21px" viewBox="0 0 24 24" width="21px"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path clip-rule="evenodd"
@@ -211,7 +245,7 @@
                                     fill="#ffc107" fill-rule="evenodd" />
                             </svg>
                         </a>
-                        <a class="ms-2" href="javascript:" @click="handleTimeBooking(task)"
+                        <a href="javascript:" @click.stop="handleTimeBooking(task)"
                             :title="$t('ticket_details.time_booking')">
                             <i class="bi bi-clock-history"></i>
                         </a>
@@ -346,11 +380,13 @@ export default {
                     ...task,
                     isChecked: false,
                 }));
-                const setHeaderData = {
-                    page_title: this.$t('ticket.page_title') + ' - ' + this.initiative?.name,
-                }
-                store.commit("setHeaderData", setHeaderData);
                 await this.setLoading(false);
+                setTimeout(() => {
+                    const setHeaderData = {
+                        page_title: this.$t('ticket.page_title') + ' - ' + this.initiative?.name,
+                    }
+                    store.commit("setHeaderData", setHeaderData);
+                }, 100)
             } catch (error) {
                 this.handleError(error);
             }
@@ -590,6 +626,10 @@ export default {
             if (ticket.release_tickets.length > 0 && this.prdMacroStatus == ticket.macro_status) {
                 return 'bg-warning-subtle';
             }
+            return '';
+        },
+        redirectTaskDetailPage(task) {
+            this.$router.push({ name: 'task.detail', params: { initiative_id: this.initiative_id, ticket_id: task.id } });
         }
     },
     mounted() {

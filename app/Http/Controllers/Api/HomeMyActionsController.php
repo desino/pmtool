@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Initiative;
+use App\Models\Ticket;
 use App\Models\TicketAction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,30 +15,43 @@ class HomeMyActionsController extends Controller
 {
     public function index(Request $request)
     {
-        $initiatives = Initiative::select(
+        $tickets = Ticket::select(
             'initiatives.id',
-            'initiatives.client_id',
             'initiatives.name',
+            'initiatives.client_id',
+            'clients.name as client_name',
             DB::RAW('count(tickets.id) as tickets_count'),
             DB::RAW('count(CASE WHEN tickets.is_priority = 1 THEN 1 END) as is_priority_tickets_count')
         )
-            ->with([
-                'client' => function ($query) {
-                    $query->select('id', 'name');
-                }
-            ])
-            ->join('tickets', 'tickets.initiative_id', '=', 'initiatives.id')
-            ->LEFTJOIN(DB::raw(
-                "(SELECT `ticket_id`, MIN(ACTION) AS first_action, `user_id` FROM ticket_actions WHERE `status` != " . TicketAction::getStatusDone() . " GROUP BY `ticket_id` HAVING `user_id` = " . Auth::id() . ") as ta"
-            ), 'ta.ticket_id', '=', 'tickets.id')
-            ->where(function ($q) {
-                $q->where('tickets.is_visible', 1)
-                    ->orWhereNotNull('ta.first_action');
+            ->leftjoin('initiatives', 'tickets.initiative_id', '=', 'initiatives.id')
+            ->leftjoin('clients', 'initiatives.client_id', '=', 'clients.id')
+            ->where('tickets.is_visible', 1)
+            ->where('tickets.macro_status', '!=', Ticket::MACRO_STATUS_DONE)
+            // ->where(function ($q) {
+            //     // $q->whereHas('currentAction', function ($q) {
+            //     //     $q->where('user_id', Auth::id());
+            //     // });
+            //     // ->orWhereHas('actions', function ($q) {
+            //     //     $q->where('user_id', Auth::id());
+            //     // });
+            // })
+            ->whereHas('actions', function ($query) {
+                $query->where('user_id', Auth::id())
+                    ->where('action', function ($subQuery) {
+                        $subQuery->selectRaw('MIN(action)')
+                            ->from('ticket_actions as ta_inner')
+                            ->whereColumn('ta_inner.ticket_id', 'ticket_actions.ticket_id')
+                            ->where('status', '!=', TicketAction::getStatusDone())
+                            ->groupBy('action')
+                            ->orderBy('action', 'ASC')
+                            ->limit(1);
+                    });
             })
-            ->groupBy('initiatives.id')
+            ->groupBy('tickets.initiative_id')
             ->get();
+
         $retData = [
-            'initiatives' => $initiatives
+            'initiatives' => $tickets
         ];
         return ApiHelper::response(true, '', $retData, 200);
     }

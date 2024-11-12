@@ -19,12 +19,21 @@ const endpoints = {
     storeTimeBookingForTicketDetail: `${defaultPath}/store-time-booking-for-ticket-detail`,
     storeTimeBookingForUnBillable: `${defaultPath}/store-time-booking-for-un-billable`,
     getTimeBookingUnBillableModalInitialData: `${defaultPath}/get-time-booking-un-billable-modal-initial-data`,
+    getTimeBookingInitialData: `${defaultPath}/get-time-booking-initial-data`,
 }
 
 const TimeBookingService = {
     async getTimeBookingData(data) {
         try {
             const response = await axiosRequest.get(endpoints.getTimeBookingData, { params: data });
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async getTimeBookingInitialData() {
+        try {
+            const response = await axiosRequest.get(endpoints.getTimeBookingInitialData);
             return response.data;
         } catch (error) {
             throw handleError(error);

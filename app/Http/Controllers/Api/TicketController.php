@@ -301,7 +301,15 @@ class TicketController extends Controller
                 $query->where('status', '!=', Ticket::getStatusDone());
             })
             ->when(!empty($filters['projects']) != '', function (Builder $query) use ($filters) {
-                $query->whereIn('project_id', array_column($filters['projects'], 'id'));
+                $exceptProjects = array_filter($filters['projects'], fn($v) => $v['id'] != 0);
+                $notAllocatedProjects = array_filter($filters['projects'], fn($v) => $v['id'] == 0);
+
+                $query->where(function ($query) use ($notAllocatedProjects, $exceptProjects) {
+                    $query->whereIn('project_id', array_column($exceptProjects, 'id'))
+                        ->when(count($notAllocatedProjects) > 0, function ($query) {
+                            $query->orWhereNull('project_id');
+                        });
+                });
             })
             ->when(!empty($filters['action_owner']) != '', function (Builder $query) use ($filters) {
                 $query->whereHas('actions', function ($query) use ($filters) {
@@ -343,7 +351,16 @@ class TicketController extends Controller
         $meta['functionalities'] = Functionality::whereHas('section', function ($query) use ($initiative_id) {
             $query->where('initiative_id', $initiative_id);
         })->get(['id', 'display_name']);
-        $meta['projects'] = ProjectService::getInitiativeProjects($initiative_id);
+
+        $projects = ProjectService::getInitiativeProjects($initiative_id);
+        $staticProject = array(
+            'id' => 0,
+            'initiative_id' => $initiative_id,
+            'name' => __('messages.static_not_allocated_project_text'),
+        );
+        $projects->prepend($staticProject);
+
+        $meta['projects'] = $projects;
         $meta['users'] = TicketService::getUsers();
         $meta['initiative'] = TicketService::getInitiative($initiative_id);
         $meta['macro_status'] = Ticket::getAllMacroStatus();
@@ -433,19 +450,21 @@ class TicketController extends Controller
 
         $testAction = $ticket->actions->where('action', TicketAction::getActionTest());
         $isAllowCaseAddTestSection = false;
-        if ($testAction->count() > 0 && (
-            $initiative->functional_owner_id == Auth::id() ||
-            $initiative->technical_owner_id == Auth::id() ||
-            ($ticket->macro_status == Ticket::MACRO_STATUS_TEST
-                && (
-                    $ticket->currentAction->user_id == Auth::id() ||
-                    $initiative->quality_owner_id == Auth::id()
+        if ($ticket->macro_status != Ticket::MACRO_STATUS_DONE) {
+            if ($testAction->count() > 0 && (
+                $initiative->functional_owner_id == Auth::id() ||
+                $initiative->technical_owner_id == Auth::id() ||
+                ($ticket->macro_status == Ticket::MACRO_STATUS_TEST
+                    && (
+                        $ticket->currentAction->user_id == Auth::id() ||
+                        $initiative->quality_owner_id == Auth::id()
+                    )
                 )
-            )
-        )) {
-            $isAllowCaseAddTestSection = true;
-        } else if ($initiative->functional_owner_id == Auth::id() || $initiative->technical_owner_id == Auth::id()) {
-            $isAllowCaseAddTestSection = true;
+            )) {
+                $isAllowCaseAddTestSection = true;
+            } else if ($initiative->functional_owner_id == Auth::id() || $initiative->technical_owner_id == Auth::id()) {
+                $isAllowCaseAddTestSection = true;
+            }
         }
 
         $isAllowCaseUpdateTestSection = false;
@@ -705,12 +724,12 @@ class TicketController extends Controller
         if (Auth::id() != $request->input('user_id') && Auth::id() != $initiative->functional_owner_id) {
             return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed'), '', 400);
         }
-        $ticket = Ticket::find($ticketId);
+        $ticket = Ticket::with('actions')->find($ticketId);
         if (!$ticket) {
             return ApiHelper::response($status, __('messages.ticket.ticket_not_exist'), '', 400);
         }
 
-        if ($request->input('status') == TicketAction::getStatusWaitingForDependantAction()) {
+        if (!empty($request->input('status')) && $request->input('status') == TicketAction::getStatusWaitingForDependantAction()) {
             return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed_du_to_waiting_for_dependant'), '', 400);
         }
 
@@ -722,12 +741,21 @@ class TicketController extends Controller
             return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed_du_to_waiting_for_client_approval'), '', 400);
         }
 
+        $isReadyForDeploymentToPrd = false;
+        if ($ticket->macro_status == Ticket::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_PRD && $ticket->macro_status != Ticket::MACRO_STATUS_DONE) {
+            $releaseTicket = ReleaseTicket::where('ticket_id', $ticket->id)->first();
+            if ($releaseTicket) {
+                return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed_du_to_ticket_in_ready_for_deployment'), '', 400);
+            }
+            $isReadyForDeploymentToPrd = true;
+        }
+
         $status = true;
         $message = __('messages.ticket.change_previous_action_status_success');
         $statusCode = 200;
         DB::beginTransaction();
         try {
-            TicketService::updateTicketPreviousActions($ticket, $request->input('action_id'), TicketAction::getStatusWaitingForDependantAction());
+            TicketService::updateTicketPreviousActions($ticket, $request->input('action_id'), TicketAction::getStatusWaitingForDependantAction(), $isReadyForDeploymentToPrd);
             TicketService::updateTicketStatus($ticket);
             TicketService::createMacroStatusAndUpdateTicket($ticket);
             DB::commit();

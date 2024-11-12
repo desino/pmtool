@@ -29,6 +29,7 @@ class TimeBookingRequest extends FormRequest
             'hours' => 'required|numeric|between:1,99999.99',
             'comments' => 'nullable|string|max:500',
             'booked_date' => 'required|date',
+            'user_id' => 'nullable|exists:users,id',
         ];
     }
 }

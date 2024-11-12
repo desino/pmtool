@@ -117,8 +117,9 @@
                             {{ $t('ticket_details.task_previous_action_completed_but_text') }}
                         </a> -->
                         <a role="button" class="btn btn-warning w-100 border-0 text-dark"
-                            v-if="ticketData.is_show_pre_action_but" @click="handlePreviousActionStatus()"
-                            :title="$t('ticket_action.move_to_previous_action')">
+                            v-if="ticketData.is_show_pre_action_but"
+                            :class="{ 'disabled': !ticketData.is_show_pre_action_but }"
+                            @click="handlePreviousActionStatus()" :title="$t('ticket_action.move_to_previous_action')">
                             {{ $t('ticket_details.task_previous_action_completed_but_text') }}
                         </a>
                     </div>
@@ -175,6 +176,7 @@
                                         }}</a>
                                 </li>
                             </ul>
+
                             <div id="custom-tabs-five-tabContent" class="tab-content">
                                 <div id="ticket_detail_tab_release_notes"
                                     aria-labelledby="ticket_detail_tab_release_notes" class="tab-pane fade active show"
@@ -364,6 +366,7 @@ import UpdateTestCaseModalComponent from "./../Ticket/TestCase/UpdateTestCaseMod
 import testCaseService from "./../../../services/TestCaseService.js";
 import eventBus from "./../../../eventBus.js";
 import TimeBookingForTicketDetailComponent from './TimeBookingForTicketDetailComponent.vue';
+import store from '../../../store/index.js';
 
 export default {
     name: 'SolutionDesignComponent',
@@ -670,10 +673,10 @@ export default {
                 if (result.isConfirmed) {
                     this.previousActionFormData = {
                         user_id: this.currentAction?.user?.id,
-                        action_id: this.currentAction.id,
-                        action: this.currentAction.action,
+                        action_id: this.currentAction?.id,
+                        action: this.currentAction?.action,
                         ticket_id: this.localTicketId,
-                        status: this.currentAction.status,
+                        status: this.currentAction?.status,
                         initiative_id: this.localInitiativeId,
                         action_text: 'previous_action',
                     }
@@ -693,7 +696,6 @@ export default {
                 this.clearMessages();
             } catch (error) {
                 this.handleError(error);
-                this.tasks[index].project = this.previousProject;
             }
         },
         async changeActionStatus(passData) {
@@ -705,11 +707,11 @@ export default {
                 this.fetchTicketData(this.localTicketId);
             } catch (error) {
                 this.handleError(error);
-                this.tasks[index].project = this.previousProject;
             }
         },
         async changePreviousActionStatus(passData) {
             try {
+                console.log('passData :: ', passData);
                 await this.setLoading(true);
                 const { message } = await ticketService.changePreviousActionStatus(passData);
                 showToast(message, 'success');
@@ -717,7 +719,6 @@ export default {
                 this.fetchTicketData(this.localTicketId);
             } catch (error) {
                 this.handleError(error);
-                this.tasks[index].project = this.previousProject;
             }
         },
         showHideProcessingButton() {
@@ -780,6 +781,10 @@ export default {
         }
     },
     mounted() {
+        const setHeaderData = {
+            page_title: "",
+        }
+        store.commit("setHeaderData", setHeaderData);
         this.fetchTicketData(this.localTicketId);
         eventBus.$on('refreshTicketDetail', this.refreshTicketDetail);
     }

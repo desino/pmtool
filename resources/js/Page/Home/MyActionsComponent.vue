@@ -1,29 +1,25 @@
 <template>
     <div class="card">
-        <div class="card-header bg-desino text-white text-center">
+        <div class="card-header bg-desino text-white text-center fw-bold fs-4">
             {{ $t('home.my_actions.title') }}
         </div>
-        <div class="card-body">
+        <div class="card-body p-0">
             <ul class="list-group list-group-flush">
                 <li v-if="initiatives.length > 0" v-for="initiative in initiatives" :key="initiative.id"
-                    class="list-group-item" role="button" @click="openMyTickets(initiative)">
-                    <!-- bg-warning rounded -->
-                    <div class="row w-100" :class="{
-                        'bg-warning rounded p-1': initiative?.is_priority_tickets_count > 0
-                    }">
-                        <div class="col-md-8 fw-bold">
-                            {{ initiative?.client?.name }} -
+                    class="list-group-item" role="button" @click="openMyTickets(initiative)"
+                    :class="{ 'bg-warning': initiative?.is_priority_tickets_count > 0 }">
+                    <div class="row g-1 w-100 align-items-center">
+                        <div class="col-9 fw-bold">
+                            {{ initiative?.client_name }} -
                             {{ initiative.name }}
                         </div>
-                        <div class="col-md-4 text-end mt-2">
-                            <h6>
-                                <div class="badge bg-desino">
-                                    {{ initiative?.tickets_count }}
-                                    <span class="small">{{
-                                        $t('home.my_actions.tickets.text')
+                        <div class="col-3 text-end">
+                            <div class="badge bg-desino">
+                                {{ initiative?.tickets_count }}
+                                <span class="small">{{
+                                    $t('home.my_actions.tickets.text')
                                     }}</span>
-                                </div>
-                            </h6>
+                            </div>
                         </div>
                     </div>
                 </li>

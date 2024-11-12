@@ -49,13 +49,25 @@ class MyTicketController extends Controller
             // ), 'ta.ticket_id', '=', 'tickets.id')
             ->where('tickets.initiative_id', $initiative_id)
             ->where('tickets.is_visible', 1)
-            ->where(function ($q) {
-                // $q->whereNotNull('ta.first_action')
-                $q->whereHas('currentAction', function ($q) {
-                    $q->where('user_id', Auth::id());
-                })
-                    ->orWhereHas('actions', function ($q) {
-                        $q->where('user_id', Auth::id());
+            // ->where(function ($q) {
+            //     // $q->whereNotNull('ta.first_action')
+            //     $q->whereHas('currentAction', function ($q) {
+            //         $q->where('user_id', Auth::id());
+            //     });
+            //     // ->orWhereHas('actions', function ($q) {
+            //     //     $q->where('user_id', Auth::id());
+            //     // });
+            // })
+            ->whereHas('actions', function ($query) {
+                $query->where('user_id', Auth::id())
+                    ->where('action', function ($subQuery) {
+                        $subQuery->selectRaw('MIN(action)')
+                            ->from('ticket_actions as ta_inner')
+                            ->whereColumn('ta_inner.ticket_id', 'ticket_actions.ticket_id')
+                            ->where('status', '!=', TicketAction::getStatusDone())
+                            ->groupBy('action')
+                            ->orderBy('action', 'ASC')
+                            ->limit(1);
                     });
             })
             ->when($filters['task_name'] != '', function ($query) use ($filters) {

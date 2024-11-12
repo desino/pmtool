@@ -2,10 +2,10 @@
     <div class="app-content mt-3">
         <GlobalMessage v-if="showMessage" />
         <div class="row w-100">
-            <div class="col-md-4">
+            <div class="col-12 col-md-6">
                 <DeploymentCentreComponent />
             </div>
-            <div class="col-md-4">
+            <div class="col-12 col-md-6">
                 <MyActionsComponent />
             </div>
         </div>

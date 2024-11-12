@@ -10,6 +10,18 @@
     </div> -->
     <GlobalMessage v-if="showMessage" />
     <div class="app-content mt-3" id="timeBookingPageSection">
+        <div class="row">
+            <div class="col-md-3" v-if="user?.is_admin">
+                <select v-model="filter.user_id" class="form-select" @change="getTimeBookingData()">
+                    <option value="">{{
+                        $t('time_booking_select_user_placeholder') }}</option>
+                    <option v-for="user in users" :key="user.id" :value="user.id">{{
+                        user.name }}
+                    </option>
+                </select>
+            </div>
+        </div>
+
         <div class="w-100">
             <div class="scrolling outer">
                 <div class="inner">
@@ -18,7 +30,7 @@
                             <th scope="col" class="abs1 bg-transparent text-left text-white align-middle p-1"
                                 style="height: 55px;">
                                 <multiselect v-model="filter.initiative_id" :options="initiativesFilterList"
-                                    :placeholder="$t('create_ticket_modal_select_functionality_placeholder')"
+                                    :placeholder="$t('time_booking_select_initiative_placeholder')"
                                     label="initiative_name" track-by="initiative_id"
                                     @select="handleInitiativeFilterChange(true)"
                                     @remove="handleInitiativeFilterChange(true)">
@@ -27,8 +39,8 @@
                             <th scope="col" class="abs2 bg-transparent text-left text-white align-middle p-1"
                                 style="height: 55px;">
                                 <multiselect v-model="filter.ticket_id" :options="selectBoxTicketsFilterList"
-                                    :placeholder="$t('create_ticket_modal_select_functionality_placeholder')"
-                                    label="ticket_name" track-by="ticket_id" @select="handleTicketFilterChange"
+                                    :placeholder="$t('time_booking_select_ticket_placeholder')" label="ticket_name"
+                                    track-by="ticket_id" @select="handleTicketFilterChange"
                                     @remove="handleTicketFilterChange">
                                 </multiselect>
                             </th>
@@ -164,7 +176,7 @@
 <script>
 import globalMixin from '@/globalMixin';
 import GlobalMessage from '../../components/GlobalMessage.vue';
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import messageService from '../../services/messageService';
 import showToast from '../../utils/toasts';
 import eventBus from './../../eventBus';
@@ -190,11 +202,13 @@ export default {
     },
     data() {
         return {
+            users: [],
             timeBookings: [],
             forFilterTimeBooking: [],
             weekDays: [],
             ticketRowsCount: 0,
             filter: {
+                user_id: "",
                 initiative_id: "",
                 ticket_id: ""
             },
@@ -207,6 +221,9 @@ export default {
             showMessage: true,
         }
     },
+    computed: {
+        ...mapGetters(['user']),
+    },
     methods: {
         ...mapActions(['setLoading']),
         async getTimeBookingData(number = 0) {
@@ -217,6 +234,7 @@ export default {
                     previous_or_next_of_week: number,
                     start_date: this.weekDays[0]?.date,
                     end_date: this.weekDays[this.weekDays.length - 1]?.date,
+                    user_id: this.filter?.user_id,
                 }
                 const { content: { weekDays, initiativeWithTicketsAndTimeBooking, ticketRowsCount, unBillableRowData, unBillableProjects } } = await TimeBookingService.getTimeBookingData(passData);
                 this.ticketRowsCount = ticketRowsCount + 4;
@@ -233,6 +251,15 @@ export default {
                 this.handleError(error);
             }
         },
+        async getTimeBookingInitialData() {
+            try {
+                const { content: { users } } = await TimeBookingService.getTimeBookingInitialData();
+                this.users = users;
+                this.filter.user_id = this.user?.id;
+            } catch (error) {
+                this.handleError(error);
+            }
+        },
         openTimeBookingModal(timeBooking, weekDay, isAllowBooking, ticketIndex, ticket = {}) {
             if (!isAllowBooking) {
                 return;
@@ -240,21 +267,21 @@ export default {
             if (!timeBooking.initiative_id) {
                 const timeBookingOnNewInitiativeOrTicketModalElement = document.getElementById('timeBookingOnNewInitiativeOrTicketModal');
                 if (timeBookingOnNewInitiativeOrTicketModalElement) {
-                    this.$refs.timeBookingOnNewInitiativeOrTicketModalComponent.getTimeBookingData(weekDay, this.weekDays);
+                    this.$refs.timeBookingOnNewInitiativeOrTicketModalComponent.getTimeBookingData(weekDay, this.weekDays, this.filter?.user_id);
                     const timeBookingOnNewInitiativeOrTicketModal = new Modal(timeBookingOnNewInitiativeOrTicketModalElement);
                     timeBookingOnNewInitiativeOrTicketModal.show();
                 }
             } else if (timeBooking.initiative_id && ticketIndex > 0 && !ticket.ticket_id) {
                 const timeBookingOnNewTicketModalElement = document.getElementById('timeBookingOnNewTicketModal');
                 if (timeBookingOnNewTicketModalElement) {
-                    this.$refs.timeBookingOnNewTicketModalComponent.getTimeBookingData(timeBooking, weekDay, this.weekDays);
+                    this.$refs.timeBookingOnNewTicketModalComponent.getTimeBookingData(timeBooking, weekDay, this.weekDays, this.filter?.user_id);
                     const timeBookingOnNewTicketModal = new Modal(timeBookingOnNewTicketModalElement);
                     timeBookingOnNewTicketModal.show();
                 }
             } else {
                 const modalElement = document.getElementById('timeBookingModal');
                 if (modalElement) {
-                    this.$refs.timeBookingModalComponent.getTimeBookingData(timeBooking, weekDay, this.weekDays, ticket);
+                    this.$refs.timeBookingModalComponent.getTimeBookingData(timeBooking, weekDay, this.weekDays, this.filter?.user_id, ticket);
                     const modal = new Modal(modalElement);
                     modal.show();
                 }
@@ -363,7 +390,7 @@ export default {
 
             const timeBookingUnBillableModalElement = document.getElementById('timeBookingUnBillableModal');
             if (timeBookingUnBillableModalElement) {
-                this.$refs.timeBookingUnBillableModalComponent.getTimeBookingData(timeBooking, weekDay, this.weekDays, this.unBillableProjects);
+                this.$refs.timeBookingUnBillableModalComponent.getTimeBookingData(timeBooking, weekDay, this.weekDays, this.unBillableProjects, this.filter?.user_id);
                 const timeBookingUnBillableModal = new Modal(timeBookingUnBillableModalElement);
                 timeBookingUnBillableModal.show();
             }
@@ -383,6 +410,7 @@ export default {
     },
     mounted() {
         this.clearMessages();
+        this.getTimeBookingInitialData();
         this.getTimeBookingData();
         const setHeaderData = {
             page_title: this.$t('time_booking.page_title')

@@ -19,7 +19,7 @@
                                 class="form-select" @change="fetchTickets">
                                 <option value="">{{
                                     $t('time_booking_on_new_initiative_or_ticket.modal_select_initiative_label_text')
-                                    }}</option>
+                                }}</option>
                                 <option v-for="initiative in initiatives" :key="initiative.id" :value="initiative.id">{{
                                     initiative.name }}
                                 </option>
@@ -33,7 +33,7 @@
                                 class="form-select">
                                 <option value="">{{
                                     $t('time_booking_on_new_initiative_or_ticket.modal_select_ticket_label_text')
-                                    }}</option>
+                                }}</option>
                                 <option v-for="ticket in tickets" :key="ticket.id" :value="ticket.id">{{
                                     ticket.composed_name }}
                                 </option>
@@ -115,6 +115,7 @@ export default {
             initiatives: [],
             tickets: [],
             weekDays: [],
+            userId: '',
             showErrorMessage: "",
             errors: {},
             showMessage: true
@@ -122,12 +123,14 @@ export default {
     },
     methods: {
         ...mapActions(['setLoading']),
-        getTimeBookingData(weekDay, weekDays) {
+        getTimeBookingData(weekDay, weekDays, userId) {
+            console.log('userId :: ', userId);
             this.clearFormData();
             this.clearMessages();
             this.formData.booked_date = weekDay.date;
             this.weekDays = weekDays;
             this.weekDay = weekDay;
+            this.userId = userId;
             this.getTimeBookingOnNewInitiativeOrTicketModalInitialData();
         },
         formattedModalTitleForNewInitiativeOrTicket() {
@@ -138,6 +141,7 @@ export default {
             this.setLoading(true);
             try {
                 const passData = {
+                    user_id: this.userId,
                     booked_date: this.formData.booked_date,
                     start_date: this.weekDays[0]?.date,
                     end_date: this.weekDays[this.weekDays.length - 1]?.date
@@ -153,6 +157,7 @@ export default {
             this.setLoading(true);
             this.clearMessages();
             try {
+                this.formData.user_id = this.userId;
                 const { content } = await TimeBookingService.storeTimeBookingOnNewInitiativeOrTicket(this.formData);
                 this.$emit('pageUpdated', this.weekDays);
                 this.getTimeBookingOnNewInitiativeOrTicketModalInitialData();

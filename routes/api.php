@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AllTicketsWithoutInitiativeController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\SocialiteController;
 use App\Http\Controllers\Api\BulkCreateTicketsController;
@@ -133,6 +134,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::controller(TimeBookingController::class)->prefix('time-booking')->group(function () {
         Route::get('/', 'index');
+        Route::get('/get-time-booking-initial-data', 'getTimeBookingInitialData');
         Route::get('/get-time-booking-modal-initial-data', 'getTimeBookingModalInitialData');
         Route::post('/store', 'store');
         Route::get('/get-time-booking-on-new-ticket-modal-initial-data', 'getTimeBookingOnNewTicketModalInitialData');
@@ -157,6 +159,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/get-initial-data-for-initiative-time-bookings', 'getInitialDataForInitiativeTimeBookings');
         Route::get('/get-project-list-for-initiative-time-bookings', 'getProjectListForInitiativeTimeBookings');
         Route::post('/assign-project-for-initiative-time-bookings', 'assignProjectForInitiativeTimeBookings');
+    });
+
+    Route::controller(AllTicketsWithoutInitiativeController::class)->prefix('all-tickets-without-initiative')->group(function () {
+        Route::get('/', 'index');
+        Route::get('get-initial-data', 'getInitialData');
+        Route::post('add-remove-priority', 'addRemovePriority');
+        Route::post('mark-as-visible-invisible', 'markAsVisibleInvisible');
     });
 });
 

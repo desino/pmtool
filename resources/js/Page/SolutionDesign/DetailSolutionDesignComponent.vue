@@ -52,7 +52,7 @@
                 </div>
             </section>
         </div> -->
-        <div class="col-md-8 border-start border-bottom">
+        <div class="col-md-8 border-start border-bottom optimize-image">
             <div class="p-3">
                 <div v-for="section in sectionsWithFunctionalities" :key="section.id" :id="'section_' + section.id"
                     class="mb-4">
