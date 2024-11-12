@@ -380,11 +380,13 @@ export default {
                     ...task,
                     isChecked: false,
                 }));
-                const setHeaderData = {
-                    page_title: this.$t('ticket.page_title') + ' - ' + this.initiative?.name,
-                }
-                store.commit("setHeaderData", setHeaderData);
                 await this.setLoading(false);
+                setTimeout(() => {
+                    const setHeaderData = {
+                        page_title: this.$t('ticket.page_title') + ' - ' + this.initiative?.name,
+                    }
+                    store.commit("setHeaderData", setHeaderData);
+                }, 100)
             } catch (error) {
                 this.handleError(error);
             }

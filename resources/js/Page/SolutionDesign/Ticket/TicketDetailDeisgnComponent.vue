@@ -365,6 +365,7 @@ import UpdateTestCaseModalComponent from "./../Ticket/TestCase/UpdateTestCaseMod
 import testCaseService from "./../../../services/TestCaseService.js";
 import eventBus from "./../../../eventBus.js";
 import TimeBookingForTicketDetailComponent from './TimeBookingForTicketDetailComponent.vue';
+import store from '../../../store/index.js';
 
 export default {
     name: 'SolutionDesignComponent',
@@ -781,6 +782,10 @@ export default {
         }
     },
     mounted() {
+        const setHeaderData = {
+            page_title: "",
+        }
+        store.commit("setHeaderData", setHeaderData);
         this.fetchTicketData(this.localTicketId);
         eventBus.$on('refreshTicketDetail', this.refreshTicketDetail);
     }
