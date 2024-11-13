@@ -1,17 +1,17 @@
 <template>
     <div class="modal-dialog modal-lg">
         <form @submit.prevent="updateTestCase">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 id="updateTestCaseModalLabel" class="modal-title">{{ $t('task_detail.update_testcase_heading')
-                        }}
+            <div class="modal-content border-0">
+                <div class="modal-header text-white bg-desino border-0 py-2 justify-content-center">
+                    <h5 id="updateTestCaseModalLabel" class="modal-title font-italic">{{
+                        $t('task_detail.update_testcase_heading')
+                    }}
                     </h5>
-                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
                 </div>
                 <div class="modal-body">
                     <GlobalMessage v-if="showMessage" />
                     <label>Test Case </label>
-                    <p class="text-muted">{{ testCase }}</p>
+                    <p class="text-muted" v-html="testCase"></p>
                     <hr>
                     <div class="mb-3">
                         <label class="form-label fw-bold">{{
@@ -23,12 +23,20 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button class="btn btn-desino" type="submit">
-                        {{ $t('task_detail.update_testcase_submit_btn_text') }}
-                    </button>
-                    <button class="btn btn-secondary" @click="hideModal" data-bs-dismiss="modal" type="button">{{
-                        $t('task_detail.update_testcase_close_btn_text') }}</button>
+                <div class="modal-footer border-0 p-0 justify-content-center">
+                    <div class="row w-100 g-1">
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <button class="btn btn-desino w-100 border-0" type="submit">
+                                {{ $t('task_detail.update_testcase_submit_btn_text') }}
+                            </button>
+                        </div>
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <button class="btn btn-danger w-100 border-0" @click="hideModal" data-bs-dismiss="modal"
+                                type="button">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </form>

@@ -257,6 +257,7 @@
                 </div>
             </li>
         </ul>
+
         <PaginationComponent :currentPage="Number(currentPage)" :totalPages="Number(totalPages)"
             @page-changed="fetchAllTasks" />
 
@@ -341,7 +342,8 @@ export default {
             initiative: {},
             prdMacroStatus: "",
             errors: {},
-            showMessage: true
+            showMessage: true,
+            options: ['Select option', 'Disable me!', 'Reset me!', 'mulitple', 'label', 'searchable']
         }
     },
     computed: {

@@ -1,6 +1,6 @@
 <template>
     <div class="modal-dialog modal-lg">
-        <div class="modal-content">
+        <div class="modal-content border-0">
             <div class="modal-header text-white bg-desino border-0 py-2 justify-content-center">
                 <h5 class="modal-title" id="timeBookingForTicketDetailModalLabel">
                     {{ $t('ticket_detail_time_booking_modal.modal_title') }}

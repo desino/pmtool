@@ -1,6 +1,6 @@
 <template>
     <div class="modal-dialog modal-lg">
-        <div class="modal-content">
+        <div class="modal-content border-0">
             <div class="modal-header text-white bg-desino border-0 py-2 justify-content-center">
                 <h5 class="modal-title" id="timeBookingOnNewTicketModalLabel"
                     v-html="formattedModalTitleForNewTicket()">
@@ -14,7 +14,7 @@
                 </div>
                 <form @submit.prevent="storeTimeBookingForUnBillable">
                     <div class="mb-3 p-3 shadow">
-                        <div class="row w-100">
+                        <div class="row w-100 g-1">
                             <div class="col-6 mb-3">
                                 <select v-model="formData.project_id" :class="{ 'is-invalid': errors.project_id }"
                                     class="form-select">
@@ -39,7 +39,7 @@
                                 </small>
                             </div>
                         </div>
-                        <div class="row w-100">
+                        <div class="row w-100 g-1">
                             <div class="col-12 mb-3">
                                 <textarea class="form-control" rows="3" v-model="formData.comments"
                                     :class="{ 'is-invalid': errors.comments }"
@@ -51,7 +51,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row w-100">
+                        <div class="row w-100 g-1">
                             <div class="col-md-6">
                                 <button type="submit" class="btn btn-desino w-100"
                                     @click="handleSubmitButtonClickForUnBillable('create')">{{
@@ -67,84 +67,82 @@
                     </div>
                 </form>
                 <div class="mb-3 p-3 shadow">
-                    <div class="mb-3 p-3 shadow">
-                        <button type="button" class="btn btn-sm btn-danger border-0"
-                            :disabled="selectedTimeBookings.length === 0" @click="handleDeleteSelectAllTimeBookings">
-                            <i class="bi bi-trash3"></i> {{ $t('time_booking_un_billable.modal_delete_but_text') }}
-                        </button>
-                        <ul class="list-group list-group-flush mb-3 mt-2">
-                            <li class="font-weight-bold bg-desino text-white rounded-top list-group-item">
-                                <div class="row w-100">
-                                    <div class="col-md-1 fw-bold py-2">
-                                        <input class="form-check-input" type="checkbox" v-model="isChkAllTimeBookings"
-                                            @change="handleSelectAllTimeBookings">
-                                    </div>
-                                    <div class="col-md-2 fw-bold py-2">
-                                        {{ $t('time_booking_un_billable.modal.list_table.hours') }}
-                                    </div>
-                                    <div class="col-md-2 fw-bold py-2">
-                                        {{ $t('time_booking_un_billable.modal.list_table.project_name') }}
-                                    </div>
-                                    <div class="col-md-6 fw-bold py-2">
-                                        {{ $t('time_booking_un_billable.modal.list_table.comments') }}
-                                    </div>
-                                    <div class="col-md-1 fw-bold py-2 text-end">
-                                        {{ $t('time_booking_un_billable.modal.list_table.action') }}
-                                    </div>
+                    <button type="button" class="btn btn-sm btn-danger border-0"
+                        :disabled="selectedTimeBookings.length === 0" @click="handleDeleteSelectAllTimeBookings">
+                        <i class="bi bi-trash3"></i> {{ $t('time_booking_un_billable.modal_delete_but_text') }}
+                    </button>
+                    <ul class="list-group list-group-flush mb-3 mt-2">
+                        <li class="font-weight-bold bg-desino text-white rounded-top list-group-item">
+                            <div class="row w-100">
+                                <div class="col-md-1 fw-bold py-2">
+                                    <input class="form-check-input" type="checkbox" v-model="isChkAllTimeBookings"
+                                        @change="handleSelectAllTimeBookings">
                                 </div>
-                            </li>
-                            <li class="border list-group-item" v-if="timeBookings.length > 0"
-                                v-for="timeBooking in timeBookings">
-                                <div class="row w-100">
-                                    <div class="col-md-1 py-2">
-                                        <input v-model="timeBooking.is_checked" class="form-check-input" type="checkbox"
-                                            @change="handleSelectAllTimeBooking(timeBooking)">
-                                    </div>
-                                    <div class="col-md-2 py-2">
-                                        {{ timeBooking.hours }}
-                                    </div>
-                                    <div class="col-md-2 fw-bold py-2">
-                                        {{ timeBooking.project_name }}
-                                    </div>
-                                    <div class="col-md-6 py-2">
-                                        {{ timeBooking.comments }}
-                                    </div>
-                                    <div class="col-md-1 py-2 text-end">
-                                        <a :title="$t('time_booking_un_billable.modal.list_table.action_delete_text')"
-                                            class="text-danger me-2" href="javascript:"
-                                            @click="handleDeleteTimeBooking(timeBooking)">
-                                            <i class="bi bi-trash3"></i>
-                                        </a>
-                                    </div>
+                                <div class="col-md-2 fw-bold py-2">
+                                    {{ $t('time_booking_un_billable.modal.list_table.hours') }}
                                 </div>
-                            </li>
-                            <li class="border list-group-item" v-if="totalTimeBookingHours > 0">
-                                <div class="row w-100">
-                                    <div class="col-md-1 py-2 fw-bold">
-                                        {{ $t('time_booking_un_billable.modal.list_table.footer_total_text') }}
-                                    </div>
-                                    <div class="col-md-2 py-2 fw-bold">
-                                        {{ totalTimeBookingHours }}
-                                    </div>
-                                    <div class="col-md-6 py-2 fw-bold">
-                                    </div>
-                                    <div class="col-md-3 py-2">
-                                    </div>
+                                <div class="col-md-2 fw-bold py-2">
+                                    {{ $t('time_booking_un_billable.modal.list_table.project_name') }}
                                 </div>
-                            </li>
-                            <li class="border list-group-item" v-if="timeBookings.length === 0">
-                                <div class="row w-100">
-                                    <div class="col-md-12 py-2 fw-bold text-center">
-                                        {{ $t('time_booking_un_billable.modal.list_table.no_data_text') }}
-                                    </div>
+                                <div class="col-md-6 fw-bold py-2">
+                                    {{ $t('time_booking_un_billable.modal.list_table.comments') }}
                                 </div>
-                            </li>
-                        </ul>
-                    </div>
+                                <div class="col-md-1 fw-bold py-2 text-end">
+                                    {{ $t('time_booking_un_billable.modal.list_table.action') }}
+                                </div>
+                            </div>
+                        </li>
+                        <li class="border list-group-item" v-if="timeBookings.length > 0"
+                            v-for="timeBooking in timeBookings">
+                            <div class="row w-100">
+                                <div class="col-md-1 py-2">
+                                    <input v-model="timeBooking.is_checked" class="form-check-input" type="checkbox"
+                                        @change="handleSelectAllTimeBooking(timeBooking)">
+                                </div>
+                                <div class="col-md-2 py-2">
+                                    {{ timeBooking.hours }}
+                                </div>
+                                <div class="col-md-2 fw-bold py-2">
+                                    {{ timeBooking.project_name }}
+                                </div>
+                                <div class="col-md-6 py-2">
+                                    {{ timeBooking.comments }}
+                                </div>
+                                <div class="col-md-1 py-2 text-end">
+                                    <a :title="$t('time_booking_un_billable.modal.list_table.action_delete_text')"
+                                        class="text-danger me-2" href="javascript:"
+                                        @click="handleDeleteTimeBooking(timeBooking)">
+                                        <i class="bi bi-trash3"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="border list-group-item" v-if="totalTimeBookingHours > 0">
+                            <div class="row w-100">
+                                <div class="col-md-1 py-2 fw-bold">
+                                    {{ $t('time_booking_un_billable.modal.list_table.footer_total_text') }}
+                                </div>
+                                <div class="col-md-2 py-2 fw-bold">
+                                    {{ totalTimeBookingHours }}
+                                </div>
+                                <div class="col-md-6 py-2 fw-bold">
+                                </div>
+                                <div class="col-md-3 py-2">
+                                </div>
+                            </div>
+                        </li>
+                        <li class="border list-group-item" v-if="timeBookings.length === 0">
+                            <div class="row w-100">
+                                <div class="col-md-12 py-2 fw-bold text-center">
+                                    {{ $t('time_booking_un_billable.modal.list_table.no_data_text') }}
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
-            <div class="modal-footer">
-                <div class="row w-100">
+            <div class="modal-footer border-0 p-0 justify-content-center">
+                <div class="row w-100 g-1">
                     <div class="col-12 col-md-12 col-lg-12">
                         <button class="btn btn-danger w-100 border-0" data-bs-dismiss="modal" type="button">
                             <i class="bi bi-x-lg"></i>
