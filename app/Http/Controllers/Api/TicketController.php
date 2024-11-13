@@ -487,12 +487,25 @@ class TicketController extends Controller
         )
             ->where('initiative_id', $initiative_id)
             ->when(!Auth::user()->is_admin, function (Builder $query) {
-                $query->LEFTJOIN(DB::raw(
-                    "(SELECT `ticket_id`, MIN(ACTION) AS first_action, `user_id` FROM ticket_actions WHERE `status` != " . TicketAction::getStatusDone() . " GROUP BY `ticket_id` HAVING `user_id` = " . Auth::id() . ") as ta"
-                ), 'ta.ticket_id', '=', 'tickets.id')
-                    ->where(function ($q) {
-                        $q->where('tickets.is_visible', 1)
-                            ->orWhereNotNull('ta.first_action');
+                // $query->LEFTJOIN(DB::raw(
+                //     "(SELECT `ticket_id`, MIN(ACTION) AS first_action, `user_id` FROM ticket_actions WHERE `status` != " . TicketAction::getStatusDone() . " GROUP BY `ticket_id` HAVING `user_id` = " . Auth::id() . ") as ta"
+                // ), 'ta.ticket_id', '=', 'tickets.id')
+                //     ->where(function ($q) {
+                //         $q->where('tickets.is_visible', 1)
+                //             ->orWhereNotNull('ta.first_action');
+                //     });
+                $query->where('tickets.is_visible', 1)
+                    ->whereHas('actions', function ($query) {
+                        $query->where('user_id', Auth::id())
+                            ->where('action', function ($subQuery) {
+                                $subQuery->selectRaw('MIN(action)')
+                                    ->from('ticket_actions as ta_inner')
+                                    ->whereColumn('ta_inner.ticket_id', 'ticket_actions.ticket_id')
+                                    ->where('status', '!=', TicketAction::getStatusDone())
+                                    ->groupBy('action')
+                                    ->orderBy('action', 'ASC')
+                                    ->limit(1);
+                            });
                     });
             })
             ->get();

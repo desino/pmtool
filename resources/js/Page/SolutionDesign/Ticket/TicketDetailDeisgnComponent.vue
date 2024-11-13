@@ -3,8 +3,8 @@
         <div class="container-fluid">
             <div class="row w-100">
                 <div class="col-11">
-                    <div class="w-100">
-                        <h3 class="m-0">{{ ticketData.composed_name }}
+                    <div class="row w-100">
+                        <div class="col-md-1">
                             <span>
                                 <input id="btn-check" v-model="showTicketDropdown" autocomplete="off" class="btn-check"
                                     type="checkbox">
@@ -13,13 +13,15 @@
                                         class="bi"></i>
                                 </label>
                             </span>
-                        </h3>
-                    </div>
-                    <div v-if="showTicketDropdown" class="w-100 py-2">
-                        <multiselect v-model="selectedTaskObject" :multiple="false" :options="tasksForDropdown"
-                            :searchable="true" deselect-label="Selected" label="composed_name"
-                            placeholder="Search & Select Task" track-by="id" @input="onTaskSelect">
-                        </multiselect>
+                        </div>
+                        <div class="col-md-11">
+                            <div v-if="showTicketDropdown">
+                                <multiselect v-model="selectedTaskObject" :multiple="false" :options="tasksForDropdown"
+                                    :searchable="true" deselect-label="Selected" label="composed_name"
+                                    placeholder="Search & Select Task" track-by="id" @input="onTaskSelect">
+                                </multiselect>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-1 text-end">
@@ -188,7 +190,7 @@
                                             <div v-if="errors.release_note" class="text-danger mt-2">
                                                 <span v-for="(error, index) in errors.release_note" :key="index">{{
                                                     error
-                                                }}</span>
+                                                    }}</span>
                                             </div>
                                             <button class="btn w-100 btn-desino text-white fw-bold m-2 rounded"
                                                 @click="updateReleaseNote">
@@ -206,7 +208,7 @@
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">{{
                                                         $t('ticket_details_input_dev_estimation_time')
-                                                        }} <strong class="text-danger">*</strong>
+                                                    }} <strong class="text-danger">*</strong>
                                                     </label>
                                                     <input v-model="estimatedHoursFormData.dev_estimation_time"
                                                         :class="{ 'is-invalid': errors.dev_estimation_time }"
@@ -273,7 +275,7 @@
                                                 <div v-if="test_case.observations">
                                                     <span class="bg-desino text-white rounded fw-bold p-2">{{
                                                         $t('ticket_detail_test_case_section_actual_behaviour')
-                                                    }}</span>
+                                                        }}</span>
                                                     <div class="p-2" v-html="test_case.observations">
                                                     </div>
                                                 </div>
@@ -570,6 +572,11 @@ export default {
             this.releaseNoteForm.release_note = content.release_note;
             this.test_cases = content.test_cases;
             this.user_actions_count = content.actions_count;
+
+            const setHeaderData = {
+                page_title: content.composed_name,
+            }
+            store.commit("setHeaderData", setHeaderData);
         },
         onTaskSelect() {
             // Ensure the selected task is synced with the dropdown
