@@ -11,7 +11,7 @@ class Initiative extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
-    protected $append = ['client_initiative_name', 'simple_attribute'];
+    protected $appends = ['client_initiative_name'];
 
     public const STATUS_OPPORTUNITY = 1;
     public const STATUS_ONGOING = 2;
@@ -21,7 +21,7 @@ class Initiative extends Model
     protected function clientInitiativeName(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->client->name . " - " . $this->name,
+            get: fn() => $this->client?->name . " - " . $this->name,
         );
     }
 
