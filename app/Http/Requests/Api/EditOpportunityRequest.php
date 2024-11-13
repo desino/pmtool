@@ -25,7 +25,12 @@ class EditOpportunityRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'ballpark_development_hours' => 'required|numeric|between:1,99999.99',
+            // 'ballpark_development_hours' => 'required|numeric|between:1,99999.99',
+            'ballpark_development_hours' => [
+                'required',
+                'numeric',
+                'regex:/^(0|[1-9][0-9]{0,5})(\.[0-9]{1,2})?$/'
+            ],
             'share_point_url' => 'nullable|url',
             'functional_owner_id' => 'nullable|exists:users,id',
             'quality_owner_id' => 'nullable|exists:users,id',
@@ -40,6 +45,7 @@ class EditOpportunityRequest extends FormRequest
     {
         return [
             'name.required' => __('validation.initiative.name'),
+            'ballpark_development_hours.regex' => __('validation.initiative.ballpark_development_hours.regex'),
             'environments.*.name.required' => __('validation.environments.name.required'),
             'environments.*.name.string' => __('validation.environments.name.string'),
             'environments.*.url.required' => __('validation.environments.url.required'),

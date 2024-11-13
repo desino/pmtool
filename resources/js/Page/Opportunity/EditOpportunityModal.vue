@@ -1,10 +1,9 @@
 <template>
     <div class="modal-dialog modal-xl">
         <form @submit.prevent="updateOpportunity">
-            <div class="modal-content">
-                <div class="modal-header">
+            <div class="modal-content border-0">
+                <div class="modal-header text-white bg-desino border-0 py-2 justify-content-center">
                     <h5 class="modal-title" id="editInitiativeModalLabel">{{ modalTitle }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <GlobalMessage v-if="showMessage" />
@@ -16,7 +15,7 @@
                             <div class="mb-3">
                                 <label class="form-label fw-bold">{{
                                     $t('edit_opportunity_modal_select_client_name')
-                                    }} <strong class="text-danger">*</strong></label>
+                                }} <strong class="text-danger">*</strong></label>
                                 <input type="text" v-model="formData.client_name" disabled
                                     :class="{ 'is-invalid': errors.client_name }" class="form-control">
                                 <div v-if="errors.client_name" class="invalid-feedback">
@@ -42,7 +41,7 @@
                             <div v-if="errors.ballpark_development_hours" class="invalid-feedback">
                                 <span v-for="(error, index) in errors.ballpark_development_hours" :key="index">{{
                                     error
-                                    }}</span>
+                                }}</span>
                             </div>
                         </div>
                     </div>
@@ -112,7 +111,7 @@
                         <div v-if="errors.ballpark_development_hours" class="invalid-feedback">
                             <span v-for="(error, index) in errors.ballpark_development_hours" :key="index">{{
                                 error
-                                }}</span>
+                            }}</span>
                         </div>
                     </div>
 
@@ -129,7 +128,7 @@
                                 <div v-if="errors.share_point_url" class="invalid-feedback">
                                     <span v-for="(error, index) in errors.share_point_url" :key="index">{{
                                         error
-                                        }}</span>
+                                    }}</span>
                                 </div>
                             </div>
                         </div>
@@ -149,7 +148,7 @@
                                             class="form-select">
                                             <option value="">{{
                                                 $t('edit_opportunity_modal_input_environment_server_type_placeholder')
-                                                }}
+                                            }}
                                             </option>
                                             <option v-for="serverType in serverTypes" :key="serverType.id"
                                                 :value="serverType.id">{{
@@ -159,7 +158,7 @@
                                         <div v-if="errors.type" class="invalid-feedback">
                                             <span v-for="(error, index) in errors.type" :key="index">{{
                                                 error
-                                                }}</span>
+                                            }}</span>
                                         </div>
                                     </div>
                                     <div class="col-md-2 mb-3">
@@ -214,10 +213,18 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-desino">{{
-                        $t('edit_opportunity_modal_submit_but_text') }}</button>
+                <div class="modal-footer border-0 p-0 justify-content-center">
+                    <div class="row w-100 g-1">
+                        <div class="col-4 col-md-6 col-lg-6">
+                            <button type="submit" class="btn btn-desino w-100 border-0">{{
+                                $t('edit_opportunity_modal_submit_but_text') }}</button>
+                        </div>
+                        <div class="col-4 col-md-6 col-lg-6">
+                            <button type="button" class="btn btn-danger w-100 border-0" data-bs-dismiss="modal">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </form>
