@@ -1,12 +1,11 @@
 <template>
     <div class="modal-dialog">
         <form @submit.prevent="submitTestDeploymentTicket">
-            <div class="modal-content">
-                <div class="modal-header">
+            <div class="modal-content border-0">
+                <div class="modal-header text-white bg-desino border-0 py-2 justify-content-center">
                     <h5 class="modal-title" id="testDeploymentTicketsModalLabel">{{
                         $t('home.deployment_center.test_deployment.ticket_modal.title')
                     }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <GlobalMessage v-if="showMessage" />
@@ -18,30 +17,39 @@
                                         v-model="isChkAllTestDeploymentTickets"
                                         @change="handleSelectAllTestDeploymentTickets">
                                 </div>
-                                <div class="col-md-8">
+                                <div class="col-md-11">
                                     {{ $t('home.deployment_center.test_deployment.ticket_modal.li.name.text') }}
                                 </div>
                             </div>
                         </li>
-                        <li class="list-group-item" v-for="ticket in ticketList" :key="ticket.id">
+                        <li class="list-group-item list-group-item-action" v-for="ticket in ticketList"
+                            :key="ticket.id">
                             <div class="row w-100">
                                 <div class="col-md-1">
                                     <input class="form-check-input" type="checkbox"
                                         :id="'chk_test_deployment_ticket_' + ticket.id" v-model="ticket.isChecked"
                                         @change="handleSelectTestDeploymentTicket(ticket)">
                                 </div>
-                                <div class="col-md-8" :for="'chk_test_deployment_ticket_' + ticket.id">
+                                <div class="col-md-11" :for="'chk_test_deployment_ticket_' + ticket.id">
                                     {{ ticket?.composed_name }}
                                 </div>
                             </div>
                         </li>
                     </ul>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-desino"
-                        :disabled="selectedTestDeploymentTickets.length > 0 ? false : true">{{
-                            $t('home.deployment_center.test_deployment.ticket_modal.submit_but.text') }}</button>
+                <div class="modal-footer border-0 p-0 justify-content-center">
+                    <div class="row w-100 g-1">
+                        <div class="col-4 col-md-4 col-lg-6">
+                            <button type="submit" class="btn btn-desino w-100 border-0"
+                                :disabled="selectedTestDeploymentTickets.length > 0 ? false : true">{{
+                                    $t('home.deployment_center.test_deployment.ticket_modal.submit_but.text') }}</button>
+                        </div>
+                        <div class="col-4 col-md-4 col-lg-6">
+                            <button type="button" class="btn btn-danger w-100 border-0" data-bs-dismiss="modal">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </form>

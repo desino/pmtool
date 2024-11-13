@@ -10,7 +10,7 @@
                 </div>
                 <div class="card-body px-0 py-1">
                     <ul class="list-group list-group-flush w-100">
-                        <li class="list-group-item" v-if="productionDeployments.length > 0"
+                        <li class="list-group-item list-group-item-action" v-if="productionDeployments.length > 0"
                             v-for="productionDeployment in productionDeployments" :key="productionDeployment.id"
                             @click="openProductionDeploymentModal(productionDeployment)" role="button">
                             <div class="row g-1 w-100 align-items-center">
@@ -42,7 +42,7 @@
                 </div>
                 <div class="card-body px-0 py-1">
                     <ul class="list-group list-group-flush w-100">
-                        <li class="list-group-item" v-if="acceptanceDeployments.length > 0"
+                        <li class="list-group-item list-group-item-action" v-if="acceptanceDeployments.length > 0"
                             v-for="acceptanceDeployment in acceptanceDeployments" :key="acceptanceDeployment.id"
                             @click="openAcceptanceDeploymentModal(acceptanceDeployment)" role="button">
                             <div class="row g-1 w-100 align-items-center">
@@ -74,7 +74,7 @@
                 </div>
                 <div class="card-body px-0 py-1">
                     <ul class="list-group list-group-flush w-100">
-                        <li class="list-group-item" v-if="testDeployments.length > 0"
+                        <li class="list-group-item list-group-item-action" v-if="testDeployments.length > 0"
                             v-for="testDeployment in testDeployments" :key="testDeployment.id"
                             @click="openTestDeploymentModal(testDeployment)" role="button">
                             <div class="row g-1 w-100 align-items-center">

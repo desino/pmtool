@@ -50,6 +50,7 @@ export default {
             this.selected_initiative_id = this.$route.params.id ?? this.$route.params.initiative_id;
             if (this.selected_initiative_id === undefined) {
                 this.selected_initiative_id = "";
+                this.initiative = "";
             } else {
                 this.initiative = this.initiatives.find(initiative => initiative.id == this.selected_initiative_id);
             }
@@ -58,14 +59,17 @@ export default {
         handleAppendHeaderInitiativeSelectBox(data) {
             this.initiatives.push(data.initiative);
             this.selected_initiative_id = data.initiative.id;
+            this.initiative = this.initiatives.find(initiative => initiative.id == this.selected_initiative_id);
             eventBus.$emit('sidebarSelectHeaderInitiativeId', this.selected_initiative_id);
         },
         handleUnselectHeaderInitiativeId() {
             this.selected_initiative_id = "";
+            this.initiative = "";
             eventBus.$emit('sidebarSelectHeaderInitiativeId', this.selected_initiative_id);
         },
         selectHeaderInitiativeId(initiativeId) {
             this.selected_initiative_id = initiativeId;
+            this.initiative = this.initiatives.find(initiative => initiative.id == this.selected_initiative_id);
             eventBus.$emit('sidebarSelectHeaderInitiativeId', this.selected_initiative_id);
         },
         async navigateOld(event, userData) {
