@@ -6,8 +6,8 @@
         <div class="card-body p-0">
             <ul class="list-group list-group-flush">
                 <li v-if="initiatives.length > 0" v-for="initiative in initiatives" :key="initiative.id"
-                    class="list-group-item" role="button" @click="openMyTickets(initiative)"
-                    :class="{ 'bg-warning': initiative?.is_priority_tickets_count > 0 }">
+                    class="list-group-item list-group-item-action" role="button" @click="openMyTickets(initiative)"
+                    :class="{ 'list-group-item-warning': initiative?.is_priority_tickets_count > 0 }">
                     <div class="row g-1 w-100 align-items-center">
                         <div class="col-9 fw-bold">
                             {{ initiative?.client_name }} -

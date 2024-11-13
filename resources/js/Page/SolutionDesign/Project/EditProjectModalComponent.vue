@@ -1,10 +1,9 @@
 <template>
     <div class="modal-dialog">
         <form @submit.prevent="updateProject">
-            <div class="modal-content">
-                <div class="modal-header">
+            <div class="modal-content border-0">
+                <div class="modal-header modal-header text-white bg-desino border-0 py-2 justify-content-center">
                     <h5 class="modal-title" id="editProjectModalLabel">{{ $t('project.list.edit.modal_title') }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <GlobalMessage v-if="showMessage" />
@@ -24,10 +23,18 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-desino">{{
-                        $t('project.list.edit.modal_submit_but_text') }}</button>
+                <div class="modal-footer border-0 p-0 justify-content-center">
+                    <div class="row w-100 g-1">
+                        <div class="col-4 col-md-6 col-lg-6">
+                            <button type="submit" class="btn btn-desino w-100 border-0">{{
+                                $t('project.list.edit.modal_submit_but_text') }}</button>
+                        </div>
+                        <div class="col-4 col-md-6 col-lg-6">
+                            <button type="button" class="btn btn-danger w-100 border-0" data-bs-dismiss="modal">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </form>
