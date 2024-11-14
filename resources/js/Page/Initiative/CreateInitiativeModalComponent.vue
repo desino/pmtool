@@ -39,8 +39,9 @@
                         <input type="text" v-model="formData.ballpark_development_hours"
                             :class="{ 'is-invalid': errors.ballpark_development_hours }" class="form-control">
                         <div v-if="errors.ballpark_development_hours" class="invalid-feedback">
-                            <span v-for="(error, index) in errors.ballpark_development_hours" :key="index">{{ error
-                                }}</span>
+                            <span v-for="(error, index) in errors.ballpark_development_hours" :key="index">
+                                {{ error }} <br>
+                            </span>
                         </div>
                     </div>
                     <div class="mb-3">
@@ -50,10 +51,6 @@
                             <label class="form-check-label fw-bold" for="initiative_is_sold">
                                 {{ $t('create_initiative_modal_input_is_sold') }}
                             </label>
-                        </div>
-                        <div v-if="errors.ballpark_development_hours" class="invalid-feedback">
-                            <span v-for="(error, index) in errors.ballpark_development_hours" :key="index">{{ error
-                                }}</span>
                         </div>
                     </div>
                 </div>

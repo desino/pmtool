@@ -33,8 +33,9 @@
                             <input type="text" v-model="formData.hours" :class="{ 'is-invalid': errors.hours }"
                                 class="form-control" ref="hoursInput">
                             <small v-if="errors.hours" class="invalid-feedback">
-                                <span v-for="(error, index) in errors.hours" :key="index">{{ error
-                                    }}</span>
+                                <span v-for="(error, index) in errors.hours" :key="index">
+                                    {{ error }} <br>
+                                </span>
                             </small>
                         </div>
                         <div class="col-md-12 mt-3">

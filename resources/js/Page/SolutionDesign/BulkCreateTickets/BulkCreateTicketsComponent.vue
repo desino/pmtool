@@ -37,9 +37,8 @@
                                         class="invalid-feedback">
                                         <span
                                             v-for="(error, index) in errors[`sections.${section_index}.functionality.${index}.initial_estimation_development_time`]"
-                                            :key="index">{{
-                                                error
-                                            }}
+                                            :key="index">
+                                            {{ error }} <br>
                                         </span>
                                     </div>
                                 </div>

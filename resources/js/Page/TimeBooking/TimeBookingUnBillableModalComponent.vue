@@ -34,8 +34,9 @@
                                     class="form-control"
                                     :placeholder="$t('time_booking_un_billable.modal_input_hours_label_text')">
                                 <small v-if="errors.hours" class="invalid-feedback">
-                                    <span v-for="(error, index) in errors.hours" :key="index">{{ error
-                                        }}</span>
+                                    <span v-for="(error, index) in errors.hours" :key="index">
+                                        {{ error }} <br>
+                                    </span>
                                 </small>
                             </div>
                         </div>
