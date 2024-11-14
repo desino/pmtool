@@ -25,7 +25,6 @@ class TimeBookingOnNewTicketRequest extends FormRequest
         return [
             'initiative_id' => 'required',
             'ticket_id' => 'required',
-            // 'hours' => 'required|numeric|between:1,99999.99',
             'hours' => [
                 'required',
                 'numeric',

@@ -17,7 +17,8 @@
                     </div>
                 </li>
                 <li v-if="sectionsWithFunctionalities.length > 0"
-                    v-for="(section, index) in sectionsWithFunctionalities" :key="index" class="list-group-item">
+                    v-for="(section, section_index) in sectionsWithFunctionalities" :key="section_index"
+                    class="list-group-item">
                     <span class="fw-bold">{{ section.display_name }}</span>
                     <ul class="list-group list-group-flush">
                         <li v-if="section.functionalities.length > 0"
@@ -29,8 +30,18 @@
                                 </div>
                                 <div class="col-md-4">
                                     <input type="text" class="form-control"
+                                        :class="{ 'is-invalid': errors[`sections.${section_index}.functionality.${index}.initial_estimation_development_time`] }"
                                         v-model="functionality.initial_estimation_development_time"
                                         :placeholder="$t('bulk_create_tickets.input_initial_estimation_development_time_placeholder')">
+                                    <div v-if="errors[`sections.${section_index}.functionality.${index}.initial_estimation_development_time`]"
+                                        class="invalid-feedback">
+                                        <span
+                                            v-for="(error, index) in errors[`sections.${section_index}.functionality.${index}.initial_estimation_development_time`]"
+                                            :key="index">{{
+                                                error
+                                            }}
+                                        </span>
+                                    </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-check">
@@ -49,7 +60,7 @@
             </ul>
             <button type="submit" class="btn btn-desino mt-3 w-100">{{
                 $t('bulk_create_tickets.button_create_bulk_tickets')
-            }}</button>
+                }}</button>
         </form>
     </div>
 </template>
@@ -124,16 +135,17 @@ export default {
                             'functionality': [],
                         }
                         section.functionalities.forEach(functionality => {
-                            if (parseInt(functionality.initial_estimation_development_time) > 0) {
-                                let functionalitiesFormData = {
-                                    functionality_id: functionality.id,
-                                    functionality_name: functionality.name,
-                                    initial_estimation_development_time: parseInt(functionality.initial_estimation_development_time),
-                                    clarify_estimate_checked: functionality.clarify_estimate_checked
-                                }
-                                sectionData.section_id = section.id
-                                sectionData.functionality.push(functionalitiesFormData)
+                            // if (parseInt(functionality.initial_estimation_development_time) > 0) {
+                            let functionalitiesFormData = {
+                                functionality_id: functionality.id,
+                                functionality_name: functionality.name,
+                                // initial_estimation_development_time: parseInt(functionality.initial_estimation_development_time),
+                                initial_estimation_development_time: functionality.initial_estimation_development_time,
+                                clarify_estimate_checked: functionality.clarify_estimate_checked
                             }
+                            sectionData.section_id = section.id
+                            sectionData.functionality.push(functionalitiesFormData)
+                            // }
                         })
                         if (sectionData.section_id) {
                             passData.sections.push(sectionData);

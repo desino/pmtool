@@ -27,7 +27,11 @@ class TicketRequest extends FormRequest
         return [
             'name' => 'required|string',
             'functionality_id' => 'nullable|exists:functionalities,id',
-            'initial_estimation_development_time' => 'required|numeric|min:0|between:1,99999.99',
+            'initial_estimation_development_time' => [
+                'required',
+                'numeric',
+                'regex:/^(0|[1-9][0-9]{0,5})(\.[0-9]{1,2})?$/'
+            ],
             'initiative_id' => 'nullable',
             'type' => 'required',
             'auto_wait_for_client_approval' => 'nullable',
@@ -43,6 +47,7 @@ class TicketRequest extends FormRequest
     public function messages(): array
     {
         $messages = [
+            'initial_estimation_development_time.regex' => __('validation.ticket.initial_estimation_development_time.regex'),
             'ticket_actions.*.user_id.required' => __('validation.ticket_actions.user_id.required'),
             'ticket_actions.*.exists.required' => __('validation.ticket_actions.user_id.exists'),
         ];

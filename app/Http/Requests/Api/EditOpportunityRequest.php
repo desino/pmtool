@@ -25,7 +25,6 @@ class EditOpportunityRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            // 'ballpark_development_hours' => 'required|numeric|between:1,99999.99',
             'ballpark_development_hours' => [
                 'required',
                 'numeric',

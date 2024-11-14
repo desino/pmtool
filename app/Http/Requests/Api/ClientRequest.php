@@ -26,9 +26,20 @@ class ClientRequest extends FormRequest
         return [
             'name' => 'required|string',
             'initiative_name' => 'required|string',
-            'ballpark_development_hours' => 'required|numeric|min:0|between:1,99999.99',
+            'ballpark_development_hours' => [
+                'required',
+                'numeric',
+                'regex:/^(0|[1-9][0-9]{0,5})(\.[0-9]{1,2})?$/'
+            ],
             'is_sold' => 'nullable',
             'status' => 'nullable',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'ballpark_development_hours.regex' => __('validation.client.ballpark_development_hours.regex'),
         ];
     }
 
