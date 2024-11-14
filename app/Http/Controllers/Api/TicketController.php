@@ -249,6 +249,9 @@ class TicketController extends Controller
             'macro_status',
             'is_priority',
             'is_visible',
+            'initial_estimation_development_time',
+            'dev_estimation_time',
+            DB::raw('IF(dev_estimation_time IS NULL, initial_estimation_development_time, dev_estimation_time) as estimation_time'),
         )
             ->with(['project' => function ($q) {
                 $q->select(
@@ -346,7 +349,8 @@ class TicketController extends Controller
             ->when($filters['is_include_done'] == 'false', function (Builder $query) use ($filters) {
                 $query->where('macro_status', '!=', Ticket::MACRO_STATUS_DONE);
             })
-            ->paginate(10);
+            ->get();
+        // ->paginate(10);
         $meta['task_type'] = Ticket::getAllTypes();
         $meta['functionalities'] = Functionality::whereHas('section', function ($query) use ($initiative_id) {
             $query->where('initiative_id', $initiative_id);
@@ -366,6 +370,8 @@ class TicketController extends Controller
         $meta['macro_status'] = Ticket::getAllMacroStatus();
         $meta['deployments'] = Release::getAllReleases($initiative_id);
         $meta['prd_macro_status'] = Ticket::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_PRD;
+        $meta['ticket_count'] = $tickets->count();
+        $meta['ticket_sum'] = $tickets->sum('estimation_time');
 
         return ApiHelper::response('false', __('messages.ticket.fetched'), $tickets, 200, $meta);
     }

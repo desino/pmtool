@@ -146,8 +146,11 @@
                     <div class="col-lg-2 col-md-3 fw-bold small d-none d-md-block">
                         {{ $t('ticket.list.column_project') }}
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold small d-none d-lg-block">
+                    <!-- <div class="col-lg-2 col-md-6 col-6 fw-bold small d-none d-lg-block">
                         {{ $t('ticket.list.current_action') }}
+                    </div> -->
+                    <div class="col-lg-2 col-md-6 col-6 fw-bold small d-none d-lg-block text-md-center">
+                        {{ $t('ticket.list.estimation_hours') }}
                     </div>
                     <div class="col-lg-1 col-md-6 col-6 fw-bold small d-none d-lg-block">
                         {{ $t('ticket.list.current_owner') }}
@@ -196,7 +199,7 @@
                             @Remove="assignOrRemoveProjectForTask(task.id, 'remove', index, $event)">
                         </multiselect>
                     </div>
-                    <div class="offset-1 offset-md-1 offset-lg-0 col-lg-2 col-md-4 col-4 text-start text-md-center">
+                    <!-- <div class="offset-1 offset-md-1 offset-lg-0 col-lg-2 col-md-4 col-4 text-start text-md-center">
                         <span class="badge text-desino d-block d-lg-none p-2 fw-bold text-center rounded-top">
                             {{ $t('ticket.list.current_action') }}
                         </span>
@@ -206,6 +209,12 @@
                         <span v-if="task?.actions_count == task?.done_actions_count">
                             -
                         </span>
+                    </div> -->
+                    <div class="offset-1 offset-md-1 offset-lg-0 col-lg-2 col-md-4 col-4 text-start text-md-center">
+                        <span class="badge text-desino d-block d-lg-none p-2 fw-bold text-center rounded-top">
+                            {{ $t('ticket.list.estimation_hours') }}
+                        </span>
+                        {{ task.dev_estimation_time ?? task.initial_estimation_development_time }}
                     </div>
                     <div class="col-lg-1 col-md-4 col-4">
                         <span class="badge text-desino d-block d-lg-none p-2 fw-bold text-center rounded-top">
@@ -379,14 +388,18 @@ export default {
                 this.initiative = response.meta_data.initiative;
                 this.filterMacroStatus = response.meta_data.macro_status;
                 this.prdMacroStatus = response.meta_data.prd_macro_status;
-                this.tasks = response.content.data.map(task => ({
+                // this.tasks = response.content.data.map(task => ({
+                //     ...task,
+                //     isChecked: false,
+                // }));
+                this.tasks = response.content.map(task => ({
                     ...task,
                     isChecked: false,
                 }));
                 await this.setLoading(false);
                 setTimeout(() => {
                     const setHeaderData = {
-                        page_title: this.$t('ticket.page_title') + ' - ' + this.initiative?.name,
+                        page_title: this.$t('ticket.page_title') + ' - ' + this.initiative?.name + ' (#' + response.meta_data.ticket_count + '/' + response.meta_data.ticket_sum + 'hrs)',
                     }
                     store.commit("setHeaderData", setHeaderData);
                 }, 100)
