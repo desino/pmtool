@@ -251,7 +251,7 @@ class TicketController extends Controller
             'is_visible',
             'initial_estimation_development_time',
             'dev_estimation_time',
-            DB::raw('IF(dev_estimation_time IS NULL, initial_estimation_development_time, dev_estimation_time) as estimation_time'),
+            DB::raw('IF(dev_estimation_time IS NULL OR dev_estimation_time = 0, initial_estimation_development_time, dev_estimation_time) as estimation_time'),
         )
             ->with(['project' => function ($q) {
                 $q->select(

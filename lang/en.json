@@ -708,6 +708,7 @@
     "planning.confirm_store_alert.title": "Confirm Save",
     "planning.confirm_store_alert.text": "Are you sure you want to save these planning?",
     "planning.you_dont_have_permission_to_access_this_page": "You don't have permission to access this page.",
+    "planning.table.header_week_text": "Week",
     "bulk_create_tickets.page_title": "{INITIATIVE_NAME} - Create Bulk Tickets",
     "bulk_create_tickets.input_initial_estimation_development_time_placeholder": "Initial Estimation (Development Time)",
     "bulk_create_tickets.checkbox_clarify_estimation": "Clarify & Estimation",
