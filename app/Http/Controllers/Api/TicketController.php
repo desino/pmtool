@@ -969,4 +969,44 @@ class TicketController extends Controller
         }
         return ApiHelper::response($status, $message, '', $statusCode);
     }
+
+    public function deleteTicket(Request $request, $initiativeId)
+    {
+        $status = false;
+
+        $authUser = Auth::user();
+        if (!$authUser->is_admin) {
+            return ApiHelper::response(false, __('messages.ticket.delete_ticket_not_allowed'), null, 400);
+        }
+
+        $request->merge(['initiative_id' => $initiativeId]);
+        $initiative = InitiativeService::getInitiative($request);
+        if (!$initiative) {
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
+        }
+
+        $ticket = Ticket::withCount('timeBookings')->find($request->post('ticket_id'));
+        if (!$ticket) {
+            return ApiHelper::response($status, __('messages.ticket.ticket_not_exist'), '', 400);
+        }
+        if ($ticket->time_bookings_count > 0) {
+            return ApiHelper::response($status, __('messages.ticket.delete_ticket_not_allowed_because_time_bookings_exist'), '', 400);
+        }
+
+        $status = true;
+        $message = __('messages.ticket.delete_ticket_success');
+        $statusCode = 200;
+        DB::beginTransaction();
+        try {
+            $ticket->delete();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $status = false;
+            $message = __('messages.something_went_wrong');
+            $statusCode = 500;
+            Log::info($e->getMessage());
+        }
+        return ApiHelper::response($status, $message, '', $statusCode);
+    }
 }

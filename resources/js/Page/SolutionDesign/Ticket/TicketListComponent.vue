@@ -207,7 +207,7 @@
                             -
                         </span>
                     </div>
-                    <div class="col-lg-2 col-md-4 col-4">
+                    <div class="col-lg-1 col-md-4 col-4">
                         <span class="badge text-desino d-block d-lg-none p-2 fw-bold text-center rounded-top">
                             {{ $t('ticket.list.current_owner') }}
                         </span>
@@ -218,10 +218,7 @@
                             -
                         </span>
                     </div>
-                    <div v-if="user?.is_admin" class="col-lg-1 col-md-3 col-3 justify-content-end text-end">
-                        <span class="badge text-desino d-block d-lg-none p-2 fw-bold text-center rounded-top">
-                            {{ $t('ticket.list.column_action') }}
-                        </span>
+                    <div v-if="user?.is_admin" class="col-lg-2 col-md-3 col-3 justify-content-end text-end">
                         <!-- <router-link
                             :to="{ name: 'task.detail', params: { initiative_id: this.initiative_id, ticket_id: task.id } }"
                             class="text-success me-1">
@@ -245,9 +242,13 @@
                                     fill="#ffc107" fill-rule="evenodd" />
                             </svg>
                         </a>
-                        <a href="javascript:" @click.stop="handleTimeBooking(task)"
+                        <a href="javascript:" class="me-1" @click.stop="handleTimeBooking(task)"
                             :title="$t('ticket_details.time_booking')">
                             <i class="bi bi-clock-history"></i>
+                        </a>
+                        <a v-if="user?.is_admin" class="text-danger" href="javascript:"
+                            @click.stop="deleteTicket(task)">
+                            <i class="bi bi-trash3"></i>
                         </a>
                     </div>
                 </div>
@@ -580,6 +581,41 @@ export default {
                         }
                         this.setLoading(true);
                         const { message, status } = await ticketService.markAsVisibleInvisible(passData);
+                        showToast(message, 'success');
+                        this.setLoading(false);
+                        this.clearMessages();
+                        this.fetchAllTasks();
+                    } catch (error) {
+                        this.handleError(error);
+                        this.tasks[index].project = this.previousProject;
+                    }
+                }
+            })
+        },
+        async deleteTicket(task) {
+            if (!this.user?.is_admin) {
+                return;
+            }
+            this.$swal({
+                title: this.$t('ticket.delete.conformation_popup_title'),
+                text: this.$t('ticket.delete.conformation_popup_text'),
+                showCancelButton: true,
+                confirmButtonColor: '#1e6abf',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '<i class="bi bi-check-lg"></i>',
+                cancelButtonText: '<i class="bi bi-x-lg"></i>',
+                customClass: {
+                    confirmButton: 'btn-desino',
+                },
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        const passData = {
+                            initiative_id: this.initiative_id,
+                            ticket_id: task.id
+                        }
+                        this.setLoading(true);
+                        const { message, status } = await ticketService.deleteTicket(passData);
                         showToast(message, 'success');
                         this.setLoading(false);
                         this.clearMessages();

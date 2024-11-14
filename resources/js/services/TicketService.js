@@ -27,6 +27,7 @@ const endpoints = {
     updateTicketDetailEstimatedHours: `${defaultPath}/update-ticket-detail-estimated-hours/:ticket_id`,
     addRemovePriority: `${defaultPath}/add-remove-priority`,
     markAsVisibleInvisible: `${defaultPath}/mark-as-visible-invisible`,
+    deleteTicket: `${defaultPath}/delete-ticket`,
 }
 
 const SolutionDesignService = {
@@ -196,6 +197,15 @@ const SolutionDesignService = {
     async markAsVisibleInvisible(data) {
         try {
             const endpoint = endpoints.markAsVisibleInvisible.replace(':initiative_id', data.initiative_id);
+            const response = await axiosRequest.post(endpoint, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async deleteTicket(data) {
+        try {
+            const endpoint = endpoints.deleteTicket.replace(':initiative_id', data.initiative_id);
             const response = await axiosRequest.post(endpoint, data);
             return response.data;
         } catch (error) {

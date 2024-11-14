@@ -38,6 +38,11 @@ class TicketObserver
     /**
      * Handle the Ticket "deleted" event.
      */
+    public function deleting(Ticket $ticket): void
+    {
+        $ticket->actions()->delete();
+    }
+
     public function deleted(Ticket $ticket): void
     {
         //
