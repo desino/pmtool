@@ -139,6 +139,7 @@
     "validation.time_booking.new_ticket.hours.regex": "The time booking field must be between 0 and 99999.99.",
     "validation.time_booking.hours.regex": "The time booking field must be between 0 and 99999.99.",
     "validation.bulk_create_tickets.initial_estimation_development_time.regex": "The initial estimation development time field must be between 0 and 99999.99.",
+    "validation.bulk_create_tickets.initial_estimation_development_time.numeric": "The initial estimation development time field must be a number.",
     "validation.client.ballpark_development_hours.regex": "The ballpark development hours field must be between 0 and 99999.99.",
     "validation.ticket.initial_estimation_development_time.regex": "The initial estimation development time field must be between 0 and 99999.99.",
     "validation.environments.name.required": "The environment name field is required.",

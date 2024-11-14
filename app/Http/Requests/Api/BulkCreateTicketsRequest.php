@@ -34,6 +34,7 @@ class BulkCreateTicketsRequest extends FormRequest
     public function messages()
     {
         return [
+            'sections.*.functionality.*.initial_estimation_development_time.numeric' => __('validation.bulk_create_tickets.initial_estimation_development_time.numeric'),
             'sections.*.functionality.*.initial_estimation_development_time.regex' => __('validation.bulk_create_tickets.initial_estimation_development_time.regex'),
         ];
     }
