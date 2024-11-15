@@ -791,7 +791,7 @@ class TicketController extends Controller
     public function getCreateReleaseData(Request $request, $initiativeId)
     {
         $retData = [
-            'unprocessedRelease' => ReleaseService::getUnprocessedRelease(),
+            'unprocessedRelease' => ReleaseService::getUnprocessedRelease($initiativeId),
         ];
         return ApiHelper::response(true, '', $retData, 200);
     }

@@ -3,9 +3,8 @@
         <form @submit.prevent="submitTestDeploymentTicket">
             <div class="modal-content border-0">
                 <div class="modal-header text-white bg-desino border-0 py-2 justify-content-center">
-                    <h5 class="modal-title" id="testDeploymentTicketsModalLabel">{{
-                        $t('home.deployment_center.test_deployment.ticket_modal.title')
-                    }}</h5>
+                    <h5 class="modal-title" id="testDeploymentTicketsModalLabel"
+                        v-html="formattedModalTitleTestDeployment()"></h5>
                 </div>
                 <div class="modal-body">
                     <GlobalMessage v-if="showMessage" />
@@ -75,12 +74,17 @@ export default {
             ticketList: [],
             selectedTestDeploymentTickets: [],
             initiativeId: "",
+            initiative: {},
             errors: {},
             showMessage: true
         };
     },
     methods: {
         ...mapActions(['setLoading']),
+        formattedModalTitleTestDeployment() {
+            const title = this.$t('home.deployment_center.test_deployment.ticket_modal.title', { 'INITIATIVE_NAME': this.initiative?.name });
+            return title.replace(this.initiative?.name, `<span class='badge bg-secondary'>${this.initiative?.name}</span>`);
+        },
         async getTestDeploymentTicketsModalData(testDeployment) {
             this.selectedTestDeploymentTickets = [];
             this.isChkAllTestDeploymentTickets = false;
@@ -88,7 +92,8 @@ export default {
             const passData = {
                 initiative_id: testDeployment.id,
             }
-            const { content: { tickets } } = await DeploymentCenterService.getTestDeploymentTicketsModalData(passData);
+            const { content: { tickets, initiative } } = await DeploymentCenterService.getTestDeploymentTicketsModalData(passData);
+            this.initiative = initiative;
             this.ticketList = tickets.map(ticket => ({
                 ...ticket,
                 isChecked: false,

@@ -47,7 +47,8 @@ class DeploymentCenterController extends Controller
             ->readyForTestStatus()
             ->get();
         $data = [
-            'tickets' => $ticket
+            'tickets' => $ticket,
+            'initiative' => $initiative,
         ];
         return ApiHelper::response($status, '', $data, 200);
     }
@@ -98,7 +99,8 @@ class DeploymentCenterController extends Controller
             ->readyForAcceptanceStatus()
             ->get();
         $data = [
-            'tickets' => $ticket
+            'tickets' => $ticket,
+            'initiative' => $initiative,
         ];
         return ApiHelper::response($status, '', $data, 200);
     }
@@ -153,7 +155,8 @@ class DeploymentCenterController extends Controller
             ->get();
         $data = [
             'tickets' => $ticket,
-            'release' => $initiative->unprocessedRelease
+            'release' => $initiative->unprocessedRelease,
+            'initiative' => $initiative,
         ];
         return ApiHelper::response($status, '', $data, 200);
     }

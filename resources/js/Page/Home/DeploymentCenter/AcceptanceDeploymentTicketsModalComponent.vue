@@ -3,9 +3,8 @@
         <form @submit.prevent="submitAcceptanceDeploymentTicket">
             <div class="modal-content border-0">
                 <div class="modal-header modal-header text-white bg-desino border-0 py-2 justify-content-center">
-                    <h5 class="modal-title" id="acceptanceDeploymentTicketsModalLabel">{{
-                        $t('home.deployment_center.acceptance_deployment.ticket_modal.title')
-                        }}</h5>
+                    <h5 class="modal-title" id="acceptanceDeploymentTicketsModalLabel"
+                        v-html="formattedModalTitleACCDeployment()"></h5>
                 </div>
                 <div class="modal-body">
                     <GlobalMessage v-if="showMessage" />
@@ -75,6 +74,7 @@ export default {
             isChkAllAcceptanceDeploymentTickets: false,
             ticketList: [],
             selectedAcceptanceDeploymentTickets: [],
+            initiative: {},
             initiativeId: "",
             errors: {},
             showMessage: true
@@ -82,6 +82,10 @@ export default {
     },
     methods: {
         ...mapActions(['setLoading']),
+        formattedModalTitleACCDeployment() {
+            const title = this.$t('home.deployment_center.acceptance_deployment.ticket_modal.title', { 'INITIATIVE_NAME': this.initiative?.name });
+            return title.replace(this.initiative?.name, `<span class='badge bg-secondary'>${this.initiative?.name}</span>`);
+        },
         async getAcceptanceDeploymentTicketsModalData(acceptanceDeployment) {
             this.selectedAcceptanceDeploymentTickets = [];
             this.isChkAllAcceptanceDeploymentTickets = false;
@@ -89,7 +93,8 @@ export default {
             const passData = {
                 initiative_id: acceptanceDeployment.id,
             }
-            const { content: { tickets } } = await DeploymentCenterService.getAcceptanceDeploymentTicketsModalData(passData);
+            const { content: { tickets, initiative } } = await DeploymentCenterService.getAcceptanceDeploymentTicketsModalData(passData);
+            this.initiative = initiative;
             this.ticketList = tickets.map(ticket => ({
                 ...ticket,
                 isChecked: false,

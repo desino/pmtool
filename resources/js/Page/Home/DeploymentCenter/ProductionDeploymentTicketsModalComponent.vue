@@ -3,9 +3,8 @@
         <form @submit.prevent="submitProductionDeploymentTicket">
             <div class="modal-content border-0">
                 <div class="modal-header modal-header text-white bg-desino border-0 py-2 justify-content-center">
-                    <h5 class="modal-title" id="productionDeploymentTicketsModalLabel">{{
-                        $t('home.deployment_center.production_deployment.ticket_modal.title')
-                        }}</h5>
+                    <h5 class="modal-title" id="productionDeploymentTicketsModalLabel"
+                        v-html="formattedModalTitlePRDDeployment()"></h5>
                 </div>
                 <div class="modal-body">
                     <GlobalMessage v-if="showMessage" />
@@ -32,7 +31,7 @@
                         <div class="col-4 col-md-6 col-lg-6">
                             <button type="submit" class="btn btn-desino w-100 border-0">{{
                                 $t('home.deployment_center.production_deployment.ticket_modal.submit_but.text')
-                            }}</button>
+                                }}</button>
                         </div>
                         <div class="col-4 col-md-6 col-lg-6">
                             <button type="button" class="btn btn-danger w-100 border-0" data-bs-dismiss="modal">
@@ -65,6 +64,7 @@ export default {
             ticketList: [],
             release: {},
             selectedProductionDeploymentTickets: [],
+            initiative: {},
             initiativeId: "",
             errors: {},
             showMessage: true
@@ -72,6 +72,10 @@ export default {
     },
     methods: {
         ...mapActions(['setLoading']),
+        formattedModalTitlePRDDeployment() {
+            const title = this.$t('home.deployment_center.production_deployment.ticket_modal.title', { 'INITIATIVE_NAME': this.initiative?.name });
+            return title.replace(this.initiative?.name, `<span class='badge bg-secondary'>${this.initiative?.name}</span>`);
+        },
         async getProductionDeploymentTicketsModalData(productionDeployment) {
             this.selectedProductionDeploymentTickets = [];
             this.isChkAllProductionDeploymentTickets = false;
@@ -79,8 +83,9 @@ export default {
             const passData = {
                 initiative_id: productionDeployment.id,
             }
-            const { content: { tickets, release } } = await DeploymentCenterService.getProductionDeploymentTicketsModalData(passData);
+            const { content: { tickets, release, initiative } } = await DeploymentCenterService.getProductionDeploymentTicketsModalData(passData);
             this.release = release;
+            this.initiative = initiative;
             this.ticketList = tickets.map(ticket => {
                 const isSelected = false;
                 this.selectedProductionDeploymentTickets.push(ticket.ticket.id);
