@@ -262,7 +262,7 @@
                     </div>
                 </div>
             </li>
-            <li v-else class="list-group-item border p-4">
+            <li v-else class="border list-group-item px-0 py-1 list-group-item-action">
                 <div class="col h4 fw-bold text-center">{{ $t('ticket.list.not_ticket') }}
                 </div>
             </li>
