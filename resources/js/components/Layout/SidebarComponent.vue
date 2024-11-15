@@ -67,7 +67,7 @@
                                 </li>
                                 <li class="nav-item" v-if="currentInitiative.id && user?.is_admin">
                                     <router-link class="nav-link text-dark"
-                                        :class="{ 'bg-opacity-25 bg-primary': isActive('tasks') || isActive('task.detail') }"
+                                        :class="{ 'bg-opacity-25 bg-primary': isActive('tasks') || (isActive('task.detail') && user?.is_admin) }"
                                         :to="{ name: 'tasks', params: { id: currentInitiative.id } }">
                                         <i class="bi bi-card-checklist"></i>
                                         {{ $t('header.menu.all_ticket') }}
@@ -75,7 +75,7 @@
                                 </li>
                                 <li class="nav-item" v-if="currentInitiative.id">
                                     <router-link class="nav-link text-dark"
-                                        :class="{ 'bg-opacity-25 bg-primary': isActive('my-tickets') }"
+                                        :class="{ 'bg-opacity-25 bg-primary': isActive('my-tickets') || (isActive('task.detail') && !user?.is_admin) }"
                                         :to="{ name: 'my-tickets', params: { id: currentInitiative.id } }">
                                         <i class="bi bi-card-checklist"></i>
                                         {{ $t('header.menu.my_ticket') }}
