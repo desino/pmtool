@@ -28,7 +28,7 @@ class TimeBookingOnNewInitiativeOrTicketRequest extends FormRequest
             'hours' => [
                 'required',
                 'numeric',
-                'regex:/^(0|[1-9][0-9]{0,5})(\.[0-9]{1,2})?$/'
+                'regex:/^(0\.[1-9][0-9]?|[1-9][0-9]{0,5}(\.[0-9]{1,2})?)$/'
             ],
             'comments' => 'nullable|string|max:500',
             'booked_date' => 'required|date',

@@ -26,7 +26,7 @@ class BulkCreateTicketsRequest extends FormRequest
             'sections.*.functionality.*.initial_estimation_development_time' => [
                 'nullable',
                 'numeric',
-                'regex:/^(0|[1-9][0-9]{0,5})(\.[0-9]{1,2})?$/'
+                'regex:/^(0\.[1-9][0-9]?|[1-9][0-9]{0,5}(\.[0-9]{1,2})?)$/'
             ],
         ];
     }

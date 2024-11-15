@@ -28,7 +28,7 @@ class EditOpportunityRequest extends FormRequest
             'ballpark_development_hours' => [
                 'required',
                 'numeric',
-                'regex:/^(0|[1-9][0-9]{0,5})(\.[0-9]{1,2})?$/'
+                'regex:/^(0\.[1-9][0-9]?|[1-9][0-9]{0,5}(\.[0-9]{1,2})?)$/'
             ],
             'share_point_url' => 'nullable|url',
             'functional_owner_id' => 'nullable|exists:users,id',
