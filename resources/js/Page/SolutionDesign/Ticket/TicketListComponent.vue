@@ -684,6 +684,7 @@ export default {
         }
     },
     mounted() {
+        eventBus.$emit('selectHeaderInitiativeId', this.initiative_id);
         this.setDeploymentIdForFilter();
         this.fetchAllTasks();
         eventBus.$on('refreshTickets', this.fetchAllTasks);
