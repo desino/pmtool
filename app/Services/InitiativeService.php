@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\Initiative;
 use App\Models\Ticket;
+use App\Models\TicketAction;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class InitiativeService
@@ -42,56 +44,111 @@ class InitiativeService
 
     public static function getInitiativeWithTestDeploymentTickets()
     {
-        $testDeploymentInitiative = Initiative::select(
+        $retTestDeploymentInitiative = collect([]);
+        Initiative::select(
             'id',
             'name',
-            'client_id'
+            'client_id',
+            'technical_owner_id',
         )
-            ->with(['client' => function ($query) {
-                $query->select('id', 'name');
-            }])
+            ->with([
+                'client' => function ($query) {
+                    $query->select('id', 'name');
+                },
+                'tickets.actions' => function ($query) {
+                    $query->select('ticket_id', 'user_id', 'action');
+                }
+            ])
             ->withCount(['tickets' => function ($query) {
                 $query->readyForTestStatus();
             }])
             ->whereHas('tickets', function ($query) {
                 $query->readyForTestStatus();
             })
-            ->get();
-        return $testDeploymentInitiative;
+            ->get()
+            ->each(function ($initiative) use ($retTestDeploymentInitiative) {
+                if ($initiative->technical_owner_id == Auth::id() || Auth::user()->is_admin) {
+                    $retTestDeploymentInitiative->push($initiative);
+                } else {
+                    $isAllowToShowTickets = false;
+                    $tickets = $initiative->tickets->where('status', Ticket::getStatusReadyForTest());
+                    foreach ($tickets as $ticket) {
+                        $developAction = $ticket->actions->where('action', TicketAction::getActionDevelop())->first();
+                        if ($developAction && $developAction->user_id == Auth::id()) {
+                            $isAllowToShowTickets = true;
+                            break;
+                        }
+                    }
+                    if ($isAllowToShowTickets) {
+                        $retTestDeploymentInitiative->push($initiative);
+                    }
+                }
+            });
+        return $retTestDeploymentInitiative;
     }
 
     public static function getInitiativeWithAcceptanceDeploymentTickets()
     {
-        $acceptanceDeploymentInitiative = Initiative::select(
+        $retAcceptanceDeploymentInitiative = collect([]);
+        Initiative::select(
             'id',
             'name',
-            'client_id'
+            'client_id',
+            'technical_owner_id',
         )
-            ->with(['client' => function ($query) {
-                $query->select('id', 'name');
-            }])
+            ->with([
+                'client' => function ($query) {
+                    $query->select('id', 'name');
+                },
+                'tickets.actions' => function ($query) {
+                    $query->select('ticket_id', 'user_id', 'action');
+                }
+            ])
             ->withCount(['tickets' => function ($query) {
                 $query->readyForAcceptanceStatus();
             }])
             ->whereHas('tickets', function ($query) {
                 $query->readyForAcceptanceStatus();
             })
-            ->get();
-        return $acceptanceDeploymentInitiative;
+            ->get()
+            ->each(function ($initiative) use ($retAcceptanceDeploymentInitiative) {
+                if ($initiative->technical_owner_id == Auth::id() || Auth::user()->is_admin) {
+                    $retAcceptanceDeploymentInitiative->push($initiative);
+                } else {
+                    $isAllowToShowTickets = false;
+                    $tickets = $initiative->tickets->where('status', Ticket::getStatusReadyForACC());
+                    foreach ($tickets as $ticket) {
+                        $developAction = $ticket->actions->where('action', TicketAction::getActionDevelop())->first();
+                        if ($developAction && $developAction->user_id == Auth::id()) {
+                            $isAllowToShowTickets = true;
+                            break;
+                        }
+                    }
+                    if ($isAllowToShowTickets) {
+                        $retAcceptanceDeploymentInitiative->push($initiative);
+                    }
+                }
+            });
+        return $retAcceptanceDeploymentInitiative;
     }
 
     public static function getInitiativeWithProductionDeploymentTickets()
     {
-
-        $productionDeploymentInitiative = Initiative::select(
+        $retProductionDeploymentInitiative = collect([]);
+        Initiative::select(
             'initiatives.id',
             'initiatives.name',
             'initiatives.client_id',
             DB::raw('COUNT(tickets.id) as tickets_count')
         )
-            ->with(['client' => function ($query) {
-                $query->select('id', 'name');
-            }])
+            ->with([
+                'client' => function ($query) {
+                    $query->select('id', 'name');
+                },
+                'tickets.actions' => function ($query) {
+                    $query->select('ticket_id', 'user_id', 'action');
+                }
+            ])
             ->JOIN('releases', 'releases.initiative_id', '=', 'initiatives.id')
             ->JOIN('release_tickets', 'release_tickets.release_id', '=', 'releases.id')
             ->JOIN('tickets', function ($query) {
@@ -102,7 +159,24 @@ class InitiativeService
             ->groupBy('initiatives.name')
             ->groupBy('initiatives.client_id')
             ->having('tickets_count', '>', 0)
-            ->get();
-        return $productionDeploymentInitiative;
+            ->get()->each(function ($initiative) use ($retProductionDeploymentInitiative) {
+                if ($initiative->technical_owner_id == Auth::id() || Auth::user()->is_admin) {
+                    $retProductionDeploymentInitiative->push($initiative);
+                } else {
+                    $isAllowToShowTickets = false;
+                    $tickets = $initiative->tickets->where('status', Ticket::getStatusReadyForPRD());
+                    foreach ($tickets as $ticket) {
+                        $developAction = $ticket->actions->where('action', TicketAction::getActionDevelop())->first();
+                        if ($developAction && $developAction->user_id == Auth::id()) {
+                            $isAllowToShowTickets = true;
+                            break;
+                        }
+                    }
+                    if ($isAllowToShowTickets) {
+                        $retProductionDeploymentInitiative->push($initiative);
+                    }
+                }
+            });
+        return $retProductionDeploymentInitiative;
     }
 }

@@ -11,7 +11,7 @@
                     <ul class="list-group">
                         <li class="list-group-item fw-bold bg-desino text-white">
                             <div class="row w-100">
-                                <div class="col-md-1">
+                                <div class="col-md-1" v-if="ticketList.length > 0">
                                     <input class="form-check-input" type="checkbox" id="chk_all_tickets"
                                         v-model="isChkAllAcceptanceDeploymentTickets"
                                         @change="handleSelectAllAcceptanceDeploymentTickets">
@@ -21,8 +21,8 @@
                                 </div>
                             </div>
                         </li>
-                        <li class="list-group-item list-group-item-action" v-for="ticket in ticketList"
-                            :key="ticket.id">
+                        <li class="list-group-item list-group-item-action" v-if="ticketList.length > 0"
+                            v-for="ticket in ticketList" :key="ticket.id">
                             <div class="row w-100">
                                 <div class="col-md-1">
                                     <input class="form-check-input" type="checkbox"
@@ -34,13 +34,21 @@
                                 </div>
                             </div>
                         </li>
+                        <li v-else class="list-group-item list-group-item-action fw-bold">
+                            <div class="row w-100">
+                                <div class="col-md-12 text-center">
+                                    {{ $t('home.deployment_center.acceptance_deployment.ticket_modal.no_tickets.text')
+                                    }}
+                                </div>
+                            </div>
+                        </li>
                     </ul>
                 </div>
                 <div class="modal-footer border-0 p-0 justify-content-center">
                     <div class="row w-100 g-1">
                         <div class="col-4 col-md-6 col-lg-6">
                             <button type="submit" class="btn btn-desino w-100 border-0"
-                                :disabled="selectedAcceptanceDeploymentTickets.length > 0 ? false : true">{{
+                                :disabled="selectedAcceptanceDeploymentTickets.length > 0 && isAllowProcess ? false : true">{{
                                     $t('home.deployment_center.acceptance_deployment.ticket_modal.submit_but.text')
                                 }}</button>
                         </div>
@@ -74,6 +82,7 @@ export default {
             isChkAllAcceptanceDeploymentTickets: false,
             ticketList: [],
             selectedAcceptanceDeploymentTickets: [],
+            isAllowProcess: false,
             initiative: {},
             initiativeId: "",
             errors: {},
@@ -93,8 +102,9 @@ export default {
             const passData = {
                 initiative_id: acceptanceDeployment.id,
             }
-            const { content: { tickets, initiative } } = await DeploymentCenterService.getAcceptanceDeploymentTicketsModalData(passData);
+            const { content: { tickets, initiative, isAllowProcess } } = await DeploymentCenterService.getAcceptanceDeploymentTicketsModalData(passData);
             this.initiative = initiative;
+            this.isAllowProcess = isAllowProcess;
             this.ticketList = tickets.map(ticket => ({
                 ...ticket,
                 isChecked: false,

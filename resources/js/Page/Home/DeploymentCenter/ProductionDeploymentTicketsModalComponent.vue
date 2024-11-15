@@ -16,11 +16,19 @@
                                 </div>
                             </div>
                         </li>
-                        <li class="list-group-item list-group-item-action" v-for="ticket in ticketList"
-                            :key="ticket.id">
+                        <li class="list-group-item list-group-item-action" v-if="ticketList.length > 0"
+                            v-for="ticket in ticketList" :key="ticket.id">
                             <div class="row w-100">
                                 <div class="col-md-12" :for="'chk_production_deployment_ticket_' + ticket.ticket.id">
                                     {{ ticket?.ticket.composed_name }}
+                                </div>
+                            </div>
+                        </li>
+                        <li v-else class="list-group-item list-group-item-action fw-bold">
+                            <div class="row w-100">
+                                <div class="col-md-12 text-center">
+                                    {{ $t('home.deployment_center.production_deployment.ticket_modal.no_tickets.text')
+                                    }}
                                 </div>
                             </div>
                         </li>
@@ -29,7 +37,7 @@
                 <div class="modal-footer border-0 p-0 justify-content-center">
                     <div class="row w-100 g-1">
                         <div class="col-4 col-md-6 col-lg-6">
-                            <button type="submit" class="btn btn-desino w-100 border-0">{{
+                            <button type="submit" :disabled="!isAllowProcess" class="btn btn-desino w-100 border-0">{{
                                 $t('home.deployment_center.production_deployment.ticket_modal.submit_but.text')
                                 }}</button>
                         </div>
@@ -64,6 +72,7 @@ export default {
             ticketList: [],
             release: {},
             selectedProductionDeploymentTickets: [],
+            isAllowProcess: false,
             initiative: {},
             initiativeId: "",
             errors: {},
@@ -83,9 +92,10 @@ export default {
             const passData = {
                 initiative_id: productionDeployment.id,
             }
-            const { content: { tickets, release, initiative } } = await DeploymentCenterService.getProductionDeploymentTicketsModalData(passData);
+            const { content: { tickets, release, initiative, isAllowProcess } } = await DeploymentCenterService.getProductionDeploymentTicketsModalData(passData);
             this.release = release;
             this.initiative = initiative;
+            this.isAllowProcess = isAllowProcess;
             this.ticketList = tickets.map(ticket => {
                 const isSelected = false;
                 this.selectedProductionDeploymentTickets.push(ticket.ticket.id);
