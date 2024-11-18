@@ -3,7 +3,7 @@
         <div class="container-fluid">
             <div class="row w-100">
                 <div class="col-sm-6">
-                    <h3 class="m-0">{{ $t('initiative_time_booking.page_title') }}</h3>
+                    <h3 class="m-0">{{ $t('time_mapping.page_title') }}</h3>
                 </div>
             </div>
         </div>
@@ -13,8 +13,8 @@
         <div class="row w-100 mb-3 align-items-center">
             <div class="col-md-2">
                 <select v-model="filter.initiative_id" class="form-select"
-                    @change="getProjectListAndInitiativeTimeBookings($event)">
-                    <option value="">{{ $t('initiative_time_booking.list_filter.initiative') }}</option>
+                    @change="getProjectListAndTimeMappings($event)">
+                    <option value="">{{ $t('time_mapping.list_filter.initiative') }}</option>
                     <option v-for="initiative in initiatives" :key="initiative.id" :value="initiative.id">
                         {{ initiative.name }}
                     </option>
@@ -22,31 +22,31 @@
             </div>
             <div class="col-md-2">
                 <select v-model="filter.project_id" class="form-select" :disabled="disabledProjectList()"
-                    @change="getInitiativeTimeBookings">
-                    <option value="">{{ $t('initiative_time_booking.list_filter.project') }}</option>
+                    @change="getTimeMappings">
+                    <option value="">{{ $t('time_mapping.list_filter.project') }}</option>
                     <option v-for="project in projects" :key="project.id" :value="project.id">
                         {{ project.name }}
                     </option>
                 </select>
             </div>
             <div class="col-md-2">
-                <select v-model="filter.user_id" class="form-select" @change="getInitiativeTimeBookings">
-                    <option value="">{{ $t('initiative_time_booking.list_filter.user') }}</option>
+                <select v-model="filter.user_id" class="form-select" @change="getTimeMappings">
+                    <option value="">{{ $t('time_mapping.list_filter.user') }}</option>
                     <option v-for="user in users" :key="user.id" :value="user.id">
                         {{ user.name }}
                     </option>
                 </select>
             </div>
             <div class="col-md-2">
-                <input v-model="filter.days" :placeholder="$t('initiative_time_booking.list_filter.days')"
-                    class="form-control" type="text" @keyup="getInitiativeTimeBookings" @input="allowOnlyNumbers">
+                <input v-model="filter.days" :placeholder="$t('time_mapping.list_filter.days')" class="form-control"
+                    type="text" @keyup="getTimeMappings" @input="allowOnlyNumbers">
             </div>
             <div class="col-md-2">
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" v-model="filter.include_mapped"
-                        @change="getInitiativeTimeBookings" id="include_mapped">
+                        @change="getTimeMappings" id="include_mapped">
                     <label class="form-check-label fw-bold" for="include_mapped">
-                        {{ $t('initiative_time_booking.list_filter.include_mapped') }}
+                        {{ $t('time_mapping.list_filter.include_mapped') }}
                     </label>
                 </div>
             </div>
@@ -55,8 +55,8 @@
             <div class="col-md-2">
                 <button class="btn btn-desino" type="button"
                     :disabled="!selectedTimeBookings.length > 0 || filter.initiative_id == ''"
-                    @click="bulkAssignProjectForInitiativeTimeBookings">
-                    {{ $t('initiative_time_booking.list.button.bulk_assign_project') }}
+                    @click="bulkAssignProjectForTimeMappings">
+                    {{ $t('time_mapping.list.button.bulk_assign_project') }}
                 </button>
             </div>
         </div>
@@ -66,62 +66,61 @@
                     <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
                         <input class="form-check-input mx-1" type="checkbox" v-model="isChkAllTimeBookings"
                             @change="handleSelectAllTimeBookings">
-                        {{ $t('initiative_time_booking.list_table.date') }}
+                        {{ $t('time_mapping.list_table.date') }}
                     </div>
                     <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
-                        {{ $t('initiative_time_booking.list_table.user') }}
+                        {{ $t('time_mapping.list_table.user') }}
                     </div>
                     <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
-                        {{ $t('initiative_time_booking.list_table.time') }}
+                        {{ $t('time_mapping.list_table.time') }}
                     </div>
                     <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
-                        {{ $t('initiative_time_booking.list_table.initiative_name') }}
+                        {{ $t('time_mapping.list_table.initiative_name') }}
                     </div>
                     <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
-                        {{ $t('initiative_time_booking.list_table.project_name') }}
+                        {{ $t('time_mapping.list_table.project_name') }}
                     </div>
                     <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
-                        {{ $t('initiative_time_booking.list_table.description') }}
+                        {{ $t('time_mapping.list_table.description') }}
                     </div>
                 </div>
             </li>
-            <li v-if="initiativeTimeBookingList.length > 0"
-                v-for="(initiativeTimeBooking, index) in initiativeTimeBookingList" :key="index"
+            <li v-if="timeMappingList.length > 0" v-for="(timeMapping, index) in timeMappingList" :key="index"
                 class="border list-group-item">
                 <div class="row w-100">
                     <div class="col-lg-2 col-md-6 col-6 align-items-center">
-                        <input class="form-check-input" type="checkbox" :id="'chk_ticket_' + initiativeTimeBooking.id"
-                            v-model="initiativeTimeBooking.isChecked"
-                            @change="handleSelectTimeBookings(initiativeTimeBooking)" style="margin-right: 10px;">
-                        {{ initiativeTimeBooking.show_booked_date }}
+                        <input class="form-check-input" type="checkbox" :id="'chk_ticket_' + timeMapping.id"
+                            v-model="timeMapping.isChecked" @change="handleSelectTimeBookings(timeMapping)"
+                            style="margin-right: 10px;">
+                        {{ timeMapping.show_booked_date }}
                     </div>
                     <div class="col-lg-2 col-md-6 col-6">
-                        {{ initiativeTimeBooking.user?.name }}
+                        {{ timeMapping.user?.name }}
                     </div>
                     <div class="col-lg-2 col-md-6 col-6">
-                        {{ initiativeTimeBooking.hours }}
+                        {{ timeMapping.hours }}
                     </div>
                     <div class="col-lg-2 col-md-6 col-6">
-                        {{ initiativeTimeBooking.initiative?.name }}
+                        {{ timeMapping.initiative?.name }}
                     </div>
                     <div class="col-lg-2 col-md-6 col-6">
-                        {{ initiativeTimeBooking.project?.name }}
+                        {{ timeMapping.project?.name }}
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6" v-html="initiativeTimeBooking.comments">
+                    <div class="col-lg-2 col-md-6 col-6" v-html="timeMapping.comments">
                     </div>
                 </div>
             </li>
             <li v-else class="list-group-item border p-4">
-                <div class="col h4 fw-bold text-center">{{ $t('initiative_time_booking.list_table.no_data_text') }}
+                <div class="col h4 fw-bold text-center">{{ $t('time_mapping.list_table.no_data_text') }}
                 </div>
             </li>
         </ul>
         <PaginationComponent :currentPage="Number(currentPage)" :totalPages="Number(totalPages)"
-            @page-changed="getInitiativeTimeBookings" />
-        <div id="initiativeTimeBookingForAssignProjectModal" aria-hidden="true"
-            aria-labelledby="initiativeTimeBookingForAssignProjectLabel" class="modal fade" tabindex="-1">
-            <InitiativeTimeBookingForAssignProjectModalComponent
-                ref="initiativeTimeBookingForAssignProjectModalComponent" @pageUpdated="getInitiativeTimeBookings" />
+            @page-changed="getTimeMappings" />
+        <div id="timeMappingForAssignProjectModal" aria-hidden="true" aria-labelledby="timeMappingForAssignProjectLabel"
+            class="modal fade" tabindex="-1">
+            <TimeMappingForAssignProjectModalComponent ref="timeMappingForAssignProjectModalComponent"
+                @pageUpdated="getTimeMappings" />
         </div>
     </div>
 </template>
@@ -132,16 +131,16 @@ import { Modal } from 'bootstrap';
 import { mapActions, mapGetters } from 'vuex';
 import GlobalMessage from '../../components/GlobalMessage.vue';
 import messageService from '../../services/messageService';
-import InitiativeTimeBookingService from '../../services/InitiativeTimeBookingService';
+import TimeMappingService from '../../services/TimeMappingService';
 import PaginationComponent from '../../components/PaginationComponent.vue';
-import InitiativeTimeBookingForAssignProjectModalComponent from './InitiativeTimeBookingForAssignProjectModalComponent.vue';
 import store from '../../store';
+import TimeMappingForAssignProjectModalComponent from './TimeMappingForAssignProjectModalComponent.vue';
 export default {
-    name: 'InitiativeTimeBookingsComponent',
+    name: 'TimeMappingsComponent',
     components: {
         GlobalMessage,
         PaginationComponent,
-        InitiativeTimeBookingForAssignProjectModalComponent
+        TimeMappingForAssignProjectModalComponent
     },
     data() {
         return {
@@ -150,7 +149,7 @@ export default {
             projects: [],
             selectedTimeBookings: [],
             isChkAllTimeBookings: false,
-            initiativeTimeBookingList: [],
+            timeMappingList: [],
             currentPage: "",
             totalPages: "",
             filter: {
@@ -169,16 +168,16 @@ export default {
     },
     methods: {
         ...mapActions(['setLoading']),
-        async getInitialDataForInitiativeTimeBookings() {
+        async getInitialDataForTimeMappings() {
             try {
-                const { content: { initiatives, users } } = await InitiativeTimeBookingService.getInitialDataForInitiativeTimeBookings();
+                const { content: { initiatives, users } } = await TimeMappingService.getInitialDataForTimeMappings();
                 this.initiatives = initiatives;
                 this.users = users;
             } catch (error) {
                 this.handleError(error);
             }
         },
-        async getInitiativeTimeBookings(page = 1) {
+        async getTimeMappings(page = 1) {
             this.selectedTimeBookings = [];
             this.isChkAllTimeBookings = false;
             this.clearMessages();
@@ -188,8 +187,8 @@ export default {
                     page: page,
                     filter: this.filter
                 }
-                const { content: { data, current_page, last_page } } = await InitiativeTimeBookingService.getInitiativeTimeBookings(params);
-                this.initiativeTimeBookingList = data;
+                const { content: { data, current_page, last_page } } = await TimeMappingService.getTimeMappings(params);
+                this.timeMappingList = data;
                 this.currentPage = current_page;
                 this.totalPages = last_page;
                 this.setLoading(false);
@@ -197,21 +196,21 @@ export default {
                 this.handleError(error);
             }
         },
-        async getProjectListAndInitiativeTimeBookings(event) {
+        async getProjectListAndTimeMappings(event) {
             const initiativeId = event.target.value;
             this.clearMessages();
             try {
                 const params = {
                     initiative_id: initiativeId,
                 }
-                const { content } = await InitiativeTimeBookingService.getProjectListForInitiativeTimeBookings(params);
+                const { content } = await TimeMappingService.getProjectListForTimeMappings(params);
                 this.projects = content;
-                this.getInitiativeTimeBookings();
+                this.getTimeMappings();
             } catch (error) {
                 this.handleError(error);
             }
         },
-        bulkAssignProjectForInitiativeTimeBookings() {
+        bulkAssignProjectForTimeMappings() {
             if (!this.selectedTimeBookings.length > 0) {
                 return false;
             }
@@ -220,8 +219,8 @@ export default {
                 time_booking_ids: this.selectedTimeBookings,
                 initiative_id: this.filter.initiative_id
             }
-            this.$refs.initiativeTimeBookingForAssignProjectModalComponent.getInitialDataForInitiativeTimeBookingsAssignProject(passData);
-            const modalElement = document.getElementById('initiativeTimeBookingForAssignProjectModal');
+            this.$refs.timeMappingForAssignProjectModalComponent.getInitialDataForTimeMappingsAssignProject(passData);
+            const modalElement = document.getElementById('timeMappingForAssignProjectModal');
             if (modalElement) {
                 const modal = new Modal(modalElement);
                 modal.show();
@@ -229,23 +228,23 @@ export default {
         },
         handleSelectAllTimeBookings() {
             this.selectedTimeBookings = [];
-            this.initiativeTimeBookingList = this.initiativeTimeBookingList.map(initiativeTimeBooking => {
-                initiativeTimeBooking.isChecked = this.isChkAllTimeBookings;
+            this.timeMappingList = this.timeMappingList.map(timeMapping => {
+                timeMapping.isChecked = this.isChkAllTimeBookings;
                 if (this.isChkAllTimeBookings) {
-                    this.selectedTimeBookings.push(initiativeTimeBooking.id);
+                    this.selectedTimeBookings.push(timeMapping.id);
                 }
-                return initiativeTimeBooking;
+                return timeMapping;
             });
         },
-        handleSelectTimeBookings(initiativeTimeBooking) {
-            if (initiativeTimeBooking.isChecked) {
-                if (!this.selectedTimeBookings.includes(initiativeTimeBooking.id)) {
-                    this.selectedTimeBookings.push(initiativeTimeBooking.id);
+        handleSelectTimeBookings(timeMapping) {
+            if (timeMapping.isChecked) {
+                if (!this.selectedTimeBookings.includes(timeMapping.id)) {
+                    this.selectedTimeBookings.push(timeMapping.id);
                 }
             } else {
-                this.selectedTimeBookings = this.selectedTimeBookings.filter(id => id !== initiativeTimeBooking.id);
+                this.selectedTimeBookings = this.selectedTimeBookings.filter(id => id !== timeMapping.id);
             }
-            this.isChkAllTimeBookings = this.initiativeTimeBookingList.every(initiativeTimeBooking => initiativeTimeBooking.isChecked);
+            this.isChkAllTimeBookings = this.timeMappingList.every(timeMapping => timeMapping.isChecked);
         },
         allowOnlyNumbers(event) {
             const value = event.target.value.replace(/\D/g, '');
@@ -272,11 +271,11 @@ export default {
         },
     },
     mounted() {
-        this.getInitiativeTimeBookings();
+        this.getTimeMappings();
         this.clearMessages();
-        this.getInitialDataForInitiativeTimeBookings();
+        this.getInitialDataForTimeMappings();
         const setHeaderData = {
-            page_title: this.$t('initiative_time_booking.page_title')
+            page_title: this.$t('time_mapping.page_title')
         }
         store.commit("setHeaderData", setHeaderData);
     },

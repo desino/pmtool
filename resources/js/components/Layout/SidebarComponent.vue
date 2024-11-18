@@ -183,12 +183,11 @@
                         </router-link>
                     </li>
                     <li class="nav-item" v-if="user?.is_admin">
-                        <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('initiative-time-booking') }"
-                            :to="{ name: 'initiative-time-booking' }" class="nav-link text-dark"
-                            @click="unselectHeaderInitiative">
+                        <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('time-mapping') }"
+                            :to="{ name: 'time-mapping' }" class="nav-link text-dark" @click="unselectHeaderInitiative">
                             <i class="bi bi-clock-history mx-2"></i>
                             {{
-                                $t('header.menu.initiative_time_booking')
+                                $t('header.menu.time_mapping')
                             }}
                         </router-link>
                     </li>

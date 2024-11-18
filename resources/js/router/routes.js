@@ -5,7 +5,7 @@ import OpportunityRoutes from "../Page/Opportunity/routes";
 import SolutionDesignRoutes from "../Page/SolutionDesign/routes";
 import TimeBookingRoutes from "../Page/TimeBooking/routes";
 import PlaningRoutes from "../Page/Planning/routes";
-import InitiativeTimeBookingsRoutes from "../Page/InitiativeTimeBooking/routes";
+import TimeMappingRoutes from "../Page/TimeMapping/routes";
 import ProfileRoutes from "../Page/Profile/routes";
 import AllTicketsRoutes from "../Page/AllTickets/routes";
 
@@ -16,7 +16,7 @@ export let routes = [
     ...SolutionDesignRoutes,
     ...TimeBookingRoutes,
     ...PlaningRoutes,
-    ...InitiativeTimeBookingsRoutes,
+    ...TimeMappingRoutes,
     ...ProfileRoutes,
     ...AllTicketsRoutes,
     {
