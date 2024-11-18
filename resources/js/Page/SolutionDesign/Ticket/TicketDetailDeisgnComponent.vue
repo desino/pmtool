@@ -69,7 +69,7 @@
                     </div>
                     <div class="card-body border-0 bg-transparent p-1 align-content-center">
                         <div class="badge rounded-3 bg-success-subtle text-success mb-0">
-                            {{ ticketData.dev_estimation_time ?? ticketData.initial_dev_time }} hrs
+                            {{ ticketData.estimation_time }} hrs
                         </div>
                     </div>
                 </div>
@@ -190,7 +190,7 @@
                                             <div v-if="errors.release_note" class="text-danger mt-2">
                                                 <span v-for="(error, index) in errors.release_note" :key="index">{{
                                                     error
-                                                }}</span>
+                                                    }}</span>
                                             </div>
                                             <button class="btn w-100 btn-desino text-white fw-bold m-2 rounded"
                                                 @click="updateReleaseNote">
@@ -208,7 +208,7 @@
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">{{
                                                         $t('ticket_details_input_dev_estimation_time')
-                                                        }} <strong class="text-danger">*</strong>
+                                                    }} <strong class="text-danger">*</strong>
                                                     </label>
                                                     <input v-model="estimatedHoursFormData.dev_estimation_time"
                                                         :class="{ 'is-invalid': errors.dev_estimation_time }"
@@ -275,7 +275,7 @@
                                                 <div v-if="test_case.observations">
                                                     <span class="bg-desino text-white rounded fw-bold p-2">{{
                                                         $t('ticket_detail_test_case_section_actual_behaviour')
-                                                    }}</span>
+                                                        }}</span>
                                                     <div class="p-2" v-html="test_case.observations">
                                                     </div>
                                                 </div>
