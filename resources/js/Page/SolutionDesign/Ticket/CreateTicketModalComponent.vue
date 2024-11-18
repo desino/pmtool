@@ -75,6 +75,28 @@
                             <span v-for="(error, index) in errors.project_id" :key="index">{{ error }}</span>
                         </div>
                     </div>
+
+                    <div class="row w-100">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" v-model="formData.is_priority" type="checkbox"
+                                    id="is_priority">
+                                <label class="form-check-label fw-bold" for="is_priority">
+                                    {{ $t('create_ticket_modal_checkbox_add_priority_flag') }}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" v-model="formData.is_visible" type="checkbox"
+                                    id="is_visible">
+                                <label class="form-check-label fw-bold" for="is_visible">
+                                    {{ $t('create_ticket_modal_checkbox_mark_as_visible') }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="mb-3">
                         <div class="form-check">
                             <input class="form-check-input" v-model="formData.auto_wait_for_client_approval"
@@ -85,7 +107,8 @@
                             </label>
                         </div>
                         <div v-if="errors.auto_wait_for_client_approval" class="invalid-feedback">
-                            <span v-for="(error, index) in errors.auto_wait_for_client_approval" :key="index">{{ error
+                            <span v-for="(error, index) in errors.auto_wait_for_client_approval" :key="index">{{
+                                error
                                 }}</span>
                         </div>
                     </div>
@@ -115,7 +138,8 @@
                                             :class="{ 'is-invalid': errors[`ticket_actions.${action.id}.user_id`] }"
                                             :id="'user_id' + action.id" class="form-select" :value="action.user_id"
                                             @change="updateUser(action.id, $event.target.value)">
-                                            <option value="">{{ $t('create_ticket_modal_select_action_user_placeholder')
+                                            <option value="">{{
+                                                $t('create_ticket_modal_select_action_user_placeholder')
                                                 }}</option>
                                             <option v-for="user in users" :key="user.id" :value="user.id">
                                                 {{ user.name }}
@@ -197,6 +221,8 @@ export default {
                 project_id: "",
                 type: "",
                 initial_estimation_development_time: "",
+                is_priority: false,
+                is_visible: false,
                 auto_wait_for_client_approval: false,
                 ticket_actions: []
             },

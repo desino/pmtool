@@ -34,6 +34,8 @@ class TicketRequest extends FormRequest
             ],
             'initiative_id' => 'nullable',
             'type' => 'required',
+            'is_priority' => 'nullable',
+            'is_visible' => 'nullable',
             'auto_wait_for_client_approval' => 'nullable',
             'project_id' => 'nullable',
             'ticket_actions.*.user_id' => 'required|exists:users,id',

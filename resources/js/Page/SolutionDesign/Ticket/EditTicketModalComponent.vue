@@ -73,6 +73,26 @@
                             <span v-for="(error, index) in errors.project_id" :key="index">{{ error }}</span>
                         </div>
                     </div>
+                    <div class="row w-100">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" v-model="formData.is_priority" type="checkbox"
+                                    id="is_priority_edit">
+                                <label class="form-check-label fw-bold" for="is_priority_edit">
+                                    {{ $t('create_ticket_modal_checkbox_add_priority_flag') }}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" v-model="formData.is_visible" type="checkbox"
+                                    id="is_visible_edit">
+                                <label class="form-check-label fw-bold" for="is_visible_edit">
+                                    {{ $t('create_ticket_modal_checkbox_mark_as_visible') }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                     <div class="mb-3">
                         <div class="form-check">
                             <input class="form-check-input" v-model="formData.auto_wait_for_client_approval"
@@ -231,6 +251,8 @@ export default {
                 initial_estimation_development_time: ticket.initial_estimation_development_time,
                 project_id: ticket.project_id,
                 auto_wait_for_client_approval: ticket.auto_wait_for_client_approval == 1 ?? false,
+                is_priority: ticket.is_priority == 1 ?? false,
+                is_visible: ticket.is_visible == 1 ?? false,
             };
         },
         updateUser(actionId, userId) {
