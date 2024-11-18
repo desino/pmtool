@@ -81,8 +81,8 @@ class MyTicketController extends Controller
             })
             ->groupBy('tickets.id', 'tickets.initiative_id', 'tickets.name', 'tickets.functionality_id', 'tickets.composed_name', 'tickets.asana_task_id', 'tickets.macro_status')
             ->orderBy('tickets.id')
-            ->paginate(10);
-        // ->get(10);
+            ->get();
+        // ->paginate(10);
         $meta['task_type'] = Ticket::getAllTypes();
         $meta['macro_status'] = Ticket::getAllMacroStatus();
         return ApiHelper::response(true, '', $tickets, 200, $meta);

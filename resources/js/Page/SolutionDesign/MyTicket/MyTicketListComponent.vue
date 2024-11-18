@@ -171,7 +171,7 @@ export default {
                     filters: this.filter
                 }
                 const { content, meta_data } = await MyTicketService.getMyTickets(params);
-                this.tickets = content.data;
+                this.tickets = content;
                 this.currentPage = content.current_page;
                 this.totalPages = content.last_page;
                 this.filterTaskTypes = meta_data.task_type;

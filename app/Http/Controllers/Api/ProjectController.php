@@ -20,7 +20,7 @@ class ProjectController extends Controller
         if (!$authUser->is_admin) {
             return ApiHelper::response(false, __('messages.initiative.dont_have_permission'), null, 404);
         }
-        $perPage = $request->input('per_page', 10);
+        // $perPage = $request->input('per_page', 30);
 
         $filters = $request->post('filters');
         $projects = Project::select(
@@ -61,7 +61,7 @@ class ProjectController extends Controller
                 }
             )
             ->orderBy('id', 'desc')
-            ->paginate($perPage);
+            ->paginate(30);
         $parsedProjects = ApiHelper::parsePagination($projects);
         $responseData = [
             'projects' => $parsedProjects,

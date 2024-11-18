@@ -52,7 +52,7 @@ class DeploymentController extends Controller
                     });
                 });
             })
-            ->paginate(10);
+            ->paginate(30);
         return ApiHelper::response(true, '', $release, 200);
     }
 

@@ -25,7 +25,7 @@ class InitiativeService
                 $q->client($filters['client_id']);
             })
             ->orderBy('id', 'desc')
-            ->paginate($perPage);
+            ->paginate(30);
         return $initiative;
     }
 
