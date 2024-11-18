@@ -214,7 +214,7 @@
                         <span class="badge text-desino d-block d-lg-none p-2 fw-bold text-center rounded-top">
                             {{ $t('ticket.list.estimation_hours') }}
                         </span>
-                        {{ task.dev_estimation_time ?? task.initial_estimation_development_time }}
+                        {{ task.estimation_time }}
                     </div>
                     <div class="col-lg-1 col-md-4 col-4">
                         <span class="badge text-desino d-block d-lg-none p-2 fw-bold text-center rounded-top">

@@ -190,7 +190,7 @@
                                             <div v-if="errors.release_note" class="text-danger mt-2">
                                                 <span v-for="(error, index) in errors.release_note" :key="index">{{
                                                     error
-                                                    }}</span>
+                                                }}</span>
                                             </div>
                                             <button class="btn w-100 btn-desino text-white fw-bold m-2 rounded"
                                                 @click="updateReleaseNote">
@@ -208,7 +208,7 @@
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">{{
                                                         $t('ticket_details_input_dev_estimation_time')
-                                                    }} <strong class="text-danger">*</strong>
+                                                        }} <strong class="text-danger">*</strong>
                                                     </label>
                                                     <input v-model="estimatedHoursFormData.dev_estimation_time"
                                                         :class="{ 'is-invalid': errors.dev_estimation_time }"
@@ -275,7 +275,7 @@
                                                 <div v-if="test_case.observations">
                                                     <span class="bg-desino text-white rounded fw-bold p-2">{{
                                                         $t('ticket_detail_test_case_section_actual_behaviour')
-                                                        }}</span>
+                                                    }}</span>
                                                     <div class="p-2" v-html="test_case.observations">
                                                     </div>
                                                 </div>
@@ -415,6 +415,7 @@ export default {
                 is_show_pre_action_but: false,
                 is_allow_dev_estimation_time: false,
                 user_actions_count: 0,
+                estimation_time: 0,
             },
             currentActionFormData: {
                 ticket_id: '',
@@ -540,6 +541,7 @@ export default {
             this.ticketData.composed_name = content.composed_name;
             this.ticketData.initial_dev_time = content.initial_estimation_development_time;
             this.ticketData.dev_estimation_time = content.dev_estimation_time;
+            this.estimatedHoursFormData.dev_estimation_time = content.dev_estimation_time;
             this.ticketData.task_type = content.type_label;
             this.ticketData.status_label = content.status_label;
             this.ticketData.functionality_name = content?.functionality?.name.length > 0 ? content.initiative?.name + ' - ' + content?.functionality?.name : content.initiative?.name;
@@ -560,6 +562,7 @@ export default {
             this.ticketData.is_show_pre_action_but = content.is_show_pre_action_but;
             this.ticketData.is_allow_dev_estimation_time = content.is_allow_dev_estimation_time;
             this.ticketData.is_disable_action_user = content.is_disable_action_user;
+            this.ticketData.estimation_time = content.estimation_time;
             this.currentAction = content.current_action;
             this.currentActionFormData.user_id = content.current_action?.user_id;
             this.currentActionFormData.status = content.current_action?.status;

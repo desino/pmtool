@@ -427,18 +427,22 @@ class TicketController extends Controller
             return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
         }
 
-        $ticket = Ticket::with([
-            'functionality',
-            'initiative',
-            'initiative.functionalOwner',
-            'initiative.qualityOwner',
-            'initiative.technicalOwner',
-            'currentAction',
-            'nextAction',
-            'previousAction',
-            'testCases',
-            'actions'
-        ])
+        $ticket = Ticket::select(
+            '*',
+            DB::RAW('IF(dev_estimation_time > 0, dev_estimation_time,initial_estimation_development_time) as estimation_time')
+        )
+            ->with([
+                'functionality',
+                'initiative',
+                'initiative.functionalOwner',
+                'initiative.qualityOwner',
+                'initiative.technicalOwner',
+                'currentAction',
+                'nextAction',
+                'previousAction',
+                'testCases',
+                'actions',
+            ])
             ->withCount([
                 'actions' => function ($query) {
                     $query->where('user_id', Auth::id());
