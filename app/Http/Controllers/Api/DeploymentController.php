@@ -21,7 +21,7 @@ class DeploymentController extends Controller
         $status = false;
         $initiative = InitiativeService::getInitiative($request, $initiative_id);
         if (!$initiative) {
-            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 404);
         }
         $filters = $request->filters;
         $release = Release::select(

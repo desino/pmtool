@@ -22,10 +22,15 @@ class SolutionDesignController extends Controller
 {
     public function index(Request $request)
     {
-        // $authUser = Auth::user();
-        // if (!$authUser->is_admin) {
-        //     return ApiHelper::response(false, __('messages.solution_design.dont_have_permission'), null, 404);
-        // }
+        // return ApiHelper::response(false, __('messages.solution_design.dont_have_permission'), null, 404);
+        $authUser = Auth::user();
+        if (!$authUser->is_admin) {
+            return ApiHelper::response(false, __('messages.solution_design.dont_have_permission'), null, 404);
+        }
+        $initiative = InitiativeService::getInitiative($request, $request->get('initiative_id'));
+        if (!$initiative) {
+            return ApiHelper::response(false, __('messages.solution_design.section.initiative_not_exist'), '', 404);
+        }
         $getSectionsWithFunctionalities = SolutionDesignService::getSectionsWithFunctionalities($request);
         return ApiHelper::response(true, '', $getSectionsWithFunctionalities, 200);
     }

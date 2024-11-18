@@ -55,6 +55,11 @@
     }
 }
 
+.form-select,
+.form-control {
+    height: 40px !important;
+}
+
 // for multi select customization
 
 .multiselect__option--selected.multiselect__option--highlight,
@@ -87,8 +92,8 @@
 // }
 
 .multiselect__tags {
-    // min-height: 38px !important;
-    // height: 38px !important;
+    //min-height: 38px !important;
+    //height: 38px !important;
     display: block;
     width: 100%;
     padding: 4px 40px 0px 12px !important;
@@ -126,9 +131,9 @@
 }
 
 
-.multiselect {
-    height: 44px !important;
-}
+//.multiselect {
+//    height: 44px !important;
+//}
 
 .multiselect__tag {
     position: relative;
