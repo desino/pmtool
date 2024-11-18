@@ -255,7 +255,7 @@
                             :title="$t('ticket_details.time_booking')">
                             <i class="bi bi-clock-history"></i>
                         </a>
-                        <a v-if="user?.is_admin" class="text-danger" href="javascript:"
+                        <a v-if="user?.is_admin && !task.is_ticket_done" class="text-danger" href="javascript:"
                             @click.stop="deleteTicket(task)">
                             <i class="bi bi-trash3"></i>
                         </a>
@@ -354,6 +354,14 @@ export default {
             errors: {},
             showMessage: true,
             options: ['Select option', 'Disable me!', 'Reset me!', 'mulitple', 'label', 'searchable']
+        }
+    },
+    watch: {
+        initiative_id: {
+            handler(newValue, oldValue) {
+                this.resetFilter();
+            },
+            deep: true
         }
     },
     computed: {
@@ -653,17 +661,16 @@ export default {
             messageService.clearMessage();
         },
         resetFilter() {
-            this.filter = {
-                task_name: "",
-                task_type: "",
-                action_owner: "",
-                next_action_owner: "",
-                functionalities: [],
-                projects: [],
-                macro_status: [],
-                is_open_task: false,
-                is_include_done: true
-            }
+            this.filter.task_name = "";
+            this.filter.task_type = "";
+            this.filter.action_owner = "";
+            this.filter.next_action_owner = "";
+            this.filter.functionalities = [];
+            this.filter.projects = [];
+            this.filter.macro_status = [];
+            this.filter.is_open_task = false;
+            this.filter.is_include_done = false;
+            this.filter.deployment_id = "";
         },
         setDeploymentIdForFilter() {
             let deploymentId = "";

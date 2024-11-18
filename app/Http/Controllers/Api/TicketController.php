@@ -251,7 +251,8 @@ class TicketController extends Controller
             'is_visible',
             'initial_estimation_development_time',
             'dev_estimation_time',
-            DB::raw('IF(dev_estimation_time IS NULL OR dev_estimation_time = 0, initial_estimation_development_time, dev_estimation_time) as estimation_time'),
+            DB::RAW('IF(dev_estimation_time > 0, dev_estimation_time,initial_estimation_development_time) as estimation_time'),
+            DB::RAW('IF(macro_status = ' . Ticket::MACRO_STATUS_DONE . ', true,false) as is_ticket_done'),
         )
             ->with(['project' => function ($q) {
                 $q->select(
@@ -995,8 +996,16 @@ class TicketController extends Controller
         if (!$ticket) {
             return ApiHelper::response($status, __('messages.ticket.ticket_not_exist'), '', 400);
         }
+        if ($ticket && $ticket->macro_status == Ticket::MACRO_STATUS_DONE) {
+            return ApiHelper::response($status, __('messages.ticket.delete_ticket_not_allowed_because_ticket_already_done'), '', 400);
+        }
         if ($ticket->time_bookings_count > 0) {
             return ApiHelper::response($status, __('messages.ticket.delete_ticket_not_allowed_because_time_bookings_exist'), '', 400);
+        }
+
+        $task = $this->asanaService->deleteTask($ticket->asana_task_id);
+        if ($task['error_status']) {
+            return ApiHelper::response($status, __('messages.asana.delete_ticket.delete_error'), '', 400);
         }
 
         $status = true;

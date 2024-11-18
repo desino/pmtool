@@ -304,6 +304,8 @@
     "messages.home.deployment_center.test_deployment.no_permission": "You don't have permission to perform this action.",
     "messages.home.deployment_center.acceptance_deployment.no_permission": "You don't have permission to perform this action.",
     "messages.home.deployment_center.production_deployment.no_permission": "You don't have permission to perform this action.",
+    "messages.ticket.delete_ticket_not_allowed_because_ticket_already_done": "You are not allowed to delete this ticket because it is already done.",
+    "messages.asana.delete_ticket.delete_error": "Error while deleting ticket in Asana.",
     "login_title": "Login",
     "login_page_title": "Login",
     "login_input_email": "Email",

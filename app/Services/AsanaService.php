@@ -111,8 +111,16 @@ class AsanaService
 
     public function deleteTask($taskId)
     {
-        $response = $this->client->delete("tasks/{$taskId}");
-        return json_decode($response->getBody()->getContents(), true);
+        $isErrorFromAsana = false;
+        try {
+            $this->response = $this->client->delete("tasks/{$taskId}");
+        } catch (ClientException $e) {
+            Log::error('Asana API Error', [
+                'error' => $e->getMessage(),
+            ]);
+            $isErrorFromAsana = true;
+        }
+        return $this->parsResponse($this->response, isError: $isErrorFromAsana);
     }
 
     public function createProject($data)
