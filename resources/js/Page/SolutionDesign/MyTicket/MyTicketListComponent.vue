@@ -17,7 +17,7 @@
                 <div class="form-check ms-auto">
                     <input v-model="filter.is_include_done" @change="getMyTickets" class="form-check-input"
                         type="checkbox" id="is_include_done">
-                    <label class="form-check-label" for="is_include_done">
+                    <label class="form-check-label fw-bold" for="is_include_done">
                         {{ $t('my_ticket.filter.is_include_done') }}
                     </label>
                 </div>
@@ -189,7 +189,8 @@ export default {
             }
         },
         redirectTaskDetailPage(ticket) {
-            this.$router.push({ name: 'task.detail', params: { initiative_id: this.initiative_id, ticket_id: ticket.id } });
+            const ticketDetailRoute = this.$router.resolve({ name: 'task.detail', params: { initiative_id: this.initiative_id, ticket_id: ticket.id } });
+            window.open(ticketDetailRoute.href, '_blank');
         },
         handleError(error) {
             if (error.type === 'validation') {

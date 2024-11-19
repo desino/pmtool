@@ -192,9 +192,10 @@
                         <span class="badge text-desino d-block d-md-none p-2 fw-bold text-center rounded-top">
                             {{ $t('ticket.list.column_project') }}
                         </span>
-                        <multiselect v-model="task.project" :options="projects" :searchable="true" deselect-label=""
-                            label="name" :placeholder="$t('ticket.filter.projects_placeholder')" track-by="id"
-                            :ref="'taskProjectDropdowns-' + index" @open="storePreviousProject(task.project, index)"
+                        <multiselect @click.stop v-model="task.project" :options="projects" :searchable="true"
+                            deselect-label="" label="name" :placeholder="$t('ticket.filter.projects_placeholder')"
+                            track-by="id" :ref="'taskProjectDropdowns-' + index"
+                            @open="storePreviousProject(task.project, index)"
                             @select="assignOrRemoveProjectForTask(task.id, 'assign', index, $event)"
                             @Remove="assignOrRemoveProjectForTask(task.id, 'remove', index, $event)">
                         </multiselect>
@@ -237,7 +238,8 @@
                             href="javascript:" @click.stop="editTaskPopup(task)">
                             <i class="bi bi-pencil-square"></i>
                         </a>
-                        <a class="me-1" v-if="task.asana_task_link" :href="task.asana_task_link" target="_blank">
+                        <a class="me-1" v-if="task.asana_task_link" :href="task.asana_task_link" target="_blank"
+                            @click.stop>
                             <svg fill="none" height="21px" viewBox="0 0 24 24" width="21px"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path clip-rule="evenodd"
@@ -687,7 +689,8 @@ export default {
             return '';
         },
         redirectTaskDetailPage(task) {
-            this.$router.push({ name: 'task.detail', params: { initiative_id: this.initiative_id, ticket_id: task.id } });
+            const ticketDetailRoute = this.$router.resolve({ name: 'task.detail', params: { initiative_id: this.initiative_id, ticket_id: task.id } });
+            window.open(ticketDetailRoute.href, '_blank');
         }
     },
     mounted() {

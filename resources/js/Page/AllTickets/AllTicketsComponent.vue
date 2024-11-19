@@ -160,7 +160,7 @@
                             href="javascript:" @click.stop="editTicketPopup(ticket)">
                             <i class="bi bi-pencil-square"></i>
                         </a>
-                        <a v-if="ticket.asana_task_link" :href="ticket.asana_task_link" target="_blank">
+                        <a v-if="ticket.asana_task_link" @click.stop :href="ticket.asana_task_link" target="_blank">
                             <svg fill="none" height="21px" viewBox="0 0 24 24" width="21px"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path clip-rule="evenodd"
@@ -278,7 +278,8 @@ export default {
             }
         },
         redirectTaskDetailPage(ticket) {
-            this.$router.push({ name: 'task.detail', params: { initiative_id: ticket.initiative_id, ticket_id: ticket.id } });
+            const ticketDetailRoute = this.$router.resolve({ name: 'task.detail', params: { initiative_id: ticket.initiative_id, ticket_id: ticket.id } });
+            window.open(ticketDetailRoute.href, '_blank');
         },
         editTicketPopup(ticket) {
             const passData = {
