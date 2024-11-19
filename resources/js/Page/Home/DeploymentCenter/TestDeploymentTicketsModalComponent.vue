@@ -1,5 +1,5 @@
 <template>
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <form @submit.prevent="submitTestDeploymentTicket">
             <div class="modal-content border-0">
                 <div class="modal-header text-white bg-desino border-0 py-2 justify-content-center">
@@ -16,8 +16,11 @@
                                         v-model="isChkAllTestDeploymentTickets"
                                         @change="handleSelectAllTestDeploymentTickets">
                                 </div>
-                                <div class="col-md-11">
+                                <div class="col-md-8">
                                     {{ $t('home.deployment_center.test_deployment.ticket_modal.li.name.text') }}
+                                </div>
+                                <div class="col-md-3">
+                                    {{ $t('home.deployment_center.test_deployment.ticket_modal.li.develop_by.text') }}
                                 </div>
                             </div>
                         </li>
@@ -29,8 +32,17 @@
                                         :id="'chk_test_deployment_ticket_' + ticket.id" v-model="ticket.isChecked"
                                         @change="handleSelectTestDeploymentTicket(ticket)">
                                 </div>
-                                <div class="col-md-11" :for="'chk_test_deployment_ticket_' + ticket.id">
+                                <div class="col-md-8 d-flex align-content-center"
+                                    :for="'chk_test_deployment_ticket_' + ticket.id">
                                     {{ ticket?.composed_name }}
+                                    <router-link target="_blank"
+                                        :to="{ name: 'task.detail', params: { initiative_id: ticket.initiative_id, ticket_id: ticket.id } }"
+                                        class="fs-5 ms-2">
+                                        <i class="bi bi-link-45deg"></i>
+                                    </router-link>
+                                </div>
+                                <div class="col-md-3" :for="'chk_test_deployment_ticket_' + ticket.id">
+                                    {{ ticket?.develop_action?.user?.name }}
                                 </div>
                             </div>
                         </li>

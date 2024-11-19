@@ -48,7 +48,15 @@ class DeploymentCenterController extends Controller
             ->with([
                 'actions' => function ($q) {
                     $q->select('ticket_id', 'user_id', 'action');
-                }
+                },
+                'developAction' => function ($q) {
+                    $q->select('ticket_id', 'user_id', 'action');
+                    $q->with([
+                        'user' => function ($q) {
+                            $q->select('id', 'name');
+                        },
+                    ]);
+                },
             ])
             ->where('initiative_id', $initiativeId)
             ->readyForTestStatus()
@@ -126,7 +134,15 @@ class DeploymentCenterController extends Controller
             ->with([
                 'actions' => function ($q) {
                     $q->select('ticket_id', 'user_id', 'action');
-                }
+                },
+                'developAction' => function ($q) {
+                    $q->select('ticket_id', 'user_id', 'action');
+                    $q->with([
+                        'user' => function ($q) {
+                            $q->select('id', 'name');
+                        },
+                    ]);
+                },
             ])
             ->where('initiative_id', $initiativeId)
             ->readyForAcceptanceStatus()
@@ -201,7 +217,19 @@ class DeploymentCenterController extends Controller
         $retTickets = collect([]);
         $releaseTickets = ReleaseTicket::with([
             'ticket' => function ($q) {
-                $q->with('actions');
+                $q->with(
+                    [
+                        'actions',
+                        'developAction' => function ($q) {
+                            $q->select('ticket_id', 'user_id', 'action');
+                            $q->with([
+                                'user' => function ($q) {
+                                    $q->select('id', 'name');
+                                },
+                            ]);
+                        },
+                    ]
+                );
             },
             'release'
         ])
