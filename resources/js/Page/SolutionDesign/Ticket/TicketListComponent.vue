@@ -179,7 +179,9 @@
                                 <input class="form-check-input" type="checkbox" :id="'chk_ticket_' + task.id"
                                     v-model="task.isChecked" @click.stop @change="handleSelectTasks(task)">
                             </div>
-                            <div class="col-auto" style="width: calc(100% - 40px)">
+                            <div class="col-auto" style="width: calc(100% - 40px)" data-bs-toggle="tooltip"
+                                data-bs-html="true" data-bs-placement="bottom"
+                                :title="tooltipContentForTicketName(task)">
                                 {{ task.composed_name }}
                             </div>
                         </div>
@@ -234,12 +236,14 @@
                             class="text-success me-1">
                             <i class="bi bi-box-arrow-up-right fw-bold"></i>
                         </router-link> -->
-                        <a :title="$t('ticket.list.column.action.edit_text')" class="text-desino me-1"
+                        <a data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            :title="$t('ticket.list.column.action.edit_text')" class="text-desino me-1"
                             href="javascript:" @click.stop="editTaskPopup(task)">
                             <i class="bi bi-pencil-square"></i>
                         </a>
-                        <a class="me-1" v-if="task.asana_task_link" :href="task.asana_task_link" target="_blank"
-                            @click.stop>
+                        <a class="me-1" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            :title="$t('ticket.list.column.action.asana_text')" v-if="task.asana_task_link"
+                            :href="task.asana_task_link" target="_blank" @click.stop>
                             <svg fill="none" height="21px" viewBox="0 0 24 24" width="21px"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path clip-rule="evenodd"
@@ -254,11 +258,13 @@
                             </svg>
                         </a>
                         <a href="javascript:" class="me-1" @click.stop="handleTimeBooking(task)"
+                            data-bs-toggle="tooltip" data-bs-placement="bottom"
                             :title="$t('ticket_details.time_booking')">
                             <i class="bi bi-clock-history"></i>
                         </a>
                         <a v-if="user?.is_admin && !task.is_ticket_done" class="text-danger" href="javascript:"
-                            @click.stop="deleteTicket(task)">
+                            @click.stop="deleteTicket(task)" data-bs-toggle="tooltip"
+                            :title="$t('ticket_details.delete_text')" data-bs-placement="bottom">
                             <i class="bi bi-trash3"></i>
                         </a>
                     </div>
@@ -302,13 +308,14 @@ import { mapActions, mapGetters } from 'vuex';
 import ticketService from "../../../services/TicketService";
 import Multiselect from "vue-multiselect";
 import AssignProjectModalComponent from "./AssignProjectModalComponent.vue";
-import { Modal } from 'bootstrap';
+import { Modal, Tooltip } from 'bootstrap';
 import showToast from '../../../utils/toasts';
 import eventBus from "@/eventBus.js";
 import EditTicketModalComponent from './EditTicketModalComponent.vue';
 import CreateReleaseModalComponent from './CreateReleaseModalComponent.vue';
 import store from '../../../store';
 import TimeBookingForTicketDetailComponent from './TimeBookingForTicketDetailComponent.vue';
+
 
 export default {
     name: 'TicketListComponent',
@@ -355,7 +362,7 @@ export default {
             prdMacroStatus: "",
             errors: {},
             showMessage: true,
-            options: ['Select option', 'Disable me!', 'Reset me!', 'mulitple', 'label', 'searchable']
+            tooltipBtn: null,
         }
     },
     watch: {
@@ -398,10 +405,6 @@ export default {
                 this.initiative = response.meta_data.initiative;
                 this.filterMacroStatus = response.meta_data.macro_status;
                 this.prdMacroStatus = response.meta_data.prd_macro_status;
-                // this.tasks = response.content.data.map(task => ({
-                //     ...task,
-                //     isChecked: false,
-                // }));
                 this.tasks = response.content.map(task => ({
                     ...task,
                     isChecked: false,
@@ -413,6 +416,7 @@ export default {
                     }
                     store.commit("setHeaderData", setHeaderData);
                 }, 100)
+                this.initializeTooltips();
             } catch (error) {
                 this.handleError(error);
             }
@@ -691,7 +695,18 @@ export default {
         redirectTaskDetailPage(task) {
             const ticketDetailRoute = this.$router.resolve({ name: 'task.detail', params: { initiative_id: this.initiative_id, ticket_id: task.id } });
             window.open(ticketDetailRoute.href, '_blank');
-        }
+        },
+        initializeTooltips() {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            tooltipTriggerList.forEach((tooltipTriggerEl) => {
+                new Tooltip(tooltipTriggerEl);
+            });
+        },
+        tooltipContentForTicketName(task) {
+            const createdAtLabel = this.$t('ticket.list.row_hover_tooltip_created_at_text');
+            const createdByLabel = this.$t('ticket.list.row_hover_tooltip_created_by_text');
+            return `<strong>${createdAtLabel}</strong>${task.display_created_at}<br><strong>${createdByLabel}</strong>${task.display_created_by}`;
+        },
     },
     mounted() {
         eventBus.$emit('selectHeaderInitiativeId', this.initiative_id);

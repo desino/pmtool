@@ -35,6 +35,8 @@ class MyTicketController extends Controller
             'tickets.macro_status',
             'tickets.is_visible',
             'tickets.is_priority',
+            'tickets.created_at',
+            'tickets.created_by',
         )
             ->with([
                 'currentAction' => function ($q) {

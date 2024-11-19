@@ -245,6 +245,7 @@ class TicketController extends Controller
             'type',
             'project_id',
             'created_at',
+            'created_by',
             'asana_task_id',
             'functionality_id',
             'initiative_id',
@@ -281,7 +282,7 @@ class TicketController extends Controller
                         );
                     }]);
                 }]);
-            }, 'initiative', 'currentAction', 'releaseTickets'])
+            }, 'initiative', 'currentAction', 'releaseTickets', 'createdBy'])
             ->withCount([
                 'actions',
                 'doneActions',

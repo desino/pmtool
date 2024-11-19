@@ -57,7 +57,9 @@
                                 }" style="width: 10px; height: 100%; left: 0; top: 0;">
                                 </div>
                             </div>
-                            <div class="col-auto" style="width: calc(100% - 40px)">
+                            <div class="col-auto" style="width: calc(100% - 40px)" data-bs-toggle="tooltip"
+                                data-bs-html="true" data-bs-placement="bottom"
+                                :title="tooltipContentForTicketName(ticket)">
                                 {{ ticket.composed_name }}
                             </div>
                         </div>
@@ -73,7 +75,9 @@
                         {{ ticket?.current_action?.action_name }}
                     </div>
                     <div class="col-lg-1 col-md-6 col-6 py-2 d-none d-lg-block text-lg-end">
-                        <a v-if="ticket.asana_task_link" @click.stop :href="ticket.asana_task_link" target="_blank">
+                        <a v-if="ticket.asana_task_link" @click.stop :href="ticket.asana_task_link" target="_blank"
+                            data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            :title="$t('ticket.list.column.action.asana_text')">
                             <svg fill="none" height="21px" viewBox="0 0 24 24" width="21px"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path clip-rule="evenodd"
@@ -88,6 +92,7 @@
                             </svg>
                         </a>
                         <a class="ms-2" href="javascript:" @click.stop="handleTimeBooking(ticket)"
+                            data-bs-toggle="tooltip" data-bs-placement="bottom"
                             :title="$t('ticket_details.time_booking')">
                             <i class="bi bi-clock-history"></i>
                         </a>
@@ -113,7 +118,7 @@
 import globalMixin from '@/globalMixin';
 import { mapActions, mapGetters } from 'vuex';
 import showToast from '../../../utils/toasts';
-import { Modal } from 'bootstrap';
+import { Modal, Tooltip } from 'bootstrap';
 import GlobalMessage from '../../../components/GlobalMessage.vue';
 import messageService from '../../../services/messageService';
 import MyTicketService from '../../../services/MyTicketService';
@@ -175,7 +180,8 @@ export default {
                 this.currentPage = content.current_page;
                 this.totalPages = content.last_page;
                 this.filterTaskTypes = meta_data.task_type;
-                this.setLoading(false);
+                await this.setLoading(false);
+                this.initializeTooltips();
             } catch (error) {
                 this.handleError(error);
             }
@@ -191,6 +197,17 @@ export default {
         redirectTaskDetailPage(ticket) {
             const ticketDetailRoute = this.$router.resolve({ name: 'task.detail', params: { initiative_id: this.initiative_id, ticket_id: ticket.id } });
             window.open(ticketDetailRoute.href, '_blank');
+        },
+        initializeTooltips() {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            tooltipTriggerList.forEach((tooltipTriggerEl) => {
+                new Tooltip(tooltipTriggerEl);
+            });
+        },
+        tooltipContentForTicketName(ticket) {
+            const createdAtLabel = this.$t('ticket.list.row_hover_tooltip_created_at_text');
+            const createdByLabel = this.$t('ticket.list.row_hover_tooltip_created_by_text');
+            return `<strong>${createdAtLabel}</strong>${ticket.display_created_at}<br><strong>${createdByLabel}</strong>${ticket.display_created_by}`;
         },
         handleError(error) {
             if (error.type === 'validation') {
