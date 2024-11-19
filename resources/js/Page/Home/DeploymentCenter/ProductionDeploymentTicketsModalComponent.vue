@@ -28,7 +28,7 @@
                                     {{ ticket?.ticket.composed_name }}
                                     <router-link target="_blank"
                                         :to="{ name: 'task.detail', params: { initiative_id: ticket?.ticket.initiative_id, ticket_id: ticket?.ticket.id } }"
-                                        class="fs-5 ms-2">
+                                        class="ms-2">
                                         <i class="bi bi-link-45deg"></i>
                                     </router-link>
                                 </div>
@@ -52,7 +52,7 @@
                         <div class="col-4 col-md-6 col-lg-6">
                             <button type="submit" :disabled="!isAllowProcess" class="btn btn-desino w-100 border-0">{{
                                 $t('home.deployment_center.production_deployment.ticket_modal.submit_but.text')
-                                }}</button>
+                            }}</button>
                         </div>
                         <div class="col-4 col-md-6 col-lg-6">
                             <button type="button" class="btn btn-danger w-100 border-0" data-bs-dismiss="modal">

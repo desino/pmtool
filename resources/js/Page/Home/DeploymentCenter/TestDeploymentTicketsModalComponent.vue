@@ -37,7 +37,7 @@
                                     {{ ticket?.composed_name }}
                                     <router-link target="_blank"
                                         :to="{ name: 'task.detail', params: { initiative_id: ticket.initiative_id, ticket_id: ticket.id } }"
-                                        class="fs-5 ms-2">
+                                        class="ms-2">
                                         <i class="bi bi-link-45deg"></i>
                                     </router-link>
                                 </div>
