@@ -314,8 +314,6 @@ class TicketService
         } else if ($ticketStatus == Ticket::getStatusDone()) {
             $macroStatus = Ticket::MACRO_STATUS_DONE;
         }
-        // echo $macroStatus;
-        // exit;
         $ticket->macro_status = $macroStatus;
         $ticket->save();
     }
