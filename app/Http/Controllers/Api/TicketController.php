@@ -200,7 +200,7 @@ class TicketController extends Controller
                 // TicketService::deleteActions($ticket->id);
                 TicketService::insertTicketActions($ticket->id, $validateData['ticket_actions'], $validateData['auto_wait_for_client_approval']);
                 TicketService::updateTicketStatus($ticket);
-                TicketService::createMacroStatusAndUpdateTicket($ticket);
+                TicketService::createMacroStatusAndUpdateTicket($ticket, true);
             }
             $retData = [
                 'ticket' => $ticket,

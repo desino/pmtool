@@ -280,7 +280,7 @@ class TicketService
         $ticket->save();
     }
 
-    public static function createMacroStatusAndUpdateTicket($ticket)
+    public static function createMacroStatusAndUpdateTicket($ticket, $isUpdateFromEditTicket = false)
     {
         $ticketStatus = $ticket->status;
         $ticketCurrentAction = $ticket->currentAction->action ?? 0;
@@ -295,10 +295,18 @@ class TicketService
             $macroStatus = Ticket::MACRO_STATUS_DEVELOP;
         } else if ($ticketCurrentAction == TicketAction::getActionTest() && $ticketStatus == Ticket::getStatusReadyForTest()) {
             $macroStatus = Ticket::MACRO_STATUS_TEST_WAIT_FOR_DEPLOYMENT_TO_TEST;
+            if ($isUpdateFromEditTicket && $ticket->macro_status == Ticket::MACRO_STATUS_TEST) {
+                $ticket->status = Ticket::getStatusOngoing();
+                $macroStatus = Ticket::MACRO_STATUS_TEST;
+            }
         } else if ($ticketCurrentAction == TicketAction::getActionTest() && $ticketStatus == Ticket::getStatusOngoing()) {
             $macroStatus = Ticket::MACRO_STATUS_TEST;
         } else if ($ticketCurrentAction == TicketAction::getActionValidate() && $ticketStatus == Ticket::getStatusReadyForACC()) {
             $macroStatus = Ticket::MACRO_STATUS_VALIDATE_WAITING_FOR_DEPLOYMENT_TO_ACC;
+            if ($isUpdateFromEditTicket && $ticket->macro_status == Ticket::MACRO_STATUS_VALIDATE) {
+                $ticket->status = Ticket::getStatusOngoing();
+                $macroStatus = Ticket::MACRO_STATUS_VALIDATE;
+            }
         } else if ($ticketCurrentAction == TicketAction::getActionValidate() && $ticketStatus == Ticket::getStatusOngoing()) {
             $macroStatus = Ticket::MACRO_STATUS_VALIDATE;
         } else if ($ticketStatus == Ticket::getStatusReadyForPRD()) {
@@ -306,6 +314,8 @@ class TicketService
         } else if ($ticketStatus == Ticket::getStatusDone()) {
             $macroStatus = Ticket::MACRO_STATUS_DONE;
         }
+        // echo $macroStatus;
+        // exit;
         $ticket->macro_status = $macroStatus;
         $ticket->save();
     }
