@@ -849,7 +849,7 @@ class TicketController extends Controller
         DB::beginTransaction();
         try {
             if ($request->input('release_id') == "") {
-                $releaseVersion = TicketService::createReleaseVersion($requestData['is_major']);
+                $releaseVersion = TicketService::createReleaseVersion($requestData['is_major'], $initiative->id);
                 $releaseName = TicketService::createReleaseName($releaseVersion, $requestData);
                 $requestData['name'] = $releaseName;
                 $requestData['version'] = $releaseVersion;

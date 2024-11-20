@@ -337,13 +337,13 @@ class TicketService
         return $ticketsCount->count();
     }
 
-    public static function createReleaseVersion($isMajor)
+    public static function createReleaseVersion($isMajor, $initiativeId)
     {
         $releaseCount = Release::get()->count();
         if ($releaseCount == 0) {
             return 1;
         }
-        $release = Release::where('status', Release::PROCESSED_RELEASE)->orderBy('id', 'desc')->first();
+        $release = Release::where('status', Release::PROCESSED_RELEASE)->where('initiative_id', $initiativeId)->orderBy('id', 'desc')->first();
         if ($isMajor) {
             $releaseVersion = round($release->version + 1);
         } else {
