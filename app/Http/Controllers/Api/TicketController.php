@@ -774,7 +774,7 @@ class TicketController extends Controller
         if ($ticket->macro_status == Ticket::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_PRD && $ticket->macro_status != Ticket::MACRO_STATUS_DONE) {
             $releaseTicket = ReleaseTicket::where('ticket_id', $ticket->id)->first();
             if ($releaseTicket) {
-                return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed_du_to_ticket_in_ready_for_deployment'), '', 400);
+                return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed_du_to_status_not_ongoing'), '', 400);
             }
             $isReadyForDeploymentToPrd = true;
         }

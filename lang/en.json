@@ -222,7 +222,7 @@
     "messages.ticket.change_action_status_not_allowed_du_to_done": "You are not allowed to change the Done action because this task is a done.",
     "messages.ticket.change_action_status_not_allowed_du_to_waiting_for_client_approval": "This task is waiting for client approval, so you can't change the waiting for client approval action.",
     "messages.ticket.change_action_status_not_allowed_du_to_status_not_ongoing": "The task status is not ongoing, so you cannot mark the action as done.",
-    "messages.ticket.change_action_status_not_allowed_du_to_ticket_in_ready_for_deployment": "This task is in ready for deployment, so you can't change the ready for deployment action.",
+    "messages.ticket.change_action_status_not_allowed_as_ticket_is_requested_with_prd_release": "Ticket can not be assigned back as it is requested with PRD release.",
     "messages.project.get_list_success": "Projects fetched successfully.",
     "messages.project.not_found": "Project not found.",
     "messages.project.update_status_success": "Project status updated successfully.",
