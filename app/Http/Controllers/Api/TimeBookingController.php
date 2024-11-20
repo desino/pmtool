@@ -488,7 +488,13 @@ class TimeBookingController extends Controller
         if (!$ticket || $initiative->id != $ticket->initiative_id) {
             return ApiHelper::response($status, __('messages.ticket.not_found'), '', 400);
         }
-        $validData['booked_date'] = Carbon::parse($validData['booked_date'])->addDay(1)->format('Y-m-d');
+        $nowDate = Carbon::now();
+        $bookedDate = Carbon::parse($validData['booked_date']);
+        if ($bookedDate->isSameDay($nowDate)) {
+            $validData['booked_date'] = Carbon::parse($validData['booked_date'])->format('Y-m-d');
+        } else {
+            $validData['booked_date'] = Carbon::parse($validData['booked_date'])->addDay(1)->format('Y-m-d');
+        }
 
         $status = true;
         $message = __('messages.time_booking.store_success');

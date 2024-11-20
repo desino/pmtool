@@ -50,20 +50,20 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <div class="row w-100">
-                        <div class="col-12 col-md-12 col-lg-4">
-                            <button type="submit" class="btn btn-desino w-100"
+                <div class="modal-footer border-0 p-0 justify-content-center">
+                    <div class="row w-100 g-1">
+                        <div class="col-3 col-md-3 col-lg-4">
+                            <button type="submit" class="btn btn-desino w-100 border-0"
                                 @click="handleSubmitButtonClickForTicketDetailTimeBooking('create')">{{
                                     $t('ticket_detail_time_booking_modal.submit_but_text') }}</button>
                         </div>
-                        <div class="col-12 col-md-12 col-lg-4">
-                            <button type="submit" class="btn btn-desino w-100"
+                        <div class="col-3 col-md-3 col-lg-4">
+                            <button type="submit" class="btn btn-desino w-100 border-0"
                                 @click="handleSubmitButtonClickForTicketDetailTimeBooking('create_close')">{{
                                     $t('ticket_detail_time_booking_modal.submit_and_close_but_text')
                                 }}</button>
                         </div>
-                        <div class="col-12 col-md-12 col-lg-4">
+                        <div class="col-3 col-md-3 col-lg-4">
                             <button class="btn btn-danger w-100 border-0" data-bs-dismiss="modal" type="button">
                                 <i class="bi bi-x-lg"></i>
                             </button>
