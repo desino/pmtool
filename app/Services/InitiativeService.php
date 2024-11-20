@@ -139,6 +139,7 @@ class InitiativeService
             'initiatives.id',
             'initiatives.name',
             'initiatives.client_id',
+            'initiatives.technical_owner_id',
             DB::raw('COUNT(tickets.id) as tickets_count')
         )
             ->with([
