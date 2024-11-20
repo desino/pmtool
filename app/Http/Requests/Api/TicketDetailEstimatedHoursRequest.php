@@ -26,7 +26,7 @@ class TicketDetailEstimatedHoursRequest extends FormRequest
             'dev_estimation_time' => [
                 'required',
                 'numeric',
-                'regex:/^(0\.[1-9][0-9]?|[1-9][0-9]{0,5}(\.[0-9]{1,2})?)$/'
+                'regex:/^(0(\.[0-9]{1,2})?|[1-9][0-9]{0,5}(\.[0-9]{1,2})?)$/'
             ],
         ];
     }
