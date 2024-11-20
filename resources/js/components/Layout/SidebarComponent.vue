@@ -201,6 +201,16 @@
                             }}
                         </router-link>
                     </li>
+                    <li class="nav-item" v-if="user?.is_admin">
+                        <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('developer-workload') }"
+                            :to="{ name: 'developer-workload' }" class="nav-link text-dark"
+                            @click="unselectHeaderInitiative">
+                            <i class="bi bi-stack mx-2"></i>
+                            {{
+                                $t('header.menu.developer_workload')
+                            }}
+                        </router-link>
+                    </li>
                     <!-- <li class="nav-item" v-if="user?.is_admin">
                         <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('profile') }"
                             :to="{ name: 'profile' }" class="nav-link text-dark" @click="unselectHeaderInitiative">

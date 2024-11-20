@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\BulkCreateTicketsController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\DeploymentCenterController;
 use App\Http\Controllers\Api\DeploymentController;
+use App\Http\Controllers\Api\DeveloperWorkloadController;
 use App\Http\Controllers\Api\HeaderController;
 use App\Http\Controllers\Api\HomeMyActionsController;
 use App\Http\Controllers\Api\InitiativeController;
@@ -167,6 +168,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('get-initial-data', 'getInitialData');
         Route::post('add-remove-priority', 'addRemovePriority');
         Route::post('mark-as-visible-invisible', 'markAsVisibleInvisible');
+    });
+
+    Route::controller(DeveloperWorkloadController::class)->prefix('developer-workload')->group(function () {
+        Route::get('/', 'index');
     });
 });
 

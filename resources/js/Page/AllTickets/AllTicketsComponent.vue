@@ -404,6 +404,14 @@ export default {
             const createdByLabel = this.$t('ticket.list.row_hover_tooltip_created_by_text');
             return `<strong>${createdAtLabel}</strong>${ticket.display_created_at}<br><strong>${createdByLabel}</strong>${ticket.display_created_by}`;
         },
+        setActionOwnerForFilterFromDeveloperWorkload() {
+            let queryParams = "";
+            if ('filter_from' in this.$route.query) {
+                queryParams = this.$route.query;
+                this.filter.action_owner = queryParams.user_id;
+                this.filter.visible = queryParams.is_visible;
+            }
+        },
         handleError(error) {
             if (error.type === 'validation') {
                 this.errors = error.errors;
@@ -418,6 +426,7 @@ export default {
         },
     },
     mounted() {
+        this.setActionOwnerForFilterFromDeveloperWorkload();
         this.fetchData();
         const setHeaderData = {
             page_title: this.$t('all_ticket_without_initiative_list.page_title'),

@@ -306,6 +306,7 @@
     "messages.home.deployment_center.production_deployment.no_permission": "You don't have permission to perform this action.",
     "messages.ticket.delete_ticket_not_allowed_because_ticket_already_done": "You are not allowed to delete this ticket because it is already done.",
     "messages.asana.delete_ticket.delete_error": "Error while deleting ticket in Asana.",
+    "messages.developer_workload.dont_have_permission": "You don't have permission to perform this action.",
     "login_title": "Login",
     "login_page_title": "Login",
     "login_input_email": "Email",
@@ -473,6 +474,7 @@
     "header.menu.planning": "Planning",
     "header.menu.time_mapping": "Time Mapping",
     "header.menu.all_ticket_without_initiative": "All Tickets",
+    "header.menu.developer_workload": "Developer Workload",
     "header.menu.deployments": "Deployments",
     "header.menu.profile": "Profile",
     "ticket.page_title": "Initiative Tickets",
@@ -787,5 +789,11 @@
     "all_ticket_without_initiative_list.priority.conformation_popup_title": "Change Priority",
     "all_ticket_without_initiative_list.is_visible.conformation_popup_text": "Are you sure you want to mark as visible?",
     "all_ticket_without_initiative_list.is_invisible.conformation_popup_text": "Are you sure you want to mark as invisible?",
-    "all_ticket_without_initiative_list.visible.conformation_popup_title": "Mark as Visible"
+    "all_ticket_without_initiative_list.visible.conformation_popup_title": "Mark as Visible",
+    "developer_workload.page_title": "Developer Workload",
+    "developer_workload_table.resource_th_text": "Resource",
+    "developer_workload_table.visible_tickets_th_text": "Visible Tickets",
+    "developer_workload_table.invisible_tickets_th_text": "Invisible Tickets",
+    "developer_workload_table.total_workload_th_text": "Total Workload",
+    "developer_workload_table.no_developer_workload_found_text": "No developer workload found"
 }
