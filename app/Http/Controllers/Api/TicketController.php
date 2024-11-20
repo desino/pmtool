@@ -786,7 +786,7 @@ class TicketController extends Controller
         try {
             TicketService::updateTicketPreviousActions($ticket, $request->input('action_id'), TicketAction::getStatusWaitingForDependantAction(), $isReadyForDeploymentToPrd);
             TicketService::updateTicketStatus($ticket);
-            TicketService::createMacroStatusAndUpdateTicket($ticket);
+            TicketService::createMacroStatusAndUpdateTicket($ticket, true);
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();

@@ -299,11 +299,19 @@ class TicketService
                 $ticket->status = Ticket::getStatusOngoing();
                 $macroStatus = Ticket::MACRO_STATUS_TEST;
             }
+            if ($isUpdateFromEditTicket && $ticket->macro_status == Ticket::MACRO_STATUS_VALIDATE) {
+                $ticket->status = Ticket::getStatusOngoing();
+                $macroStatus = Ticket::MACRO_STATUS_TEST;
+            }
         } else if ($ticketCurrentAction == TicketAction::getActionTest() && $ticketStatus == Ticket::getStatusOngoing()) {
             $macroStatus = Ticket::MACRO_STATUS_TEST;
         } else if ($ticketCurrentAction == TicketAction::getActionValidate() && $ticketStatus == Ticket::getStatusReadyForACC()) {
             $macroStatus = Ticket::MACRO_STATUS_VALIDATE_WAITING_FOR_DEPLOYMENT_TO_ACC;
             if ($isUpdateFromEditTicket && $ticket->macro_status == Ticket::MACRO_STATUS_VALIDATE) {
+                $ticket->status = Ticket::getStatusOngoing();
+                $macroStatus = Ticket::MACRO_STATUS_VALIDATE;
+            }
+            if ($isUpdateFromEditTicket && $ticket->macro_status == Ticket::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_PRD) {
                 $ticket->status = Ticket::getStatusOngoing();
                 $macroStatus = Ticket::MACRO_STATUS_VALIDATE;
             }
