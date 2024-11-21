@@ -22,26 +22,32 @@
                 :key="developerWorkload.id" class="border list-group-item list-group-item-action">
                 <div class="row w-100">
                     <div class="col-md-3">
-                        {{ developerWorkload.user_name }}
+                        <router-link
+                            :to="{ name: 'all-ticket-without-initiative', query: { user_id: developerWorkload?.user_id } }"
+                            target="_blank" class="text-decoration-none" role="button">
+                            {{ developerWorkload.user_name }}
+                        </router-link>
                     </div>
                     <div class="col-md-3">
-                        <!-- <span v-if="developerWorkload.visible_tickets_count > 0">
-                            <router-link
-                                :to="{ name: 'all-ticket-without-initiative', query: { is_visible: true, user_id: developerWorkload?.user_id, filter_from: 'developer_workload' } }"
-                                target="_blank" class="text-decoration-none" role="button">
-                                {{ developerWorkload.display_visible_tickets_count_hours }}
-                            </router-link>
-                        </span>
-                        <span v-else>
+                        <span :class="{ 'link-desino': developerWorkload.visible_tickets_count > 0 }"
+                            :role="developerWorkload.visible_tickets_count > 0 ? 'button' : ''"
+                            @click="openTicketsModal(developerWorkload, 'visible')">
                             {{ developerWorkload.display_visible_tickets_count_hours }}
-                        </span> -->
-                        {{ developerWorkload.display_visible_tickets_count_hours }}
+                        </span>
                     </div>
                     <div class="col-md-3">
-                        {{ developerWorkload.display_invisible_tickets_count_hours }}
+                        <span :class="{ 'link-desino': developerWorkload.invisible_tickets_count > 0 }"
+                            :role="developerWorkload.invisible_tickets_count > 0 ? 'button' : ''"
+                            @click="openTicketsModal(developerWorkload, 'invisible')">
+                            {{ developerWorkload.display_invisible_tickets_count_hours }}
+                        </span>
                     </div>
                     <div class="col-md-3">
-                        {{ developerWorkload.display_total_tickets_count_hours }}
+                        <span :class="{ 'link-desino': developerWorkload.total_tickets_count > 0 }"
+                            :role="developerWorkload.total_tickets_count > 0 ? 'button' : ''"
+                            @click="openTicketsModal(developerWorkload, 'all')">
+                            {{ developerWorkload.display_total_tickets_count_hours }}
+                        </span>
                     </div>
                 </div>
             </li>
@@ -52,6 +58,10 @@
             </li>
         </ul>
     </div>
+    <div id="developerWorkloadTicketModalModal" aria-hidden="true"
+        aria-labelledby="developerWorkloadTicketModalModalLabel" class="modal fade" tabindex="-1">
+        <DeveloperWorkloadTicketModalComponent ref="developerWorkloadTicketModalModalComponent" />
+    </div>
 </template>
 
 <script>
@@ -60,11 +70,14 @@ import { mapActions, mapGetters } from 'vuex';
 import store from '../../store';
 import DeveloperWorkloadService from '../../services/DeveloperWorkloadService';
 import messageService from '../../services/messageService';
+import DeveloperWorkloadTicketModalComponent from './DeveloperWorkloadTicketModalComponent.vue';
+import { Modal } from 'bootstrap';
 
 export default {
     name: 'DevelopmentWorkloadComponent',
     components: {
-        GlobalMessage
+        GlobalMessage,
+        DeveloperWorkloadTicketModalComponent
     },
     data() {
         return {
@@ -87,6 +100,19 @@ export default {
                 this.setLoading(false);
             } catch (error) {
                 this.handleError(error);
+            }
+        },
+        async openTicketsModal(developerWorkload, typeOfTickets) {
+            const passDeveloperWorkload = {
+                user_name: developerWorkload.user_name,
+                user_id: developerWorkload.user_id,
+                type_of_tickets: typeOfTickets
+            }
+            this.$refs.developerWorkloadTicketModalModalComponent.getDeveloperWorkloadTicketModalData(passDeveloperWorkload);
+            const modalElement = document.getElementById('developerWorkloadTicketModalModal');
+            if (modalElement) {
+                const modal = new Modal(modalElement);
+                modal.show();
             }
         },
         handleError(error) {

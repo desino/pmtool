@@ -406,10 +406,9 @@ export default {
         },
         setActionOwnerForFilterFromDeveloperWorkload() {
             let queryParams = "";
-            if ('filter_from' in this.$route.query) {
+            if ('user_id' in this.$route.query) {
                 queryParams = this.$route.query;
                 this.filter.action_owner = queryParams.user_id;
-                this.filter.visible = queryParams.is_visible;
             }
         },
         handleError(error) {

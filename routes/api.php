@@ -172,6 +172,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::controller(DeveloperWorkloadController::class)->prefix('developer-workload')->group(function () {
         Route::get('/', 'index');
+        Route::get('get-developer-workload-ticket-modal-data', 'getDeveloperWorkloadTicketModalData');
     });
 });
 

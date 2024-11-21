@@ -795,5 +795,11 @@
     "developer_workload_table.visible_tickets_th_text": "Visible Tickets",
     "developer_workload_table.invisible_tickets_th_text": "Invisible Tickets",
     "developer_workload_table.total_workload_th_text": "Total Workload",
-    "developer_workload_table.no_developer_workload_found_text": "No developer workload found"
+    "developer_workload_table.no_developer_workload_found_text": "No developer workload found",
+    "developer_workload_ticket_visible_modal_title": "Visible Tickets",
+    "developer_workload_ticket_invisible_modal_title": "Invisible Tickets",
+    "developer_workload_ticket_all_modal_title": "All Tickets",
+    "developer_workload.ticket_modal.li.name.text": "Tickets",
+    "developer_workload.ticket_modal.li.current_owner.text": "Current Owner",
+    "developer_workload.ticket_modal.no_tickets.text": "No tickets found"
 }

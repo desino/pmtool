@@ -1,5 +1,5 @@
 <template>
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog">
         <div class="modal-content border-0">
             <div class="modal-header text-white bg-desino border-0 py-2 justify-content-center">
                 <h5 class="modal-title" id="planNewInitiativeModalLabel">
@@ -10,7 +10,7 @@
                 <div class="modal-body">
                     <GlobalMessage v-if="showMessage" scope="modal" />
                     <div class="row w-100">
-                        <div class="col-6 mb-3">
+                        <div class="col-12 mb-3">
                             <select v-model="formData.initiative_id" :class="{ 'is-invalid': errors.initiative_id }"
                                 class="form-select">
                                 <option value="">{{
@@ -25,7 +25,7 @@
                                 <span v-for="(error, index) in errors.initiative_id" :key="index">{{ error }}</span>
                             </div>
                         </div>
-                        <div class="col-6 mb-3">
+                        <div class="col-12">
                             <select v-model="formData.user_id" :class="{ 'is-invalid': errors.user_id }"
                                 class="form-select">
                                 <option value="">{{
