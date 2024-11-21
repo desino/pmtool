@@ -175,6 +175,7 @@ class PlanningController extends Controller
     public function storePlanning(Request $request)
     {
         $requestData = $request->all();
+
         $authUser = Auth::user();
         if (!$authUser->is_admin) {
             return ApiHelper::response(false, __('messages.planning.dont_have_permission'), null, 404);
@@ -190,6 +191,7 @@ class PlanningController extends Controller
         $statusCode = 200;
         DB::beginTransaction();
         try {
+            $notDeletePlanningAssignmentIds = [];
             foreach ($requestData as $planning) {
                 $planningAssignmentUpdateCondition = [
                     'initiative_id' => $planning['initiative_id'],
@@ -203,8 +205,9 @@ class PlanningController extends Controller
                     $planningAssignmentUpdateCondition,
                     $planningAssignmentInsertData
                 );
+                $notDeletePlanningAssignmentIds[] = $planningAssignment->id;
 
-                $deletePlanningIds = [];
+                $notDeletePlanningIds = [];
                 foreach ($planning['hours_per_week'] as $week) {
                     $planning = Planning::updateOrCreate(
                         [
@@ -217,11 +220,14 @@ class PlanningController extends Controller
                             'hours' => $week['hours']
                         ]
                     );
-                    $deletePlanningIds[] = $planning->id;
+                    $notDeletePlanningIds[] = $planning->id;
                 }
-                if (count($deletePlanningIds) > 0) {
-                    Planning::whereNotIn('id', $deletePlanningIds)->where('planning_assignment_id', $planningAssignment->id)->delete();
+                if (count($notDeletePlanningIds) > 0) {
+                    Planning::whereNotIn('id', $notDeletePlanningIds)->where('planning_assignment_id', $planningAssignment->id)->delete();
                 }
+            }
+            if (count($notDeletePlanningAssignmentIds) > 0) {
+                PlanningAssignment::whereNotIn('id', $notDeletePlanningAssignmentIds)->delete();
             }
             DB::commit();
         } catch (\Exception $e) {
