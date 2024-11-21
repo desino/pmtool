@@ -19,6 +19,7 @@ class Ticket extends Model
         'status_label',
         'macro_status_label',
         'display_created_at',
+        'display_created_by',
         'asana_task_link',
         'is_show_mark_as_done_but',
         'is_enable_mark_as_done_but',
@@ -170,6 +171,10 @@ class Ticket extends Model
             get: fn() => $this->created_at ? $this->created_at->format('m/d/Y') : '',
         );
     }
+    protected function getDisplayCreatedByAttribute()
+    {
+        return $this->createdBy?->name;
+    }
 
     public function asanaTaskLink(): Attribute
     {
@@ -230,6 +235,12 @@ class Ticket extends Model
         }
     }
 
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
     public function functionality(): BelongsTo
     {
         return $this->belongsTo(Functionality::class);
@@ -255,6 +266,10 @@ class Ticket extends Model
         return $this->hasMany(TestCase::class);
     }
 
+    public function developAction()
+    {
+        return $this->hasOne(TicketAction::class)->where('action', TicketAction::getActionDevelop());
+    }
     public function doneActions()
     {
         return $this->hasOne(TicketAction::class)->where('status', TicketAction::getStatusDone())->orderBy('action');

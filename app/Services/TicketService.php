@@ -280,7 +280,7 @@ class TicketService
         $ticket->save();
     }
 
-    public static function createMacroStatusAndUpdateTicket($ticket)
+    public static function createMacroStatusAndUpdateTicket($ticket, $isUpdateFromEditTicket = false)
     {
         $ticketStatus = $ticket->status;
         $ticketCurrentAction = $ticket->currentAction->action ?? 0;
@@ -295,10 +295,26 @@ class TicketService
             $macroStatus = Ticket::MACRO_STATUS_DEVELOP;
         } else if ($ticketCurrentAction == TicketAction::getActionTest() && $ticketStatus == Ticket::getStatusReadyForTest()) {
             $macroStatus = Ticket::MACRO_STATUS_TEST_WAIT_FOR_DEPLOYMENT_TO_TEST;
+            if ($isUpdateFromEditTicket && $ticket->macro_status == Ticket::MACRO_STATUS_TEST) {
+                $ticket->status = Ticket::getStatusOngoing();
+                $macroStatus = Ticket::MACRO_STATUS_TEST;
+            }
+            if ($isUpdateFromEditTicket && $ticket->macro_status == Ticket::MACRO_STATUS_VALIDATE) {
+                $ticket->status = Ticket::getStatusOngoing();
+                $macroStatus = Ticket::MACRO_STATUS_TEST;
+            }
         } else if ($ticketCurrentAction == TicketAction::getActionTest() && $ticketStatus == Ticket::getStatusOngoing()) {
             $macroStatus = Ticket::MACRO_STATUS_TEST;
         } else if ($ticketCurrentAction == TicketAction::getActionValidate() && $ticketStatus == Ticket::getStatusReadyForACC()) {
             $macroStatus = Ticket::MACRO_STATUS_VALIDATE_WAITING_FOR_DEPLOYMENT_TO_ACC;
+            if ($isUpdateFromEditTicket && $ticket->macro_status == Ticket::MACRO_STATUS_VALIDATE) {
+                $ticket->status = Ticket::getStatusOngoing();
+                $macroStatus = Ticket::MACRO_STATUS_VALIDATE;
+            }
+            if ($isUpdateFromEditTicket && $ticket->macro_status == Ticket::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_PRD) {
+                $ticket->status = Ticket::getStatusOngoing();
+                $macroStatus = Ticket::MACRO_STATUS_VALIDATE;
+            }
         } else if ($ticketCurrentAction == TicketAction::getActionValidate() && $ticketStatus == Ticket::getStatusOngoing()) {
             $macroStatus = Ticket::MACRO_STATUS_VALIDATE;
         } else if ($ticketStatus == Ticket::getStatusReadyForPRD()) {
@@ -321,18 +337,17 @@ class TicketService
         return $ticketsCount->count();
     }
 
-    public static function createReleaseVersion($isMajor)
+    public static function createReleaseVersion($isMajor, $initiativeId)
     {
-        $releaseCount = Release::get()->count();
-        if ($releaseCount == 0) {
-            return 1;
+        $releaseVersion = 1;
+        $initiativeReleases = Release::orderBy('id', 'desc')->where('initiative_id', $initiativeId)->get();
+        if ($initiativeReleases->count() == 0) {
+            return $releaseVersion;
         }
-        $release = Release::where('status', Release::PROCESSED_RELEASE)->orderBy('id', 'desc')->first();
-        if ($isMajor) {
-            $releaseVersion = round($release->version + 1);
-        } else {
-            $releaseVersion = round($release->version + 0.1, 1);
-        }
+        $lastRelease = $initiativeReleases->filter(function ($release) {
+            return $release->status == Release::PROCESSED_RELEASE;
+        })->first();
+        $releaseVersion = $isMajor ? round($lastRelease->version + 1) : round($lastRelease->version + 0.1, 1);
         return $releaseVersion;
     }
 

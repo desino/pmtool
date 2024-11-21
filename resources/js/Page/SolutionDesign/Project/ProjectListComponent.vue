@@ -79,6 +79,7 @@ import showToast from './../../../utils/toasts';
 import EditProjectModalComponent from './EditProjectModalComponent.vue';
 import { Modal } from 'bootstrap';
 import store from '../../../store';
+import eventBus from '../../../eventBus';
 export default {
     name: 'ProjectList',
     components: {
@@ -173,6 +174,7 @@ export default {
         },
     },
     mounted() {
+        eventBus.$emit('selectHeaderInitiativeId', this.initiative_id);
         this.clearMessages();
         this.getProjectList();
         const setHeaderData = {

@@ -26,7 +26,11 @@ class InitiativeRequest extends FormRequest
         return [
             'client_id' => 'required|exists:clients,id',
             'name' => 'required',
-            'ballpark_development_hours' => 'required|numeric|min:0|between:1,99999.99',
+            'ballpark_development_hours' => [
+                'required',
+                'numeric',
+                'regex:/^(0(\.[0-9]{1,2})?|[1-9][0-9]{0,5}(\.[0-9]{1,2})?)$/'
+            ],
             'is_sold' => 'nullable',
             'status' => 'nullable',
         ];
@@ -35,6 +39,7 @@ class InitiativeRequest extends FormRequest
     public function messages()
     {
         return [
+            'ballpark_development_hours.regex' => __('validation.initiative.ballpark_development_hours.regex'),
             'client_id.required' => __('validation.initiative.client_id.required'),
             'client_id.exists' => __('validation.initiative.client_id.exists'),
             'name.required' => __('validation.initiative.name'),

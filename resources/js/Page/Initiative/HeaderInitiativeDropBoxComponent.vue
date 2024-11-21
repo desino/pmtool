@@ -8,7 +8,7 @@
 
     <multiselect v-model="initiative" :options="initiatives" :multiple="false" label="client_initiative_name"
         :placeholder="$t('header.initiative_list.placeholder')" track-by="id" @select="navigate($event, user)"
-        select-label="" deselect-label="">
+        :allow-empty="false" select-label="" deselect-label="">
         <template #option="{ option }">
             <div class="custom-option">
                 {{ option.client_initiative_name }}

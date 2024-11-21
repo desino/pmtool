@@ -1,106 +1,119 @@
 <template>
     <GlobalMessage v-if="showMessage" />
-    <div class="app-content mt-3" id="timeBookingPageSection">
+    <div class="app-content mt-3" id="planningPageSection">
         <div class="w-100">
-            <!-- <div class="scrolling outer"> -->
-            <!-- <div class="inner"> -->
-            <table border="0" cellspacing="0" cellpadding="0">
-                <tr class="header_row bg-transparent">
-                    <th scope="col" class="border abs1 bg-transparent text-left text-white align-middle p-1"
-                        style="height: 45px;">
-                        <multiselect v-model="filter.initiative_id" :options="initiativesFilterList"
-                            :placeholder="$t('create_ticket_modal_select_functionality_placeholder')" label="name"
-                            track-by="id" @select="handleInitiativeFilterChange()"
-                            @remove="handleInitiativeFilterChange()">
-                        </multiselect>
-                    </th>
-                    <th scope="col" class="border abs2 bg-transparent text-left text-white align-middle p-1"
-                        style="height: 45px;">
-                        <multiselect v-model="filter.user_id" :options="usersFilterList"
-                            :placeholder="$t('create_ticket_modal_select_functionality_placeholder')" label="name"
-                            track-by="id" @select="handleUserFilterChange()" @remove="handleUserFilterChange()">
-                        </multiselect>
-                    </th>
-                    <th scope="col" class="border abs3 bg-dark text-center align-middle p-1" style="height: 45px;">
-                        <a class="text-white" href="javascript:void(0);" @click="getPlanningData(-1)">
-                            <i class="bi bi-caret-left"></i>
-                        </a>
-                    </th>
-                    <td scope="col" class="border text-center align-middle p-1"
-                        :class="week.is_current_week ? 'bg-black' : 'bg-desino'" v-for="(week, index) in loadWeeks"
-                        :key="index" style="height: 45px;">
-                        <small class="small text-white" style="font-size: 0.8rem;">
-                            <span class="d-block mb-1">{{ $t('Week') }}</span>
-                            <span class="d-block mt-1">{{ week.display_week_name }}</span>
-                        </small>
-                    </td>
-                    <th scope="col" class="border abs4 bg-dark text-center align-middle p-1" style="height: 45px;">
-                        <a class="text-white" href="javascript:void(0);" @click="getPlanningData(1)">
-                            <i class="bi bi-caret-right"></i>
-                        </a>
-                    </th>
-                </tr>
-                <template v-for="(planning, planningIndex) in plannings" :key="planningIndex">
-                    <tr v-for="(user, userIndex) in planning.users" :key="userIndex">
-                        <!-- below th for total and plan new initiative -->
-                        <th v-if="planning.default_row_name == 'heder_total' || planning.default_row_name == 'plan_new_initiative'"
-                            class="border total_abs1 bg-opacity-25 text-center align-middle p-1" :class="{
-                                'bg-primary': planning.default_row_name == 'heder_total',
-                                'bg-warning': planning.default_row_name == 'plan_new_initiative'
-                            }" colspan="2" :rowspan="planning.users.length"
-                            :role="planning.default_row_name == 'plan_new_initiative' ? 'button' : ''"
-                            @click="handlePlanNewInitiative(planning, user)">
-                            <span v-if="planning.default_row_name == 'plan_new_initiative'"><i
-                                    class="bi bi-plus-lg"></i> </span>
-                            {{ planning.initiative_name }}
-                        </th>
-                        <!-- below th except for total and plan new initiative -->
-                        <th v-if="planning.default_row_name == '' && userIndex == 0"
-                            class="border total_abs1 bg-opacity-25 text-left align-middle p-1"
-                            :rowspan="planning.users.length">
-                            <div class="row h-100 align-items-center">
-                                <div class="col-auto me-1" style="width:20px">
-                                    <a href="javascript:void(0);" class="link-btn"
-                                        @click="handlePlanNewUser(planning)"><i
-                                            class="bi bi-plus-square-fill text-desino fs-5"></i></a>
-                                </div>
-                                <div class="col-auto" style="width: calc(100% - 30px)">
+            <div class="scrolling outer">
+                <div class="inner">
+                    <table border="0" cellspacing="0" cellpadding="0">
+                        <tr class="header_row bg-transparent">
+                            <th scope="col" class="abs1 bg-transparent text-left text-white align-middle p-1"
+                                style="height: 65px;">
+                                <multiselect v-model="filter.initiative_id" :options="initiativesFilterList"
+                                    :placeholder="$t('create_ticket_modal_select_functionality_placeholder')"
+                                    label="name" track-by="id" @select="handleInitiativeFilterChange()"
+                                    @remove="handleInitiativeFilterChange()">
+                                </multiselect>
+                            </th>
+                            <th scope="col" class="abs2 bg-transparent text-left text-white align-middle p-1"
+                                style="height: 65px;">
+                                <multiselect v-model="filter.user_id" :options="usersFilterList"
+                                    :placeholder="$t('create_ticket_modal_select_functionality_placeholder')"
+                                    label="name" track-by="id" @select="handleUserFilterChange()"
+                                    @remove="handleUserFilterChange()">
+                                </multiselect>
+                            </th>
+                            <th scope="col" class="border abs3 bg-dark text-center align-middle p-1"
+                                style="height: 65px;">
+                                <a class="text-white" href="javascript:void(0);" @click="getPlanningData(-1)">
+                                    <i class="bi bi-caret-left"></i>
+                                </a>
+                            </th>
+                            <td scope="col" class="border text-center align-middle p-1"
+                                :class="week.is_current_week ? 'bg-black' : 'bg-desino'"
+                                v-for="(week, index) in loadWeeks" :key="index" style="height: 65px;">
+                                <small class="small text-white" style="font-size: 0.8rem;">
+                                    <span class="d-block mb-1">{{ $t('planning.table.header_week_text') }}</span>
+                                    <span class="d-block mt-1">{{ week.display_week_name }}</span>
+                                </small>
+                            </td>
+                            <th scope="col" class="border abs4 bg-dark text-center align-middle p-1"
+                                style="height: 65px;">
+                                <a class="text-white" href="javascript:void(0);" @click="getPlanningData(1)">
+                                    <i class="bi bi-caret-right"></i>
+                                </a>
+                            </th>
+                        </tr>
+                        <template v-for="(planning, planningIndex) in plannings" :key="planningIndex">
+                            <tr v-for="(user, userIndex) in planning.users" :key="userIndex">
+                                <!-- below th for total and plan new initiative -->
+                                <th v-if="planning.default_row_name == 'heder_total' || planning.default_row_name == 'plan_new_initiative'"
+                                    style="height: 52px;" class="border bg-opacity-25 text-center align-middle p-1"
+                                    :class="{
+                                        'bg-primary total_abs1 ': planning.default_row_name == 'heder_total',
+                                        'bg-warning lastrow_abs ': planning.default_row_name == 'plan_new_initiative'
+                                    }" colspan="2" :rowspan="planning.users.length"
+                                    :role="planning.default_row_name == 'plan_new_initiative' ? 'button' : ''"
+                                    @click="handlePlanNewInitiative(planning, user)">
+                                    <span v-if="planning.default_row_name == 'plan_new_initiative'"><i
+                                            class="bi bi-plus-lg"></i> </span>
                                     {{ planning.initiative_name }}
-                                </div>
-                            </div>
-                        </th>
-                        <!-- below td for plan new user -->
-                        <th v-if="planning.default_row_name == '' && user.id != ''" class="border abs1 text-left p-1">
-                            {{ user.name }}
-                        </th>
-                        <th v-if="planning.default_row_name == '' && user.id == ''"
-                            class="border abs1 text-left p-1 bg-info text-white text-center" role="button"
-                            v-html="user.name" @click="handlePlanNewUser(planning)">
-                        </th>
-                        <!-- below td previous week -->
-                        <td></td>
-                        <!-- below td for each week header total -->
-                        <td v-if="planning.default_row_name == 'heder_total'"
-                            class="text-center align-middle p-1 border" v-for="(week, index) in loadWeeks" :key="index">
-                            <span class="badge text-white bg-secondary">
-                                {{ user.hours_per_week[week.date].hours > 0 ? user.hours_per_week[week.date].hours :
-                                    '' }}
-                            </span>
-                        </td>
-                        <!-- below td except for each week header total -->
-                        <td v-if="planning.default_row_name == ''" class="border text-center align-middle p-1 border"
-                            v-for="(week, index) in loadWeeks" :key="index">
-                            <!-- <input v-if="user.id != ''" type="text" v-model="user.hours_per_week[week.date].hours"
+                                </th>
+                                <!-- below th except for total and plan new initiative -->
+                                <th v-if="planning.default_row_name == ''" style="height: 52px;"
+                                    class="border abs1 bg-opacity-25 text-left align-middle p-1" :class="{
+                                        'border-bottom-0': userIndex == 0 || planning.users.length - 2 == userIndex,
+                                        'border-top-0': userIndex > 0
+                                    }">
+                                    <div v-if="userIndex == 0" class="row h-100 align-items-center">
+                                        <div class="col-auto me-1" style="width:20px">
+                                            <a href="javascript:void(0);" class="link-btn"
+                                                @click="handlePlanNewUser(planning)"><i
+                                                    class="bi bi-plus-square-fill text-desino fs-5"></i></a>
+                                        </div>
+                                        <div class="col-auto" style="width: calc(100% - 30px)">
+                                            {{ planning.initiative_name }}
+                                        </div>
+                                    </div>
+                                    <div v-else class="">&nbsp;</div>
+                                </th>
+                                <th v-if="planning.default_row_name == '' && user.id != ''" style="height: 52px;"
+                                    class="border abs2 text-left p-1">
+                                    {{ user.name }}
+                                </th>
+                                <th v-if="planning.default_row_name == 'heder_total'" :rowspan="plannings.length + 1"
+                                    class="total_abs2" style="height: 52px;">&nbsp;</th>
+                                <!-- below td for each week header total -->
+                                <td v-if="planning.default_row_name == 'heder_total'" style="height: 52px;"
+                                    class="text-center align-middle p-1 border" v-for="(week, index) in loadWeeks"
+                                    :key="index">
+                                    <span class="badge text-white bg-secondary">
+                                        {{ user.hours_per_week[week.date].hours > 0 ?
+                                            user.hours_per_week[week.date].hours :
+                                            '' }}
+                                    </span>
+                                </td>
+                                <!-- below td except for each week header total -->
+                                <td v-if="planning.default_row_name == ''" style="height: 52px;"
+                                    class="border text-center align-middle p-1 border"
+                                    v-for="(week, index) in loadWeeks" :key="index">
+                                    <!-- <input v-if="user.id != ''" type="text" v-model="user.hours_per_week[week.date].hours"
                                 class="form-control form-control-sm text-center"
                                 :placeholder="$t('time_booking_on_new_initiative_or_ticket.modal_input_hours_label_text')"> -->
-                            <input v-if="user.id != ''" type="text" v-model="user.hours_per_week[week.date].hours"
-                                class="form-control form-control-sm text-center">
-                        </td>
-                    </tr>
-                </template>
-            </table>
-            <!-- </div> -->
-            <!-- </div> -->
+                                    <input v-if="user.id != ''" type="text"
+                                        v-model="user.hours_per_week[week.date].hours"
+                                        class="form-control form-control-sm text-center">
+                                </td>
+                                <td v-if="planning.default_row_name == 'plan_new_initiative'"
+                                    :colspan="loadWeeks.length">&nbsp;</td>
+                            </tr>
+                            <tr v-if="planning.default_row_name == 'heder_total'">
+                                <th class="lastrow_abs" colspan="2"></th>
+                                <td :colspan="loadWeeks.length"></td>
+                            </tr>
+                        </template>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
     <div class="container-fluid mt-3">
@@ -121,7 +134,6 @@
         <PlanNewUserModalComponent ref="planNewUserModalComponent" @add-plan-new-user="addPlanNewUserFromModal" />
     </div>
 </template>
-
 <script>
 import Multiselect from 'vue-multiselect';
 import { mapActions } from 'vuex';
@@ -415,3 +427,81 @@ export default {
 
 };
 </script>
+<style>
+#planningPageSection .outer {
+    position: relative
+}
+
+#planningPageSection .inner {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+#planningPageSection .scrolling table {
+    width: auto;
+}
+
+#planningPageSection .scrolling td,
+#planningPageSection .scrolling th {
+    vertical-align: top !important;
+    padding: 10px 5px !important;
+    min-width: 100px !important;
+}
+
+#planningPageSection .scrolling th.abs1,
+#planningPageSection .scrolling th.abs2,
+#planningPageSection .scrolling th.abs3,
+#planningPageSection .scrolling th.abs4,
+#planningPageSection .scrolling th.total_abs1,
+#planningPageSection .scrolling th.total_abs2,
+#planningPageSection .scrolling th.total_abs3,
+#planningPageSection .scrolling th.lastrow_abs {
+    position: absolute;
+}
+
+#planningPageSection .inner {
+    margin-left: 540px;
+}
+
+#planningPageSection .scrolling th.abs1 {
+    left: 0;
+    width: 200px;
+}
+
+#planningPageSection .scrolling th.abs2 {
+    left: 200px;
+    width: 300px;
+}
+
+#planningPageSection .scrolling th.abs3 {
+    left: 500px;
+    width: 40px;
+    min-width: auto !important;
+}
+
+#planningPageSection .scrolling th.abs4 {
+    width: 40px;
+    min-width: auto !important;
+}
+
+#planningPageSection .scrolling th.total_abs1 {
+    left: 0;
+    width: 500px;
+}
+
+#planningPageSection .scrolling th.total_abs2 {
+    left: 500px;
+    width: 40px;
+    min-width: auto !important;
+}
+
+#planningPageSection .scrolling th.total_abs3 {
+    width: 40px;
+    min-width: auto !important;
+}
+
+#planningPageSection .scrolling th.lastrow_abs {
+    left: 0;
+    width: 500px;
+}
+</style>

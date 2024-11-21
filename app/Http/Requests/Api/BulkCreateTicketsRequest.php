@@ -5,7 +5,7 @@ namespace App\Http\Requests\Api;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class TimeBookingForTicketDetailRequest extends FormRequest
+class BulkCreateTicketsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,22 +23,19 @@ class TimeBookingForTicketDetailRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'initiative_id' => 'required',
-            'ticket_id' => 'required',
-            'hours' => [
-                'required',
+            'sections.*.functionality.*.initial_estimation_development_time' => [
+                'nullable',
                 'numeric',
-                'regex:/^(0\.[1-9][0-9]?|[1-9][0-9]{0,5}(\.[0-9]{1,2})?)$/'
+                'regex:/^(0(\.[0-9]{1,2})?|[1-9][0-9]{0,5}(\.[0-9]{1,2})?)$/'
             ],
-            'comments' => 'nullable|string|max:500',
-            'booked_date' => 'required|date',
         ];
     }
 
     public function messages()
     {
         return [
-            'hours.regex' => __('validation.time_booking.ticket_detail.hours.regex'),
+            'sections.*.functionality.*.initial_estimation_development_time.numeric' => __('validation.bulk_create_tickets.initial_estimation_development_time.numeric'),
+            'sections.*.functionality.*.initial_estimation_development_time.regex' => __('validation.bulk_create_tickets.initial_estimation_development_time.regex'),
         ];
     }
 }

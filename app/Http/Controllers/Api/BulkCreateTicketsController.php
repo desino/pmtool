@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\BulkCreateTicketsRequest;
 use App\Models\Functionality;
 use App\Models\Initiative;
 use App\Models\Section;
@@ -32,6 +33,9 @@ class BulkCreateTicketsController extends Controller
             return ApiHelper::response(false, __('messages.initiative.dont_have_permission'), null, 404);
         }
         $initiative = Initiative::find($request->initiative_id);
+        if (!$initiative) {
+            return ApiHelper::response(false, __('messages.solution_design.section.initiative_not_exist'), '', 404);
+        }
 
         $sectionsWithFunctionalities = Section::select(
             'id',
@@ -65,7 +69,7 @@ class BulkCreateTicketsController extends Controller
         return ApiHelper::response(true, '', $retData, 200);
     }
 
-    public function storeNewBulkTickets(Request $request)
+    public function storeNewBulkTickets(BulkCreateTicketsRequest $request)
     {
         $authUser = Auth::user();
         if (!$authUser->is_admin) {
@@ -93,44 +97,46 @@ class BulkCreateTicketsController extends Controller
         try {
             foreach ($request->sections as $section) {
                 foreach ($section['functionality'] as $functionality) {
-                    $generateTicketComposedNameData = TicketService::generateTicketComposedName($initiative->id, $functionality['functionality_name'], Ticket::TYPE_DEVELOPMENT);
-                    $ticketComposedName = $generateTicketComposedNameData['composed_name'];
-                    $insertTicket['initiative_id'] = $initiative->id;
-                    $insertTicket['functionality_id'] = $functionality['functionality_id'];
-                    $insertTicket['name'] = $functionality['functionality_name'];
-                    $insertTicket['composed_name'] = $ticketComposedName;
-                    $insertTicket['type'] = Ticket::TYPE_DEVELOPMENT;
-                    $insertTicket['initial_estimation_development_time'] = $functionality['initial_estimation_development_time'];
-                    $insertTicket['auto_wait_for_client_approval'] = true;
-                    $data = [
-                        'name' => $ticketComposedName,
-                        'resource_type' => 'task',
-                        'resource_subtype' => 'default_task',
-                    ];
-                    $projectId = $initiative->asana_project_id;
-                    $task = $this->asanaService->createTask($projectId, $data);
-                    $insertTicket['asana_task_id'] = $task['data']['data']['gid'];
-                    $ticket = Ticket::create($insertTicket);
-
-                    $actions = [
-                        [
-                            'action' => TicketAction::getActionDevelop(),
-                            'user_id' => Auth::id(),
-                            'is_checked' => 1
-                        ]
-                    ];
-                    $clarifyEstimateAction = [];
-                    if ($functionality['clarify_estimate_checked']) {
-                        $clarifyEstimateAction = [
-                            'action' => TicketAction::getActionClarifyAndEstimate(),
-                            'user_id' => $initiative->technical_owner_id ?? Auth::id(),
-                            'is_checked' => 1
+                    if ($functionality['initial_estimation_development_time'] != '') {
+                        $generateTicketComposedNameData = TicketService::generateTicketComposedName($initiative->id, $functionality['functionality_name'], Ticket::TYPE_DEVELOPMENT);
+                        $ticketComposedName = $generateTicketComposedNameData['composed_name'];
+                        $insertTicket['initiative_id'] = $initiative->id;
+                        $insertTicket['functionality_id'] = $functionality['functionality_id'];
+                        $insertTicket['name'] = $functionality['functionality_name'];
+                        $insertTicket['composed_name'] = $ticketComposedName;
+                        $insertTicket['type'] = Ticket::TYPE_DEVELOPMENT;
+                        $insertTicket['initial_estimation_development_time'] = $functionality['initial_estimation_development_time'];
+                        $insertTicket['auto_wait_for_client_approval'] = true;
+                        $data = [
+                            'name' => $ticketComposedName,
+                            'resource_type' => 'task',
+                            'resource_subtype' => 'default_task',
                         ];
-                        array_push($actions, $clarifyEstimateAction);
+                        $projectId = $initiative->asana_project_id;
+                        $task = $this->asanaService->createTask($projectId, $data);
+                        $insertTicket['asana_task_id'] = $task['data']['data']['gid'];
+                        $ticket = Ticket::create($insertTicket);
+
+                        $actions = [
+                            [
+                                'action' => TicketAction::getActionDevelop(),
+                                'user_id' => Auth::id(),
+                                'is_checked' => 1
+                            ]
+                        ];
+                        $clarifyEstimateAction = [];
+                        if ($functionality['clarify_estimate_checked']) {
+                            $clarifyEstimateAction = [
+                                'action' => TicketAction::getActionClarifyAndEstimate(),
+                                'user_id' => $initiative->technical_owner_id ?? Auth::id(),
+                                'is_checked' => 1
+                            ];
+                            array_push($actions, $clarifyEstimateAction);
+                        }
+                        TicketService::insertTicketActions($ticket->id, $actions, true);
+                        TicketService::updateTicketStatus($ticket);
+                        TicketService::createMacroStatusAndUpdateTicket($ticket);
                     }
-                    TicketService::insertTicketActions($ticket->id, $actions, true);
-                    TicketService::updateTicketStatus($ticket);
-                    TicketService::createMacroStatusAndUpdateTicket($ticket);
                 }
             }
             DB::commit();

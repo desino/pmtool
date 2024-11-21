@@ -1,37 +1,55 @@
 <template>
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <form @submit.prevent="submitTestDeploymentTicket">
             <div class="modal-content border-0">
                 <div class="modal-header text-white bg-desino border-0 py-2 justify-content-center">
-                    <h5 class="modal-title" id="testDeploymentTicketsModalLabel">{{
-                        $t('home.deployment_center.test_deployment.ticket_modal.title')
-                    }}</h5>
+                    <h5 class="modal-title" id="testDeploymentTicketsModalLabel"
+                        v-html="formattedModalTitleTestDeployment()"></h5>
                 </div>
                 <div class="modal-body">
-                    <GlobalMessage v-if="showMessage" />
+                    <GlobalMessage v-if="showMessage" scope="modal" />
                     <ul class="list-group">
                         <li class="list-group-item fw-bold bg-desino text-white">
                             <div class="row w-100">
-                                <div class="col-md-1">
+                                <div class="col-md-1" v-if="ticketList.length > 0">
                                     <input class="form-check-input" type="checkbox"
                                         v-model="isChkAllTestDeploymentTickets"
                                         @change="handleSelectAllTestDeploymentTickets">
                                 </div>
-                                <div class="col-md-11">
+                                <div class="col-md-8">
                                     {{ $t('home.deployment_center.test_deployment.ticket_modal.li.name.text') }}
+                                </div>
+                                <div class="col-md-3">
+                                    {{ $t('home.deployment_center.test_deployment.ticket_modal.li.develop_by.text') }}
                                 </div>
                             </div>
                         </li>
-                        <li class="list-group-item list-group-item-action" v-for="ticket in ticketList"
-                            :key="ticket.id">
+                        <li class="list-group-item list-group-item-action" v-if="ticketList.length > 0"
+                            v-for="ticket in ticketList" :key="ticket.id">
                             <div class="row w-100">
                                 <div class="col-md-1">
                                     <input class="form-check-input" type="checkbox"
                                         :id="'chk_test_deployment_ticket_' + ticket.id" v-model="ticket.isChecked"
                                         @change="handleSelectTestDeploymentTicket(ticket)">
                                 </div>
-                                <div class="col-md-11" :for="'chk_test_deployment_ticket_' + ticket.id">
+                                <div class="col-md-8 d-flex align-content-center"
+                                    :for="'chk_test_deployment_ticket_' + ticket.id">
                                     {{ ticket?.composed_name }}
+                                    <router-link target="_blank"
+                                        :to="{ name: 'task.detail', params: { initiative_id: ticket.initiative_id, ticket_id: ticket.id } }"
+                                        class="ms-2">
+                                        <i class="bi bi-link-45deg"></i>
+                                    </router-link>
+                                </div>
+                                <div class="col-md-3" :for="'chk_test_deployment_ticket_' + ticket.id">
+                                    {{ ticket?.develop_action?.user?.name }}
+                                </div>
+                            </div>
+                        </li>
+                        <li v-else class="list-group-item list-group-item-action fw-bold">
+                            <div class="row w-100">
+                                <div class="col-md-12 text-center">
+                                    {{ $t('home.deployment_center.test_deployment.ticket_modal.no_tickets.text') }}
                                 </div>
                             </div>
                         </li>
@@ -41,7 +59,7 @@
                     <div class="row w-100 g-1">
                         <div class="col-4 col-md-4 col-lg-6">
                             <button type="submit" class="btn btn-desino w-100 border-0"
-                                :disabled="selectedTestDeploymentTickets.length > 0 ? false : true">{{
+                                :disabled="selectedTestDeploymentTickets.length > 0 && isAllowProcess ? false : true">{{
                                     $t('home.deployment_center.test_deployment.ticket_modal.submit_but.text') }}</button>
                         </div>
                         <div class="col-4 col-md-4 col-lg-6">
@@ -74,13 +92,19 @@ export default {
             isChkAllTestDeploymentTickets: false,
             ticketList: [],
             selectedTestDeploymentTickets: [],
+            isAllowProcess: false,
             initiativeId: "",
+            initiative: {},
             errors: {},
             showMessage: true
         };
     },
     methods: {
         ...mapActions(['setLoading']),
+        formattedModalTitleTestDeployment() {
+            const title = this.$t('home.deployment_center.test_deployment.ticket_modal.title', { 'INITIATIVE_NAME': this.initiative?.name });
+            return title.replace(this.initiative?.name, `<span class='badge bg-secondary'>${this.initiative?.name}</span>`);
+        },
         async getTestDeploymentTicketsModalData(testDeployment) {
             this.selectedTestDeploymentTickets = [];
             this.isChkAllTestDeploymentTickets = false;
@@ -88,7 +112,9 @@ export default {
             const passData = {
                 initiative_id: testDeployment.id,
             }
-            const { content: { tickets } } = await DeploymentCenterService.getTestDeploymentTicketsModalData(passData);
+            const { content: { tickets, initiative, isAllowProcess } } = await DeploymentCenterService.getTestDeploymentTicketsModalData(passData);
+            this.initiative = initiative;
+            this.isAllowProcess = isAllowProcess;
             this.ticketList = tickets.map(ticket => ({
                 ...ticket,
                 isChecked: false,
@@ -175,7 +201,7 @@ export default {
             if (error.type === 'validation') {
                 this.errors = error.errors;
             } else {
-                messageService.setMessage(error.message, 'danger');
+                messageService.setMessage(error.message, 'danger', 'modal');
             }
             this.setLoading(false);
         },

@@ -21,8 +21,9 @@
                                         class="form-control"
                                         :placeholder="$t('time_booking.modal_input_hours_label_text')">
                                     <small v-if="errors.hours" class="invalid-feedback">
-                                        <span v-for="(error, index) in errors.hours" :key="index">{{ error
-                                            }}</span>
+                                        <span v-for="(error, index) in errors.hours" :key="index">
+                                            {{ error }} <br>
+                                        </span>
                                     </small>
                                 </div>
                                 <div class="mb-3" v-if="user?.is_admin && formData.ticket_id == ''">
@@ -30,7 +31,7 @@
                                         class="form-select">
                                         <option value="">{{
                                             $t('time_booking.modal_input_project_label_text')
-                                            }}</option>
+                                        }}</option>
                                         <option v-for="project in projects" :key="project.id" :value="project.id">{{
                                             project.name }}
                                         </option>

@@ -25,10 +25,21 @@ class TimeBookingForUnBillableRequest extends FormRequest
         return [
             'initiative_id' => 'required',
             'project_id' => 'required',
-            'hours' => 'required|numeric|between:1,99999.99',
+            'hours' => [
+                'required',
+                'numeric',
+                'regex:/^(0\.[1-9][0-9]?|[1-9][0-9]{0,5}(\.[0-9]{1,2})?)$/'
+            ],
             'comments' => 'nullable|string|max:500',
             'booked_date' => 'required|date',
             'user_id' => 'nullable|exists:users,id',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'hours.regex' => __('validation.time_booking.unbillable.hours.regex'),
         ];
     }
 }

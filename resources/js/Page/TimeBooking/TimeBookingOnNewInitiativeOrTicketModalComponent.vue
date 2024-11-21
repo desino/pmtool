@@ -19,7 +19,7 @@
                                 class="form-select" @change="fetchTickets">
                                 <option value="">{{
                                     $t('time_booking_on_new_initiative_or_ticket.modal_select_initiative_label_text')
-                                }}</option>
+                                    }}</option>
                                 <option v-for="initiative in initiatives" :key="initiative.id" :value="initiative.id">{{
                                     initiative.name }}
                                 </option>
@@ -33,7 +33,7 @@
                                 class="form-select">
                                 <option value="">{{
                                     $t('time_booking_on_new_initiative_or_ticket.modal_select_ticket_label_text')
-                                }}</option>
+                                    }}</option>
                                 <option v-for="ticket in tickets" :key="ticket.id" :value="ticket.id">{{
                                     ticket.composed_name }}
                                 </option>
@@ -49,8 +49,9 @@
                                 class="form-control"
                                 :placeholder="$t('time_booking_on_new_initiative_or_ticket.modal_input_hours_label_text')">
                             <small v-if="errors.hours" class="invalid-feedback">
-                                <span v-for="(error, index) in errors.hours" :key="index">{{ error
-                                    }}</span>
+                                <span v-for="(error, index) in errors.hours" :key="index">
+                                    {{ error }} <br>
+                                </span>
                             </small>
                         </div>
                         <div class="col-10 mb-3">

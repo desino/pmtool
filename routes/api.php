@@ -7,10 +7,10 @@ use App\Http\Controllers\Api\BulkCreateTicketsController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\DeploymentCenterController;
 use App\Http\Controllers\Api\DeploymentController;
+use App\Http\Controllers\Api\DeveloperWorkloadController;
 use App\Http\Controllers\Api\HeaderController;
 use App\Http\Controllers\Api\HomeMyActionsController;
 use App\Http\Controllers\Api\InitiativeController;
-use App\Http\Controllers\Api\InitiativeTimeBookingController;
 use App\Http\Controllers\Api\MyTicketController;
 use App\Http\Controllers\Api\OpportunityController;
 use App\Http\Controllers\Api\PlanningController;
@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\SolutionDesignController;
 use App\Http\Controllers\Api\TestCaseController;
 use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\TimeBookingController;
+use App\Http\Controllers\Api\TimeMappingController;
 use App\Http\Controllers\Api\UserController;
 use App\Models\Planning;
 use Illuminate\Http\Request;
@@ -97,6 +98,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('update-ticket-detail-estimated-hours/{ticket_id}', 'updateTicketDetailEstimatedHours');
             Route::post('add-remove-priority', 'addRemovePriority');
             Route::post('mark-as-visible-invisible', 'markAsVisibleInvisible');
+            Route::post('delete-ticket', 'deleteTicket');
 
             Route::controller(TestCaseController::class)->prefix('{ticket_id}/test-case')->group(function () {
                 Route::post('/store', 'store');
@@ -154,11 +156,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/store-planning', 'storePlanning');
     });
 
-    Route::controller(InitiativeTimeBookingController::class)->prefix('initiative-time-booking')->group(function () {
+    Route::controller(TimeMappingController::class)->prefix('time-mapping')->group(function () {
         Route::get('/', 'index');
-        Route::get('/get-initial-data-for-initiative-time-bookings', 'getInitialDataForInitiativeTimeBookings');
-        Route::get('/get-project-list-for-initiative-time-bookings', 'getProjectListForInitiativeTimeBookings');
-        Route::post('/assign-project-for-initiative-time-bookings', 'assignProjectForInitiativeTimeBookings');
+        Route::get('/get-initial-data-for-time-mappings', 'getInitialDataForTimeMappings');
+        Route::get('/get-project-list-for-time-mappings', 'getProjectListForTimeMappings');
+        Route::post('/assign-project-for-time-mappings', 'assignProjectForTimeMappings');
     });
 
     Route::controller(AllTicketsWithoutInitiativeController::class)->prefix('all-tickets-without-initiative')->group(function () {
@@ -166,6 +168,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('get-initial-data', 'getInitialData');
         Route::post('add-remove-priority', 'addRemovePriority');
         Route::post('mark-as-visible-invisible', 'markAsVisibleInvisible');
+    });
+
+    Route::controller(DeveloperWorkloadController::class)->prefix('developer-workload')->group(function () {
+        Route::get('/', 'index');
     });
 });
 

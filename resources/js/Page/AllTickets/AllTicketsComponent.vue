@@ -140,7 +140,9 @@
                                 <input class="form-check-input" type="checkbox" :id="'chk_ticket_' + ticket.id"
                                     v-model="ticket.isChecked" @click.stop @change="handleSelectTickets(ticket)">
                             </div>
-                            <div class="col-auto" style="width: calc(100% - 40px)">
+                            <div class="col-auto" style="width: calc(100% - 40px)" data-bs-toggle="tooltip"
+                                data-bs-html="true" data-bs-placement="bottom"
+                                :title="tooltipContentForTicketName(ticket)">
                                 {{ ticket.composed_name }}
                             </div>
                         </div>
@@ -156,11 +158,14 @@
                         {{ ticket.dev_estimation_time ?? ticket.initial_estimation_development_time }} hrs
                     </div>
                     <div class="col-lg-2 col-md-6 col-6 py-2 d-none d-lg-block text-lg-end">
-                        <a :title="$t('ticket.list.column.action.edit_text')" class="text-desino me-1"
+                        <a data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            :title="$t('ticket.list.column.action.edit_text')" class="text-desino me-1"
                             href="javascript:" @click.stop="editTicketPopup(ticket)">
                             <i class="bi bi-pencil-square"></i>
                         </a>
-                        <a v-if="ticket.asana_task_link" :href="ticket.asana_task_link" target="_blank">
+                        <a data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            :title="$t('ticket.list.column.action.asana_text')" v-if="ticket.asana_task_link"
+                            @click.stop :href="ticket.asana_task_link" target="_blank">
                             <svg fill="none" height="21px" viewBox="0 0 24 24" width="21px"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path clip-rule="evenodd"
@@ -201,7 +206,7 @@ import messageService from '../../services/messageService';
 import PaginationComponent from '../../components/PaginationComponent.vue';
 import AllTicketsWithoutInitiativeService from '../../services/AllTicketsWithoutInitiativeService';
 import EditTicketModalComponent from '../SolutionDesign/Ticket/EditTicketModalComponent.vue';
-import { Modal } from 'bootstrap';
+import { Modal, Tooltip } from 'bootstrap';
 import Multiselect from "vue-multiselect";
 import MyTicketService from '../../services/MyTicketService';
 import showToast from '../../utils/toasts';
@@ -272,13 +277,15 @@ export default {
                 this.tickets = data;
                 this.currentPage = current_page;
                 this.totalPages = last_page;
-                this.setLoading(false);
+                await this.setLoading(false);
+                this.initializeTooltips()
             } catch (error) {
                 this.handleError(error);
             }
         },
         redirectTaskDetailPage(ticket) {
-            this.$router.push({ name: 'task.detail', params: { initiative_id: ticket.initiative_id, ticket_id: ticket.id } });
+            const ticketDetailRoute = this.$router.resolve({ name: 'task.detail', params: { initiative_id: ticket.initiative_id, ticket_id: ticket.id } });
+            window.open(ticketDetailRoute.href, '_blank');
         },
         editTicketPopup(ticket) {
             const passData = {
@@ -386,6 +393,25 @@ export default {
             }
             this.isChkAllTickets = this.tickets.every(ticket => ticket.isChecked);
         },
+        initializeTooltips() {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            tooltipTriggerList.forEach((tooltipTriggerEl) => {
+                new Tooltip(tooltipTriggerEl);
+            });
+        },
+        tooltipContentForTicketName(ticket) {
+            const createdAtLabel = this.$t('ticket.list.row_hover_tooltip_created_at_text');
+            const createdByLabel = this.$t('ticket.list.row_hover_tooltip_created_by_text');
+            return `<strong>${createdAtLabel}</strong>${ticket.display_created_at}<br><strong>${createdByLabel}</strong>${ticket.display_created_by}`;
+        },
+        setActionOwnerForFilterFromDeveloperWorkload() {
+            let queryParams = "";
+            if ('filter_from' in this.$route.query) {
+                queryParams = this.$route.query;
+                this.filter.action_owner = queryParams.user_id;
+                this.filter.visible = queryParams.is_visible;
+            }
+        },
         handleError(error) {
             if (error.type === 'validation') {
                 this.errors = error.errors;
@@ -400,6 +426,7 @@ export default {
         },
     },
     mounted() {
+        this.setActionOwnerForFilterFromDeveloperWorkload();
         this.fetchData();
         const setHeaderData = {
             page_title: this.$t('all_ticket_without_initiative_list.page_title'),

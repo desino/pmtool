@@ -9,7 +9,7 @@
                     </h5>
                 </div>
                 <div class="modal-body">
-                    <GlobalMessage v-if="showMessage" />
+                    <GlobalMessage v-if="showMessage" scope="modal" />
                     <label>Test Case </label>
                     <p class="text-muted" v-html="testCase"></p>
                     <hr>
@@ -123,7 +123,7 @@ export default {
             if (error.type === 'validation') {
                 this.errors = error.errors;
             } else {
-                messageService.setMessage(error.message, 'danger');
+                messageService.setMessage(error.message, 'danger', 'modal');
             }
             this.setLoading(false);
         },

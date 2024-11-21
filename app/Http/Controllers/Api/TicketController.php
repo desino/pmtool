@@ -200,7 +200,7 @@ class TicketController extends Controller
                 // TicketService::deleteActions($ticket->id);
                 TicketService::insertTicketActions($ticket->id, $validateData['ticket_actions'], $validateData['auto_wait_for_client_approval']);
                 TicketService::updateTicketStatus($ticket);
-                TicketService::createMacroStatusAndUpdateTicket($ticket);
+                TicketService::createMacroStatusAndUpdateTicket($ticket, true);
             }
             $retData = [
                 'ticket' => $ticket,
@@ -224,6 +224,10 @@ class TicketController extends Controller
         if (!$authUser->is_admin) {
             return ApiHelper::response(false, __('messages.initiative.dont_have_permission'), null, 404);
         }
+        $initiative = InitiativeService::getInitiative($request, $initiative_id);
+        if (!$initiative) {
+            return ApiHelper::response(false, __('messages.solution_design.section.initiative_not_exist'), '', 404);
+        }
         $filters = $request->filters;
 
         $deploymentId = "";
@@ -241,6 +245,7 @@ class TicketController extends Controller
             'type',
             'project_id',
             'created_at',
+            'created_by',
             'asana_task_id',
             'functionality_id',
             'initiative_id',
@@ -249,6 +254,10 @@ class TicketController extends Controller
             'macro_status',
             'is_priority',
             'is_visible',
+            'initial_estimation_development_time',
+            'dev_estimation_time',
+            DB::RAW('IF(dev_estimation_time > 0, dev_estimation_time,initial_estimation_development_time) as estimation_time'),
+            DB::RAW('IF(macro_status = ' . Ticket::MACRO_STATUS_DONE . ', true,false) as is_ticket_done'),
         )
             ->with(['project' => function ($q) {
                 $q->select(
@@ -273,7 +282,7 @@ class TicketController extends Controller
                         );
                     }]);
                 }]);
-            }, 'initiative', 'currentAction', 'releaseTickets'])
+            }, 'initiative', 'currentAction', 'releaseTickets', 'createdBy'])
             ->withCount([
                 'actions',
                 'doneActions',
@@ -346,7 +355,8 @@ class TicketController extends Controller
             ->when($filters['is_include_done'] == 'false', function (Builder $query) use ($filters) {
                 $query->where('macro_status', '!=', Ticket::MACRO_STATUS_DONE);
             })
-            ->paginate(10);
+            ->get();
+        // ->paginate(10);
         $meta['task_type'] = Ticket::getAllTypes();
         $meta['functionalities'] = Functionality::whereHas('section', function ($query) use ($initiative_id) {
             $query->where('initiative_id', $initiative_id);
@@ -366,6 +376,8 @@ class TicketController extends Controller
         $meta['macro_status'] = Ticket::getAllMacroStatus();
         $meta['deployments'] = Release::getAllReleases($initiative_id);
         $meta['prd_macro_status'] = Ticket::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_PRD;
+        $meta['ticket_count'] = $tickets->count();
+        $meta['ticket_sum'] = $tickets->sum('estimation_time');
 
         return ApiHelper::response('false', __('messages.ticket.fetched'), $tickets, 200, $meta);
     }
@@ -420,18 +432,22 @@ class TicketController extends Controller
             return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
         }
 
-        $ticket = Ticket::with([
-            'functionality',
-            'initiative',
-            'initiative.functionalOwner',
-            'initiative.qualityOwner',
-            'initiative.technicalOwner',
-            'currentAction',
-            'nextAction',
-            'previousAction',
-            'testCases',
-            'actions'
-        ])
+        $ticket = Ticket::select(
+            '*',
+            DB::RAW('IF(dev_estimation_time > 0, dev_estimation_time,initial_estimation_development_time) as estimation_time')
+        )
+            ->with([
+                'functionality',
+                'initiative',
+                'initiative.functionalOwner',
+                'initiative.qualityOwner',
+                'initiative.technicalOwner',
+                'currentAction',
+                'nextAction',
+                'previousAction',
+                'testCases',
+                'actions',
+            ])
             ->withCount([
                 'actions' => function ($query) {
                     $query->where('user_id', Auth::id());
@@ -758,7 +774,7 @@ class TicketController extends Controller
         if ($ticket->macro_status == Ticket::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_PRD && $ticket->macro_status != Ticket::MACRO_STATUS_DONE) {
             $releaseTicket = ReleaseTicket::where('ticket_id', $ticket->id)->first();
             if ($releaseTicket) {
-                return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed_du_to_ticket_in_ready_for_deployment'), '', 400);
+                return ApiHelper::response($status, __('messages.ticket.change_action_status_not_allowed_du_to_status_not_ongoing'), '', 400);
             }
             $isReadyForDeploymentToPrd = true;
         }
@@ -770,7 +786,7 @@ class TicketController extends Controller
         try {
             TicketService::updateTicketPreviousActions($ticket, $request->input('action_id'), TicketAction::getStatusWaitingForDependantAction(), $isReadyForDeploymentToPrd);
             TicketService::updateTicketStatus($ticket);
-            TicketService::createMacroStatusAndUpdateTicket($ticket);
+            TicketService::createMacroStatusAndUpdateTicket($ticket, true);
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -785,7 +801,7 @@ class TicketController extends Controller
     public function getCreateReleaseData(Request $request, $initiativeId)
     {
         $retData = [
-            'unprocessedRelease' => ReleaseService::getUnprocessedRelease(),
+            'unprocessedRelease' => ReleaseService::getUnprocessedRelease($initiativeId),
         ];
         return ApiHelper::response(true, '', $retData, 200);
     }
@@ -833,10 +849,11 @@ class TicketController extends Controller
         DB::beginTransaction();
         try {
             if ($request->input('release_id') == "") {
-                $releaseVersion = TicketService::createReleaseVersion($requestData['is_major']);
+                $releaseVersion = TicketService::createReleaseVersion($requestData['is_major'], $initiative->id);
                 $releaseName = TicketService::createReleaseName($releaseVersion, $requestData);
                 $requestData['name'] = $releaseName;
                 $requestData['version'] = $releaseVersion;
+                $requestData['is_major'] = $requestData['is_major'] || $releaseVersion == 1 ? 1 : 0;
                 $release = Release::create($requestData);
             }
             foreach ($ticketIds as $ticketId) {
@@ -959,6 +976,54 @@ class TicketController extends Controller
         DB::beginTransaction();
         try {
             Ticket::whereIn('id', $requestData['ticket_ids'])->update(['is_visible' => $requestData['is_visible']]);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $status = false;
+            $message = __('messages.something_went_wrong');
+            $statusCode = 500;
+            Log::info($e->getMessage());
+        }
+        return ApiHelper::response($status, $message, '', $statusCode);
+    }
+
+    public function deleteTicket(Request $request, $initiativeId)
+    {
+        $status = false;
+
+        $authUser = Auth::user();
+        if (!$authUser->is_admin) {
+            return ApiHelper::response(false, __('messages.ticket.delete_ticket_not_allowed'), null, 400);
+        }
+
+        $request->merge(['initiative_id' => $initiativeId]);
+        $initiative = InitiativeService::getInitiative($request);
+        if (!$initiative) {
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
+        }
+
+        $ticket = Ticket::withCount('timeBookings')->find($request->post('ticket_id'));
+        if (!$ticket) {
+            return ApiHelper::response($status, __('messages.ticket.ticket_not_exist'), '', 400);
+        }
+        if ($ticket && $ticket->macro_status == Ticket::MACRO_STATUS_DONE) {
+            return ApiHelper::response($status, __('messages.ticket.delete_ticket_not_allowed_because_ticket_already_done'), '', 400);
+        }
+        if ($ticket->time_bookings_count > 0) {
+            return ApiHelper::response($status, __('messages.ticket.delete_ticket_not_allowed_because_time_bookings_exist'), '', 400);
+        }
+
+        $task = $this->asanaService->deleteTask($ticket->asana_task_id);
+        if ($task['error_status']) {
+            return ApiHelper::response($status, __('messages.asana.delete_ticket.delete_error'), '', 400);
+        }
+
+        $status = true;
+        $message = __('messages.ticket.delete_ticket_success');
+        $statusCode = 200;
+        DB::beginTransaction();
+        try {
+            $ticket->delete();
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();

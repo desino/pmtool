@@ -9,7 +9,7 @@ return [
     'ssl_certificate' => env('SSL_CERTIFICATE', ''),
     'default_project_name' => 'Maintenance',
     'api_key' => env('API_KEY'),
-    'initiative_time_booking_load_default_data_days' => 45,
+    'time_mapping_load_default_data_days' => 45,
     'un_billable_internal_time_booking' => [
         'initiative_id' => '-1',
         'initiative_name' => 'Other Bookings',

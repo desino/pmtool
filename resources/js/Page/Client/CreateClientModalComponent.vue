@@ -7,14 +7,16 @@
                         }}</h5>
                 </div>
                 <div class="modal-body">
-                    <GlobalMessage v-if="showMessage" />
+                    <GlobalMessage v-if="showMessage" scope="modal" />
                     <div class="mb-3">
                         <label class="form-label fw-bold">{{ $t('create_client_modal_input_name') }} <strong
                                 class="text-danger">*</strong></label>
                         <input type="text" v-model="formData.name" :class="{ 'is-invalid': errors.name }"
                             class="form-control">
                         <div v-if="errors.name" class="invalid-feedback">
-                            <span v-for="(error, index) in errors.name" :key="index">{{ error }}</span>
+                            <span v-for="(error, index) in errors.name" :key="index">
+                                {{ error }} <br>
+                            </span>
                         </div>
                     </div>
                     <div class="mb-3">
@@ -34,8 +36,9 @@
                         <input type="text" v-model="formData.ballpark_development_hours"
                             :class="{ 'is-invalid': errors.ballpark_development_hours }" class="form-control">
                         <div v-if="errors.ballpark_development_hours" class="invalid-feedback">
-                            <span v-for="(error, index) in errors.ballpark_development_hours" :key="index">{{ error
-                                }}</span>
+                            <span v-for="(error, index) in errors.ballpark_development_hours" :key="index">
+                                {{ error }} <br>
+                            </span>
                         </div>
                     </div>
                     <div class="mb-3">
@@ -46,10 +49,6 @@
                                 {{ $t('create_client_modal_input_is_sold') }}
                             </label>
                         </div>
-                        <div v-if="errors.ballpark_development_hours" class="invalid-feedback">
-                            <span v-for="(error, index) in errors.ballpark_development_hours" :key="index">{{ error
-                                }}</span>
-                        </div>
                     </div>
                 </div>
                 <div class="modal-footer border-0 p-0 justify-content-center">
@@ -57,7 +56,7 @@
                         <div class="col-4 col-md-4 col-lg-6">
                             <button type="submit" class="btn btn-desino w-100 border-0">{{
                                 $t('create_client_modal_submit_but_text')
-                                }}</button>
+                            }}</button>
                         </div>
                         <div class="col-4 col-md-4 col-lg-6">
                             <button type="button" class="btn btn-danger w-100 border-0" data-bs-dismiss="modal">
@@ -117,7 +116,7 @@ export default {
             if (error.type === 'validation') {
                 this.errors = error.errors;
             } else {
-                messageService.setMessage(error.message, 'danger');
+                messageService.setMessage(error.message, 'danger', 'modal');
             }
             this.setLoading(false);
         },

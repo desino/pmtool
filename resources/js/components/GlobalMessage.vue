@@ -6,19 +6,21 @@
     </div>
 </template>
 
+
 <script>
 import { computed } from 'vue';
 import messageService from './../services/messageService';
 
 export default {
     name: 'GlobalMessage',
-    /**
-     * Sets up the component by initializing the state and computed properties.
-     *
-     * @return {Object} An object containing the state, alertClass, and clearMessage.
-     */
-    setup() {
-        const state = messageService.getState();
+    props: {
+        scope: {
+            type: String,
+            default: "default",
+        },
+    },
+    setup(props) {
+        const state = messageService.getState(props.scope);
 
         const alertClass = computed(() => {
             return {
@@ -30,13 +32,13 @@ export default {
         });
 
         const clearMessage = () => {
-            messageService.clearMessage();
+            messageService.clearMessage(props.scope);
         };
 
         return {
             state,
             alertClass,
-            clearMessage
+            clearMessage,
         };
     }
 };

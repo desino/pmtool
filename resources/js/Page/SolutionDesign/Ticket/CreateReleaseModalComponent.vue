@@ -7,7 +7,7 @@
                     </h5>
                 </div>
                 <div class="modal-body">
-                    <GlobalMessage v-if="showMessage" />
+                    <GlobalMessage v-if="showMessage" scope="modal" />
                     <div v-if="showErrorMessage" class="alert alert-danger">
                         <button type="button" class="btn-close" aria-label="Close" @click="hideErrorMessage"></button>
                         {{ showErrorMessage }}

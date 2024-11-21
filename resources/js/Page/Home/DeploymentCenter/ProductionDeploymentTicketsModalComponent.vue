@@ -1,27 +1,47 @@
 <template>
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <form @submit.prevent="submitProductionDeploymentTicket">
             <div class="modal-content border-0">
                 <div class="modal-header modal-header text-white bg-desino border-0 py-2 justify-content-center">
-                    <h5 class="modal-title" id="productionDeploymentTicketsModalLabel">{{
-                        $t('home.deployment_center.production_deployment.ticket_modal.title')
-                        }}</h5>
+                    <h5 class="modal-title" id="productionDeploymentTicketsModalLabel"
+                        v-html="formattedModalTitlePRDDeployment()"></h5>
                 </div>
                 <div class="modal-body">
-                    <GlobalMessage v-if="showMessage" />
+                    <GlobalMessage v-if="showMessage" scope="modal" />
                     <ul class="list-group">
                         <li class="list-group-item fw-bold bg-desino text-white">
                             <div class="row w-100">
-                                <div class="col-md-12">
+                                <div class="col-md-9">
                                     {{ $t('home.deployment_center.production_deployment.ticket_modal.li.name.text') }}
+                                </div>
+                                <div class="col-md-3">
+                                    {{
+                                        $t('home.deployment_center.production_deployment.ticket_modal.li.develop_by.text')
+                                    }}
                                 </div>
                             </div>
                         </li>
-                        <li class="list-group-item list-group-item-action" v-for="ticket in ticketList"
-                            :key="ticket.id">
+                        <li class="list-group-item list-group-item-action" v-if="ticketList.length > 0"
+                            v-for="ticket in ticketList" :key="ticket.id">
                             <div class="row w-100">
-                                <div class="col-md-12" :for="'chk_production_deployment_ticket_' + ticket.ticket.id">
+                                <div class="col-md-9" :for="'chk_production_deployment_ticket_' + ticket.ticket.id">
                                     {{ ticket?.ticket.composed_name }}
+                                    <router-link target="_blank"
+                                        :to="{ name: 'task.detail', params: { initiative_id: ticket?.ticket.initiative_id, ticket_id: ticket?.ticket.id } }"
+                                        class="ms-2">
+                                        <i class="bi bi-link-45deg"></i>
+                                    </router-link>
+                                </div>
+                                <div class="col-md-3" :for="'chk_test_deployment_ticket_' + ticket.id">
+                                    {{ ticket?.ticket?.develop_action?.user?.name }}
+                                </div>
+                            </div>
+                        </li>
+                        <li v-else class="list-group-item list-group-item-action fw-bold">
+                            <div class="row w-100">
+                                <div class="col-md-12 text-center">
+                                    {{ $t('home.deployment_center.production_deployment.ticket_modal.no_tickets.text')
+                                    }}
                                 </div>
                             </div>
                         </li>
@@ -30,7 +50,7 @@
                 <div class="modal-footer border-0 p-0 justify-content-center">
                     <div class="row w-100 g-1">
                         <div class="col-4 col-md-6 col-lg-6">
-                            <button type="submit" class="btn btn-desino w-100 border-0">{{
+                            <button type="submit" :disabled="!isAllowProcess" class="btn btn-desino w-100 border-0">{{
                                 $t('home.deployment_center.production_deployment.ticket_modal.submit_but.text')
                             }}</button>
                         </div>
@@ -65,6 +85,8 @@ export default {
             ticketList: [],
             release: {},
             selectedProductionDeploymentTickets: [],
+            isAllowProcess: false,
+            initiative: {},
             initiativeId: "",
             errors: {},
             showMessage: true
@@ -72,6 +94,10 @@ export default {
     },
     methods: {
         ...mapActions(['setLoading']),
+        formattedModalTitlePRDDeployment() {
+            const title = this.$t('home.deployment_center.production_deployment.ticket_modal.title', { 'INITIATIVE_NAME': this.initiative?.name });
+            return title.replace(this.initiative?.name, `<span class='badge bg-secondary'>${this.initiative?.name}</span>`);
+        },
         async getProductionDeploymentTicketsModalData(productionDeployment) {
             this.selectedProductionDeploymentTickets = [];
             this.isChkAllProductionDeploymentTickets = false;
@@ -79,8 +105,10 @@ export default {
             const passData = {
                 initiative_id: productionDeployment.id,
             }
-            const { content: { tickets, release } } = await DeploymentCenterService.getProductionDeploymentTicketsModalData(passData);
+            const { content: { tickets, release, initiative, isAllowProcess } } = await DeploymentCenterService.getProductionDeploymentTicketsModalData(passData);
             this.release = release;
+            this.initiative = initiative;
+            this.isAllowProcess = isAllowProcess;
             this.ticketList = tickets.map(ticket => {
                 const isSelected = false;
                 this.selectedProductionDeploymentTickets.push(ticket.ticket.id);
@@ -169,7 +197,7 @@ export default {
             if (error.type === 'validation') {
                 this.errors = error.errors;
             } else {
-                messageService.setMessage(error.message, 'danger');
+                messageService.setMessage(error.message, 'danger', 'modal');
             }
             this.setLoading(false);
         },

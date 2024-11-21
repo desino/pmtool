@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\AssignProjectForInitiativeTimeBookingRequest;
+use App\Http\Requests\Api\AssignProjectForTimeMappingRequest;
 use App\Models\Initiative;
 use App\Models\Project;
 use App\Models\TimeBooking;
@@ -17,13 +17,13 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Ramsey\Uuid\Type\Time;
 
-class InitiativeTimeBookingController extends Controller
+class TimeMappingController extends Controller
 {
     public function index(Request $request)
     {
         $requestData = $request->all();
         $filter = $requestData['filter'];
-        $defaultDays = Config::get('myapp.initiative_time_booking_load_default_data_days');
+        $defaultDays = Config::get('myapp.time_mapping_load_default_data_days');
         if (isset($filter['days']) && $filter['days'] != '') {
             $defaultDays = (int) $filter['days'];
         }
@@ -65,7 +65,7 @@ class InitiativeTimeBookingController extends Controller
         return ApiHelper::response(true, '', $timeBookings, 200);
     }
 
-    public function getInitialDataForInitiativeTimeBookings(Request $request)
+    public function getInitialDataForTimeMappings(Request $request)
     {
         $initiatives = Initiative::get();
         $users = User::get();
@@ -76,13 +76,13 @@ class InitiativeTimeBookingController extends Controller
         return ApiHelper::response(true, '', $retData, 200);
     }
 
-    public function getProjectListForInitiativeTimeBookings(Request $request)
+    public function getProjectListForTimeMappings(Request $request)
     {
         $projectList = Project::where('initiative_id', $request->initiative_id)->get();
         return ApiHelper::response(true, '', $projectList, 200);
     }
 
-    public function assignProjectForInitiativeTimeBookings(AssignProjectForInitiativeTimeBookingRequest $request)
+    public function assignProjectForTimeMappings(AssignProjectForTimeMappingRequest $request)
     {
         $status = false;
         $requestData = $request->all();

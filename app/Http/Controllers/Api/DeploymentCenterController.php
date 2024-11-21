@@ -8,6 +8,7 @@ use App\Models\Initiative;
 use App\Models\Release;
 use App\Models\ReleaseTicket;
 use App\Models\Ticket;
+use App\Models\TicketAction;
 use App\Services\InitiativeService;
 use App\Services\TicketService;
 use Carbon\Carbon;
@@ -21,8 +22,8 @@ class DeploymentCenterController extends Controller
     public function index(Request $request)
     {
         $productionDeploymentInitiative = InitiativeService::getInitiativeWithProductionDeploymentTickets();
-        $acceptanceDeploymentInitiative = InitiativeService::getInitiativeWithAcceptanceDeploymentTickets();
         $testDeploymentInitiative = InitiativeService::getInitiativeWithTestDeploymentTickets();
+        $acceptanceDeploymentInitiative = InitiativeService::getInitiativeWithAcceptanceDeploymentTickets();
         $data = [
             'productionDeploymentInitiatives' => $productionDeploymentInitiative,
             'testDeploymentInitiatives' => $testDeploymentInitiative,
@@ -42,12 +43,43 @@ class DeploymentCenterController extends Controller
         }
 
         $status = true;
-        $ticket = Ticket::select('*')
+        $retTickets = collect([]);
+        $tickets = Ticket::select('*')
+            ->with([
+                'actions' => function ($q) {
+                    $q->select('ticket_id', 'user_id', 'action');
+                },
+                'developAction' => function ($q) {
+                    $q->select('ticket_id', 'user_id', 'action');
+                    $q->with([
+                        'user' => function ($q) {
+                            $q->select('id', 'name');
+                        },
+                    ]);
+                },
+            ])
             ->where('initiative_id', $initiativeId)
             ->readyForTestStatus()
             ->get();
+
+        $isAllowToShowTickets = false;
+        if ($initiative->technical_owner_id == Auth::id() || Auth::user()->is_admin) {
+            $isAllowToShowTickets = true;
+        } else {
+            foreach ($tickets as $ticket) {
+                $developAction = $ticket->actions->where('action', TicketAction::getActionDevelop())->first();
+                if ($developAction && $developAction->user_id == Auth::id()) {
+                    $isAllowToShowTickets = true;
+                }
+            };
+        }
+        if ($isAllowToShowTickets) {
+            $retTickets = $tickets;
+        }
         $data = [
-            'tickets' => $ticket
+            'tickets' => $retTickets,
+            'initiative' => $initiative,
+            'isAllowProcess' => $initiative->technical_owner_id == Auth::id() || Auth::user()->is_admin ?? false,
         ];
         return ApiHelper::response($status, '', $data, 200);
     }
@@ -61,6 +93,11 @@ class DeploymentCenterController extends Controller
         if (!$initiative) {
             return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
         }
+
+        if ($initiative->technical_owner_id != Auth::id() && !Auth::user()->is_admin) {
+            return ApiHelper::response($status, __('messages.home.deployment_center.test_deployment.no_permission'), '', 400);
+        }
+
         DB::beginTransaction();
         $status = true;
         $message = __('message.home.deployment_center.test_deployment.update_status_success');
@@ -84,7 +121,6 @@ class DeploymentCenterController extends Controller
 
     public function getAcceptanceDeploymentTicketsModalData(Request $request, $initiativeId)
     {
-
         $status = false;
         $request->merge(['initiative_id' => $initiativeId]);
         $initiative = InitiativeService::getInitiative($request, $initiativeId);
@@ -93,12 +129,43 @@ class DeploymentCenterController extends Controller
         }
 
         $status = true;
-        $ticket = Ticket::select('*')
+        $retTickets = collect([]);
+        $tickets = Ticket::select('*')
+            ->with([
+                'actions' => function ($q) {
+                    $q->select('ticket_id', 'user_id', 'action');
+                },
+                'developAction' => function ($q) {
+                    $q->select('ticket_id', 'user_id', 'action');
+                    $q->with([
+                        'user' => function ($q) {
+                            $q->select('id', 'name');
+                        },
+                    ]);
+                },
+            ])
             ->where('initiative_id', $initiativeId)
             ->readyForAcceptanceStatus()
             ->get();
+
+        $isAllowToShowTickets = false;
+        if ($initiative->technical_owner_id == Auth::id() || Auth::user()->is_admin) {
+            $isAllowToShowTickets = true;
+        } else {
+            foreach ($tickets as $ticket) {
+                $developAction = $ticket->actions->where('action', TicketAction::getActionDevelop())->first();
+                if ($developAction && $developAction->user_id == Auth::id()) {
+                    $isAllowToShowTickets = true;
+                }
+            };
+        }
+        if ($isAllowToShowTickets) {
+            $retTickets = $tickets;
+        }
         $data = [
-            'tickets' => $ticket
+            'tickets' => $retTickets,
+            'initiative' => $initiative,
+            'isAllowProcess' => $initiative->technical_owner_id == Auth::id() || Auth::user()->is_admin ?? false,
         ];
         return ApiHelper::response($status, '', $data, 200);
     }
@@ -110,6 +177,10 @@ class DeploymentCenterController extends Controller
         $initiative = InitiativeService::getInitiative($request, $initiativeId);
         if (!$initiative) {
             return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
+        }
+
+        if ($initiative->technical_owner_id != Auth::id() && !Auth::user()->is_admin) {
+            return ApiHelper::response($status, __('messages.home.deployment_center.acceptance_deployment.no_permission'), '', 400);
         }
 
         $status = true;
@@ -143,7 +214,25 @@ class DeploymentCenterController extends Controller
         }
 
         $status = true;
-        $ticket = ReleaseTicket::with('ticket', 'release')
+        $retTickets = collect([]);
+        $releaseTickets = ReleaseTicket::with([
+            'ticket' => function ($q) {
+                $q->with(
+                    [
+                        'actions',
+                        'developAction' => function ($q) {
+                            $q->select('ticket_id', 'user_id', 'action');
+                            $q->with([
+                                'user' => function ($q) {
+                                    $q->select('id', 'name');
+                                },
+                            ]);
+                        },
+                    ]
+                );
+            },
+            'release'
+        ])
             ->whereHas('release', function ($query) use ($initiativeId) {
                 $query->where('initiative_id', $initiativeId);
             })
@@ -151,9 +240,27 @@ class DeploymentCenterController extends Controller
                 $query->where('status', Ticket::getStatusReadyForPRD());
             })
             ->get();
+
+        if ($initiative->technical_owner_id == Auth::id() || Auth::user()->is_admin) {
+            $retTickets = $releaseTickets;
+        } else {
+            $isAllowToShowTickets = false;
+            foreach ($releaseTickets as $releaseTicket) {
+                $developAction = $releaseTicket->ticket->actions->where('action', TicketAction::getActionDevelop())->first();
+                if ($developAction && $developAction->user_id == Auth::id()) {
+                    $isAllowToShowTickets = true;
+                    break;
+                }
+            }
+            if ($isAllowToShowTickets) {
+                $retTickets = $releaseTickets;
+            }
+        }
         $data = [
-            'tickets' => $ticket,
-            'release' => $initiative->unprocessedRelease
+            'tickets' => $retTickets,
+            'release' => $initiative->unprocessedRelease,
+            'initiative' => $initiative,
+            'isAllowProcess' => $initiative->technical_owner_id == Auth::id() || Auth::user()->is_admin ?? false,
         ];
         return ApiHelper::response($status, '', $data, 200);
     }
@@ -170,6 +277,10 @@ class DeploymentCenterController extends Controller
         $release = Release::find($request->input('release_id'));
         if (!$release) {
             return ApiHelper::response($status, __('messages.solution_design.section.release_not_exist'), '', 400);
+        }
+
+        if ($initiative->technical_owner_id != Auth::id() && !Auth::user()->is_admin) {
+            return ApiHelper::response($status, __('messages.home.deployment_center.production_deployment.no_permission'), '', 400);
         }
 
         $status = true;

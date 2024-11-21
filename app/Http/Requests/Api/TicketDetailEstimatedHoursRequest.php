@@ -23,7 +23,18 @@ class TicketDetailEstimatedHoursRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'dev_estimation_time' => 'required|numeric|between:1,99999.99',
+            'dev_estimation_time' => [
+                'required',
+                'numeric',
+                'regex:/^(0(\.[0-9]{1,2})?|[1-9][0-9]{0,5}(\.[0-9]{1,2})?)$/'
+            ],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'dev_estimation_time.regex' => __('validation.dev_estimation_time.regex'),
         ];
     }
 }

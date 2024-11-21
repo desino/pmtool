@@ -1,13 +1,4 @@
 <template>
-    <!-- <div class="app-content-header">
-        <div class="container-fluid">
-            <div class="row w-100">
-                <div class="col-sm-6">
-                    <h3 class="m-0">{{ $t('time_booking.page_title') }}</h3>
-                </div>
-            </div>
-        </div>
-    </div> -->
     <GlobalMessage v-if="showMessage" />
     <div class="app-content mt-3" id="timeBookingPageSection">
         <div class="row">

@@ -20,7 +20,7 @@ class MyTicketController extends Controller
         $status = false;
         $initiative = InitiativeService::getInitiative($request, $initiative_id);
         if (!$initiative) {
-            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 404);
         }
 
         $filters = $request->filters;
@@ -35,6 +35,8 @@ class MyTicketController extends Controller
             'tickets.macro_status',
             'tickets.is_visible',
             'tickets.is_priority',
+            'tickets.created_at',
+            'tickets.created_by',
         )
             ->with([
                 'currentAction' => function ($q) {
@@ -81,8 +83,8 @@ class MyTicketController extends Controller
             })
             ->groupBy('tickets.id', 'tickets.initiative_id', 'tickets.name', 'tickets.functionality_id', 'tickets.composed_name', 'tickets.asana_task_id', 'tickets.macro_status')
             ->orderBy('tickets.id')
-            ->paginate(10);
-        // ->get(10);
+            ->get();
+        // ->paginate(10);
         $meta['task_type'] = Ticket::getAllTypes();
         $meta['macro_status'] = Ticket::getAllMacroStatus();
         return ApiHelper::response(true, '', $tickets, 200, $meta);

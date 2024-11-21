@@ -129,7 +129,7 @@ class TimeBookingController extends Controller
                 'tickets' => [],
             ];
 
-            $initiativeTimeBookings = $timeBooking->whereNull('ticket_id');
+            $timeMappings = $timeBooking->whereNull('ticket_id');
             $initiativeLevelBookingRowData = [
                 'ticket_id' => '',
                 'ticket_name' => __('messages.time_booking.list_table.initiative_level_booking'),
@@ -137,24 +137,24 @@ class TimeBookingController extends Controller
             ];
             $initiativeLevelBookingHoursPerDay = [];
             foreach ($weekDays as $weekDay) {
-                $initiativeLevelBookingHoursPerDay[$weekDay['date']]['hours'] = $initiativeTimeBookings->Where('booked_date', $weekDay['date'])->sum('hours') ?? '';
+                $initiativeLevelBookingHoursPerDay[$weekDay['date']]['hours'] = $timeMappings->Where('booked_date', $weekDay['date'])->sum('hours') ?? '';
                 $initiativeLevelBookingHoursPerDay[$weekDay['date']]['is_allow_booking'] = $weekDay['date'] <= Carbon::now()->format('Y-m-d') ?? false;
             }
             $initiativeLevelBookingRowData['hours_per_day'] = $initiativeLevelBookingHoursPerDay;
 
 
             $initiativeTickets = [];
-            $initiativeTimeBookingsTickets = $timeBooking->whereNotNull('ticket_id')->groupBy('ticket_id');
-            foreach ($initiativeTimeBookingsTickets as $initiativeTimeBookingTicket) {
+            $timeMappingsTickets = $timeBooking->whereNotNull('ticket_id')->groupBy('ticket_id');
+            foreach ($timeMappingsTickets as $timeMappingTicket) {
                 $initiativeTicketsHoursPerDay = [];
                 foreach ($weekDays as $weekDay) {
-                    $initiativeTicketsHoursPerDay[$weekDay['date']]['hours'] = $initiativeTimeBookingTicket->Where('booked_date', $weekDay['date'])->sum('hours') ?? '';
+                    $initiativeTicketsHoursPerDay[$weekDay['date']]['hours'] = $timeMappingTicket->Where('booked_date', $weekDay['date'])->sum('hours') ?? '';
                     $initiativeTicketsHoursPerDay[$weekDay['date']]['is_allow_booking'] = $weekDay['date'] <= Carbon::now()->format('Y-m-d') ?? false;
                 }
-                $initiativeTimeBookingTicketFirst = $initiativeTimeBookingTicket->first();
+                $timeMappingTicketFirst = $timeMappingTicket->first();
                 $initiativeTickets[] = [
-                    'ticket_id' => $initiativeTimeBookingTicketFirst->ticket_id,
-                    'ticket_name' => $initiativeTimeBookingTicketFirst->ticket_name,
+                    'ticket_id' => $timeMappingTicketFirst->ticket_id,
+                    'ticket_name' => $timeMappingTicketFirst->ticket_name,
                     'hours_per_day' => $initiativeTicketsHoursPerDay,
                 ];
             }
@@ -488,7 +488,13 @@ class TimeBookingController extends Controller
         if (!$ticket || $initiative->id != $ticket->initiative_id) {
             return ApiHelper::response($status, __('messages.ticket.not_found'), '', 400);
         }
-        $validData['booked_date'] = Carbon::parse($validData['booked_date'])->addDay(1)->format('Y-m-d');
+        $nowDate = Carbon::now();
+        $bookedDate = Carbon::parse($validData['booked_date']);
+        if ($bookedDate->isSameDay($nowDate)) {
+            $validData['booked_date'] = Carbon::parse($validData['booked_date'])->format('Y-m-d');
+        } else {
+            $validData['booked_date'] = Carbon::parse($validData['booked_date'])->addDay(1)->format('Y-m-d');
+        }
 
         $status = true;
         $message = __('messages.time_booking.store_success');

@@ -49,7 +49,7 @@ class AllTicketsWithoutInitiativeController extends Controller
             ->when($filters['is_priority'] == 'true', function (Builder $query) use ($filters) {
                 $query->where('is_priority', 1);
             })
-            ->paginate(10);
+            ->paginate(30);
         return ApiHelper::response(true, '', $tickets, 200);
     }
 

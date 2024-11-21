@@ -7,7 +7,7 @@
                     </h5>
                 </div>
                 <div class="modal-body">
-                    <GlobalMessage v-if="showMessage" />
+                    <GlobalMessage v-if="showMessage" scope="modal" />
                     <div class="mb-3 p-3 shadow">
                         <select v-model="formData.project_id" :class="{ 'is-invalid': errors.project_id }"
                             id="project_id" class="form-select">
@@ -146,7 +146,7 @@ export default {
             if (error.type === 'validation') {
                 this.errors = error.errors;
             } else {
-                messageService.setMessage(error.message, 'danger');
+                messageService.setMessage(error.message, 'danger', 'modal');
             }
             this.setLoading(false);
         },

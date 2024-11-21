@@ -146,8 +146,11 @@
                     <div class="col-lg-2 col-md-3 fw-bold small d-none d-md-block">
                         {{ $t('ticket.list.column_project') }}
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold small d-none d-lg-block">
+                    <!-- <div class="col-lg-2 col-md-6 col-6 fw-bold small d-none d-lg-block">
                         {{ $t('ticket.list.current_action') }}
+                    </div> -->
+                    <div class="col-lg-2 col-md-6 col-6 fw-bold small d-none d-lg-block text-md-center">
+                        {{ $t('ticket.list.estimation_hours') }}
                     </div>
                     <div class="col-lg-1 col-md-6 col-6 fw-bold small d-none d-lg-block">
                         {{ $t('ticket.list.current_owner') }}
@@ -176,7 +179,9 @@
                                 <input class="form-check-input" type="checkbox" :id="'chk_ticket_' + task.id"
                                     v-model="task.isChecked" @click.stop @change="handleSelectTasks(task)">
                             </div>
-                            <div class="col-auto" style="width: calc(100% - 40px)">
+                            <div class="col-auto" style="width: calc(100% - 40px)" data-bs-toggle="tooltip"
+                                data-bs-html="true" data-bs-placement="bottom"
+                                :title="tooltipContentForTicketName(task)">
                                 {{ task.composed_name }}
                             </div>
                         </div>
@@ -189,14 +194,15 @@
                         <span class="badge text-desino d-block d-md-none p-2 fw-bold text-center rounded-top">
                             {{ $t('ticket.list.column_project') }}
                         </span>
-                        <multiselect v-model="task.project" :options="projects" :searchable="true" deselect-label=""
-                            label="name" :placeholder="$t('ticket.filter.projects_placeholder')" track-by="id"
-                            :ref="'taskProjectDropdowns-' + index" @open="storePreviousProject(task.project, index)"
+                        <multiselect @click.stop v-model="task.project" :options="projects" :searchable="true"
+                            deselect-label="" label="name" :placeholder="$t('ticket.filter.projects_placeholder')"
+                            track-by="id" :ref="'taskProjectDropdowns-' + index"
+                            @open="storePreviousProject(task.project, index)"
                             @select="assignOrRemoveProjectForTask(task.id, 'assign', index, $event)"
                             @Remove="assignOrRemoveProjectForTask(task.id, 'remove', index, $event)">
                         </multiselect>
                     </div>
-                    <div class="offset-1 offset-md-1 offset-lg-0 col-lg-2 col-md-4 col-4 text-start text-md-center">
+                    <!-- <div class="offset-1 offset-md-1 offset-lg-0 col-lg-2 col-md-4 col-4 text-start text-md-center">
                         <span class="badge text-desino d-block d-lg-none p-2 fw-bold text-center rounded-top">
                             {{ $t('ticket.list.current_action') }}
                         </span>
@@ -206,8 +212,14 @@
                         <span v-if="task?.actions_count == task?.done_actions_count">
                             -
                         </span>
+                    </div> -->
+                    <div class="offset-1 offset-md-1 offset-lg-0 col-lg-2 col-md-4 col-4 text-start text-md-center">
+                        <span class="badge text-desino d-block d-lg-none p-2 fw-bold text-center rounded-top">
+                            {{ $t('ticket.list.estimation_hours') }}
+                        </span>
+                        {{ task.estimation_time }}
                     </div>
-                    <div class="col-lg-2 col-md-4 col-4">
+                    <div class="col-lg-1 col-md-4 col-4">
                         <span class="badge text-desino d-block d-lg-none p-2 fw-bold text-center rounded-top">
                             {{ $t('ticket.list.current_owner') }}
                         </span>
@@ -218,20 +230,20 @@
                             -
                         </span>
                     </div>
-                    <div v-if="user?.is_admin" class="col-lg-1 col-md-3 col-3 justify-content-end text-end">
-                        <span class="badge text-desino d-block d-lg-none p-2 fw-bold text-center rounded-top">
-                            {{ $t('ticket.list.column_action') }}
-                        </span>
+                    <div v-if="user?.is_admin" class="col-lg-2 col-md-3 col-3 justify-content-end text-end">
                         <!-- <router-link
                             :to="{ name: 'task.detail', params: { initiative_id: this.initiative_id, ticket_id: task.id } }"
                             class="text-success me-1">
                             <i class="bi bi-box-arrow-up-right fw-bold"></i>
                         </router-link> -->
-                        <a :title="$t('ticket.list.column.action.edit_text')" class="text-desino me-1"
+                        <a data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            :title="$t('ticket.list.column.action.edit_text')" class="text-desino me-1"
                             href="javascript:" @click.stop="editTaskPopup(task)">
                             <i class="bi bi-pencil-square"></i>
                         </a>
-                        <a class="me-1" v-if="task.asana_task_link" :href="task.asana_task_link" target="_blank">
+                        <a class="me-1" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            :title="$t('ticket.list.column.action.asana_text')" v-if="task.asana_task_link"
+                            :href="task.asana_task_link" target="_blank" @click.stop>
                             <svg fill="none" height="21px" viewBox="0 0 24 24" width="21px"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path clip-rule="evenodd"
@@ -245,14 +257,20 @@
                                     fill="#ffc107" fill-rule="evenodd" />
                             </svg>
                         </a>
-                        <a href="javascript:" @click.stop="handleTimeBooking(task)"
+                        <a href="javascript:" class="me-1" @click.stop="handleTimeBooking(task)"
+                            data-bs-toggle="tooltip" data-bs-placement="bottom"
                             :title="$t('ticket_details.time_booking')">
                             <i class="bi bi-clock-history"></i>
+                        </a>
+                        <a v-if="user?.is_admin && !task.is_ticket_done" class="text-danger" href="javascript:"
+                            @click.stop="deleteTicket(task)" data-bs-toggle="tooltip"
+                            :title="$t('ticket_details.delete_text')" data-bs-placement="bottom">
+                            <i class="bi bi-trash3"></i>
                         </a>
                     </div>
                 </div>
             </li>
-            <li v-else class="list-group-item border p-4">
+            <li v-else class="border list-group-item px-0 py-1 list-group-item-action">
                 <div class="col h4 fw-bold text-center">{{ $t('ticket.list.not_ticket') }}
                 </div>
             </li>
@@ -290,13 +308,14 @@ import { mapActions, mapGetters } from 'vuex';
 import ticketService from "../../../services/TicketService";
 import Multiselect from "vue-multiselect";
 import AssignProjectModalComponent from "./AssignProjectModalComponent.vue";
-import { Modal } from 'bootstrap';
+import { Modal, Tooltip } from 'bootstrap';
 import showToast from '../../../utils/toasts';
 import eventBus from "@/eventBus.js";
 import EditTicketModalComponent from './EditTicketModalComponent.vue';
 import CreateReleaseModalComponent from './CreateReleaseModalComponent.vue';
 import store from '../../../store';
 import TimeBookingForTicketDetailComponent from './TimeBookingForTicketDetailComponent.vue';
+
 
 export default {
     name: 'TicketListComponent',
@@ -343,7 +362,15 @@ export default {
             prdMacroStatus: "",
             errors: {},
             showMessage: true,
-            options: ['Select option', 'Disable me!', 'Reset me!', 'mulitple', 'label', 'searchable']
+            tooltipBtn: null,
+        }
+    },
+    watch: {
+        initiative_id: {
+            handler(newValue, oldValue) {
+                this.resetFilter();
+            },
+            deep: true
         }
     },
     computed: {
@@ -378,17 +405,18 @@ export default {
                 this.initiative = response.meta_data.initiative;
                 this.filterMacroStatus = response.meta_data.macro_status;
                 this.prdMacroStatus = response.meta_data.prd_macro_status;
-                this.tasks = response.content.data.map(task => ({
+                this.tasks = response.content.map(task => ({
                     ...task,
                     isChecked: false,
                 }));
                 await this.setLoading(false);
                 setTimeout(() => {
                     const setHeaderData = {
-                        page_title: this.$t('ticket.page_title') + ' - ' + this.initiative?.name,
+                        page_title: this.$t('ticket.page_title') + ' - ' + this.initiative?.name + ' (#' + response.meta_data.ticket_count + '/' + response.meta_data.ticket_sum + 'hrs)',
                     }
                     store.commit("setHeaderData", setHeaderData);
                 }, 100)
+                this.initializeTooltips();
             } catch (error) {
                 this.handleError(error);
             }
@@ -591,6 +619,41 @@ export default {
                 }
             })
         },
+        async deleteTicket(task) {
+            if (!this.user?.is_admin) {
+                return;
+            }
+            this.$swal({
+                title: this.$t('ticket.delete.conformation_popup_title'),
+                text: this.$t('ticket.delete.conformation_popup_text'),
+                showCancelButton: true,
+                confirmButtonColor: '#1e6abf',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '<i class="bi bi-check-lg"></i>',
+                cancelButtonText: '<i class="bi bi-x-lg"></i>',
+                customClass: {
+                    confirmButton: 'btn-desino',
+                },
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        const passData = {
+                            initiative_id: this.initiative_id,
+                            ticket_id: task.id
+                        }
+                        this.setLoading(true);
+                        const { message, status } = await ticketService.deleteTicket(passData);
+                        showToast(message, 'success');
+                        this.setLoading(false);
+                        this.clearMessages();
+                        this.fetchAllTasks();
+                    } catch (error) {
+                        this.handleError(error);
+                        this.tasks[index].project = this.previousProject;
+                    }
+                }
+            })
+        },
         handleError(error) {
             if (error.type === 'validation') {
                 this.errors = error.errors;
@@ -604,17 +667,16 @@ export default {
             messageService.clearMessage();
         },
         resetFilter() {
-            this.filter = {
-                task_name: "",
-                task_type: "",
-                action_owner: "",
-                next_action_owner: "",
-                functionalities: [],
-                projects: [],
-                macro_status: [],
-                is_open_task: false,
-                is_include_done: true
-            }
+            this.filter.task_name = "";
+            this.filter.task_type = "";
+            this.filter.action_owner = "";
+            this.filter.next_action_owner = "";
+            this.filter.functionalities = [];
+            this.filter.projects = [];
+            this.filter.macro_status = [];
+            this.filter.is_open_task = false;
+            this.filter.is_include_done = false;
+            this.filter.deployment_id = "";
         },
         setDeploymentIdForFilter() {
             let deploymentId = "";
@@ -631,10 +693,23 @@ export default {
             return '';
         },
         redirectTaskDetailPage(task) {
-            this.$router.push({ name: 'task.detail', params: { initiative_id: this.initiative_id, ticket_id: task.id } });
-        }
+            const ticketDetailRoute = this.$router.resolve({ name: 'task.detail', params: { initiative_id: this.initiative_id, ticket_id: task.id } });
+            window.open(ticketDetailRoute.href, '_blank');
+        },
+        initializeTooltips() {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            tooltipTriggerList.forEach((tooltipTriggerEl) => {
+                new Tooltip(tooltipTriggerEl);
+            });
+        },
+        tooltipContentForTicketName(task) {
+            const createdAtLabel = this.$t('ticket.list.row_hover_tooltip_created_at_text');
+            const createdByLabel = this.$t('ticket.list.row_hover_tooltip_created_by_text');
+            return `<strong>${createdAtLabel}</strong>${task.display_created_at}<br><strong>${createdByLabel}</strong>${task.display_created_by}`;
+        },
     },
     mounted() {
+        eventBus.$emit('selectHeaderInitiativeId', this.initiative_id);
         this.setDeploymentIdForFilter();
         this.fetchAllTasks();
         eventBus.$on('refreshTickets', this.fetchAllTasks);

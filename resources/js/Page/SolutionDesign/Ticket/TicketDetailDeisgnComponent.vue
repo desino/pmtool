@@ -41,8 +41,8 @@
                                     fill="#fff" fill-rule="evenodd" />
                             </svg>
                         </a>
-                        <button v-if="user_actions_count > 0" class="btn btn-desino btn-sm mx-2"
-                            @click="handleTimeBooking()" :title="$t('ticket_details.time_booking')">
+                        <button class="btn btn-desino btn-sm mx-2" @click="handleTimeBooking()"
+                            :title="$t('ticket_details.time_booking')">
                             <i class="bi bi-clock-history"></i>
                         </button>
                     </div>
@@ -69,7 +69,7 @@
                     </div>
                     <div class="card-body border-0 bg-transparent p-1 align-content-center">
                         <div class="badge rounded-3 bg-success-subtle text-success mb-0">
-                            {{ ticketData.dev_estimation_time ?? ticketData.initial_dev_time }} hrs
+                            {{ ticketData.estimation_time }} hrs
                         </div>
                     </div>
                 </div>
@@ -144,12 +144,25 @@
                             $t('ticket_details.test_cases')
                         }}</a>
                 </li>
+                <li class="nav-item">
+                    <a id="ticket_detail_tab" aria-controls="ticket_detail_tab" aria-selected="false"
+                        class="nav-link border" data-bs-toggle="pill" href="#ticket_detail_tab_release_notes"
+                        role="tab">{{
+                            $t('ticket_details.client_release_notes')
+                        }}</a>
+                </li>
+                <li class="nav-item" v-if="ticketData.is_allow_dev_estimation_time">
+                    <a id="test_cases_tab" aria-controls="test_cases_tab" aria-selected="false" class="nav-link border"
+                        data-bs-toggle="pill" href="#test_cases_tab_estimation_time" role="tab">{{
+                            $t('ticket_details.estimated_hours')
+                        }}</a>
+                </li>
             </ul>
             <div id="custom-tabs-five-tabContent" class="tab-content">
                 <div id="ticket_detail_tab_body" aria-labelledby="ticket_detail_tab_body"
                     class="tab-pane fade active show" role="tabpanel">
                     <div class="row w-100">
-                        <div class="col-md-6 my-2">
+                        <div class="col-md-12 my-2">
                             <div class="card h-100">
                                 <div class="card-header fw-bold" v-if="ticketData.display_functionality_name">
                                     <span>
@@ -161,7 +174,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6 my-2">
+                        <!-- <div class="col-md-6 my-2">
                             <ul id="custom-tabs-five-tab" class="nav nav-tabs border-bottom-0" role="tablist">
                                 <li class="nav-item">
                                     <a id="ticket_detail_tab" aria-controls="ticket_detail_tab" aria-selected="true"
@@ -180,55 +193,9 @@
                             </ul>
 
                             <div id="custom-tabs-five-tabContent" class="tab-content">
-                                <div id="ticket_detail_tab_release_notes"
-                                    aria-labelledby="ticket_detail_tab_release_notes" class="tab-pane fade active show"
-                                    role="tabpanel">
-                                    <div class="card mt-2">
-                                        <div class="card-body">
-                                            <p> {{ $t('ticket_details.client_release_notes_description') }}</p>
-                                            <TinyMceEditor v-model="releaseNoteForm.release_note" />
-                                            <div v-if="errors.release_note" class="text-danger mt-2">
-                                                <span v-for="(error, index) in errors.release_note" :key="index">{{
-                                                    error
-                                                    }}</span>
-                                            </div>
-                                            <button class="btn w-100 btn-desino text-white fw-bold m-2 rounded"
-                                                @click="updateReleaseNote">
-                                                {{ $t('ticket_details.update') }}
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="test_cases_tab_estimation_time"
-                                    aria-labelledby="test_cases_tab_estimation_time" class="tab-pane fade"
-                                    role="tabpanel" v-if="ticketData.is_allow_dev_estimation_time">
-                                    <div class="card mt-2">
-                                        <div class="card-body">
-                                            <form @submit.prevent="updateTicketDetailEstimatedHours">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">{{
-                                                        $t('ticket_details_input_dev_estimation_time')
-                                                    }} <strong class="text-danger">*</strong>
-                                                    </label>
-                                                    <input v-model="estimatedHoursFormData.dev_estimation_time"
-                                                        :class="{ 'is-invalid': errors.dev_estimation_time }"
-                                                        class="form-control" type="text">
-                                                    <div v-if="errors.dev_estimation_time" class="invalid-feedback">
-                                                        <span v-for="(error, index) in errors.dev_estimation_time"
-                                                            :key="index">
-                                                            {{ error }}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <button type="submit" class="btn w-100 btn-desino fw-bold m-2 rounded">
-                                                    {{ $t('ticket_details.estimated_hours.update_but_text') }}
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
+                                
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <div id="test_cases_tab_body" aria-labelledby="test_cases_tab_body" class="tab-pane fade"
@@ -267,7 +234,7 @@
                                                             : 'failed') : 'pending' }}</span>
                                                 </label>
                                             </div>
-                                            <div class="card-body max-h-250">
+                                            <div class="card-body max-h-250 optimize-image">
                                                 <span class="bg-desino text-white rounded fw-bold p-2">
                                                     {{ $t('ticket_detail_test_case_section_expected_behaviour') }}
                                                 </span>
@@ -275,7 +242,7 @@
                                                 <div v-if="test_case.observations">
                                                     <span class="bg-desino text-white rounded fw-bold p-2">{{
                                                         $t('ticket_detail_test_case_section_actual_behaviour')
-                                                        }}</span>
+                                                    }}</span>
                                                     <div class="p-2" v-html="test_case.observations">
                                                     </div>
                                                 </div>
@@ -342,6 +309,50 @@
                             <div v-else class="p-5 text-center fw-bold">
                                 {{ $t('ticket_detail_test_case_section_no_test_case') }}
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="ticket_detail_tab_release_notes" aria-labelledby="ticket_detail_tab_release_notes"
+                    class="tab-pane fade" role="tabpanel">
+                    <div class="card mt-2">
+                        <div class="card-body">
+                            <p> {{ $t('ticket_details.client_release_notes_description') }}</p>
+                            <TinyMceEditor v-model="releaseNoteForm.release_note" />
+                            <div v-if="errors.release_note" class="text-danger mt-2">
+                                <span v-for="(error, index) in errors.release_note" :key="index">{{
+                                    error
+                                }}</span>
+                            </div>
+                            <button class="btn w-100 btn-desino text-white fw-bold m-2 rounded"
+                                @click="updateReleaseNote">
+                                {{ $t('ticket_details.update') }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div id="test_cases_tab_estimation_time" aria-labelledby="test_cases_tab_estimation_time"
+                    class="tab-pane fade" role="tabpanel" v-if="ticketData.is_allow_dev_estimation_time">
+                    <div class="card mt-2 col-md-5">
+                        <div class="card-body">
+                            <form @submit.prevent="updateTicketDetailEstimatedHours">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">{{
+                                        $t('ticket_details_input_dev_estimation_time')
+                                    }} <strong class="text-danger">*</strong>
+                                    </label>
+                                    <input v-model="estimatedHoursFormData.dev_estimation_time"
+                                        :class="{ 'is-invalid': errors.dev_estimation_time }" class="form-control"
+                                        type="text">
+                                    <div v-if="errors.dev_estimation_time" class="invalid-feedback">
+                                        <span v-for="(error, index) in errors.dev_estimation_time" :key="index">
+                                            {{ error }} <br>
+                                        </span>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn w-100 btn-desino fw-bold m-2 rounded">
+                                    {{ $t('ticket_details.estimated_hours.update_but_text') }}
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -415,6 +426,7 @@ export default {
                 is_show_pre_action_but: false,
                 is_allow_dev_estimation_time: false,
                 user_actions_count: 0,
+                estimation_time: 0,
             },
             currentActionFormData: {
                 ticket_id: '',
@@ -540,6 +552,7 @@ export default {
             this.ticketData.composed_name = content.composed_name;
             this.ticketData.initial_dev_time = content.initial_estimation_development_time;
             this.ticketData.dev_estimation_time = content.dev_estimation_time;
+            this.estimatedHoursFormData.dev_estimation_time = content.dev_estimation_time;
             this.ticketData.task_type = content.type_label;
             this.ticketData.status_label = content.status_label;
             this.ticketData.functionality_name = content?.functionality?.name.length > 0 ? content.initiative?.name + ' - ' + content?.functionality?.name : content.initiative?.name;
@@ -560,6 +573,7 @@ export default {
             this.ticketData.is_show_pre_action_but = content.is_show_pre_action_but;
             this.ticketData.is_allow_dev_estimation_time = content.is_allow_dev_estimation_time;
             this.ticketData.is_disable_action_user = content.is_disable_action_user;
+            this.ticketData.estimation_time = content.estimation_time;
             this.currentAction = content.current_action;
             this.currentActionFormData.user_id = content.current_action?.user_id;
             this.currentActionFormData.status = content.current_action?.status;
@@ -794,6 +808,7 @@ export default {
         store.commit("setHeaderData", setHeaderData);
         this.fetchTicketData(this.localTicketId);
         eventBus.$on('refreshTicketDetail', this.refreshTicketDetail);
+        eventBus.$emit('selectHeaderInitiativeId', this.localInitiativeId);
     }
 }
 </script>

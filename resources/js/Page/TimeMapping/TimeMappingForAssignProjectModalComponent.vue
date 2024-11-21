@@ -2,21 +2,22 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content border-0">
             <div class="modal-header text-white bg-desino border-0 py-2 justify-content-center">
-                <h5 class="modal-title font-italic" id="initiativeTimeBookingForAssignProjectLabel">
-                    {{ $t('initiative_time_booking_for_assign_project.popup_title') }}
+                <h5 class="modal-title font-italic" id="timeMappingForAssignProjectLabel">
+                    {{ $t('time_mapping_for_assign_project.popup_title') }}
                 </h5>
             </div>
-            <form @submit.prevent="assignProjectForInitiativeTimeBooking">
+            <form @submit.prevent="assignProjectForTimeMapping">
+                <GlobalMessage v-if="showMessage" scope="modal" />
                 <div class="modal-body">
                     <div class="row w-100">
                         <div class="mb-3">
                             <label class="form-label fw-bold">{{
-                                $t('initiative_time_booking_for_assign_project.popup_project_select_label_text') }}
+                                $t('time_mapping_for_assign_project.popup_project_select_label_text') }}
                                 <strong class="text-danger">*</strong></label>
                             <select v-model="formData.project_id" :class="{ 'is-invalid': errors.project_id }"
                                 class="form-select">
                                 <option value="">{{
-                                    $t('initiative_time_booking_for_assign_project.popup_project_select_placeholder_text')
+                                    $t('time_mapping_for_assign_project.popup_project_select_placeholder_text')
                                 }}</option>
                                 <option v-for="project in projects" :key="project.id" :value="project.id">{{
                                     project.name }}
@@ -32,7 +33,7 @@
                     <div class="row w-100 g-1">
                         <div class="col-md-6">
                             <button class="btn btn-desino w-100 border-0" type="submit">
-                                {{ $t('initiative_time_booking_for_assign_project.popup_submit_but_text') }}
+                                {{ $t('time_mapping_for_assign_project.popup_submit_but_text') }}
                             </button>
                         </div>
                         <div class="col-md-6">
@@ -50,13 +51,17 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import InitiativeTimeBookingService from '../../services/InitiativeTimeBookingService';
+import TimeMappingService from '../../services/TimeMappingService';
 import messageService from '../../services/messageService';
 import showToast from '../../utils/toasts';
 import { Modal } from 'bootstrap';
+import GlobalMessage from '../../components/GlobalMessage.vue';
 
 export default {
-    name: 'InitiativeTimeBookingForAssignProjectModalComponent',
+    name: 'TimeMappingForAssignProjectModalComponent',
+    components: {
+        GlobalMessage,
+    },
     data() {
         return {
             projects: [],
@@ -67,24 +72,25 @@ export default {
                 project_id: '',
                 time_booking_ids: []
             },
-            errors: {}
+            errors: {},
+            showMessage: true
         }
     },
     methods: {
         ...mapActions(['setLoading']),
-        async getInitialDataForInitiativeTimeBookingsAssignProject(data) {
+        async getInitialDataForTimeMappingsAssignProject(data) {
             this.projects = data.projects;
             this.formData.time_booking_ids = data.time_booking_ids;
             this.timeBookingIds = data.time_booking_ids;
             this.initiativeId = data.initiative_id;
         },
-        async assignProjectForInitiativeTimeBooking() {
+        async assignProjectForTimeMapping() {
             this.clearMessages();
             try {
                 this.setLoading(true);
                 this.formData.time_booking_ids = this.timeBookingIds;
                 this.formData.initiative_id = this.initiativeId;
-                const { message } = await InitiativeTimeBookingService.assignProjectForInitiativeTimeBookings(this.formData);
+                const { message } = await TimeMappingService.assignProjectForTimeMappings(this.formData);
                 showToast(message, 'success');
                 this.hideModal();
                 this.setLoading(false);
@@ -95,7 +101,7 @@ export default {
             }
         },
         hideModal() {
-            const modalElement = document.getElementById('initiativeTimeBookingForAssignProjectModal');
+            const modalElement = document.getElementById('timeMappingForAssignProjectModal');
             if (modalElement) {
                 const modal = Modal.getInstance(modalElement);
                 if (modal) {
@@ -116,7 +122,7 @@ export default {
             if (error.type === 'validation') {
                 this.errors = error.errors;
             } else {
-                messageService.setMessage(error.message, 'danger');
+                messageService.setMessage(error.message, 'danger', 'modal');
             }
             this.setLoading(false);
         },
