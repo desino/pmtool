@@ -7,6 +7,7 @@
                 </h5>
             </div>
             <form @submit.prevent="assignProjectForTimeMapping">
+                <GlobalMessage v-if="showMessage" scope="modal" />
                 <div class="modal-body">
                     <div class="row w-100">
                         <div class="mb-3">
@@ -17,7 +18,7 @@
                                 class="form-select">
                                 <option value="">{{
                                     $t('time_mapping_for_assign_project.popup_project_select_placeholder_text')
-                                    }}</option>
+                                }}</option>
                                 <option v-for="project in projects" :key="project.id" :value="project.id">{{
                                     project.name }}
                                 </option>
@@ -54,9 +55,13 @@ import TimeMappingService from '../../services/TimeMappingService';
 import messageService from '../../services/messageService';
 import showToast from '../../utils/toasts';
 import { Modal } from 'bootstrap';
+import GlobalMessage from '../../components/GlobalMessage.vue';
 
 export default {
     name: 'TimeMappingForAssignProjectModalComponent',
+    components: {
+        GlobalMessage,
+    },
     data() {
         return {
             projects: [],
@@ -67,7 +72,8 @@ export default {
                 project_id: '',
                 time_booking_ids: []
             },
-            errors: {}
+            errors: {},
+            showMessage: true
         }
     },
     methods: {
@@ -116,7 +122,7 @@ export default {
             if (error.type === 'validation') {
                 this.errors = error.errors;
             } else {
-                messageService.setMessage(error.message, 'danger');
+                messageService.setMessage(error.message, 'danger', 'modal');
             }
             this.setLoading(false);
         },

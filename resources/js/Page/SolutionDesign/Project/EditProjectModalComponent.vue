@@ -6,7 +6,7 @@
                     <h5 class="modal-title" id="editProjectModalLabel">{{ $t('project.list.edit.modal_title') }}</h5>
                 </div>
                 <div class="modal-body">
-                    <GlobalMessage v-if="showMessage" />
+                    <GlobalMessage v-if="showMessage" scope="modal" />
                     <div class="row w-100">
                         <div class="col-12">
                             <div class="mb-3">
@@ -88,7 +88,7 @@ export default {
             if (error.type === 'validation') {
                 this.errors = error.errors;
             } else {
-                messageService.setMessage(error.message, 'danger');
+                messageService.setMessage(error.message, 'danger', 'modal');
             }
             this.setLoading(false);
         },

@@ -6,7 +6,7 @@
                     <h5 class="modal-title" id="editInitiativeModalLabel">{{ modalTitle }}</h5>
                 </div>
                 <div class="modal-body">
-                    <GlobalMessage v-if="showMessage" />
+                    <GlobalMessage v-if="showMessage" scope="modal" />
                     <div class="row w-100">
                     </div>
 
@@ -358,7 +358,7 @@ export default {
             if (error.type === 'validation') {
                 this.errors = error.errors;
             } else {
-                messageService.setMessage(error.message, 'danger');
+                messageService.setMessage(error.message, 'danger', 'modal');
             }
             this.setLoading(false);
         },

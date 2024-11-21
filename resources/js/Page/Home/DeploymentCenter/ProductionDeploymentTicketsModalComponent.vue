@@ -7,7 +7,7 @@
                         v-html="formattedModalTitlePRDDeployment()"></h5>
                 </div>
                 <div class="modal-body">
-                    <GlobalMessage v-if="showMessage" />
+                    <GlobalMessage v-if="showMessage" scope="modal" />
                     <ul class="list-group">
                         <li class="list-group-item fw-bold bg-desino text-white">
                             <div class="row w-100">
@@ -197,7 +197,7 @@ export default {
             if (error.type === 'validation') {
                 this.errors = error.errors;
             } else {
-                messageService.setMessage(error.message, 'danger');
+                messageService.setMessage(error.message, 'danger', 'modal');
             }
             this.setLoading(false);
         },

@@ -8,7 +8,7 @@
                     </h5>
                 </div>
                 <div class="modal-body">
-                    <GlobalMessage v-if="showMessage" />
+                    <GlobalMessage v-if="showMessage" scope="modal" />
                     <input v-model="formData.initiative_id" name="initiative_id" type="hidden">
                     <input v-model="formData.type" name="type" type="hidden">
                     <div class="mb-3">
@@ -50,7 +50,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">{{
                             $t('create_ticket_modal_modal_input_initial_estimation_development_time')
-                        }} <strong class="text-danger">*</strong>
+                            }} <strong class="text-danger">*</strong>
                         </label>
                         <input v-model="formData.initial_estimation_development_time"
                             :class="{ 'is-invalid': errors.initial_estimation_development_time }" class="form-control"
@@ -109,7 +109,7 @@
                         <div v-if="errors.auto_wait_for_client_approval" class="invalid-feedback">
                             <span v-for="(error, index) in errors.auto_wait_for_client_approval" :key="index">{{
                                 error
-                                }}</span>
+                            }}</span>
                         </div>
                     </div>
                     <div class="card mb-3">
@@ -140,7 +140,7 @@
                                             @change="updateUser(action.id, $event.target.value)">
                                             <option value="">{{
                                                 $t('create_ticket_modal_select_action_user_placeholder')
-                                                }}</option>
+                                            }}</option>
                                             <option v-for="user in users" :key="user.id" :value="user.id">
                                                 {{ user.name }}
                                             </option>
@@ -325,7 +325,7 @@ export default {
             if (error.type === 'validation') {
                 this.errors = error.errors;
             } else {
-                messageService.setMessage(error.message, 'danger');
+                messageService.setMessage(error.message, 'danger', 'modal');
             }
             this.setLoading(false);
         },
