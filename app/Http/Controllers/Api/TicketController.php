@@ -853,6 +853,7 @@ class TicketController extends Controller
                 $releaseName = TicketService::createReleaseName($releaseVersion, $requestData);
                 $requestData['name'] = $releaseName;
                 $requestData['version'] = $releaseVersion;
+                $requestData['is_major'] = $requestData['is_major'] || $releaseVersion == 1 ? 1 : 0;
                 $release = Release::create($requestData);
             }
             foreach ($ticketIds as $ticketId) {

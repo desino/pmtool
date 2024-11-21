@@ -339,16 +339,15 @@ class TicketService
 
     public static function createReleaseVersion($isMajor, $initiativeId)
     {
-        $releaseCount = Release::get()->count();
-        if ($releaseCount == 0) {
-            return 1;
+        $releaseVersion = 1;
+        $initiativeReleases = Release::orderBy('id', 'desc')->where('initiative_id', $initiativeId)->get();
+        if ($initiativeReleases->count() == 0) {
+            return $releaseVersion;
         }
-        $release = Release::where('status', Release::PROCESSED_RELEASE)->where('initiative_id', $initiativeId)->orderBy('id', 'desc')->first();
-        if ($isMajor) {
-            $releaseVersion = round($release->version + 1);
-        } else {
-            $releaseVersion = round($release->version + 0.1, 1);
-        }
+        $lastRelease = $initiativeReleases->filter(function ($release) {
+            return $release->status == Release::PROCESSED_RELEASE;
+        })->first();
+        $releaseVersion = $isMajor ? round($lastRelease->version + 1) : round($lastRelease->version + 0.1, 1);
         return $releaseVersion;
     }
 
