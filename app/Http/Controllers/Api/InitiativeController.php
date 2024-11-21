@@ -75,7 +75,7 @@ class InitiativeController extends Controller
             $status = true;
             $message = __('messages.something_went_wrong');
             $statusCode = 500;
-            Log::info($e->getMessage());
+            logger()->error($e);
         }
         return ApiHelper::response($status, $message, $retData, $statusCode);
     }

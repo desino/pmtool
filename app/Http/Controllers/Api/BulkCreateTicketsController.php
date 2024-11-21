@@ -17,6 +17,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class BulkCreateTicketsController extends Controller
 {
@@ -141,10 +142,11 @@ class BulkCreateTicketsController extends Controller
             }
             DB::commit();
         } catch (Exception $e) {
+            DB::rollBack();
             $status = false;
             $message = $e->getMessage();
             $statusCode = 500;
-            DB::rollBack();
+            logger()->error($e);
         }
         return ApiHelper::response($status, $message, '', $statusCode);
     }

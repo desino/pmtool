@@ -159,7 +159,7 @@ export default {
             try {
                 await Promise.all([
                     this.getMyTickets(),
-                    eventBus.$emit('selectHeaderInitiativeId', this.$route.params.id),
+                    eventBus.$emit('selectHeaderInitiativeId', this.initiative_id),
                 ]);
                 this.clearMessages();
             } catch (error) {

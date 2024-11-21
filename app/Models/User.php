@@ -54,7 +54,7 @@ class User extends Authenticatable
             Mail::to($this->email)->send(new ResetPasswordMail($token, $this->email));
         } catch (\Exception $e) {
             logger()->error($e);
-            Log::info($e->getMessage());
+            logger()->error($e);
         }
         //$this->notify(new ResetPasswordNotification($token));
     }

@@ -162,7 +162,7 @@ class SolutionDesignController extends Controller
             $status = false;
             $message = __('messages.something_went_wrong');
             $statusCode = 500;
-            Log::info($e->getMessage());
+            logger()->error($e);
         }
         return ApiHelper::response($status, $message, $section, $statusCode);
     }
@@ -201,7 +201,7 @@ class SolutionDesignController extends Controller
             $status = false;
             $message = __('messages.something_went_wrong');
             $statusCode = 500;
-            Log::info($e->getMessage());
+            logger()->error($e);
         }
         return ApiHelper::response($status, $message, $section, $statusCode);
     }
@@ -262,7 +262,7 @@ class SolutionDesignController extends Controller
             $status = false;
             $message = __('messages.something_went_wrong');
             $statusCode = 500;
-            Log::info($e->getMessage());
+            logger()->error($e);
         }
         return ApiHelper::response($status, $message, $retData, $statusCode);
     }
@@ -308,7 +308,7 @@ class SolutionDesignController extends Controller
             $status = false;
             $message = __('messages.something_went_wrong');
             $statusCode = 500;
-            Log::info($e->getMessage());
+            logger()->error($e);
         }
         return ApiHelper::response($status, $message, '', $statusCode);
     }
@@ -350,7 +350,7 @@ class SolutionDesignController extends Controller
             $status = false;
             $message = __('messages.something_went_wrong');
             $statusCode = 500;
-            Log::info($e->getMessage());
+            logger()->error($e);
         }
         return ApiHelper::response($status, $message, '', $statusCode);
     }
@@ -393,7 +393,7 @@ class SolutionDesignController extends Controller
             $status = false;
             $message = __('messages.something_went_wrong');
             $statusCode = 500;
-            Log::info($e->getMessage());
+            logger()->error($e);
             return ApiHelper::response($status, $message, collect([]), $statusCode);
         }
 
@@ -434,7 +434,7 @@ class SolutionDesignController extends Controller
             $status = false;
             $message = __('messages.something_went_wrong');
             $statusCode = 500;
-            Log::info($e->getMessage());
+            logger()->error($e);
         }
         return ApiHelper::response($status, $message, '', $statusCode);
     }
