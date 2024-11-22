@@ -1,5 +1,5 @@
 <template>
-    <aside ref="sidebar" class="app-sidebar bg-white border">
+    <aside ref="sidebar" class="app-sidebar bg-white border-end">
         <div class="sidebar-brand">
             <router-link class="brand-link" :to="{ name: 'home' }" @click="unselectHeaderInitiative">
                 <img alt="Brand Image" class="brand-image" :src="logoPath" />

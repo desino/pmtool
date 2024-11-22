@@ -1,7 +1,7 @@
 <template>
     <GlobalMessage v-if="showMessage" />
     <div class="app-content my-3">
-        <div class="row g-0 w-100 py-2">
+        <div class="row g-0 w-100 align-items-center mb-3">
             <div class="col-12 col-md-12 col-lg-3">
                 <div class="w-100 p-1">
                     <input v-model="filter.task_name" :placeholder="$t('ticket.filter.task_name')" class="form-control"
@@ -126,9 +126,9 @@
             </div>
         </div>
         <ul class="list-group list-group-flush mb-3 mt-2">
-            <li class="list-group-item bg-desino text-white border-0 rounded-top px-0 py-3">
+            <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
                 <div class="row w-100 align-items-center">
-                    <div class="col-lg-3 col-md-6 col-6">
+                    <div class="col-lg-5 col-md-6 col-12">
                         <div class="row g-0 h-100 align-items-center">
                             <div class="col-auto me-1" style="width:10px"></div>
                             <div class="col-auto me-1" style="width:20px">
@@ -140,32 +140,29 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-2 col-md-3 col-6 fw-bold small">
+                    <div class="col-lg-2 col-md-3 fw-bold small d-none d-md-block">
                         {{ $t('ticket.list.column_task_status') }}
                     </div>
                     <div class="col-lg-2 col-md-3 fw-bold small d-none d-md-block">
                         {{ $t('ticket.list.column_project') }}
                     </div>
-                    <!-- <div class="col-lg-2 col-md-6 col-6 fw-bold small d-none d-lg-block">
-                        {{ $t('ticket.list.current_action') }}
-                    </div> -->
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold small d-none d-lg-block text-md-center">
+                    <div class="col-lg-1 col-md-6 col-6 fw-bold small d-none d-lg-block text-start">
                         {{ $t('ticket.list.estimation_hours') }}
                     </div>
                     <div class="col-lg-1 col-md-6 col-6 fw-bold small d-none d-lg-block">
                         {{ $t('ticket.list.current_owner') }}
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold small d-none d-lg-block text-lg-end">
+                    <div class="col-lg-1 col-md-6 col-6 fw-bold small d-none d-lg-block text-lg-end">
                         {{ $t('ticket.list.column_action') }}
                     </div>
                 </div>
             </li>
             <li v-for="(task, index) in tasks" v-if="tasks.length > 0" :key="task.id"
-                class="border list-group-item px-0 py-1 list-group-item-action" role="button"
+                class="border list-group-item p-1 list-group-item-action border-top-0" role="button"
                 :class="backgroundClass(task) + ' ' + (index > 0 ? 'border-top-0' : '')"
                 @click="redirectTaskDetailPage(task)">
                 <div class="row w-100 align-items-center">
-                    <div class="col-lg-3 col-md-6 col-6">
+                    <div class="col-lg-5 col-md-6 col-12">
                         <div class="row g-0 h-100 align-items-center">
                             <div class="col-auto me-1" style="width:10px">
                                 <div class="position-absolute" :class="{
@@ -186,14 +183,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-2 col-md-3 col-6 text-center">
-                        <span class="badge p-2 w-100 text-wrap" :class="'bg-' + task.macro_status_label?.color">{{
-                            task.macro_status_label?.label }}</span>
-                    </div>
-                    <div class="offset-1 offset-md-0 col-lg-2 col-md-3 col-12">
-                        <span class="badge text-desino d-block d-md-none p-2 fw-bold text-center rounded-top">
-                            {{ $t('ticket.list.column_project') }}
+                    <div class="offset-1 col-5 offset-md-0 col-md-3 col-lg-2 text-center py-2 py-lg-0">
+                        <span class="badge p-2 w-100 text-wrap" :class="'bg-' + task.macro_status_label?.color">
+                            {{ task.macro_status_label?.label }}
                         </span>
+                    </div>
+                    <div class="col-6 col-md-3 col-lg-2 py-2 py-lg-0">
                         <multiselect @click.stop v-model="task.project" :options="projects" :searchable="true"
                             deselect-label="" label="name" :placeholder="$t('ticket.filter.projects_placeholder')"
                             track-by="id" :ref="'taskProjectDropdowns-' + index"
@@ -202,25 +197,13 @@
                             @Remove="assignOrRemoveProjectForTask(task.id, 'remove', index, $event)">
                         </multiselect>
                     </div>
-                    <!-- <div class="offset-1 offset-md-1 offset-lg-0 col-lg-2 col-md-4 col-4 text-start text-md-center">
-                        <span class="badge text-desino d-block d-lg-none p-2 fw-bold text-center rounded-top">
-                            {{ $t('ticket.list.current_action') }}
+                    <div class="offset-1 offset-md-1 offset-lg-0 col-lg-1 col-md-4 col-2 text-start py-2 py-lg-0">
+                        <span class="badge rounded-3 bg-success-subtle text-success mb-0">
+                            {{ task.estimation_time }}{{ $t(' hrs') }}
                         </span>
-                        <span v-if="task?.actions_count != task?.done_actions_count">
-                            {{ task?.current_action?.action_name }}
-                        </span>
-                        <span v-if="task?.actions_count == task?.done_actions_count">
-                            -
-                        </span>
-                    </div> -->
-                    <div class="offset-1 offset-md-1 offset-lg-0 col-lg-2 col-md-4 col-4 text-start text-md-center">
-                        <span class="badge text-desino d-block d-lg-none p-2 fw-bold text-center rounded-top">
-                            {{ $t('ticket.list.estimation_hours') }}
-                        </span>
-                        {{ task.estimation_time }}
                     </div>
-                    <div class="col-lg-1 col-md-4 col-4">
-                        <span class="badge text-desino d-block d-lg-none p-2 fw-bold text-center rounded-top">
+                    <div class="col-lg-1 offset-md-0 col-md-4 offset-1 col-5 py-2 py-lg-0">
+                        <span class="badge text-desino d-block d-lg-none px-0 py-2 fw-bold text-start rounded-top">
                             {{ $t('ticket.list.current_owner') }}
                         </span>
                         <span v-if="task?.actions_count != task?.done_actions_count">
@@ -230,12 +213,7 @@
                             -
                         </span>
                     </div>
-                    <div v-if="user?.is_admin" class="col-lg-2 col-md-3 col-3 justify-content-end text-end">
-                        <!-- <router-link
-                            :to="{ name: 'task.detail', params: { initiative_id: this.initiative_id, ticket_id: task.id } }"
-                            class="text-success me-1">
-                            <i class="bi bi-box-arrow-up-right fw-bold"></i>
-                        </router-link> -->
+                    <div v-if="user?.is_admin" class="col-lg-1 col-md-3 col-4 text-end py-2 py-lg-0">
                         <a data-bs-toggle="tooltip" data-bs-placement="bottom"
                             :title="$t('ticket.list.column.action.edit_text')" class="text-desino me-1"
                             href="javascript:" @click.stop="editTaskPopup(task)">
@@ -270,8 +248,8 @@
                     </div>
                 </div>
             </li>
-            <li v-else class="border list-group-item px-0 py-1 list-group-item-action">
-                <div class="col h4 fw-bold text-center">{{ $t('ticket.list.not_ticket') }}
+            <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
+                <div class="h4 fw-bold text-center">{{ $t('ticket.list.not_ticket') }}
                 </div>
             </li>
         </ul>

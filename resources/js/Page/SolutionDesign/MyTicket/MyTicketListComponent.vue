@@ -1,53 +1,65 @@
 <template>
     <GlobalMessage v-if="showMessage" />
     <div class="app-content mt-3">
-        <div class="row w-100 mb-3 align-items-center">
-            <div class="col-12 col-md-3 mb-2 mb-md-0">
-                <input v-model="filter.task_name" :placeholder="$t('my_ticket.filter.task_name')" class="form-control"
-                    type="text" @keyup="getMyTickets">
-            </div>
-            <div class="col-12 col-md-3 mb-2 mb-md-0">
-                <select v-model="filter.task_type" class="form-select" @change="getMyTickets">
-                    <option value="">{{ $t('my_ticket.filter.task_type_placeholder') }}</option>
-                    <option v-for="type in filterTaskTypes" :key="type.id" :value="type.id">{{ type.name }}
-                    </option>
-                </select>
-            </div>
-            <div class="col-12 col-md-3 mb-2 mb-md-0">
-                <div class="form-check ms-auto">
-                    <input v-model="filter.is_include_done" @change="getMyTickets" class="form-check-input"
-                        type="checkbox" id="is_include_done">
-                    <label class="form-check-label fw-bold" for="is_include_done">
-                        {{ $t('my_ticket.filter.is_include_done') }}
-                    </label>
+        <div class="w-100 mb-3">
+            <div class="row g-0 w-100 align-items-center">
+                <div class="col-12 col-md-3">
+                    <div class="w-100 p-1">
+                        <input v-model="filter.task_name" :placeholder="$t('my_ticket.filter.task_name')" class="form-control" type="text" @keyup="getMyTickets">
+                    </div>
+                </div>
+                <div class="col-12 col-md-3">
+                    <div class="w-100 p-1">
+                        <select v-model="filter.task_type" class="form-select" @change="getMyTickets">
+                            <option value="">{{ $t('my_ticket.filter.task_type_placeholder') }}</option>
+                            <option v-for="type in filterTaskTypes" :key="type.id" :value="type.id">{{ type.name }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3">
+                    <div class="w-100 p-1">
+                        <div class="form-check ms-auto">
+                            <input v-model="filter.is_include_done" @change="getMyTickets" class="form-check-input"
+                                type="checkbox" id="is_include_done">
+                            <label class="form-check-label fw-bold" for="is_include_done">
+                                {{ $t('my_ticket.filter.is_include_done') }}
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+        <div class="w-100 mb-3">
         <ul class="list-group list-group-flush mb-3 mt-2">
-            <li class="font-weight-bold bg-desino text-white rounded-top list-group-item">
-                <div class="row w-100">
-                    <div class="col-lg-3 col-md-6 col-6 fw-bold py-2">
-                        {{ $t('my_ticket.list.column_ticket_name') }}
+            <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
+                <div class="row w-100 align-items-center">
+                    <div class="col-lg-5 col-md-9 col-12 fw-bold small">
+                        <div class="row g-0 h-100 align-items-center">
+                            <div class="col-auto me-1" style="width:10px"></div>
+                            <div class="col-auto" style="width: calc(100% - 40px)">
+                                {{ $t('my_ticket.list.column_ticket_name') }}
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-lg-3 col-md-6 col-6 fw-bold py-2">
+                    <div class="col-lg-2 col-md-3 d-none d-md-block fw-bold small">
                         {{ $t('my_ticket.list.column_macro_status') }}
                     </div>
-                    <div class="col-lg-3 col-md-6 col-6 fw-bold py-2">
+                    <div class="col-lg-3 d-none d-lg-block fw-bold small">
                         {{ $t('my_ticket.list.column_related_functionality') }}
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2 d-none d-lg-block">
+                    <div class="col-lg-1 d-none d-lg-block fw-bold small">
                         {{ $t('my_ticket.list.column_current_action') }}
                     </div>
-                    <div class="col-lg-1 col-md-6 col-6 fw-bold py-2 d-none d-lg-block text-lg-end">
+                    <div class="col-lg-1 d-none d-lg-block fw-bold text-lg-end small">
                         {{ $t('my_ticket.list.column_actions') }}
                     </div>
                 </div>
             </li>
             <li v-for="(ticket, index) in tickets" v-if="tickets.length > 0" :key="ticket.id"
-                class="border list-group-item px-0 py-1 list-group-item-action" role="button"
+                class="border list-group-item p-1 list-group-item-action border-top-0" role="button"
                 @click="redirectTaskDetailPage(ticket)">
                 <div class="row w-100 align-items-center">
-                    <div class="col-lg-3 col-md-6 col-6">
+                    <div class="col-lg-5 col-md-9 col-12">
                         <div class="row g-0 h-100 align-items-center">
                             <div class="col-auto me-1" style="width:10px">
                                 <div class="position-absolute" :class="{
@@ -64,18 +76,19 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-3 col-6 text-center">
-                        <span class="badge p-2 w-100 text-wrap" :class="'bg-' + ticket.macro_status_label?.color">{{
-                            ticket.macro_status_label?.label }}</span>
+                    <div class="col-lg-2 offset-md-0 col-md-3 offset-1 col-5 text-center py-2 py-lg-0">
+                        <span class="badge p-2 w-100 text-wrap" :class="'bg-' + ticket.macro_status_label?.color">
+                            {{ ticket.macro_status_label?.label }}
+                        </span>
                     </div>
-                    <div class="col-lg-3 col-md-6 col-6 py-2">
+                    <div class="offset-0 offset-md-1 offset-lg-0 col-lg-3 col-md-4 col-6 py-2 py-lg-0">
                         {{ ticket?.functionality?.display_name }}
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6 py-2 d-none d-lg-block">
+                    <div class="offset-1 offset-md-0 col-lg-1 col-md-4 col-6 py-2 py-lg-0">
                         {{ ticket?.current_action?.action_name }}
                     </div>
-                    <div class="col-lg-1 col-md-6 col-6 py-2 d-none d-lg-block text-lg-end">
-                        <a v-if="ticket.asana_task_link" @click.stop :href="ticket.asana_task_link" target="_blank"
+                    <div class="col-lg-1 col-md-2 col-5 py-2 py-lg-0 text-end">
+                        <a v-if="ticket.asana_task_link" class="me-1" @click.stop :href="ticket.asana_task_link" target="_blank"
                             data-bs-toggle="tooltip" data-bs-placement="bottom"
                             :title="$t('ticket.list.column.action.asana_text')">
                             <svg fill="none" height="21px" viewBox="0 0 24 24" width="21px"
@@ -91,7 +104,7 @@
                                     fill="#ffc107" fill-rule="evenodd" />
                             </svg>
                         </a>
-                        <a class="ms-2" href="javascript:" @click.stop="handleTimeBooking(ticket)"
+                        <a href="javascript:" @click.stop="handleTimeBooking(ticket)"
                             data-bs-toggle="tooltip" data-bs-placement="bottom"
                             :title="$t('ticket_details.time_booking')">
                             <i class="bi bi-clock-history"></i>
@@ -99,11 +112,11 @@
                     </div>
                 </div>
             </li>
-            <li v-else class="border list-group-item px-0 py-1 list-group-item-action">
-                <div class="col h4 fw-bold text-center">{{ $t('my_ticket.list.not_ticket') }}
-                </div>
+            <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
+                <div class="h4 fw-bold text-center">{{ $t('my_ticket.list.not_ticket') }}</div>
             </li>
         </ul>
+        </div>
         <PaginationComponent :currentPage="Number(currentPage)" :totalPages="Number(totalPages)"
             @page-changed="getMyTickets" />
 

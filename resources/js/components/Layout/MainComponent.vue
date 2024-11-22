@@ -8,16 +8,22 @@
             <loading-screen-component></loading-screen-component>
         </div>
         <main class="app-main">
-            <div v-if="serverError.response?.data?.message && serverError.response?.data?.message != ''">
-                <ApiErrorPageComponent :error-message="serverError.response?.data?.message"
-                    :error-code="serverError.response?.status" />
-            </div>
-            <div v-else-if="serverError.message">
-                <ApiErrorPageComponent :error-message="serverError.message"
-                    :error-code="serverError.response?.status" />
-            </div>
-            <div v-show="!serverError.message">
-                <router-view></router-view>
+            <div class="container-fluid">
+                <div class="row g-0 align-items-center">
+                    <div class="col-12">
+                        <div v-if="serverError.response?.data?.message && serverError.response?.data?.message != ''">
+                            <ApiErrorPageComponent :error-message="serverError.response?.data?.message"
+                                :error-code="serverError.response?.status" />
+                        </div>
+                        <div v-else-if="serverError.message">
+                            <ApiErrorPageComponent :error-message="serverError.message"
+                                :error-code="serverError.response?.status" />
+                        </div>
+                        <div v-show="!serverError.message">
+                            <router-view></router-view>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
 

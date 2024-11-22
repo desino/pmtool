@@ -1,7 +1,7 @@
 <template>
     <GlobalMessage v-if="showMessage" />
-    <div class="app-content mt-3">
-        <div class="row w-100 mb-3">
+    <div class="app-content my-3">
+        <div class="row g-0 w-100 py-2">
             <div class="col-12 col-md-3 mb-2 mb-md-0">
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="checkbox" id="inline_active" v-model="filter.active"
@@ -16,47 +16,47 @@
             </div>
         </div>
 
-        <ul class="list-group list-group-flush list mb-3 mt-2">
-            <li class="list-group-item font-weight-bold bg-desino text-white rounded-top">
-                <div class="row w-100">
-                    <div class="col-lg-4 col-md-6 col-6 fw-bold py-2">
+        <ul class="list-group list-group-flush mb-3 mt-2">
+            <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
+                <div class="row w-100 align-items-center">
+                    <div class="col-lg-5 col-md-6 col-6 fw-bold small">
                         {{ $t('project.list.name_th_text') }}
                     </div>
-                    <div class="col-lg-3 col-md-6 col-6 fw-bold py-2 d-flex justify-content-center align-items-center">
+                    <div class="col-lg-3 col-md-6 col-6 fw-bold small">
                         {{ $t('project.list.project_status_th_text') }}
                     </div>
-                    <div class="col-lg-3 col-md-6 col-6 fw-bold py-2 d-flex justify-content-center align-items-center">
+                    <div class="col-lg-3 col-md-6 col-6 fw-bold small">
                         {{ $t('project.list.tickets_th_text') }}
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2 d-flex justify-content-end align-items-end">
+                    <div class="col-lg-1 col-md-6 col-6 fw-bold small text-end">
                         {{ $t('project.list.actions_th_text') }}
                     </div>
                 </div>
             </li>
-            <li class="list-group-item border" v-if="projects.length > 0" v-for="project in projects">
-                <div class="row w-100">
-                    <div class="col-lg-4 col-md-6 col-6 py-1">
+            <li class="border list-group-item p-1 list-group-item-action border-top-0" v-if="projects.length > 0" v-for="project in projects">
+                <div class="row w-100 align-items-center">
+                    <div class="col-lg-5 col-md-6 col-6">
                         {{ project.name }}
                     </div>
-                    <div class="col-lg-3 col-md-6 col-6 py-1 d-flex justify-content-center align-items-center">
+                    <div class="col-lg-3 col-md-6 col-6">
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
                                 v-model="project.status" @change="handleCheckboxChange(project)">
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-6 col-6 py-1 d-flex justify-content-center align-items-center">
+                    <div class="col-lg-3 col-md-6 col-6">
                         {{ project.tickets_count }}
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6 py-1 d-flex justify-content-end align-items-end">
-                        <a :title="$t('project.list.actions_edit_tooltip')" class="text-desino me-2" href="javascript:"
+                    <div class="col-lg-1 col-md-6 col-6 text-end">
+                        <a :title="$t('project.list.actions_edit_tooltip')" class="link-desino" href="javascript:"
                             @click="editProject(project)">
                             <i class="bi bi-pencil-square"></i>
                         </a>
                     </div>
                 </div>
             </li>
-            <li v-else class="list-group-item border p-4">
-                <div class="col h4 fw-bold text-center">{{ $t('project.list.projects_not_found_text') }}
+            <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
+                <div class="h4 fw-bold text-center">{{ $t('project.list.projects_not_found_text') }}
                 </div>
             </li>
         </ul>

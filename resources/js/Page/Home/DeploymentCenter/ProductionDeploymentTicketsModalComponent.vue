@@ -14,7 +14,7 @@
                                 <div class="col-md-9">
                                     {{ $t('home.deployment_center.production_deployment.ticket_modal.li.name.text') }}
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-3 text-end">
                                     {{
                                         $t('home.deployment_center.production_deployment.ticket_modal.li.develop_by.text')
                                     }}
@@ -32,7 +32,7 @@
                                         <i class="bi bi-link-45deg"></i>
                                     </router-link>
                                 </div>
-                                <div class="col-md-3" :for="'chk_test_deployment_ticket_' + ticket.id">
+                                <div class="col-md-3 text-end" :for="'chk_test_deployment_ticket_' + ticket.id">
                                     {{ ticket?.ticket?.develop_action?.user?.name }}
                                 </div>
                             </div>
