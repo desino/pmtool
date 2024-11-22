@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Initiative;
+use App\Models\Logging;
 use App\Models\Project;
 use App\Models\Release;
 use App\Models\Section;
@@ -148,10 +149,12 @@ class TicketService
     {
         $ticketActions = $ticket->actions;
         $nextTicketAction = "";
+        $currentAction = "";
         foreach ($ticketActions as $key => $ticketAction) {
             if ($ticketAction->id == $actionId) {
                 $ticketAction->status = $status;
                 $ticketAction->save();
+                $currentAction = $ticketAction;
                 if (isset($ticketActions[$key + 1])) {
                     $nextTicketAction = $ticketActions[$key + 1];
                 }
@@ -180,6 +183,7 @@ class TicketService
                 $nextTicketAction->save();
             }
         }
+        return $currentAction;
     }
 
     public static function updateTicketPreviousActions($ticket, $actionId, $status, $isReadyForDeploymentToPrd = false)
@@ -207,6 +211,7 @@ class TicketService
                 $previousTicketAction->save();
             }
         }
+        return $previousTicketAction;
     }
 
     public static function  getTicketActionStatus($index, $ticketAction, $autoWaitForClientApproval)
@@ -413,5 +418,25 @@ class TicketService
             }
         }
         return $actions;
+    }
+
+    public static function storeLogging($ticket, $activityType, $action = null)
+    {
+        if ($activityType == Logging::ACTIVITY_TYPE_MARKED_AS_DONE || $activityType == Logging::ACTIVITY_TYPE_MOVED_BACK_TO) {
+            $allActivityDetails = array_column(Logging::getAllActivityDetails(), 'id');
+            $actionId = "";
+            if (!empty($action) && $action->action) {
+                $actionId = $action->action;
+            }
+            $activityDetail = Arr::exists($allActivityDetails, $actionId) ? $actionId : Logging::ACTIVITY_DETAIL_DONE;
+        } else if ($activityType == Logging::ACTIVITY_TYPE_DEPLOYMENT) {
+            $activityDetail = Logging::ACTIVITY_DETAIL_ACC;
+        }
+        $insertData = [
+            'ticket_id' => $ticket->id,
+            'activity_type' => $activityType,
+            'activity_detail' => $activityDetail,
+        ];
+        Logging::create($insertData);
     }
 }

@@ -801,5 +801,15 @@
     "developer_workload_ticket_all_modal_title": "All Tickets",
     "developer_workload.ticket_modal.li.name.text": "Tickets",
     "developer_workload.ticket_modal.li.current_owner.text": "Current Owner",
-    "developer_workload.ticket_modal.no_tickets.text": "No tickets found"
+    "developer_workload.ticket_modal.no_tickets.text": "No tickets found",
+    "logging_activity_type.marked_as_done": "Marked as Done",
+    "logging_activity_type.moved_back_to": "Moved back to",
+    "logging_activity_type.deployment": "Deployment",
+    "logging_activity_detail.detail": "Detail",
+    "logging_activity_detail.clarify_estimate": "Clarify Estimate",
+    "logging_activity_detail.develop": "Develop",
+    "logging_activity_detail.test": "Test",
+    "logging_activity_detail.validate": "Validate",
+    "logging_activity_detail.done": "Done",
+    "logging_activity_detail.acc": "ACC"
 }

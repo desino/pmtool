@@ -10,6 +10,7 @@ use App\Http\Requests\Api\TicketDetailEstimatedHoursRequest;
 use App\Http\Requests\Api\TicketRequest;
 use App\Http\Requests\UpdateReleaseNoteRequest;
 use App\Models\Functionality;
+use App\Models\Logging;
 use App\Models\Project;
 use App\Models\Release;
 use App\Models\ReleaseTicket;
@@ -728,9 +729,10 @@ class TicketController extends Controller
         $statusCode = 200;
         DB::beginTransaction();
         try {
-            TicketService::updateTicketActions($ticket, $request->input('action_id'), TicketAction::getStatusDone());
+            $action = TicketService::updateTicketActions($ticket, $request->input('action_id'), TicketAction::getStatusDone());
             TicketService::updateTicketStatus($ticket);
             TicketService::createMacroStatusAndUpdateTicket($ticket);
+            TicketService::storeLogging($ticket, Logging::ACTIVITY_TYPE_MARKED_AS_DONE, $action);
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -784,9 +786,10 @@ class TicketController extends Controller
         $statusCode = 200;
         DB::beginTransaction();
         try {
-            TicketService::updateTicketPreviousActions($ticket, $request->input('action_id'), TicketAction::getStatusWaitingForDependantAction(), $isReadyForDeploymentToPrd);
+            $action = TicketService::updateTicketPreviousActions($ticket, $request->input('action_id'), TicketAction::getStatusWaitingForDependantAction(), $isReadyForDeploymentToPrd);
             TicketService::updateTicketStatus($ticket);
             TicketService::createMacroStatusAndUpdateTicket($ticket, true);
+            TicketService::storeLogging($ticket, Logging::ACTIVITY_TYPE_MOVED_BACK_TO, $action);
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
