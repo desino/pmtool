@@ -24,9 +24,9 @@
                 </div>
             </div>
             <div class="col-2 col-md-1">
-                <a v-if="ticketData.asana_task_link" :href="ticketData.asana_task_link" class="btn btn-desino border-0 w-100 h-100 text-dark" target="_blank">
-                    <svg fill="none" height="21px" viewBox="0 0 24 24" width="21px"
-                        xmlns="http://www.w3.org/2000/svg">
+                <a v-if="ticketData.asana_task_link" :href="ticketData.asana_task_link"
+                    class="btn btn-desino border-0 w-100 h-100 text-dark" target="_blank">
+                    <svg fill="none" height="21px" viewBox="0 0 24 24" width="21px" xmlns="http://www.w3.org/2000/svg">
                         <path clip-rule="evenodd"
                             d="M10.4693 3.55448C10.9546 3.35346 11.4747 3.25 12 3.25C12.5253 3.25 13.0454 3.35346 13.5307 3.55448C14.016 3.7555 14.457 4.05014 14.8284 4.42157C15.1999 4.79301 15.4945 5.23397 15.6955 5.71927C15.8965 6.20457 16 6.72471 16 7.25C16 7.77529 15.8965 8.29543 15.6955 8.78073C15.4945 9.26603 15.1999 9.70699 14.8284 10.0784C14.457 10.4499 14.016 10.7445 13.5307 10.9455C13.0454 11.1465 12.5253 11.25 12 11.25C11.4747 11.25 10.9546 11.1465 10.4693 10.9455C9.98396 10.7445 9.54301 10.4499 9.17157 10.0784C8.80014 9.70699 8.5055 9.26604 8.30448 8.78073C8.10346 8.29543 8 7.77529 8 7.25C8 6.72471 8.10346 6.20457 8.30448 5.71927C8.5055 5.23396 8.80014 4.79301 9.17157 4.42157C9.54301 4.05014 9.98396 3.7555 10.4693 3.55448ZM12 4.75C11.6717 4.75 11.3466 4.81466 11.0433 4.9403C10.74 5.06594 10.4644 5.25009 10.2322 5.48223C10.0001 5.71438 9.81594 5.98998 9.6903 6.29329C9.56466 6.59661 9.5 6.92169 9.5 7.25C9.5 7.5783 9.56466 7.90339 9.6903 8.20671C9.81594 8.51002 10.0001 8.78562 10.2322 9.01777C10.4644 9.24991 10.74 9.43406 11.0433 9.5597C11.3466 9.68534 11.6717 9.75 12 9.75C12.3283 9.75 12.6534 9.68534 12.9567 9.5597C13.26 9.43406 13.5356 9.24991 13.7678 9.01777C13.9999 8.78562 14.1841 8.51002 14.3097 8.20671C14.4353 7.90339 14.5 7.5783 14.5 7.25C14.5 6.9217 14.4353 6.59661 14.3097 6.29329C14.1841 5.98998 13.9999 5.71438 13.7678 5.48223C13.5356 5.25009 13.26 5.06594 12.9567 4.9403C12.6534 4.81466 12.3283 4.75 12 4.75Z"
                             fill="#fff" fill-rule="evenodd" />
@@ -51,7 +51,7 @@
     <div class="app-content border border-start-0 border-end-0 py-2">
         <div class="row g-1 w-100">
             <div class="col-12 col-md-3 col-lg-3 col-xl-3 text-center mb-2 mb-md-0">
-                <div class="card shadow-none h-100 border-0" :class="'bg-' + ticketData?.macro_status_label?.color">
+                <div class="card shadow-none h-100 border-0" :style="{backgroundColor: ticketData.macro_status_label?.color}">
                     <div class="card-body border-0 bg-transparent p-0 align-content-center">
                         <div class="text-light fw-bold small py-4">
                             {{ ticketData?.macro_status_label?.label }}
@@ -110,17 +110,28 @@
                             @click="handleCurrentActionChangeStatus()">
                             {{ $t('ticket_details.task_current_action_completed_but_text') }}
                         </a>
+
                         <!-- <a role="button" class="btn btn-warning w-100 border-0 text-dark"
-                            v-if="previousAction && previousActionAllowOrNot()" @click="handlePreviousActionStatus()"
-                            :title="$t('ticket_action.move_to_previous_action')">
-                            {{ $t('ticket_details.task_previous_action_completed_but_text') }}
-                        </a> -->
-                        <a role="button" class="btn btn-warning w-100 border-0 text-dark"
                             v-if="ticketData.is_show_pre_action_but"
                             :class="{ 'disabled': !ticketData.is_show_pre_action_but }"
                             @click="handlePreviousActionStatus()" :title="$t('ticket_action.move_to_previous_action')">
                             {{ $t('ticket_details.task_previous_action_completed_but_text') }}
-                        </a>
+                        </a> -->
+                        <div class="dropdown" v-if="ticketData.is_show_pre_action_but && previous_actions.length > 0">
+                            <button class="btn btn-secondary dropdown-toggle w-100" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ $t('ticket_action.move_to_previous_action') }}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li v-for="action in previous_actions" :key="action.id">
+                                    <a class="dropdown-item"
+                                        :class="{ 'active': action.action == selected_previous_action_id }"
+                                        href="javascript:void(0)" @click="handlePreviousActionStatus(action)">
+                                        {{ action.action_name }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -454,6 +465,8 @@ export default {
             tasksForDropdown: [],
             is_allow_case_add_test_section: false,
             is_allow_case_update_test_section: false,
+            selected_previous_action_id: '',
+            previous_actions: [],
             errors: {},
             showMessage: true,
         };
@@ -502,6 +515,7 @@ export default {
                     this.actionStatus = response.meta_data.action_status;
                     this.is_allow_case_add_test_section = response.meta_data.is_allow_case_add_test_section;
                     this.is_allow_case_update_test_section = response.meta_data.is_allow_case_update_test_section;
+                    this.previous_actions = response.meta_data?.actions.filter(action => action?.action < this.currentAction?.action);
                 }
                 this.setLoading(false);
             } catch (error) {
@@ -671,10 +685,11 @@ export default {
             }).catch(() => {
             });
         },
-        handlePreviousActionStatus() {
+        handlePreviousActionStatus(action) {
             if (!this.ticketData.is_show_pre_action_but) {
                 return false;
             }
+            this.selected_previous_action_id = action.action;
             this.$swal({
                 // title: this.$t('ticket_detail.confirm_alert.current_action_change_status_title'),
                 title: this.$t('ticket_detail.confirm_alert.current_previous_action_status_text'),
@@ -690,11 +705,13 @@ export default {
                 if (result.isConfirmed) {
                     this.previousActionFormData = {
                         user_id: this.currentAction?.user?.id,
-                        action_id: this.currentAction?.id,
+                        // action_id: this.currentAction?.id,
+                        action_id: this.action?.id,
                         action: this.currentAction?.action,
                         ticket_id: this.localTicketId,
                         status: this.currentAction?.status,
                         initiative_id: this.localInitiativeId,
+                        previous_action_id: this.selected_previous_action_id,
                         action_text: 'previous_action',
                     }
                     this.changePreviousActionStatus(this.previousActionFormData);

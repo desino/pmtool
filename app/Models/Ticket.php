@@ -151,16 +151,16 @@ class Ticket extends Model
     public function getMacroStatusLabelAttribute()
     {
         return match ($this->macro_status) {
-            self::MACRO_STATUS_DETAIL_TICKET => ['label' => __('ticket_macro_status.detail_ticket'), 'color' => 'success'],
-            self::MACRO_STATUS_CLARIFY_AND_ESTIMATE => ['label' => __('ticket_macro_status.clarify_and_estimate'), 'color' => 'success'],
-            self::MACRO_STATUS_DEVELOP_WAIT_FOR_CLIENT => ['label' => __('ticket_macro_status.develop_wait_for_client'), 'color' => 'danger'],
-            self::MACRO_STATUS_DEVELOP => ['label' => __('ticket_macro_status.develop'), 'color' => 'success'],
-            self::MACRO_STATUS_TEST_WAIT_FOR_DEPLOYMENT_TO_TEST => ['label' => __('ticket_macro_status.test_wait_for_deployment_to_test'), 'color' => 'danger'],
-            self::MACRO_STATUS_TEST => ['label' => __('ticket_macro_status.test'), 'color' => 'success'],
-            self::MACRO_STATUS_VALIDATE_WAITING_FOR_DEPLOYMENT_TO_ACC => ['label' => __('ticket_macro_status.validate_waiting_for_deployment_to_acc'), 'color' => 'danger'],
-            self::MACRO_STATUS_VALIDATE => ['label' => __('ticket_macro_status.validate'), 'color' => 'success'],
-            self::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_PRD => ['label' => __('ticket_macro_status.ready_for_deployment_to_prd'), 'color' => 'danger'],
-            self::MACRO_STATUS_DONE => ['label' => __('ticket_macro_status.done'), 'color' => 'primary'],
+            self::MACRO_STATUS_DETAIL_TICKET => ['label' => __('ticket_macro_status.detail_ticket'), 'color' => '#394151'],
+            self::MACRO_STATUS_CLARIFY_AND_ESTIMATE => ['label' => __('ticket_macro_status.clarify_and_estimate'), 'color' => '#A6853D'],
+            self::MACRO_STATUS_DEVELOP_WAIT_FOR_CLIENT => ['label' => __('ticket_macro_status.develop_wait_for_client'), 'color' => '#A64D3D'],
+            self::MACRO_STATUS_DEVELOP => ['label' => __('ticket_macro_status.develop'), 'color' => '#3D62A6'],
+            self::MACRO_STATUS_TEST_WAIT_FOR_DEPLOYMENT_TO_TEST => ['label' => __('ticket_macro_status.test_wait_for_deployment_to_test'), 'color' => '#A64D3D'],
+            self::MACRO_STATUS_TEST => ['label' => __('ticket_macro_status.test'), 'color' => '#A69A3D'],
+            self::MACRO_STATUS_VALIDATE_WAITING_FOR_DEPLOYMENT_TO_ACC => ['label' => __('ticket_macro_status.validate_waiting_for_deployment_to_acc'), 'color' => '#A64D3D'],
+            self::MACRO_STATUS_VALIDATE => ['label' => __('ticket_macro_status.validate'), 'color' => '#3D99A6'],
+            self::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_PRD => ['label' => __('ticket_macro_status.ready_for_deployment_to_prd'), 'color' => '#A64D3D'],
+            self::MACRO_STATUS_DONE => ['label' => __('ticket_macro_status.done'), 'color' => '#213559'],
             default => '-'
         };
     }
@@ -209,6 +209,12 @@ class Ticket extends Model
         return $this->initiative_id ? $this->initiative->functional_owner_id == Auth::id() || $this->initiative->technical_owner_id == Auth::id() ?? false : false;
     }
 
+    /*************  ✨ Codeium Command ⭐  *************/
+    /**
+     * current action owner or functional owner allow only show pre action button
+     * @return bool
+     */
+    /******  ee11988b-c4ca-43c4-88ed-b4c3367d4fbe  *******/
     protected function getIsShowPreActionButAttribute()
     {
         if (

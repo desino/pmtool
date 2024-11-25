@@ -531,7 +531,7 @@ class TicketController extends Controller
         $meta_data['action_status'] = TicketAction::getAllActionStatus();
         $meta_data['is_allow_case_add_test_section'] = $isAllowCaseAddTestSection;
         $meta_data['is_allow_case_update_test_section'] = $isAllowCaseUpdateTestSection;
-
+        $meta_data['actions'] = $ticket->actions;
         // Return the ticket and related meta data in a success response
         return ApiHelper::response(true, __('messages.ticket.fetched'), $ticket, 200, $meta_data);
     }
@@ -786,11 +786,11 @@ class TicketController extends Controller
         $statusCode = 200;
         DB::beginTransaction();
         try {
-            $action = TicketService::updateTicketPreviousActions($ticket, $request->input('action_id'), TicketAction::getStatusWaitingForDependantAction(), $isReadyForDeploymentToPrd);
+            $action = TicketService::updateTicketPreviousActions($ticket, $request->input('action_id'), $request->input('previous_action_id'), TicketAction::getStatusWaitingForDependantAction(), $isReadyForDeploymentToPrd);
             TicketService::updateTicketStatus($ticket);
             TicketService::createMacroStatusAndUpdateTicket($ticket, true);
             TicketService::storeLogging($ticket, Logging::ACTIVITY_TYPE_MOVED_BACK_TO, $action);
-            DB::commit();
+            // DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
             $status = false;

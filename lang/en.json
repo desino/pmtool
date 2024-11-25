@@ -483,6 +483,7 @@
     "ticket.list.column_project": "Project",
     "ticket.list.current_action": "Current Action",
     "ticket.list.estimation_hours": "Estimation",
+    "ticket.list.estimation_hours_text": " hrs",
     "ticket.list.current_owner": "Current Owner",
     "ticket.list.column_task_created_at": "Creation Date",
     "ticket.list.column.action.edit_text": "Edit",

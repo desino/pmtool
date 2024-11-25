@@ -184,7 +184,7 @@
                         </div>
                     </div>
                     <div class="offset-1 col-5 offset-md-0 col-md-3 col-lg-2 text-center py-2 py-lg-0">
-                        <span class="badge p-2 w-100 text-wrap" :class="'bg-' + task.macro_status_label?.color">
+                        <span class="badge p-2 w-100 text-wrap" :style="{backgroundColor: task.macro_status_label?.color}">
                             {{ task.macro_status_label?.label }}
                         </span>
                     </div>
@@ -199,7 +199,7 @@
                     </div>
                     <div class="offset-1 offset-md-1 offset-lg-0 col-lg-1 col-md-4 col-2 text-start py-2 py-lg-0">
                         <span class="badge rounded-3 bg-success-subtle text-success mb-0">
-                            {{ task.estimation_time }}{{ $t(' hrs') }}
+                            {{ task.estimation_time }}{{ $t('ticket.list.estimation_hours_text') }}
                         </span>
                     </div>
                     <div class="col-lg-1 offset-md-0 col-md-4 offset-1 col-5 py-2 py-lg-0">
