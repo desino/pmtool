@@ -812,7 +812,7 @@ class TicketController extends Controller
             TicketService::updateTicketStatus($ticket);
             TicketService::createMacroStatusAndUpdateTicket($ticket, true);
             TicketService::storeLogging($ticket, Logging::ACTIVITY_TYPE_MOVED_BACK_TO, $action);
-            // DB::commit();
+            DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
             $status = false;
