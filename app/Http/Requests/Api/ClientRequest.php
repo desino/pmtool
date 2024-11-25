@@ -24,8 +24,8 @@ class ClientRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
-            'initiative_name' => 'required|string',
+            'name' => 'required|string|unique:clients|max:255',
+            'initiative_name' => 'required|string|unique:initiatives,name|max:255',
             'ballpark_development_hours' => [
                 'required',
                 'numeric',

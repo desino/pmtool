@@ -5,6 +5,7 @@ namespace App\Http\Requests\Api;
 use App\Models\Initiative;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class EditOpportunityRequest extends FormRequest
 {
@@ -24,7 +25,14 @@ class EditOpportunityRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('initiatives')->ignore($this->id)->where(function ($query) {
+                    return $query->where('client_id', $this->client_id);
+                }),
+            ],
             'ballpark_development_hours' => [
                 'required',
                 'numeric',
