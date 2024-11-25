@@ -239,8 +239,8 @@
                             data-bs-toggle="tooltip" data-bs-placement="bottom"
                             :title="$t('ticket_details.time_booking')">
                             <i class="bi bi-clock-history"></i>
-                        </a>
-                        <a v-if="user?.is_admin && !task.is_ticket_done" class="text-danger" href="javascript:"
+                        </a>                        
+                        <a v-if="user?.is_admin && task.is_show_delete_but" class="text-danger" href="javascript:"
                             @click.stop="deleteTicket(task)" data-bs-toggle="tooltip"
                             :title="$t('ticket_details.delete_text')" data-bs-placement="bottom">
                             <i class="bi bi-trash3"></i>

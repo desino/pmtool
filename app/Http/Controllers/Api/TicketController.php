@@ -1034,8 +1034,10 @@ class TicketController extends Controller
         if ($ticket && $ticket->macro_status == Ticket::MACRO_STATUS_DONE) {
             return ApiHelper::response($status, __('messages.ticket.delete_ticket_not_allowed_because_ticket_already_done'), '', 400);
         }
-        if ($ticket->time_bookings_count > 0) {
-            return ApiHelper::response($status, __('messages.ticket.delete_ticket_not_allowed_because_time_bookings_exist'), '', 400);
+        // if ($ticket->time_bookings_count > 0) {
+        if (!$ticket->is_show_delete_but) {
+            // return ApiHelper::response($status, __('messages.ticket.delete_ticket_not_allowed_because_time_bookings_exist'), '', 400);
+            return ApiHelper::response($status, __('messages.ticket.delete_ticket_not_allowed_because_time_bookings_exist_or_any_action_already_done_dev_count_not_zero'), '', 400);
         }
 
         $task = $this->asanaService->deleteTask($ticket->asana_task_id);

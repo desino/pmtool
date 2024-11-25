@@ -26,6 +26,7 @@ class Ticket extends Model
         'is_disable_action_user',
         'is_show_pre_action_but',
         'is_allow_dev_estimation_time',
+        'is_show_delete_but',
     ];
 
     public const TYPE_CHANGE_REQUEST = 1;
@@ -198,6 +199,12 @@ class Ticket extends Model
     protected function getIsAllowDevEstimationTimeAttribute()
     {
         return $this->currentAction && $this->currentAction->user_id == Auth::id() && $this->currentAction->action == TicketAction::getActionClarifyAndEstimate() ? true : false;
+    }
+
+    protected function getIsShowDeleteButAttribute()
+    {
+        $ticketDoneActions = $this->actions->where('status', TicketAction::getStatusDone());
+        return Auth::user()->is_admin && $this->timeBookings->count() == 0 && $ticketDoneActions->count() == 0 && $this->moved_back_to_dev_action_count == 0 ?? false;
     }
 
     protected function getIsEnableMarkAsDoneButAttribute()

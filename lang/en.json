@@ -303,6 +303,7 @@
     "messages.all_ticket_without_initiative.visible_success_alt_remove": "Visible removed successfully.",
     "messages.ticket.delete_ticket_not_allowed": "You are not allowed to delete this ticket.",
     "messages.ticket.delete_ticket_not_allowed_because_time_bookings_exist": "You are not allowed to delete this ticket because it has time bookings.",
+    "messages.ticket.delete_ticket_not_allowed_because_time_bookings_exist_or_any_action_already_done_dev_count_not_zero": "You are not allowed to delete this ticket because it has time bookings or any action already done.",
     "messages.ticket.delete_ticket_success": "Ticket deleted successfully.",
     "messages.home.deployment_center.test_deployment.no_permission": "You don't have permission to perform this action.",
     "messages.home.deployment_center.acceptance_deployment.no_permission": "You don't have permission to perform this action.",
