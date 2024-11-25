@@ -172,6 +172,28 @@ class TicketController extends Controller
             return ApiHelper::response($status, __('messages.create_ticket.action_develop_not_exist'), '', 400);
         }
 
+        $ticketActionsCollect = collect($validateData['ticket_actions']);
+        $filteredDoneActions = $ticketActionsCollect->where('is_checked', true)->where('status', TicketAction::getStatusDone())->sortByDesc('action');
+        $filteredDoneMaxAction = $filteredDoneActions->first();
+        $filterNewMaxAction = $ticketActionsCollect->where('is_checked', true)->whereNull('status')->sortBy('action')->first();
+
+        if (isset($filterNewMaxAction['action']) && $filteredDoneMaxAction['action'] && $filterNewMaxAction['action'] < $filteredDoneMaxAction['action']) {
+            return ApiHelper::response($status, __('messages.create_ticket.not_allowed_because_grater_action_is_done'), '', 400);
+        }
+
+        $ticketDoneActionCount = $ticket->actions->where('status', TicketAction::getStatusDone())->count();
+        $filteredDoneActionsCount = $filteredDoneActions->count();
+        if ($ticketDoneActionCount != $filteredDoneActionsCount) {
+            return ApiHelper::response($status, __('messages.create_ticket.not_allowed_because_done_actions_not_match'), '', 400);
+        }
+
+        foreach ($validateData['ticket_actions'] as $action) {
+            $chkDoneAction = $ticket->actions->where('action', $action['action'])->where('status', TicketAction::getStatusDone())->where('user_id', $action['user_id'])->first();
+            if (!$chkDoneAction) {
+                return ApiHelper::response($status, __('messages.create_ticket.you_cant_update_ticket_action_user_because_this_action_done'), '', 400);
+            }
+        }
+
         $projectId = $initiative->asana_project_id;
         $generateTicketComposedNameData = TicketService::updateTicketComposedName($ticket, $validateData['name'], $validateData['type']);
         $ticketComposedName = $generateTicketComposedNameData['composed_name'];
