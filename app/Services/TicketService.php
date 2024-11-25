@@ -192,6 +192,9 @@ class TicketService
         $previousTicketAction = null;
         if (!$isReadyForDeploymentToPrd) {
             foreach ($ticketActions as $key => $ticketAction) {
+                if ($ticketAction->action >= $previousActionId && $ticketAction->action == TicketAction::getActionDevelop() && $ticketAction->status == TicketAction::getStatusDone()) {
+                    $ticket->increment('moved_back_to_dev_action_count');
+                }
                 if ($ticketAction->action > $previousActionId) {
                     $ticketAction->status = $status;
                     $ticketAction->save();
