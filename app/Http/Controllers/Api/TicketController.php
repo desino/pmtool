@@ -177,7 +177,7 @@ class TicketController extends Controller
         $filteredDoneMaxAction = $filteredDoneActions->first();
         $filterNewMaxAction = $ticketActionsCollect->where('is_checked', true)->whereNull('status')->sortBy('action')->first();
 
-        if (isset($filterNewMaxAction['action']) && $filteredDoneMaxAction['action'] && $filterNewMaxAction['action'] < $filteredDoneMaxAction['action']) {
+        if (isset($filterNewMaxAction['action']) && isset($filteredDoneMaxAction['action']) && $filterNewMaxAction['action'] < $filteredDoneMaxAction['action']) {
             return ApiHelper::response($status, __('messages.create_ticket.not_allowed_because_grater_action_is_done'), '', 400);
         }
 
@@ -188,8 +188,8 @@ class TicketController extends Controller
         }
 
         foreach ($validateData['ticket_actions'] as $action) {
-            $chkDoneAction = $ticket->actions->where('action', $action['action'])->where('status', TicketAction::getStatusDone())->where('user_id', $action['user_id'])->first();
-            if (!$chkDoneAction) {
+            $chkDoneAction = $ticket->actions->where('action', $action['action'])->where('status', TicketAction::getStatusDone())->where('user_id', '!=', $action['user_id'])->first();
+            if (!empty($chkDoneAction)) {
                 return ApiHelper::response($status, __('messages.create_ticket.you_cant_update_ticket_action_user_because_this_action_done'), '', 400);
             }
         }
