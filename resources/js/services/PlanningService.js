@@ -10,6 +10,7 @@ const endpoints = {
     getPlanningData: `${defaultPath}`,
     getPlanningInitialData: `${defaultPath}/get-planning-initial-data`,
     storePlanning: `${defaultPath}/store-planning`,
+    fetchProjects: `${defaultPath}/fetch-projects`,
 }
 
 const PlanningService = {
@@ -36,7 +37,15 @@ const PlanningService = {
         } catch (error) {
             throw handleError(error);
         }
-    }
+    },
+    async fetchProjects(data) {
+        try {
+            const response = await axiosRequest.get(endpoints.fetchProjects, { params: data });
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
 }
 
 function handleError(error) {

@@ -44,70 +44,70 @@
                             </th>
                         </tr>
                         <template v-for="(planning, planningIndex) in plannings" :key="planningIndex">
-                            <tr v-for="(user, userIndex) in planning.users" :key="userIndex">
-                                <!-- below th for total and plan new initiative -->
-                                <th v-if="planning.default_row_name == 'heder_total' || planning.default_row_name == 'plan_new_initiative'"
-                                    style="height: 52px;" class="border bg-opacity-25 text-center align-middle p-1"
-                                    :class="{
-                                        'bg-primary total_abs1 ': planning.default_row_name == 'heder_total',
-                                        'bg-warning lastrow_abs ': planning.default_row_name == 'plan_new_initiative'
-                                    }" colspan="2" :rowspan="planning.users.length"
-                                    :role="planning.default_row_name == 'plan_new_initiative' ? 'button' : ''"
-                                    @click="handlePlanNewInitiative(planning, user)">
-                                    <span v-if="planning.default_row_name == 'plan_new_initiative'"><i
-                                            class="bi bi-plus-lg"></i> </span>
-                                    {{ planning.initiative_name }}
-                                </th>
-                                <!-- below th except for total and plan new initiative -->
-                                <th v-if="planning.default_row_name == ''" style="height: 52px;"
-                                    class="border abs1 bg-opacity-25 text-left align-middle p-1" :class="{
-                                        'border-bottom-0': userIndex == 0 || planning.users.length - 2 == userIndex,
-                                        'border-top-0': userIndex > 0
-                                    }">
-                                    <div v-if="userIndex == 0" class="row h-100 align-items-center">
-                                        <div class="col-auto me-1" style="width:20px">
-                                            <a href="javascript:void(0);" class="link-btn"
-                                                @click="handlePlanNewUser(planning)"><i
-                                                    class="bi bi-plus-square-fill text-desino fs-5"></i></a>
+                            <template v-for="(project, projectIndex) in planning.projects" :key="projectIndex">
+                                <tr v-for="(user, userIndex) in project.users" :key="userIndex">
+                                    <!-- below th for total and plan new initiative -->
+                                    <th v-if="planning.default_row_name == 'heder_total' || planning.default_row_name == 'plan_new_initiative'"
+                                        style="height: 52px;" class="border bg-opacity-25 text-center align-middle p-1"
+                                        :class="{
+                                            'bg-primary total_abs1 ': planning.default_row_name == 'heder_total',
+                                            'bg-warning lastrow_abs ': planning.default_row_name == 'plan_new_initiative'
+                                        }" colspan="2" :rowspan="project.users.length"
+                                        :role="planning.default_row_name == 'plan_new_initiative' ? 'button' : ''"
+                                        @click="handlePlanNewInitiative(planning, user)">
+                                        <span v-if="planning.default_row_name == 'plan_new_initiative'"><i
+                                                class="bi bi-plus-lg"></i> </span>
+                                        {{ planning.initiative_name }}
+                                    </th>
+                                    <!-- below th except for total and plan new initiative -->
+                                    <th v-if="planning.default_row_name == ''" style="height: 52px;"
+                                        class="border abs1 bg-opacity-25 text-left align-middle p-1" :class="{
+                                            'border-bottom-0': userIndex == 0 || planning.users.length - 2 == userIndex,
+                                            'border-top-0': userIndex > 0
+                                        }">
+                                        <div v-if="userIndex == 0" class="row h-100 align-items-center">
+                                            <div class="col-auto me-1" style="width:20px">
+                                                <a href="javascript:void(0);" class="link-btn"
+                                                    @click="handlePlanNewUser(planning)"><i
+                                                        class="bi bi-plus-square-fill text-desino fs-5"></i></a>
+                                            </div>
+                                            <div class="col-auto" style="width: calc(100% - 30px)">
+                                                {{ planning.initiative_name }}
+                                            </div>
                                         </div>
-                                        <div class="col-auto" style="width: calc(100% - 30px)">
-                                            {{ planning.initiative_name }}
-                                        </div>
-                                    </div>
-                                    <div v-else class="">&nbsp;</div>
-                                </th>
-                                <th v-if="planning.default_row_name == '' && user.id != ''" style="height: 52px;"
-                                    class="border abs2 text-left p-1">
-                                    {{ user.name }}
-                                </th>
-                                <th v-if="planning.default_row_name == 'heder_total'" :rowspan="plannings.length + 1"
-                                    class="total_abs2" style="height: 52px;">&nbsp;</th>
-                                <!-- below td for each week header total -->
-                                <td v-if="planning.default_row_name == 'heder_total'" style="height: 52px;"
-                                    class="text-center align-middle p-1 border" v-for="(week, index) in loadWeeks"
-                                    :key="index">
-                                    <span class="badge text-white bg-secondary">
-                                        {{ user.hours_per_week[week.date].hours > 0 ?
-                                            user.hours_per_week[week.date].hours :
-                                            '' }}
-                                    </span>
-                                </td>
-                                <!-- below td except for each week header total -->
-                                <td v-if="planning.default_row_name == ''" style="height: 52px;"
-                                    class="border text-center align-middle p-1 border"
-                                    v-for="(week, index) in loadWeeks" :key="index">
-                                    <!-- <input v-if="user.id != ''" type="text" v-model="user.hours_per_week[week.date].hours"
-                                class="form-control form-control-sm text-center"
-                                :placeholder="$t('time_booking_on_new_initiative_or_ticket.modal_input_hours_label_text')"> -->
-                                    <input v-if="user.id != ''" type="text"
-                                        v-model="user.hours_per_week[week.date].hours"
-                                        class="form-control form-control-sm text-center">
-                                </td>
-                                <td v-if="planning.default_row_name == 'plan_new_initiative'"
-                                    :colspan="loadWeeks.length">&nbsp;</td>
-                            </tr>
+                                        <div v-else class="">&nbsp;</div>
+                                    </th>
+                                    <th v-if="planning.default_row_name == '' && user.id != ''" style="height: 52px;"
+                                        class="border abs2 text-left p-1">
+                                        {{ user.name }}
+                                    </th>
+                                    <th v-if="planning.default_row_name == 'heder_total'"
+                                        :rowspan="plannings.length + 1" class="total_abs2" style="height: 52px;">&nbsp;
+                                    </th>
+                                    <!-- below td for each week header total -->
+                                    <td v-if="planning.default_row_name == 'heder_total'" style="height: 52px;"
+                                        class="text-center align-middle p-1 border" v-for="(week, index) in loadWeeks"
+                                        :key="index">
+                                        <span class="badge text-white bg-secondary">
+                                            {{ user.hours_per_week[week.date].hours > 0 ?
+                                                user.hours_per_week[week.date].hours :
+                                                '' }}
+                                        </span>
+                                    </td>
+                                    <!-- below td except for each week header total -->
+                                    <td v-if="planning.default_row_name == ''" style="height: 52px;"
+                                        class="border text-center align-middle p-1 border"
+                                        v-for="(week, index) in loadWeeks" :key="index">
+                                        <input v-if="user.id != ''" type="text"
+                                            v-model="user.hours_per_week[week.date].hours"
+                                            class="form-control form-control-sm text-center">
+                                    </td>
+                                    <td v-if="planning.default_row_name == 'plan_new_initiative'"
+                                        :colspan="loadWeeks.length">&nbsp;</td>
+                                </tr>
+                            </template>
                             <tr v-if="planning.default_row_name == 'heder_total'">
-                                <th class="lastrow_abs" colspan="2"></th>
+                                <th class="lastrow_abs" colspan="3"></th>
                                 <td :colspan="loadWeeks.length"></td>
                             </tr>
                         </template>
@@ -187,6 +187,7 @@ export default {
                 this.forFilterPlannings = plannings;
                 this.getPlanningInitialData();
                 this.setLoading(false);
+                console.log('loadWeeks :: ', loadWeeks);
             } catch (error) {
                 this.handleError(error);
             }
@@ -232,11 +233,13 @@ export default {
 
         },
         addPlanNewInitiativeFromModal(formData) {
+            console.log('formData :: ', formData);
             let addNewPlaning = {
                 'default_row_name': '',
                 'initiative_id': formData.initiative_id,
                 'initiative_name': formData.initiative_name,
-                'users': [],
+                'projects': [],
+                // 'users': [],
             }
             const hoursPerWeek = [];
             this.loadWeeks.forEach(week => {
@@ -244,19 +247,21 @@ export default {
                     'hours': ''
                 }
             });
-            addNewPlaning.users.push(
+            addNewPlaning.projects.push({
+                'project_id': formData.project_id,
+                'project_name': formData.project_name,
+                'users': [],
+            });
+
+            addNewPlaning.projects[0].users.push(
                 {
                     'id': formData.user_id,
                     'name': formData.user_name,
                     'hours_per_week': hoursPerWeek,
                 },
-                // {
-                //     'id': '',
-                //     'name': '<i class="bi bi-plus-circle"></i>',
-                //     'hours_per_week': hoursPerWeek,
-                // }
             )
             this.plannings.splice(this.plannings.length - 1, 0, addNewPlaning);
+            console.log('this.plannings :: ', this.plannings);
         },
         addPlanNewUserFromModal(formData) {
             const hoursPerWeek = [];
@@ -291,29 +296,33 @@ export default {
                     const passData = [];
                     this.plannings.forEach(planning => {
                         if (planning.default_row_name == '') {
-                            planning.users.forEach(user => {
-                                const passInitiativeData = {
-                                    'initiative_id': '',
-                                    'initiative_name': '',
-                                    'user_id': '',
-                                    'user_name': '',
-                                    'hours_per_week': [],
-                                }
-                                this.loadWeeks.forEach(week => {
-                                    if (user.hours_per_week[week.date].hours > 0 && user.id != '') {
-                                        passInitiativeData.initiative_id = planning.initiative_id;
-                                        passInitiativeData.initiative_name = planning.initiative_name;
-                                        passInitiativeData.user_id = user.id;
-                                        passInitiativeData.user_name = user.name;
-                                        passInitiativeData.hours_per_week.push({
-                                            'date': week.date,
-                                            'hours': user.hours_per_week[week.date].hours
-                                        });
+                            planning.projects.forEach(project => {
+                                project.users.forEach(user => {
+                                    const passInitiativeData = {
+                                        'initiative_id': '',
+                                        'initiative_name': '',
+                                        'user_id': '',
+                                        'user_name': '',
+                                        'hours_per_week': [],
+                                    }
+                                    this.loadWeeks.forEach(week => {
+                                        if (user.hours_per_week[week.date].hours > 0 && user.id != '') {
+                                            passInitiativeData.initiative_id = planning.initiative_id;
+                                            passInitiativeData.initiative_name = planning.initiative_name;
+                                            passInitiativeData.project_id = project.project_id;
+                                            passInitiativeData.project_name = project.project_name;
+                                            passInitiativeData.user_id = user.id;
+                                            passInitiativeData.user_name = user.name;
+                                            passInitiativeData.hours_per_week.push({
+                                                'date': week.date,
+                                                'hours': user.hours_per_week[week.date].hours
+                                            });
+                                        }
+                                    });
+                                    if (passInitiativeData.initiative_id != '') {
+                                        passData.push(passInitiativeData);
                                     }
                                 });
-                                if (passInitiativeData.initiative_id != '') {
-                                    passData.push(passInitiativeData);
-                                }
                             });
                         }
                     })

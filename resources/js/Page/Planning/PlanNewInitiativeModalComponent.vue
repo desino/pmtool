@@ -12,7 +12,7 @@
                     <div class="row w-100">
                         <div class="col-12 mb-3">
                             <select v-model="formData.initiative_id" :class="{ 'is-invalid': errors.initiative_id }"
-                                class="form-select">
+                                class="form-select" @change="fetchProjects">
                                 <option value="">{{
                                     $t('planning.plan_new_initiative.modal_select_initiative_label_text')
                                 }}</option>
@@ -23,6 +23,20 @@
                             </select>
                             <div v-if="errors.initiative_id" class="invalid-feedback">
                                 <span v-for="(error, index) in errors.initiative_id" :key="index">{{ error }}</span>
+                            </div>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <select v-model="formData.project_id" :class="{ 'is-invalid': errors.project_id }"
+                                class="form-select">
+                                <option value="">{{
+                                    $t('planning.plan_new_initiative.modal_select_project_label_text')
+                                }}</option>
+                                <option v-for="project in projectList" :key="project.id" :value="project.id">{{
+                                    project.name }}
+                                </option>
+                            </select>
+                            <div v-if="errors.project_id" class="invalid-feedback">
+                                <span v-for="(error, index) in errors.project_id" :key="index">{{ error }}</span>
                             </div>
                         </div>
                         <div class="col-12">
@@ -75,9 +89,11 @@ export default {
         return {
             formData: {
                 initiative_id: '',
+                project_id: '',
                 user_id: '',
             },
             initiativesList: [],
+            projectList: [],
             usersList: [],
             existingPlanningInitiativeIds: [],
             errors: {},
@@ -107,9 +123,27 @@ export default {
                 return;
             }
             this.formData.initiative_name = this.initiativesList.find(item => item.id == this.formData.initiative_id).name;
+            this.formData.project_name = this.initiativesList.find(item => item.id == this.formData.project_id).name;
             this.formData.user_name = this.usersList.find(item => item.id == this.formData.user_id).name;
             this.$emit('add-plan-new-initiative', this.formData);
             this.hideModal();
+        },
+        async fetchProjects() {
+            if (!this.formData.initiative_id) {
+                this.projectList = [];
+                return;
+            }
+            try {
+                this.setLoading(true);
+                const passData = {
+                    initiative_id: this.formData.initiative_id,
+                };
+                const { content: { projects } } = await PlanningService.fetchProjects(passData);
+                this.projectList = projects;
+                this.setLoading(false);
+            } catch (error) {
+                this.handleError(error);
+            }
         },
         hideModal() {
             const modalElement = document.getElementById('planNewInitiativeModal');
@@ -134,6 +168,7 @@ export default {
         },
         clearForm() {
             this.formData.initiative_id = '';
+            this.formData.project_id = '';
             this.formData.user_id = '';
         }
     }

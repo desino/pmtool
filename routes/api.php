@@ -154,6 +154,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', 'index');
         Route::get('/get-planning-initial-data', 'getPlanningInitialData');
         Route::post('/store-planning', 'storePlanning');
+        Route::get('/fetch-projects', 'fetchProjects');
     });
 
     Route::controller(TimeMappingController::class)->prefix('time-mapping')->group(function () {
