@@ -9,20 +9,24 @@
                             <th scope="col" class="abs1 bg-transparent text-left text-white align-middle p-1"
                                 style="height: 65px;">
                                 <multiselect v-model="filter.initiative_id" :options="initiativesFilterList"
-                                    :placeholder="$t('create_ticket_modal_select_functionality_placeholder')"
+                                    :placeholder="$t('Search')"
                                     label="name" track-by="id" @select="handleInitiativeFilterChange()"
                                     @remove="handleInitiativeFilterChange()">
                                 </multiselect>
                             </th>
                             <th scope="col" class="abs2 bg-transparent text-left text-white align-middle p-1"
                                 style="height: 65px;">
+                                Projects
+                            </th>
+                            <th scope="col" class="abs3 bg-transparent text-left text-white align-middle p-1"
+                                style="height: 65px;">
                                 <multiselect v-model="filter.user_id" :options="usersFilterList"
-                                    :placeholder="$t('create_ticket_modal_select_functionality_placeholder')"
+                                    :placeholder="$t('Search')"
                                     label="name" track-by="id" @select="handleUserFilterChange()"
                                     @remove="handleUserFilterChange()">
                                 </multiselect>
                             </th>
-                            <th scope="col" class="border abs3 bg-dark text-center align-middle p-1"
+                            <th scope="col" class="border abs4 bg-dark text-center align-middle p-1"
                                 style="height: 65px;">
                                 <a class="text-white" href="javascript:void(0);" @click="getPlanningData(-1)">
                                     <i class="bi bi-caret-left"></i>
@@ -36,7 +40,7 @@
                                     <span class="d-block mt-1">{{ week.display_week_name }}</span>
                                 </small>
                             </td>
-                            <th scope="col" class="border abs4 bg-dark text-center align-middle p-1"
+                            <th scope="col" class="border abs5 bg-dark text-center align-middle p-1"
                                 style="height: 65px;">
                                 <a class="text-white" href="javascript:void(0);" @click="getPlanningData(1)">
                                     <i class="bi bi-caret-right"></i>
@@ -52,7 +56,7 @@
                                         :class="{
                                             'bg-primary total_abs1 ': planning.default_row_name == 'heder_total',
                                             'bg-warning lastrow_abs ': planning.default_row_name == 'plan_new_initiative'
-                                        }" colspan="2" :rowspan="project.users.length"
+                                        }" colspan="3" :rowspan="project.users.length"
                                         :role="planning.default_row_name == 'plan_new_initiative' ? 'button' : ''"
                                         @click="handlePlanNewInitiative(planning, user)">
                                         <span v-if="planning.default_row_name == 'plan_new_initiative'"><i
@@ -77,8 +81,12 @@
                                         </div>
                                         <div v-else class="">&nbsp;</div>
                                     </th>
-                                    <th v-if="planning.default_row_name == '' && user.id != ''" style="height: 52px;"
+                                    <th v-if="planning.default_row_name == '' && project.project_id != ''" style="height: 52px;"
                                         class="border abs2 text-left p-1">
+                                        {{ project.project_name }}
+                                    </th>
+                                    <th v-if="planning.default_row_name == '' && user.id != ''" style="height: 52px;"
+                                        class="border abs3 text-left p-1">
                                         {{ user.name }}
                                     </th>
                                     <th v-if="planning.default_row_name == 'heder_total'"
@@ -107,7 +115,7 @@
                                 </tr>
                             </template>
                             <tr v-if="planning.default_row_name == 'heder_total'">
-                                <th class="lastrow_abs" colspan="3"></th>
+                                <th class="lastrow_abs" colspan="4"></th>
                                 <td :colspan="loadWeeks.length"></td>
                             </tr>
                         </template>
@@ -461,6 +469,7 @@ export default {
 #planningPageSection .scrolling th.abs2,
 #planningPageSection .scrolling th.abs3,
 #planningPageSection .scrolling th.abs4,
+#planningPageSection .scrolling th.abs5,
 #planningPageSection .scrolling th.total_abs1,
 #planningPageSection .scrolling th.total_abs2,
 #planningPageSection .scrolling th.total_abs3,
@@ -469,37 +478,42 @@ export default {
 }
 
 #planningPageSection .inner {
-    margin-left: 540px;
+    margin-left: 490px;
 }
 
 #planningPageSection .scrolling th.abs1 {
     left: 0;
-    width: 200px;
+    width: 150px;
 }
 
 #planningPageSection .scrolling th.abs2 {
-    left: 200px;
-    width: 300px;
+    left: 150px;
+    width: 150px;
 }
 
 #planningPageSection .scrolling th.abs3 {
-    left: 500px;
+    left: 300px;
+    width: 150px;
+}
+
+#planningPageSection .scrolling th.abs4 {
+    left: 450px;
     width: 40px;
     min-width: auto !important;
 }
 
-#planningPageSection .scrolling th.abs4 {
+#planningPageSection .scrolling th.abs5 {
     width: 40px;
     min-width: auto !important;
 }
 
 #planningPageSection .scrolling th.total_abs1 {
     left: 0;
-    width: 500px;
+    width: 450px;
 }
 
 #planningPageSection .scrolling th.total_abs2 {
-    left: 500px;
+    left: 450px;
     width: 40px;
     min-width: auto !important;
 }
@@ -511,6 +525,6 @@ export default {
 
 #planningPageSection .scrolling th.lastrow_abs {
     left: 0;
-    width: 500px;
+    width: 450px;
 }
 </style>
