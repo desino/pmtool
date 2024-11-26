@@ -723,6 +723,7 @@
     "time_booking_select_ticket_placeholder": "Type to search",
     "planning.page_title": "Planning",
     "planning.filter_initiative_placeholder": "Search",
+    "planning.filter_project_placeholder": "Search",
     "planning.filter_user_placeholder": "Search",
     "planning.plan_new_initiative_modal_title": "Plan New Initiative",
     "planning.plan_new_initiative.modal_submit_but_text": "Add New Initiative",

@@ -16,7 +16,10 @@
                             </th>
                             <th scope="col" class="abs2 bg-transparent text-left text-white align-middle p-1"
                                 style="height: 65px;">
-                                Projects
+                                <multiselect v-model="filter.project_id" :options="projectsFilterList"
+                                    :placeholder="$t('planning.filter_project_placeholder')" label="name" track-by="id"
+                                    @select="handleProjectFilterChange()" @remove="handleProjectFilterChange()">
+                                </multiselect>
                             </th>
                             <th scope="col" class="abs3 bg-transparent text-left text-white align-middle p-1"
                                 style="height: 65px;">
@@ -178,6 +181,7 @@ export default {
         return {
             filter: {
                 initiative_id: "",
+                project_id: "",
                 user_id: ""
             },
             forFilterPlannings: [],
@@ -381,6 +385,7 @@ export default {
                             this.setLoading(false);
                             await this.getPlanningData();
                             this.handleInitiativeFilterChange();
+                            this.handleProjectFilterChange();
                             this.handleUserFilterChange();
                         } catch (error) {
                             this.handleError(error);
@@ -394,14 +399,20 @@ export default {
             })
         },
         handleInitiativeFilterChange() {
-            // const filterInitiativeId = this.filter.initiative_id?.id;
-            // const filterUserId = this.filter.user_id?.id;
-            // if (filterInitiativeId != undefined && filterInitiativeId != '') {
-            //     this.plannings = this.forFilterPlannings.filter(planning => planning.initiative_id === filterInitiativeId || planning.default_row_name === 'heder_total' || planning.default_row_name === 'plan_new_initiative');
-            // } else {
-            //     this.plannings = this.forFilterPlannings;
-            // }
-            // this.calculateWeekHours();
+            const filterInitiativeId = this.filter.initiative_id?.id;
+            this.projectsFilterList = [];
+            if (filterInitiativeId != undefined && filterInitiativeId != '') {
+                const initiative = this.forFilterPlannings.find(planning => planning.initiative_id === filterInitiativeId);
+                initiative.projects.forEach(project => {
+                    this.projectsFilterList.push({
+                        id: project.project_id,
+                        name: project.project_name
+                    });
+                });
+            }
+            this.handleFilter()
+        },
+        handleProjectFilterChange() {
             this.handleFilter()
         },
         handleUserFilterChange() {
@@ -409,31 +420,99 @@ export default {
         },
         handleFilter() {
             const filterUserId = this.filter.user_id?.id;
+            const filterProjectId = this.filter.project_id?.id;
             const filterInitiativeId = this.filter.initiative_id?.id;
-            if (filterUserId != undefined && filterUserId != '') {
-                let userPlannings = this.forFilterPlannings.filter(planning =>
-                    planning.users.find(user => user.id === filterUserId) ||
-                    planning.default_row_name === 'heder_total' ||
-                    planning.default_row_name === 'plan_new_initiative'
-                );
-                if (filterInitiativeId != undefined && filterInitiativeId != '') {
-                    userPlannings = userPlannings.filter(planning =>
-                        planning.initiative_id === filterInitiativeId ||
-                        planning.default_row_name === 'heder_total' ||
-                        planning.default_row_name === 'plan_new_initiative'
-                    );
-                }
-                this.plannings = userPlannings.map(planning => {
+
+            this.plannings = this.forFilterPlannings
+                .filter(planning => {
+                    if (filterInitiativeId != undefined && filterInitiativeId != '') {
+                        return (
+                            planning.initiative_id === filterInitiativeId ||
+                            planning.default_row_name === 'heder_total' ||
+                            planning.default_row_name === 'plan_new_initiative'
+                        );
+                    }
+                    return true;
+                })
+                .map(planning => {
+                    const filteredProjects = planning.projects.filter(project => {
+                        if (filterProjectId != undefined && filterProjectId != '') {
+                            return (
+                                project.project_id === filterProjectId ||
+                                planning.default_row_name === 'heder_total' ||
+                                planning.default_row_name === 'plan_new_initiative'
+                            );
+                        }
+                        return true;
+                    });
+                    const projectsWithFilteredUsers = filteredProjects.map(project => {
+                        const filteredUsers = project.users.filter(user => {
+                            if (filterUserId != undefined && filterUserId != '') {
+                                return user.id === filterUserId || planning.default_row_name === 'heder_total';
+                            }
+                            return true;
+                        });
+
+                        return {
+                            ...project,
+                            users: filteredUsers,
+                        };
+                    });
+
                     return {
                         ...planning,
-                        users: planning.users.filter(user => user.id === filterUserId || user.id === '')
-                    }
+                        projects: projectsWithFilteredUsers, // Replace with filtered projects
+                    };
                 })
-            } else if (filterInitiativeId != undefined && filterInitiativeId != '') {
-                this.plannings = this.forFilterPlannings.filter(planning => planning.initiative_id === filterInitiativeId || planning.default_row_name === 'heder_total' || planning.default_row_name === 'plan_new_initiative');
-            } else {
-                this.plannings = this.forFilterPlannings;
-            }
+                .filter(planning => planning.projects.length > 0);
+
+            // if (filterProjectId != undefined && filterProjectId != '') {
+            //     this.plannings = this.forFilterPlannings.map(planning => {
+            //         return {
+            //             ...planning,
+            //             projects: planning.projects.filter(project => project.project_id === filterProjectId ||
+            //                 project.id === '' ||
+            //                 planning.default_row_name === 'heder_total' ||
+            //                 planning.default_row_name === 'plan_new_initiative'
+            //             ),
+            //         }
+            //     });
+            // } else if (filterUserId != undefined && filterUserId != '') {
+            //     // let userPlannings = this.forFilterPlannings.filter(planning =>
+            //     //     planning.users.find(user => user.id === filterUserId) ||
+            //     //     planning.default_row_name === 'heder_total' ||
+            //     //     planning.default_row_name === 'plan_new_initiative'
+            //     // );
+            //     // if (filterInitiativeId != undefined && filterInitiativeId != '') {
+            //     //     userPlannings = userPlannings.filter(planning =>
+            //     //         planning.initiative_id === filterInitiativeId ||
+            //     //         planning.default_row_name === 'heder_total' ||
+            //     //         planning.default_row_name === 'plan_new_initiative'
+            //     //     );
+            //     // }
+            //     // this.plannings = userPlannings.map(planning => {
+            //     //     return {
+            //     //         ...planning,
+            //     //         users: planning.users.filter(user => user.id === filterUserId || user.id === '')
+            //     //     }
+            //     // })
+
+            //     this.plannings = this.forFilterPlannings.map(planning => {
+            //         return {
+            //             ...planning,
+            //             projects: planning.projects.map(project => {
+            //                 return {
+            //                     ...project,
+            //                     users: project.users.filter(user => user.id === filterUserId || user.id === ''),
+            //                 };
+            //             }),
+            //         };
+            //     });
+            // } else if (filterInitiativeId != undefined && filterInitiativeId != '') {
+            //     this.plannings = this.forFilterPlannings.filter(planning => planning.initiative_id === filterInitiativeId || planning.default_row_name === 'heder_total' || planning.default_row_name === 'plan_new_initiative');
+            // } else {
+            //     this.plannings = this.forFilterPlannings;
+            // }
             this.calculateWeekHours();
 
         },
