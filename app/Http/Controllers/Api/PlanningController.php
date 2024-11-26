@@ -89,7 +89,7 @@ class PlanningController extends Controller
                 $projectData = $groupByPlanningInitiativeProjectsValue->firstWhere('project_id', $groupByPlanningInitiativeProjectsKey);
 
                 $initiativeUsersArray = [];
-                $groupByPlanningInitiativeUsers = $groupByPlanningInitiativeValue->groupBy('user_id');
+                $groupByPlanningInitiativeUsers = $groupByPlanningInitiativeProjectsValue->groupBy('user_id');
                 foreach ($groupByPlanningInitiativeUsers as $groupByPlanningInitiativeUsersKey => $groupByPlanningInitiativeUsersValue) {
                     $userData = $groupByPlanningInitiativeUsersValue->firstWhere('user_id', $groupByPlanningInitiativeUsersKey);
                     $userHoursPerWeek = [];
@@ -190,6 +190,7 @@ class PlanningController extends Controller
     {
         $retData = [
             'initiatives' => PlanningService::getInitiatives(),
+            'projects' => PlanningService::getProjectsBasedOnInitiatives(),
             'users' => PlanningService::getUsers(),
         ];
         return ApiHelper::response(true, '', $retData, 200);

@@ -59,6 +59,7 @@ export default {
         return {
             formData: {
                 initiative_id: '',
+                project_id: '',
                 user_id: ''
             },
             usersList: [],
@@ -73,9 +74,10 @@ export default {
     },
     methods: {
         ...mapActions(['setLoading']),
-        async getPlanNewUserForOpenModalData(existingUsers, initiativeId) {
+        async getPlanNewUserForOpenModalData(existingUsers, initiativeId, projectId) {
             this.clearForm();
             this.formData.initiative_id = initiativeId;
+            this.formData.project_id = projectId;
             this.existingPlanningUsersIds = existingUsers.map(item => item.id);
             try {
                 const { content: { users } } = await PlanningService.getPlanningInitialData();

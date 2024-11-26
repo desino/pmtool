@@ -3,33 +3,18 @@
         <div class="modal-content border-0">
             <div class="modal-header text-white bg-desino border-0 py-2 justify-content-center">
                 <h5 class="modal-title" id="planNewInitiativeModalLabel">
-                    {{ $t('planning.plan_new_initiative_modal_title') }}
+                    {{ $t('planning.plan_new_project_modal_title') }}
                 </h5>
             </div>
-            <form @submit.prevent="addPlanNewInitiative">
+            <form @submit.prevent="addPlanNewProject">
                 <div class="modal-body">
                     <GlobalMessage v-if="showMessage" scope="modal" />
                     <div class="row w-100">
                         <div class="col-12 mb-3">
-                            <select v-model="formData.initiative_id" :class="{ 'is-invalid': errors.initiative_id }"
-                                class="form-select" @change="fetchProjects">
-                                <option value="">{{
-                                    $t('planning.plan_new_initiative.modal_select_initiative_label_text')
-                                }}</option>
-                                <option v-for="initiative in initiativesList" :key="initiative.id"
-                                    :value="initiative.id">{{
-                                        initiative.name }}
-                                </option>
-                            </select>
-                            <div v-if="errors.initiative_id" class="invalid-feedback">
-                                <span v-for="(error, index) in errors.initiative_id" :key="index">{{ error }}</span>
-                            </div>
-                        </div>
-                        <div class="col-12 mb-3">
                             <select v-model="formData.project_id" :class="{ 'is-invalid': errors.project_id }"
-                                class="form-select">
+                                class="form-select" @change="fetchUsers">
                                 <option value="">{{
-                                    $t('planning.plan_new_initiative.modal_select_project_label_text')
+                                    $t('planning.plan_new_project.modal_select_project_label_text')
                                 }}</option>
                                 <option v-for="project in projectList" :key="project.id" :value="project.id">{{
                                     project.name }}
@@ -43,7 +28,7 @@
                             <select v-model="formData.user_id" :class="{ 'is-invalid': errors.user_id }"
                                 class="form-select">
                                 <option value="">{{
-                                    $t('planning.plan_new_initiative.modal_select_user_label_text')
+                                    $t('planning.plan_new_project.modal_select_user_label_text')
                                 }}</option>
                                 <option v-for="user in usersList" :key="user.id" :value="user.id">{{
                                     user.name }}
@@ -59,7 +44,7 @@
                     <div class="row w-100 g-1">
                         <div class="col-12 col-md-12 col-lg-6">
                             <button type="submit" class="btn btn-desino w-100" :disabled="!isDisableSubmitBut">{{
-                                $t('planning.plan_new_initiative.modal_submit_but_text') }}</button>
+                                $t('planning.plan_new_project.modal_submit_but_text') }}</button>
                         </div>
                         <div class="col-12 col-md-12 col-lg-6">
                             <button class="btn btn-danger w-100 border-0" data-bs-dismiss="modal" type="button">
@@ -75,78 +60,62 @@
 
 <script>
 import GlobalMessage from '../../components/GlobalMessage.vue';
-import messageService from '../../services/messageService';
 import { mapActions } from 'vuex';
-import PlanningService from '../../services/PlanningService';
 import { Modal } from 'bootstrap';
+import messageService from '../../services/messageService';
+import PlanningService from '../../services/PlanningService';
 
 export default {
-    name: 'PlanNewInitiativeModalComponent',
+    name: 'PlanNewProjectModalComponent',
     components: {
         GlobalMessage
+    },
+    computed: {
+        isDisableSubmitBut() {
+            return this.formData.project_id && this.formData.user_id;
+        }
     },
     data() {
         return {
             formData: {
                 initiative_id: '',
                 project_id: '',
-                user_id: '',
+                user_id: ''
             },
-            initiativesList: [],
+            planning: {},
             projectList: [],
             usersList: [],
-            existingPlanningInitiativeIds: [],
+            existingPlanningProjectIds: [],
             errors: {},
             showMessage: true
         }
     },
-    computed: {
-        isDisableSubmitBut() {
-            return this.formData.initiative_id && this.formData.project_id && this.formData.user_id;
-        }
-    },
     methods: {
         ...mapActions(['setLoading']),
-        async getPlanNewInitiativeForOpenModalData(existingPlannings) {
+        async getPlanNewProjectForOpenModalData(existingProjects, planning) {
             this.clearForm();
-            this.existingPlanningInitiativeIds = existingPlannings.map(item => item.initiative_id);
+            this.planning = planning;
+            this.formData.initiative_id = planning.initiative_id;
+            this.existingPlanningProjectIds = existingProjects.map(item => item.project_id);
             try {
-                const { content: { initiatives, users } } = await PlanningService.getPlanningInitialData();
+                const { content: { initiatives, projects, users } } = await PlanningService.getPlanningInitialData();
+                this.projectList = projects.filter(item => !this.existingPlanningProjectIds.includes(item.id) && item.initiative_id == planning.initiative_id);
                 this.usersList = users;
-                this.initiativesList = initiatives.filter(item => !this.existingPlanningInitiativeIds.includes(item.id));
             } catch (error) {
                 this.handleError(error);
             }
         },
-        addPlanNewInitiative() {
-            if (!this.formData.initiative_id && !this.formData.user_id) {
+        addPlanNewProject() {
+            if (!this.formData.user_id) {
                 return;
             }
-            this.formData.initiative_name = this.initiativesList.find(item => item.id == this.formData.initiative_id).name;
             this.formData.project_name = this.projectList.find(item => item.id == this.formData.project_id).name;
             this.formData.user_name = this.usersList.find(item => item.id == this.formData.user_id).name;
-            this.$emit('add-plan-new-initiative', this.formData);
+            this.$emit('add-plan-new-project', this.formData);
             this.hideModal();
         },
-        async fetchProjects() {
-            if (!this.formData.initiative_id) {
-                this.projectList = [];
-                return;
-            }
-            try {
-                this.setLoading(true);
-                const passData = {
-                    initiative_id: this.formData.initiative_id,
-                };
-                const { content: { projects } } = await PlanningService.fetchProjects(passData);
-                this.projectList = projects;
-                this.setLoading(false);
-            } catch (error) {
-                this.handleError(error);
-            }
-        },
         hideModal() {
-            const modalElement = document.getElementById('planNewInitiativeModal');
+            const modalElement = document.getElementById('planNewProjectModal');
             if (modalElement) {
                 const modal = Modal.getInstance(modalElement);
                 if (modal) {
@@ -167,10 +136,13 @@ export default {
             messageService.clearMessage();
         },
         clearForm() {
-            this.formData.initiative_id = '';
             this.formData.project_id = '';
             this.formData.user_id = '';
         }
+    },
+    mounted() {
+        this.clearMessages();
+        this.clearForm();
     }
 }
 </script>

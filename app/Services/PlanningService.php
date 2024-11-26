@@ -26,9 +26,11 @@ class PlanningService
         return $user;
     }
 
-    public static function getProjectsBasedOnInitiatives($initiativeId)
+    public static function getProjectsBasedOnInitiatives($initiativeId = '')
     {
-        $projects = Project::where('initiative_id', $initiativeId)->where('status', 1)->get();
+        $projects = Project::when($initiativeId != '', function ($query) use ($initiativeId) {
+            $query->where('initiative_id', $initiativeId);
+        })->where('status', 1)->get();
         return $projects;
     }
 }

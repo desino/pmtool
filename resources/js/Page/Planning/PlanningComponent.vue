@@ -9,8 +9,8 @@
                             <th scope="col" class="abs1 bg-transparent text-left text-white align-middle p-1"
                                 style="height: 65px;">
                                 <multiselect v-model="filter.initiative_id" :options="initiativesFilterList"
-                                    :placeholder="$t('Search')"
-                                    label="name" track-by="id" @select="handleInitiativeFilterChange()"
+                                    :placeholder="$t('planning.filter_initiative_placeholder')" label="name"
+                                    track-by="id" @select="handleInitiativeFilterChange()"
                                     @remove="handleInitiativeFilterChange()">
                                 </multiselect>
                             </th>
@@ -21,9 +21,8 @@
                             <th scope="col" class="abs3 bg-transparent text-left text-white align-middle p-1"
                                 style="height: 65px;">
                                 <multiselect v-model="filter.user_id" :options="usersFilterList"
-                                    :placeholder="$t('Search')"
-                                    label="name" track-by="id" @select="handleUserFilterChange()"
-                                    @remove="handleUserFilterChange()">
+                                    :placeholder="$t('planning.filter_user_placeholder')" label="name" track-by="id"
+                                    @select="handleUserFilterChange()" @remove="handleUserFilterChange()">
                                 </multiselect>
                             </th>
                             <th scope="col" class="border abs4 bg-dark text-center align-middle p-1"
@@ -66,13 +65,14 @@
                                     <!-- below th except for total and plan new initiative -->
                                     <th v-if="planning.default_row_name == ''" style="height: 52px;"
                                         class="border abs1 bg-opacity-25 text-left align-middle p-1" :class="{
-                                            'border-bottom-0': userIndex == 0 || planning.users.length - 2 == userIndex,
+                                            'border-bottom-0': userIndex == 0 || planning.projects.length - 2 == userIndex,
                                             'border-top-0': userIndex > 0
                                         }">
-                                        <div v-if="userIndex == 0" class="row h-100 align-items-center">
+                                        <div v-if="projectIndex == 0 && userIndex == 0"
+                                            class="row h-100 align-items-center">
                                             <div class="col-auto me-1" style="width:20px">
                                                 <a href="javascript:void(0);" class="link-btn"
-                                                    @click="handlePlanNewUser(planning)"><i
+                                                    @click="handlePlanNewProject(planning)"><i
                                                         class="bi bi-plus-square-fill text-desino fs-5"></i></a>
                                             </div>
                                             <div class="col-auto" style="width: calc(100% - 30px)">
@@ -81,8 +81,13 @@
                                         </div>
                                         <div v-else class="">&nbsp;</div>
                                     </th>
-                                    <th v-if="planning.default_row_name == '' && project.project_id != ''" style="height: 52px;"
-                                        class="border abs2 text-left p-1">
+                                    <th v-if="planning.default_row_name == '' && project.project_id != '' && userIndex == 0"
+                                        style="height: 52px;" class="border abs2 text-left p-1">
+                                        <div class="col-auto me-1" style="width:20px">
+                                            <a href="javascript:void(0);" class="link-btn"
+                                                @click="handlePlanNewUser(planning, project)"><i
+                                                    class="bi bi-plus-square-fill text-desino fs-5"></i></a>
+                                        </div>
                                         {{ project.project_name }}
                                     </th>
                                     <th v-if="planning.default_row_name == '' && user.id != ''" style="height: 52px;"
@@ -137,6 +142,11 @@
         <PlanNewInitiativeModalComponent ref="planNewInitiativeModalComponent"
             @add-plan-new-initiative="addPlanNewInitiativeFromModal" />
     </div>
+    <div id="planNewProjectModal" aria-hidden="true" aria-labelledby="planNewProjectModalLabel" class="modal fade"
+        tabindex="-1">
+        <PlanNewProjectModalComponent ref="planNewProjectModalComponent"
+            @add-plan-new-project="addPlanNewProjectFromModal" />
+    </div>
     <div id="planNewUserModal" aria-hidden="true" aria-labelledby="planNewUserModalLabel" class="modal fade"
         tabindex="-1">
         <PlanNewUserModalComponent ref="planNewUserModalComponent" @add-plan-new-user="addPlanNewUserFromModal" />
@@ -153,6 +163,7 @@ import { Modal } from 'bootstrap';
 import showToast from '../../utils/toasts';
 import PlanNewUserModalComponent from './PlanNewUserModalComponent.vue';
 import store from '../../store';
+import PlanNewProjectModalComponent from './PlanNewProjectModalComponent.vue';
 
 export default {
     name: 'PlanningComponent',
@@ -160,7 +171,8 @@ export default {
         GlobalMessage,
         Multiselect,
         PlanNewInitiativeModalComponent,
-        PlanNewUserModalComponent
+        PlanNewUserModalComponent,
+        PlanNewProjectModalComponent
     },
     data() {
         return {
@@ -170,6 +182,7 @@ export default {
             },
             forFilterPlannings: [],
             initiativesFilterList: [],
+            projectsFilterList: [],
             usersFilterList: [],
             loadWeeks: [],
             plannings: [],
@@ -195,7 +208,6 @@ export default {
                 this.forFilterPlannings = plannings;
                 this.getPlanningInitialData();
                 this.setLoading(false);
-                console.log('loadWeeks :: ', loadWeeks);
             } catch (error) {
                 this.handleError(error);
             }
@@ -230,18 +242,25 @@ export default {
                 planNewInitiativeModal.show();
             }
         },
-        handlePlanNewUser(planning) {
-            const existingUsers = planning.users.filter(item => item.id != '');
+        handlePlanNewUser(planning, project) {
+            const existingUsers = project.users.filter(item => item.id != '');
             const planNewUserModalElement = document.getElementById('planNewUserModal');
             if (planNewUserModalElement) {
-                this.$refs.planNewUserModalComponent.getPlanNewUserForOpenModalData(existingUsers, planning.initiative_id);
+                this.$refs.planNewUserModalComponent.getPlanNewUserForOpenModalData(existingUsers, planning.initiative_id, project.project_id);
                 const planNewUserModal = new Modal(planNewUserModalElement);
                 planNewUserModal.show();
             }
-
+        },
+        handlePlanNewProject(planning) {
+            const existingProjects = planning.projects.filter(item => item.id != '');
+            const planNewProjectModalElement = document.getElementById('planNewProjectModal');
+            if (planNewProjectModalElement) {
+                this.$refs.planNewProjectModalComponent.getPlanNewProjectForOpenModalData(existingProjects, planning);
+                const planNewProjectModal = new Modal(planNewProjectModalElement);
+                planNewProjectModal.show();
+            }
         },
         addPlanNewInitiativeFromModal(formData) {
-            console.log('formData :: ', formData);
             let addNewPlaning = {
                 'default_row_name': '',
                 'initiative_id': formData.initiative_id,
@@ -269,7 +288,26 @@ export default {
                 },
             )
             this.plannings.splice(this.plannings.length - 1, 0, addNewPlaning);
-            console.log('this.plannings :: ', this.plannings);
+        },
+        addPlanNewProjectFromModal(formData) {
+            const hoursPerWeek = [];
+            this.loadWeeks.forEach(week => {
+                hoursPerWeek[week.date] = {
+                    'hours': ''
+                }
+            });
+            let addNewProject = {
+                'project_id': formData.project_id,
+                'project_name': formData.project_name,
+                'users': [],
+            };
+            addNewProject.users.push({
+                'id': formData.user_id,
+                'name': formData.user_name,
+                'hours_per_week': hoursPerWeek,
+            });
+            let initiative = this.plannings.find(planning => planning.initiative_id == formData.initiative_id);
+            initiative.projects.splice(initiative.projects.length, 0, addNewProject);
         },
         addPlanNewUserFromModal(formData) {
             const hoursPerWeek = [];
@@ -283,9 +321,10 @@ export default {
                 'name': formData.user_name,
                 'hours_per_week': hoursPerWeek,
             }
-            const initiative = this.plannings.find(planning => planning.initiative_id == formData.initiative_id);
+            let initiative = this.plannings.find(planning => planning.initiative_id == formData.initiative_id);
+            let project = initiative.projects.find(project => project.project_id == formData.project_id);
             // initiative.users.splice(initiative.users.length - 1, 0, addNewUser);
-            initiative.users.splice(initiative.users.length, 0, addNewUser);
+            project.users.splice(project.users.length, 0, addNewUser);
         },
         async storePlanning() {
             this.$swal({
@@ -399,7 +438,7 @@ export default {
 
         },
         calculateWeekHours() {
-            const usersHoursPerWeek = this.plannings.filter(planning => planning.default_row_name == '').flatMap(planning => planning.users).flatMap(user => user.hours_per_week);
+            const usersHoursPerWeek = this.plannings.filter(planning => planning.default_row_name == '').flatMap(planning => planning.projects).flatMap(project => project.users).flatMap(user => user.hours_per_week);
             const sumPerWeek = {};
             usersHoursPerWeek.forEach((currentUserDates) => {
                 Object.keys(currentUserDates).forEach(date => {
@@ -409,13 +448,15 @@ export default {
             });
             this.plannings.map(planning => {
                 if (planning.default_row_name == 'heder_total') {
-                    planning.users.forEach(user => {
-                        if (user.id == '') {
-                            this.loadWeeks.forEach(week => {
-                                user.hours_per_week[week.date].hours = sumPerWeek[week.date] || 0;
-                            })
-                        }
-                    });
+                    planning.projects.map(project => {
+                        project.users.forEach(user => {
+                            if (user.id == '') {
+                                this.loadWeeks.forEach(week => {
+                                    user.hours_per_week[week.date].hours = sumPerWeek[week.date] || 0;
+                                })
+                            }
+                        });
+                    })
                 }
             });
         },
