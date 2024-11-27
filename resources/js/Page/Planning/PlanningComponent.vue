@@ -11,21 +11,23 @@
                                 <multiselect v-model="filter.initiative_id" :options="initiativesFilterList"
                                     :placeholder="$t('planning.filter_initiative_placeholder')" label="name"
                                     track-by="id" @select="handleInitiativeFilterChange()"
-                                    @remove="handleInitiativeFilterChange()">
+                                    @remove="handleInitiativeFilterChange()" select-label="" deselect-label="">
                                 </multiselect>
                             </th>
                             <th scope="col" class="abs2 bg-transparent text-left text-white align-middle p-1"
                                 style="height: 65px;">
                                 <multiselect v-model="filter.project_id" :options="projectsFilterList"
                                     :placeholder="$t('planning.filter_project_placeholder')" label="name" track-by="id"
-                                    @select="handleProjectFilterChange()" @remove="handleProjectFilterChange()">
+                                    @select="handleProjectFilterChange()" @remove="handleProjectFilterChange()"
+                                    select-label="" deselect-label="">
                                 </multiselect>
                             </th>
                             <th scope="col" class="abs3 bg-transparent text-left text-white align-middle p-1"
                                 style="height: 65px;">
                                 <multiselect v-model="filter.user_id" :options="usersFilterList"
                                     :placeholder="$t('planning.filter_user_placeholder')" label="name" track-by="id"
-                                    @select="handleUserFilterChange()" @remove="handleUserFilterChange()">
+                                    @select="handleUserFilterChange()" @remove="handleUserFilterChange()"
+                                    select-label="" deselect-label="">
                                 </multiselect>
                             </th>
                             <th scope="col" class="border abs4 bg-dark text-center align-middle p-1"
@@ -136,7 +138,7 @@
         <div class="row w-100 mx-0">
             <button class="btn btn-desino text-uppercase" @click="storePlanning">{{
                 $t('planning.store_button_text')
-                }}</button>
+            }}</button>
         </div>
     </div>
 
@@ -400,6 +402,7 @@ export default {
         },
         handleInitiativeFilterChange() {
             const filterInitiativeId = this.filter.initiative_id?.id;
+            this.filter.project_id = '';
             this.projectsFilterList = [];
             if (filterInitiativeId != undefined && filterInitiativeId != '') {
                 const initiative = this.forFilterPlannings.find(planning => planning.initiative_id === filterInitiativeId);
