@@ -31,7 +31,7 @@ class OpportunityController extends Controller
             return ApiHelper::response(false, __('messages.opportunity.dont_have_permission'), null, 404);
         }
         $perPage = $request->input('per_page', 10);
-        $Opportunities = InitiativeService::getOpportunityInitiative($request, $perPage, Initiative::getStatusOpportunity());
+        $Opportunities = InitiativeService::getOpportunityInitiative($request, $perPage);
         $parsedOpportunities = ApiHelper::parsePagination($Opportunities);
         $responseData = [
             'opportunities' => $parsedOpportunities,
