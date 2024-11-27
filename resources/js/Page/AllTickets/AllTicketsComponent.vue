@@ -5,8 +5,10 @@
             <div class="row g-0 w-100 align-items-center">
                 <div class="col-12 col-md-6 col-lg-3">
                     <div class="w-100 p-1">
-                        <select v-model="filter.action_owner" class="form-select" @change="getAllTicketsWithoutInitiative">
-                            <option value="">{{ $t('all_ticket_without_initiative_list.filter.action_owner_placeholder') }}
+                        <select v-model="filter.action_owner" class="form-select"
+                            @change="getAllTicketsWithoutInitiative">
+                            <option value="">{{ $t('all_ticket_without_initiative_list.filter.action_owner_placeholder')
+                                }}
                             </option>
                             <option v-for="actionOwner in actionOwners" :key="actionOwner.id" :value="actionOwner.id">{{
                                 actionOwner.name }}
@@ -16,8 +18,10 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-3">
                     <div class="w-100 p-1">
-                        <select v-model="filter.initiative_id" class="form-select" @change="getAllTicketsWithoutInitiative">
-                            <option value="">{{ $t('all_ticket_without_initiative_list.filter.initiative_placeholder') }}
+                        <select v-model="filter.initiative_id" class="form-select"
+                            @change="getAllTicketsWithoutInitiative">
+                            <option value="">{{ $t('all_ticket_without_initiative_list.filter.initiative_placeholder')
+                                }}
                             </option>
                             <option v-for="initiative in initiatives" :key="initiative.id" :value="initiative.id">{{
                                 initiative.name }}
@@ -38,10 +42,11 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-3">
                     <div class="w-100 p-1">
-                        <multiselect v-model="filter.macro_status" ref="multiselect" :multiple="true" :options="macroStatus"
-                            :searchable="true" deselect-label="" label="name"
+                        <multiselect v-model="filter.macro_status" ref="multiselect" :multiple="true"
+                            :options="macroStatus" :searchable="true" deselect-label="" label="name"
                             :placeholder="$t('all_ticket_without_initiative_list.filter.macro_status_placeholder')"
-                            track-by="id" @select="getAllTicketsWithoutInitiative" @Remove="getAllTicketsWithoutInitiative">
+                            track-by="id" @select="getAllTicketsWithoutInitiative"
+                            @Remove="getAllTicketsWithoutInitiative">
                             <template #tag="{ option, remove }">
                                 <span class="multiselect__tag_for_macro_status" :class="'bg-' + option.color">
                                     <span>{{ option.name }}</span>
@@ -147,13 +152,15 @@
                                 <div class="col-auto" style="width: calc(100% - 40px)" data-bs-toggle="tooltip"
                                     data-bs-html="true" data-bs-placement="bottom"
                                     :title="tooltipContentForTicketName(ticket)">
+                                    <small class="badge bg-secondary">{{ ticket?.initiative?.name }}</small>
                                     {{ ticket.composed_name }}
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-2 offset-md-0 col-md-3 offset-1 col-5 text-center py-2 py-lg-0">
-                            <span class="badge p-2 w-100 text-wrap" :style="{backgroundColor: ticket.macro_status_label?.color}">{{
-                                ticket.macro_status_label?.label }}
+                            <span class="badge p-2 w-100 text-wrap"
+                                :style="{ backgroundColor: ticket.macro_status_label?.color }">{{
+                                    ticket.macro_status_label?.label }}
                             </span>
                         </div>
                         <div class="offset-lg-0 col-lg-2 offset-md-1 col-md-4 col-6 py-2 py-lg-0">
@@ -162,7 +169,8 @@
                             </span>
                         </div>
                         <div class="col-lg-2 offset-md-0 col-md-4 offset-1 col-5 py-2 py-lg-0">
-                            <span class="badge text-desino d-inline-block d-lg-none px-0 py-2 fw-bold text-center rounded-top">
+                            <span
+                                class="badge text-desino d-inline-block d-lg-none px-0 py-2 fw-bold text-center rounded-top">
                                 {{ $t('all_ticket_without_initiative_list.current_owner') }}
                             </span>
                             {{ ticket?.current_action?.user?.name }}

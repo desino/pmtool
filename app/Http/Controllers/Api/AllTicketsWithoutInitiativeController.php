@@ -21,7 +21,7 @@ class AllTicketsWithoutInitiativeController extends Controller
         $filters = $request->get('filters');
 
         $tickets = Ticket::select('*')
-            ->with('currentAction')
+            ->with(['currentAction', 'initiative'])
             ->where('macro_status', '!=', Ticket::MACRO_STATUS_DONE)
             ->when(!empty($filters['action_owner']) != '', function (Builder $query) use ($filters) {
                 $query->whereHas('actions', function ($query) use ($filters) {
