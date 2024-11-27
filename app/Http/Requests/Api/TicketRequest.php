@@ -25,7 +25,7 @@ class TicketRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
+            'name' => 'required|string|max:300',
             'functionality_id' => 'nullable|exists:functionalities,id',
             'initial_estimation_development_time' => [
                 'required',
