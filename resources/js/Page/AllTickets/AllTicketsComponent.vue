@@ -177,6 +177,11 @@
                         </div>
                         <div class="col-lg-1 col-md-3 col-6 text-end py-2 py-lg-0">
                             <a data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                :title="$t('ticket.list.column.action.copy_text')" class="text-primary me-1"
+                                href="javascript:" @click.stop="copyToClipboard(ticket)">
+                                <i class="bi bi-share"></i>
+                            </a>
+                            <a data-bs-toggle="tooltip" data-bs-placement="bottom"
                                 :title="$t('ticket.list.column.action.edit_text')" class="text-desino me-1"
                                 href="javascript:" @click.stop="editTicketPopup(ticket)">
                                 <i class="bi bi-pencil-square"></i>
@@ -214,6 +219,9 @@
             <EditTicketModalComponent ref="editTicketFromListModalComponent"
                 @refreshTickets="getAllTicketsWithoutInitiative" />
         </div>
+        <span id="copyableLink" style="cursor: pointer; text-decoration: underline; color: blue; display: none">
+            <a v-bind:href="copyLink">{{ copyLabel }}</a>
+        </span>
     </div>
 </template>
 
@@ -255,6 +263,8 @@ export default {
             initiatives: [],
             macroStatus: [],
             visibleList: [],
+            copyLabel: "",
+            copyLink: "",
             showMessage: true,
             errors: {},
         }
@@ -429,6 +439,35 @@ export default {
                 queryParams = this.$route.query;
                 this.filter.action_owner = queryParams.user_id;
             }
+        },
+        copyToClipboard(ticket) {
+            this.copyLink = `${window.location.origin}/solution-design/${this.initiative_id}/ticket-detail/${ticket.id}`;
+            this.copyLabel = ticket.composed_name;
+
+            this.$nextTick(() => {
+                const linkElement = document.getElementById('copyableLink');
+                if (linkElement) {
+                    linkElement.style.display = 'inline';
+
+                    const range = document.createRange();
+                    range.selectNodeContents(linkElement);
+                    const selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+
+                    try {
+                        const successful = document.execCommand('copy');
+                        if (successful) {
+                            showToast(this.$t('ticket.link_copied_to_clipboard'), 'success');
+                        } else {
+                            showToast(this.$t('ticket.failed_to_copy_link'), 'danger');
+                        }
+                    } catch (error) {
+                        showToast(this.$t('ticket.failed_to_copy_link'), 'danger');
+                    }
+                    linkElement.style.display = 'none';
+                }
+            });
         },
         handleError(error) {
             if (error.type === 'validation') {

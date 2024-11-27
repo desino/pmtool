@@ -1,7 +1,7 @@
 <template>
     <div class="app-content-header py-1 px-0">
         <div class="row g-1 w-100">
-            <div class="col-8 col-md-10">
+            <div class="col-6 col-md-9">
                 <div class="row g-0 w-100">
                     <div class="col-1">
                         <span>
@@ -24,8 +24,9 @@
                 </div>
             </div>
             <div class="col-2 col-md-1">
-                <a v-if="ticketData.asana_task_link" :href="ticketData.asana_task_link"
-                    class="btn btn-desino border-0 w-100 h-100 text-dark" target="_blank">
+                <a data-bs-toggle="tooltip" data-bs-placement="bottom" v-if="ticketData.asana_task_link"
+                    :href="ticketData.asana_task_link" class="btn btn-desino border-0 w-100 h-100 text-dark"
+                    target="_blank" :title="$t('ticket_details.asana_detail')">
                     <svg fill="none" height="21px" viewBox="0 0 24 24" width="21px" xmlns="http://www.w3.org/2000/svg">
                         <path clip-rule="evenodd"
                             d="M10.4693 3.55448C10.9546 3.35346 11.4747 3.25 12 3.25C12.5253 3.25 13.0454 3.35346 13.5307 3.55448C14.016 3.7555 14.457 4.05014 14.8284 4.42157C15.1999 4.79301 15.4945 5.23397 15.6955 5.71927C15.8965 6.20457 16 6.72471 16 7.25C16 7.77529 15.8965 8.29543 15.6955 8.78073C15.4945 9.26603 15.1999 9.70699 14.8284 10.0784C14.457 10.4499 14.016 10.7445 13.5307 10.9455C13.0454 11.1465 12.5253 11.25 12 11.25C11.4747 11.25 10.9546 11.1465 10.4693 10.9455C9.98396 10.7445 9.54301 10.4499 9.17157 10.0784C8.80014 9.70699 8.5055 9.26604 8.30448 8.78073C8.10346 8.29543 8 7.77529 8 7.25C8 6.72471 8.10346 6.20457 8.30448 5.71927C8.5055 5.23396 8.80014 4.79301 9.17157 4.42157C9.54301 4.05014 9.98396 3.7555 10.4693 3.55448ZM12 4.75C11.6717 4.75 11.3466 4.81466 11.0433 4.9403C10.74 5.06594 10.4644 5.25009 10.2322 5.48223C10.0001 5.71438 9.81594 5.98998 9.6903 6.29329C9.56466 6.59661 9.5 6.92169 9.5 7.25C9.5 7.5783 9.56466 7.90339 9.6903 8.20671C9.81594 8.51002 10.0001 8.78562 10.2322 9.01777C10.4644 9.24991 10.74 9.43406 11.0433 9.5597C11.3466 9.68534 11.6717 9.75 12 9.75C12.3283 9.75 12.6534 9.68534 12.9567 9.5597C13.26 9.43406 13.5356 9.24991 13.7678 9.01777C13.9999 8.78562 14.1841 8.51002 14.3097 8.20671C14.4353 7.90339 14.5 7.5783 14.5 7.25C14.5 6.9217 14.4353 6.59661 14.3097 6.29329C14.1841 5.98998 13.9999 5.71438 13.7678 5.48223C13.5356 5.25009 13.26 5.06594 12.9567 4.9403C12.6534 4.81466 12.3283 4.75 12 4.75Z"
@@ -40,9 +41,17 @@
                 </a>
             </div>
             <div class="col-2 col-md-1">
-                <button class="btn btn-desino border-0 btn-sm w-100 h-100" @click="handleTimeBooking()"
+                <button data-bs-toggle="tooltip" data-bs-placement="bottom"
+                    class="btn btn-desino border-0 btn-sm w-100 h-100" @click="handleTimeBooking()"
                     :title="$t('ticket_details.time_booking')">
                     <i class="bi bi-clock-history"></i>
+                </button>
+            </div>
+            <div class="col-2 col-md-1">
+                <button data-bs-toggle="tooltip" data-bs-placement="bottom"
+                    class="btn btn-desino border-0 btn-sm w-100 h-100" @click="copyToClipboard()"
+                    :title="$t('ticket_details.copy_share')">
+                    <i class="bi bi-share"></i>
                 </button>
             </div>
         </div>
@@ -51,7 +60,8 @@
     <div class="app-content border border-start-0 border-end-0 py-2">
         <div class="row g-1 w-100">
             <div class="col-12 col-md-3 col-lg-3 col-xl-3 text-center mb-2 mb-md-0">
-                <div class="card shadow-none h-100 border-0" :style="{backgroundColor: ticketData.macro_status_label?.color}">
+                <div class="card shadow-none h-100 border-0"
+                    :style="{ backgroundColor: ticketData.macro_status_label?.color }">
                     <div class="card-body border-0 bg-transparent p-0 align-content-center">
                         <div class="text-light fw-bold small py-4">
                             {{ ticketData?.macro_status_label?.label }}
@@ -249,7 +259,7 @@
                                                 <div v-if="test_case.observations">
                                                     <span class="bg-desino text-white rounded fw-bold p-2">{{
                                                         $t('ticket_detail_test_case_section_actual_behaviour')
-                                                    }}</span>
+                                                        }}</span>
                                                     <div class="p-2" v-html="test_case.observations">
                                                     </div>
                                                 </div>
@@ -328,7 +338,7 @@
                             <div v-if="errors.release_note" class="text-danger mt-2">
                                 <span v-for="(error, index) in errors.release_note" :key="index">{{
                                     error
-                                }}</span>
+                                    }}</span>
                             </div>
                             <button class="btn w-100 btn-desino text-white fw-bold m-2 rounded"
                                 @click="updateReleaseNote">
@@ -345,7 +355,7 @@
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">{{
                                         $t('ticket_details_input_dev_estimation_time')
-                                    }} <strong class="text-danger">*</strong>
+                                        }} <strong class="text-danger">*</strong>
                                     </label>
                                     <input v-model="estimatedHoursFormData.dev_estimation_time"
                                         :class="{ 'is-invalid': errors.dev_estimation_time }" class="form-control"
@@ -370,6 +380,9 @@
         class="modal fade" tabindex="-1">
         <TimeBookingForTicketDetailComponent ref="timeBookingForTicketDetailComponent" />
     </div>
+    <span id="copyableLink" style="cursor: pointer; text-decoration: underline; color: blue; display: none">
+        <a v-bind:href="copyLink">{{ copyLabel }}</a>
+    </span>
 </template>
 
 <script>
@@ -380,7 +393,7 @@ import ticketService from "../../../services/TicketService.js";
 import messageService from "../../../services/messageService.js";
 import showToast from "./../../../utils/toasts.js";
 import { mapActions, mapGetters } from 'vuex';
-import { Modal } from "bootstrap";
+import { Modal, Tooltip } from "bootstrap";
 import CreateTestCaseModalComponent from "./../Ticket/TestCase/CreateTestCaseModalComponent.vue";
 import UpdateTestCaseModalComponent from "./../Ticket/TestCase/UpdateTestCaseModelComponent.vue";
 import testCaseService from "./../../../services/TestCaseService.js";
@@ -467,6 +480,8 @@ export default {
             is_allow_case_update_test_section: false,
             selected_previous_action_id: '',
             previous_actions: [],
+            copyLabel: "",
+            copyLink: "",
             errors: {},
             showMessage: true,
         };
@@ -798,6 +813,43 @@ export default {
                 modal.show();
             }
         },
+        initializeTooltips() {
+            setTimeout(() => {
+                const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+                tooltipTriggerList.forEach((tooltipTriggerEl) => {
+                    new Tooltip(tooltipTriggerEl);
+                });
+            }, 1000);
+        },
+        copyToClipboard() {
+            this.copyLink = `${window.location.origin}/solution-design/${this.ticketData.initiative_id}/ticket-detail/${this.ticketData.id}`;
+            this.copyLabel = this.ticketData.composed_name;
+
+            this.$nextTick(() => {
+                const linkElement = document.getElementById('copyableLink');
+                if (linkElement) {
+                    linkElement.style.display = 'inline';
+
+                    const range = document.createRange();
+                    range.selectNodeContents(linkElement);
+                    const selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+
+                    try {
+                        const successful = document.execCommand('copy');
+                        if (successful) {
+                            showToast(this.$t('ticket.link_copied_to_clipboard'), 'success');
+                        } else {
+                            showToast(this.$t('ticket.failed_to_copy_link'), 'danger');
+                        }
+                    } catch (error) {
+                        showToast(this.$t('ticket.failed_to_copy_link'), 'danger');
+                    }
+                    linkElement.style.display = 'none';
+                }
+            });
+        },
         clearMessages() {
             this.errors = {};
             messageService.clearMessage();
@@ -822,6 +874,7 @@ export default {
         this.fetchTicketData(this.localTicketId);
         eventBus.$on('refreshTicketDetail', this.refreshTicketDetail);
         eventBus.$emit('selectHeaderInitiativeId', this.localInitiativeId);
+        this.initializeTooltips();
     }
 }
 </script>

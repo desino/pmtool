@@ -184,7 +184,8 @@
                         </div>
                     </div>
                     <div class="offset-1 col-5 offset-md-0 col-md-3 col-lg-2 text-center py-2 py-lg-0">
-                        <span class="badge p-2 w-100 text-wrap" :style="{backgroundColor: task.macro_status_label?.color}">
+                        <span class="badge p-2 w-100 text-wrap"
+                            :style="{ backgroundColor: task.macro_status_label?.color }">
                             {{ task.macro_status_label?.label }}
                         </span>
                     </div>
@@ -215,6 +216,11 @@
                     </div>
                     <div v-if="user?.is_admin" class="col-lg-1 col-md-3 col-4 text-end py-2 py-lg-0">
                         <a data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            :title="$t('ticket.list.column.action.copy_text')" class="text-primary me-1"
+                            href="javascript:" @click.stop="copyToClipboard(task)">
+                            <i class="bi bi-share"></i>
+                        </a>
+                        <a data-bs-toggle="tooltip" data-bs-placement="bottom"
                             :title="$t('ticket.list.column.action.edit_text')" class="text-desino me-1"
                             href="javascript:" @click.stop="editTaskPopup(task)">
                             <i class="bi bi-pencil-square"></i>
@@ -239,7 +245,7 @@
                             data-bs-toggle="tooltip" data-bs-placement="bottom"
                             :title="$t('ticket_details.time_booking')">
                             <i class="bi bi-clock-history"></i>
-                        </a>                        
+                        </a>
                         <a v-if="user?.is_admin && task.is_show_delete_but" class="text-danger" href="javascript:"
                             @click.stop="deleteTicket(task)" data-bs-toggle="tooltip"
                             :title="$t('ticket_details.delete_text')" data-bs-placement="bottom">
@@ -273,6 +279,10 @@
             class="modal fade" tabindex="-1">
             <TimeBookingForTicketDetailComponent ref="timeBookingForTicketDetailComponent" />
         </div>
+
+        <span id="copyableLink" style="cursor: pointer; text-decoration: underline; color: blue; display: none">
+            <a v-bind:href="copyLink">{{ copyLabel }}</a>
+        </span>
     </div>
 </template>
 
@@ -338,6 +348,8 @@ export default {
             previousProject: null,
             initiative: {},
             prdMacroStatus: "",
+            copyLabel: "",
+            copyLink: "",
             errors: {},
             showMessage: true,
             tooltipBtn: null,
@@ -685,6 +697,35 @@ export default {
             const createdByLabel = this.$t('ticket.list.row_hover_tooltip_created_by_text');
             return `<strong>${createdAtLabel}</strong>${task.display_created_at}<br><strong>${createdByLabel}</strong>${task.display_created_by}`;
         },
+        copyToClipboard(task) {
+            this.copyLink = `${window.location.origin}/solution-design/${this.initiative_id}/ticket-detail/${task.id}`;
+            this.copyLabel = task.composed_name;
+
+            this.$nextTick(() => {
+                const linkElement = document.getElementById('copyableLink');
+                if (linkElement) {
+                    linkElement.style.display = 'inline';
+
+                    const range = document.createRange();
+                    range.selectNodeContents(linkElement);
+                    const selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+
+                    try {
+                        const successful = document.execCommand('copy');
+                        if (successful) {
+                            showToast(this.$t('ticket.link_copied_to_clipboard'), 'success');
+                        } else {
+                            showToast(this.$t('ticket.failed_to_copy_link'), 'danger');
+                        }
+                    } catch (error) {
+                        showToast(this.$t('ticket.failed_to_copy_link'), 'danger');
+                    }
+                    linkElement.style.display = 'none';
+                }
+            });
+        }
     },
     mounted() {
         eventBus.$emit('selectHeaderInitiativeId', this.initiative_id);
