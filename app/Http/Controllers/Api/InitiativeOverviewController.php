@@ -14,10 +14,6 @@ class InitiativeOverviewController extends Controller
 {
     public function index(Request $request)
     {
-        // print('<pre>');
-        // print_r(Ticket::get()->toArray());
-        // print('</pre>');
-        // exit;
         $authUser = Auth::user();
         if (!$authUser->is_admin) {
             return ApiHelper::response(false, __('messages.initiative_overview.dont_have_permission'), null, 404);

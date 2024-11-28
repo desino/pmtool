@@ -10,6 +10,7 @@ import ProfileRoutes from "../Page/Profile/routes";
 import AllTicketsRoutes from "../Page/AllTickets/routes";
 import DeveloperWorkloadRoutes from "../Page/DeveloperWorkload/routes";
 import InitiativeOverviewRoutes from "../Page/InitiativeOverview/routes";
+import ActivityLogsRoutes from "../Page/ActivityLogs/routes";
 
 export let routes = [
     ...authRoutes,
@@ -23,6 +24,7 @@ export let routes = [
     ...AllTicketsRoutes,
     ...DeveloperWorkloadRoutes,
     ...InitiativeOverviewRoutes,
+    ...ActivityLogsRoutes,
     {
         path: '/:catchAll(.*)',
         name: 'not-found',

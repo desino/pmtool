@@ -79,8 +79,7 @@
                             </div>
                         </div>
                         <div class="col-lg-2 offset-md-0 col-md-3 offset-1 col-5 text-center py-2 py-lg-0">
-                            <span class="badge p-2 w-100 text-wrap"
-                                :style="{ backgroundColor: ticket.macro_status_label?.color }">
+                            <span class="badge p-2 w-100 text-wrap" :class="ticket.macro_status_label?.color">
                                 {{ ticket.macro_status_label?.label }}
                             </span>
                         </div>

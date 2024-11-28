@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ActivityLogsController;
 use App\Http\Controllers\Api\AllTicketsWithoutInitiativeController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\SocialiteController;
@@ -179,6 +180,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::controller(InitiativeOverviewController::class)->prefix('initiative-overview')->group(function () {
         Route::get('/', 'index');
+    });
+
+    Route::controller(ActivityLogsController::class)->prefix('activity-logs')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/get-initiative-data-for-activity-logs', 'getInitiativeDataForActivityLogs');
     });
 });
 

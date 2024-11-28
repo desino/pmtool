@@ -48,7 +48,7 @@
                             track-by="id" @select="getAllTicketsWithoutInitiative"
                             @Remove="getAllTicketsWithoutInitiative">
                             <template #tag="{ option, remove }">
-                                <span class="multiselect__tag_for_macro_status" :class="'bg-' + option.color">
+                                <span class="multiselect__tag_for_macro_status" :class="option.color">
                                     <span>{{ option.name }}</span>
                                     <i tabindex="1" class="multiselect__tag-icon" @click="remove(option)"></i>
                                 </span>
@@ -158,9 +158,8 @@
                             </div>
                         </div>
                         <div class="col-lg-2 offset-md-0 col-md-3 offset-1 col-5 text-center py-2 py-lg-0">
-                            <span class="badge p-2 w-100 text-wrap"
-                                :style="{ backgroundColor: ticket.macro_status_label?.color }">{{
-                                    ticket.macro_status_label?.label }}
+                            <span class="badge p-2 w-100 text-wrap" :class="ticket.macro_status_label?.color">{{
+                                ticket.macro_status_label?.label }}
                             </span>
                         </div>
                         <div class="offset-lg-0 col-lg-2 offset-md-1 col-md-4 col-6 py-2 py-lg-0">
@@ -441,7 +440,7 @@ export default {
             }
         },
         copyToClipboard(ticket) {
-            this.copyLink = `${window.location.origin}/solution-design/${this.initiative_id}/ticket-detail/${ticket.id}`;
+            this.copyLink = `${window.location.origin}/solution-design/${ticket.initiative_id}/ticket-detail/${ticket.id}`;
             this.copyLabel = ticket.composed_name;
 
             this.$nextTick(() => {

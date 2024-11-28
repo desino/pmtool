@@ -1,28 +1,28 @@
 <template>
     <GlobalMessage v-if="showMessage" />
-    <div class="w-100 mb-3">
+    <div class="w-100 mb-3 g-1">
         <ul class="list-group list-group-flush mb-3 mt-2">
             <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
                 <div class="row w-100 align-items-center">
-                    <div class="col-lg-2 col-md-2 d-none d-md-block fw-bold small ">
+                    <div class="col-lg-3 col-md-6 fw-bold small ">
                         {{ $t('initiative_overview_list.name_text') }}
                     </div>
-                    <div class="col-lg-2 col-md-2 d-none d-md-block fw-bold small ">
+                    <div class="col-lg-1 col-md-3 fw-bold small ">
                         {{ $t('initiative_overview_list.total_tickets_count_text') }}
                     </div>
-                    <div class="col-lg-2 col-md-2 d-none d-md-block fw-bold small ">
+                    <div class="col-lg-2 fw-bold col-md-3 small ">
                         {{ $t('initiative_overview_list.visible_tickets_count_text') }}
                     </div>
-                    <div class="col-lg-2 col-md-2 d-none d-md-block fw-bold small ">
+                    <div class="col-lg-2 fw-bold small d-none d-lg-block">
                         {{ $t('initiative_overview_list.invisible_tickets_count_text') }}
                     </div>
-                    <div class="col-lg-2 col-md-2 d-none d-md-block fw-bold small ">
+                    <div class="col-lg-1 fw-bold small d-none d-lg-block">
                         {{ $t('initiative_overview_list.estimation_hours_text') }}
                     </div>
-                    <div class="col-lg-1 col-md-1 d-none d-md-block fw-bold small ">
+                    <div class="col-lg-2 fw-bold small d-none d-lg-block">
                         {{ $t('initiative_overview_list.visible_estimation_hours_text') }}
                     </div>
-                    <div class="col-lg-1 col-md-1 d-none d-md-block fw-bold small text-end">
+                    <div class="col-lg-1 fw-bold small d-none d-lg-block text-end">
                         {{ $t('initiative_overview_list.action_text') }}
                     </div>
                 </div>
@@ -31,33 +31,53 @@
                 class="border list-group-item p-1 list-group-item-action border-top-0">
                 <div class="row w-100 align-items-center" role="button"
                     @click="redirectInitiativeTicketsPage(initiative)">
-                    <div class="col-lg-2 col-md-2 d-none d-md-block small ">
+                    <div class="col-lg-3 col-md-6 small ">
                         {{ initiative.client_initiative_name }}
                     </div>
-                    <div class="col-lg-2 col-md-2 d-none d-md-block small ">
+                    <div class="col-lg-1 col-md-3 small ">
                         {{ initiative.total_ticket_count }}
                     </div>
-                    <div class="col-lg-2 col-md-2 d-none d-md-block small ">
+                    <div class="col-lg-2 col-md-3 small ">
                         {{ initiative.visible_ticket_count }}
                     </div>
-                    <div class="col-lg-2 col-md-2 d-none d-md-block small ">
+                    <div class="col-lg-2 col-md-3 small text-center">
+                        <span class="d-lg-none d-block bg-desino fw-bold text-white py-1 rounded-top mt-2">
+                            {{ $t('initiative_overview_list.invisible_tickets_count_text') }}
+                        </span>
                         {{ initiative.invisible_ticket_count }}
                     </div>
-                    <div class="col-lg-2 col-md-2 d-none d-md-block small ">
-                        {{ initiative.total_ticket_estimation_hours }}
+                    <div class="col-lg-1 col-md-3 small text-center">
+                        <span class="d-lg-none d-block bg-desino fw-bold text-white py-1 rounded-top mt-2">
+                            {{ $t('initiative_overview_list.estimation_hours_text') }}
+                        </span>
+                        <span class="badge rounded-3 bg-success-subtle text-success rounded-top mt-2">
+                            {{ initiative.total_ticket_estimation_hours ?? 0 }}
+                            {{ $t('initiative_overview_list.hours_text') }}
+                        </span>
                     </div>
-                    <div class="col-lg-1 col-md-1 d-none d-md-block small ">
-                        {{ initiative.visible_ticket_estimation_hours }}
+                    <div class="col-lg-2 col-md-3 small text-center">
+                        <span class="d-lg-none d-block bg-desino fw-bold text-white py-1 rounded-top mt-2">
+                            {{ $t('initiative_overview_list.visible_estimation_hours_text') }}
+                        </span>
+                        <span class="badge rounded-3 bg-success-subtle text-success ">
+                            {{ initiative.visible_ticket_estimation_hours ?? 0 }}
+                            {{ $t('initiative_overview_list.hours_text') }}
+                        </span>
                     </div>
-                    <div class="col-lg-1 col-md-1 d-none d-md-block small text-end">
-                        <a :title="$t('initiative_overview_list.edit_action_tooltip_text')" class="text-desino me-1"
-                            href="javascript:" @click.stop="editInitiativeOverview(initiative)">
+                    <div class="col-lg-1 col-md-3 small text-end text-center">
+                        <span class="d-lg-none d-block bg-desino fw-bold text-white py-1 rounded-top mt-2">
+                            {{ $t('initiative_overview_list.action_text') }}
+                        </span>
+                        <a :title="$t('initiative_overview_list.edit_action_tooltip_text')" data-bs-placement="bottom"
+                            data-bs-toggle="tooltip" class="text-desino me-1" href="javascript:"
+                            @click.stop="editInitiativeOverview(initiative)">
                             <i class="bi bi-pencil-square"></i>
                         </a>
-                        <router-link :to="{ name: 'tasks', params: { id: initiative.id } }"
+                        <router-link @click.stop
+                            :to="{ name: 'activity-logs', query: { initiative_id: initiative.id } }"
                             class="text-decoration-none text-info" data-bs-placement="bottom" data-bs-toggle="tooltip"
-                            :title="$t('initiative_overview_list.logs_action_text')">
-                            <i class="bi bi-hourglass"></i>
+                            :title="$t('initiative_overview_list.logs_action_text')" target="_blank">
+                            <i class="bi bi-activity"></i>
                         </router-link>
                     </div>
                 </div>

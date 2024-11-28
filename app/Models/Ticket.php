@@ -89,16 +89,16 @@ class Ticket extends Model
     public static function getAllMacroStatus()
     {
         return [
-            ['id' => self::MACRO_STATUS_DETAIL_TICKET, 'name' => __('ticket_macro_status.detail_ticket'), 'color' => 'success'],
-            ['id' => self::MACRO_STATUS_CLARIFY_AND_ESTIMATE, 'name' => __('ticket_macro_status.clarify_and_estimate'), 'color' => 'success'],
-            ['id' => self::MACRO_STATUS_DEVELOP_WAIT_FOR_CLIENT, 'name' => __('ticket_macro_status.develop_wait_for_client'), 'color' => 'danger'],
-            ['id' => self::MACRO_STATUS_DEVELOP, 'name' => __('ticket_macro_status.develop'), 'color' => 'success'],
-            ['id' => self::MACRO_STATUS_TEST_WAIT_FOR_DEPLOYMENT_TO_TEST, 'name' => __('ticket_macro_status.test_wait_for_deployment_to_test'), 'color' => 'danger'],
-            ['id' => self::MACRO_STATUS_TEST, 'name' => __('ticket_macro_status.test'), 'color' => 'success'],
-            ['id' => self::MACRO_STATUS_VALIDATE_WAITING_FOR_DEPLOYMENT_TO_ACC, 'name' => __('ticket_macro_status.validate_waiting_for_deployment_to_acc'), 'color' => 'danger'],
-            ['id' => self::MACRO_STATUS_VALIDATE, 'name' => __('ticket_macro_status.validate'), 'color' => 'success'],
-            ['id' => self::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_PRD, 'name' => __('ticket_macro_status.ready_for_deployment_to_prd'), 'color' => 'danger'],
-            ['id' => self::MACRO_STATUS_DONE, 'name' => __('ticket_macro_status.done'), 'color' => 'primary'],
+            ['id' => self::MACRO_STATUS_DETAIL_TICKET, 'name' => __('ticket_macro_status.detail_ticket'), 'color' => 'color-macro-status-detail-ticket'],
+            ['id' => self::MACRO_STATUS_CLARIFY_AND_ESTIMATE, 'name' => __('ticket_macro_status.clarify_and_estimate'), 'color' => 'color-macro-status-clarify-and-estimate'],
+            ['id' => self::MACRO_STATUS_DEVELOP_WAIT_FOR_CLIENT, 'name' => __('ticket_macro_status.develop_wait_for_client'), 'color' => 'color-macro-status-develop-wait-for-client'],
+            ['id' => self::MACRO_STATUS_DEVELOP, 'name' => __('ticket_macro_status.develop'), 'color' => 'color-macro-status-develop'],
+            ['id' => self::MACRO_STATUS_TEST_WAIT_FOR_DEPLOYMENT_TO_TEST, 'name' => __('ticket_macro_status.test_wait_for_deployment_to_test'), 'color' => 'color-macro-status-test-wait-for-deployment-to-test'],
+            ['id' => self::MACRO_STATUS_TEST, 'name' => __('ticket_macro_status.test'), 'color' => 'color-macro-status-test'],
+            ['id' => self::MACRO_STATUS_VALIDATE_WAITING_FOR_DEPLOYMENT_TO_ACC, 'name' => __('ticket_macro_status.validate_waiting_for_deployment_to_acc'), 'color' => 'color-macro-status-validate-waiting-for-deployment-to-acc'],
+            ['id' => self::MACRO_STATUS_VALIDATE, 'name' => __('ticket_macro_status.validate'), 'color' => 'color-macro-status-validate'],
+            ['id' => self::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_PRD, 'name' => __('ticket_macro_status.ready_for_deployment_to_prd'), 'color' => 'color-macro-status-ready-for-deployment-to-prd'],
+            ['id' => self::MACRO_STATUS_DONE, 'name' => __('ticket_macro_status.done'), 'color' => 'color-macro-status-done'],
         ];
     }
 
@@ -152,16 +152,16 @@ class Ticket extends Model
     public function getMacroStatusLabelAttribute()
     {
         return match ($this->macro_status) {
-            self::MACRO_STATUS_DETAIL_TICKET => ['label' => __('ticket_macro_status.detail_ticket'), 'color' => '#394151'],
-            self::MACRO_STATUS_CLARIFY_AND_ESTIMATE => ['label' => __('ticket_macro_status.clarify_and_estimate'), 'color' => '#A6853D'],
-            self::MACRO_STATUS_DEVELOP_WAIT_FOR_CLIENT => ['label' => __('ticket_macro_status.develop_wait_for_client'), 'color' => '#A64D3D'],
-            self::MACRO_STATUS_DEVELOP => ['label' => __('ticket_macro_status.develop'), 'color' => '#3D62A6'],
-            self::MACRO_STATUS_TEST_WAIT_FOR_DEPLOYMENT_TO_TEST => ['label' => __('ticket_macro_status.test_wait_for_deployment_to_test'), 'color' => '#A64D3D'],
-            self::MACRO_STATUS_TEST => ['label' => __('ticket_macro_status.test'), 'color' => '#A69A3D'],
-            self::MACRO_STATUS_VALIDATE_WAITING_FOR_DEPLOYMENT_TO_ACC => ['label' => __('ticket_macro_status.validate_waiting_for_deployment_to_acc'), 'color' => '#A64D3D'],
-            self::MACRO_STATUS_VALIDATE => ['label' => __('ticket_macro_status.validate'), 'color' => '#3D99A6'],
-            self::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_PRD => ['label' => __('ticket_macro_status.ready_for_deployment_to_prd'), 'color' => '#A64D3D'],
-            self::MACRO_STATUS_DONE => ['label' => __('ticket_macro_status.done'), 'color' => '#213559'],
+            self::MACRO_STATUS_DETAIL_TICKET => ['label' => __('ticket_macro_status.detail_ticket'), 'color' => 'color-macro-status-detail-ticket'],
+            self::MACRO_STATUS_CLARIFY_AND_ESTIMATE => ['label' => __('ticket_macro_status.clarify_and_estimate'), 'color' => 'color-macro-status-clarify-and-estimate'],
+            self::MACRO_STATUS_DEVELOP_WAIT_FOR_CLIENT => ['label' => __('ticket_macro_status.develop_wait_for_client'), 'color' => 'color-macro-status-develop-wait-for-client'],
+            self::MACRO_STATUS_DEVELOP => ['label' => __('ticket_macro_status.develop'), 'color' => 'color-macro-status-develop'],
+            self::MACRO_STATUS_TEST_WAIT_FOR_DEPLOYMENT_TO_TEST => ['label' => __('ticket_macro_status.test_wait_for_deployment_to_test'), 'color' => 'color-macro-status-test-wait-for-deployment-to-test'],
+            self::MACRO_STATUS_TEST => ['label' => __('ticket_macro_status.test'), 'color' => 'color-macro-status-test'],
+            self::MACRO_STATUS_VALIDATE_WAITING_FOR_DEPLOYMENT_TO_ACC => ['label' => __('ticket_macro_status.validate_waiting_for_deployment_to_acc'), 'color' => 'color-macro-status-validate-waiting-for-deployment-to-acc'],
+            self::MACRO_STATUS_VALIDATE => ['label' => __('ticket_macro_status.validate'), 'color' => 'color-macro-status-validate'],
+            self::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_PRD => ['label' => __('ticket_macro_status.ready_for_deployment_to_prd'), 'color' => 'color-macro-status-ready-for-deployment-to-prd'],
+            self::MACRO_STATUS_DONE => ['label' => __('ticket_macro_status.done'), 'color' => 'color-macro-status-done'],
             default => '-'
         };
     }

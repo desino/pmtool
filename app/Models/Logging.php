@@ -13,7 +13,8 @@ class Logging extends Model
 
     protected $appends = [
         'display_activity_type',
-        'display_activity_detail'
+        'display_activity_detail',
+        'display_created_at',
     ];
 
     public const ACTIVITY_TYPE_MARKED_AS_DONE = 1;
@@ -40,13 +41,13 @@ class Logging extends Model
     public static function getAllActivityDetails()
     {
         return [
-            ['id' => self::ACTIVITY_DETAIL_DETAIL, 'name' => __('logging_activity_detail.detail')],
-            ['id' => self::ACTIVITY_DETAIL_CLARIFY_ESTIMATE, 'name' => __('logging_activity_detail.clarify_estimate')],
-            ['id' => self::ACTIVITY_DETAIL_DEVELOP, 'name' => __('logging_activity_detail.develop')],
-            ['id' => self::ACTIVITY_DETAIL_TEST, 'name' => __('logging_activity_detail.test')],
-            ['id' => self::ACTIVITY_DETAIL_VALIDATE, 'name' => __('logging_activity_detail.validate')],
-            ['id' => self::ACTIVITY_DETAIL_DONE, 'name' => __('logging_activity_detail.done')],
-            ['id' => self::ACTIVITY_DETAIL_ACC, 'name' => __('logging_activity_detail.acc')],
+            ['id' => self::ACTIVITY_DETAIL_DETAIL, 'name' => __('logging_activity_detail.detail'), 'color' => 'color-macro-status-detail-ticket'],
+            ['id' => self::ACTIVITY_DETAIL_CLARIFY_ESTIMATE, 'name' => __('logging_activity_detail.clarify_estimate'), 'color' => 'color-macro-status-clarify-and-estimate'],
+            ['id' => self::ACTIVITY_DETAIL_DEVELOP, 'name' => __('logging_activity_detail.develop'), 'color' => 'color-macro-status-develop'],
+            ['id' => self::ACTIVITY_DETAIL_TEST, 'name' => __('logging_activity_detail.test'), 'color' => 'color-macro-status-test'],
+            ['id' => self::ACTIVITY_DETAIL_VALIDATE, 'name' => __('logging_activity_detail.validate'), 'color' => 'color-macro-status-validate'],
+            ['id' => self::ACTIVITY_DETAIL_DONE, 'name' => __('logging_activity_detail.done'), 'color' => 'color-macro-status-done'],
+            ['id' => self::ACTIVITY_DETAIL_ACC, 'name' => __('logging_activity_detail.acc'), 'color' => 'color-activity-log-deploy-acc'],
         ];
     }
 
@@ -58,5 +59,19 @@ class Logging extends Model
     public function getDisplayActivityDetailAttribute()
     {
         return self::getAllActivityDetails()[$this->activity_detail - 1] ?? '-';
+    }
+    public function getDisplayCreatedAtAttribute()
+    {
+        return  $this->created_at ? $this->created_at->format('d/m/Y H:i:s') : '';
+    }
+
+    public function ticket()
+    {
+        return $this->belongsTo(Ticket::class);
+    }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

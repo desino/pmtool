@@ -60,8 +60,7 @@
     <div class="app-content border border-start-0 border-end-0 py-2">
         <div class="row g-1 w-100">
             <div class="col-12 col-md-3 col-lg-3 col-xl-3 text-center mb-2 mb-md-0">
-                <div class="card shadow-none h-100 border-0"
-                    :style="{ backgroundColor: ticketData.macro_status_label?.color }">
+                <div class="card shadow-none h-100 border-0" :class="ticketData.macro_status_label?.color">
                     <div class="card-body border-0 bg-transparent p-0 align-content-center">
                         <div class="text-light fw-bold small py-4">
                             {{ ticketData?.macro_status_label?.label }}

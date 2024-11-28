@@ -327,3 +327,48 @@
 .optimize-image img {
     width: 100% !important;
 }
+
+.color-macro-status-detail-ticket {
+    background-color: #394151;
+}
+
+.color-macro-status-clarify-and-estimate {
+    background-color: #A6853D;
+}
+
+.color-macro-status-develop-wait-for-client {
+    background-color: #A64D3D;
+}
+
+.color-macro-status-develop {
+    background-color: #3D62A6;
+}
+
+.color-macro-status-test-wait-for-deployment-to-test {
+    background-color: #A64D3D;
+}
+
+.color-macro-status-test {
+    background-color: #A69A3D;
+}
+
+.color-macro-status-validate-waiting-for-deployment-to-acc {
+    background-color: #A64D3D;
+}
+
+.color-macro-status-validate {
+    background-color: #3D99A6;
+}
+
+.color-macro-status-ready-for-deployment-to-prd {
+    background-color: #A64D3D;
+}
+
+.color-macro-status-done {
+    background-color: #213559;
+}
+
+.color-activity-log-deploy-acc {
+    background-color: transparent;
+    color: black;
+}

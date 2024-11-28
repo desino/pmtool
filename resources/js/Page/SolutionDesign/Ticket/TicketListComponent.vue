@@ -13,21 +13,12 @@
                         :placeholder="$t('ticket.filter.macro_status_placeholder')" track-by="id"
                         @select="fetchAllTasks" @Remove="fetchAllTasks">
                         <template #tag="{ option, remove }">
-                            <span class="multiselect__tag_for_macro_status" :class="'bg-' + option.color">
+                            <span class="multiselect__tag_for_macro_status" :class="option.color">
                                 <span>{{ option.name }}</span>
                                 <i tabindex="1" class="multiselect__tag-icon" @click="remove(option)"></i>
                             </span>
                         </template>
                     </multiselect>
-                </div>
-                <div class="w-100 p-1">
-                    <div class="form-check ms-auto">
-                        <input v-model="filter.is_include_done" @change="fetchAllTasks" class="form-check-input"
-                            type="checkbox" id="is_include_done">
-                        <label class="form-check-label fw-bold" for="is_include_done">
-                            {{ $t('ticket.filter.is_include_done') }}
-                        </label>
-                    </div>
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-3">
@@ -78,6 +69,17 @@
                         deselect-label="" label="name" :placeholder="$t('ticket.filter.projects_placeholder')"
                         track-by="id" @select="fetchAllTasks" @Remove="fetchAllTasks">
                     </multiselect>
+                </div>
+            </div>
+            <div class="col-12 col-md-12 col-lg-3">
+                <div class="w-100 p-1">
+                    <div class="form-check ms-auto">
+                        <input v-model="filter.is_include_done" @change="fetchAllTasks" class="form-check-input"
+                            type="checkbox" id="is_include_done">
+                        <label class="form-check-label fw-bold" for="is_include_done">
+                            {{ $t('ticket.filter.is_include_done') }}
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -184,8 +186,7 @@
                         </div>
                     </div>
                     <div class="offset-1 col-5 offset-md-0 col-md-3 col-lg-2 text-center py-2 py-lg-0">
-                        <span class="badge p-2 w-100 text-wrap"
-                            :style="{ backgroundColor: task.macro_status_label?.color }">
+                        <span class="badge p-2 w-100 text-wrap" :class="task.macro_status_label?.color">
                             {{ task.macro_status_label?.label }}
                         </span>
                     </div>
