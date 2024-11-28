@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\DeveloperWorkloadController;
 use App\Http\Controllers\Api\HeaderController;
 use App\Http\Controllers\Api\HomeMyActionsController;
 use App\Http\Controllers\Api\InitiativeController;
+use App\Http\Controllers\Api\InitiativeOverviewController;
 use App\Http\Controllers\Api\MyTicketController;
 use App\Http\Controllers\Api\OpportunityController;
 use App\Http\Controllers\Api\PlanningController;
@@ -174,6 +175,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(DeveloperWorkloadController::class)->prefix('developer-workload')->group(function () {
         Route::get('/', 'index');
         Route::get('get-developer-workload-ticket-modal-data', 'getDeveloperWorkloadTicketModalData');
+    });
+
+    Route::controller(InitiativeOverviewController::class)->prefix('initiative-overview')->group(function () {
+        Route::get('/', 'index');
     });
 });
 

@@ -311,6 +311,7 @@
     "messages.ticket.delete_ticket_not_allowed_because_ticket_already_done": "You are not allowed to delete this ticket because it is already done.",
     "messages.asana.delete_ticket.delete_error": "Error while deleting ticket in Asana.",
     "messages.developer_workload.dont_have_permission": "You don't have permission to perform this action.",
+    "messages.initiative_overview.dont_have_permission": "You don't have permission to perform this action.",
     "login_title": "Login",
     "login_page_title": "Login",
     "login_input_email": "Email",
@@ -481,6 +482,7 @@
     "header.menu.time_mapping": "Time Mapping",
     "header.menu.all_ticket_without_initiative": "All Tickets",
     "header.menu.developer_workload": "Developer Workload",
+    "header.menu.initiatives_overview": "Initiatives Overview",
     "header.menu.deployments": "Deployments",
     "header.menu.profile": "Profile",
     "ticket.page_title": "Initiative Tickets",
@@ -832,5 +834,16 @@
     "logging_activity_detail.test": "Test",
     "logging_activity_detail.validate": "Validate",
     "logging_activity_detail.done": "Done",
-    "logging_activity_detail.acc": "ACC"
+    "logging_activity_detail.acc": "ACC",
+    "initiative_overview.page_title": "Initiative Overview",
+    "initiative_overview_list.name_text": "Name",
+    "initiative_overview_list.total_tickets_count_text": "Tickets",
+    "initiative_overview_list.visible_tickets_count_text": "Visible Tickets",
+    "initiative_overview_list.invisible_tickets_count_text": "Invisible Tickets",
+    "initiative_overview_list.estimation_hours_text": "Estimation",
+    "initiative_overview_list.visible_estimation_hours_text": "Visible Estimation",
+    "initiative_overview_list.action_text": "Actions",
+    "initiative_overview_list.no_initiative_overview_found_text": "No initiative overview found",
+    "initiative_overview_list.logs_action_text": "Logs",
+    "initiative_overview_list.edit_action_tooltip_text": "Edit"
 }

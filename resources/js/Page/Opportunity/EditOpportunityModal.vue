@@ -15,7 +15,7 @@
                             <div class="mb-3">
                                 <label class="form-label fw-bold">{{
                                     $t('edit_opportunity_modal_select_client_name')
-                                }} <strong class="text-danger">*</strong></label>
+                                    }} <strong class="text-danger">*</strong></label>
                                 <input type="text" v-model="formData.client_name" disabled
                                     :class="{ 'is-invalid': errors.client_name }" class="form-control">
                                 <div v-if="errors.client_name" class="invalid-feedback">
@@ -123,7 +123,7 @@
                                 <div v-if="errors.share_point_url" class="invalid-feedback">
                                     <span v-for="(error, index) in errors.share_point_url" :key="index">{{
                                         error
-                                    }}</span>
+                                        }}</span>
                                 </div>
                             </div>
                         </div>
@@ -143,7 +143,7 @@
                                             class="form-select">
                                             <option value="">{{
                                                 $t('edit_opportunity_modal_input_environment_server_type_placeholder')
-                                            }}
+                                                }}
                                             </option>
                                             <option v-for="serverType in serverTypes" :key="serverType.id"
                                                 :value="serverType.id">{{
@@ -153,7 +153,7 @@
                                         <div v-if="errors.type" class="invalid-feedback">
                                             <span v-for="(error, index) in errors.type" :key="index">{{
                                                 error
-                                            }}</span>
+                                                }}</span>
                                         </div>
                                     </div>
                                     <div class="col-md-2 mb-3">
@@ -379,6 +379,13 @@ export default {
                 const initiativeModal = Modal.getInstance(editInitiativeModalElement);
                 if (initiativeModal) {
                     initiativeModal.hide();
+                }
+            }
+            const editInitiativeOverViewModalElement = document.getElementById('editInitiativeOverviewModal');
+            if (editInitiativeOverViewModalElement) {
+                const initiativeOverViewModal = Modal.getInstance(editInitiativeOverViewModalElement);
+                if (initiativeOverViewModal) {
+                    initiativeOverViewModal.hide();
                 }
             }
         }
