@@ -87,6 +87,9 @@
     color: $white !important;
 }
 
+.multiselect__select{
+    width: 30px !important;
+}
 // .multiselect {
 //     height: 38px !important;
 // }
@@ -96,7 +99,7 @@
     //height: 38px !important;
     display: block;
     width: 100%;
-    padding: 4px 40px 0px 12px !important;
+    padding: 4px 30px 0px 12px !important;
     line-height: normal !important;
     color: var(--bs-body-color);
     -webkit-appearance: none;

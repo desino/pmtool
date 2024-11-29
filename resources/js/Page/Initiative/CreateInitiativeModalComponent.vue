@@ -55,13 +55,13 @@
                     </div>
                 </div>
                 <div class="modal-footer border-0 p-0 justify-content-center">
-                    <div class="row w-100 g-1">
-                        <div class="col-4 col-md-4 col-lg-6">
+                    <div class="row w-100 g-1 align-items-center">
+                        <div class="col-6">
                             <button type="submit" class="btn btn-desino w-100 border-0">{{
                                 $t('create_initiative_modal_submit_but_text')
                                 }}</button>
                         </div>
-                        <div class="col-4 col-md-4 col-lg-6">
+                        <div class="col-6">
                             <button type="button" class="btn btn-danger w-100 border-0" data-bs-dismiss="modal">
                                 <i class="bi bi-x-lg"></i>
                             </button>
