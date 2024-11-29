@@ -10,12 +10,23 @@ use Illuminate\Support\Facades\DB;
 
 class InitiativeService
 {
-    public static function getOpportunityInitiative($request, $perPage, $status = null)
+    public static function getOpportunityInitiative($request, $perPage)
     {
         $filters = $request->post('filters');
 
+        // [Initiative::getStatusOpportunity(), Initiative::getStatusLost()]
+
         $initiative = Initiative::with(['client', 'initiativeEnvironments'])
-            ->when($status != null, function ($q) use ($status) {
+            // ->when($status != null, function ($q) use ($status) {
+            //     $q->status($status);
+            // })
+            ->when($filters['is_opportunities'] || $filters['is_lost'], function ($q) use ($filters) {
+                $status = [Initiative::getStatusOpportunity()];
+                if ($filters['is_opportunities'] && $filters['is_lost']) {
+                    $status = [Initiative::getStatusOpportunity(), Initiative::getStatusLost()];
+                } else if ($filters['is_lost']) {
+                    $status = [Initiative::getStatusLost()];
+                }
                 $q->status($status);
             })
             ->when($filters['initiative_name'] != '', function ($q) use ($filters) {
@@ -39,7 +50,9 @@ class InitiativeService
 
     public static function getInitiativesForHeaderSelectBox($request)
     {
-        return Initiative::with('client')->orderBy('id', 'desc')->get();
+        return Initiative::with('client')
+            ->status([Initiative::getStatusOpportunity(), Initiative::getStatusOngoing(), Initiative::getStatusClosed()])
+            ->orderBy('id', 'desc')->get();
     }
 
     public static function getInitiativeWithTestDeploymentTickets()

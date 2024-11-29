@@ -1,5 +1,5 @@
 <template>
-    <aside ref="sidebar" class="app-sidebar bg-white border">
+    <aside ref="sidebar" class="app-sidebar bg-white border-end">
         <div class="sidebar-brand">
             <router-link class="brand-link" :to="{ name: 'home' }" @click="unselectHeaderInitiative">
                 <img alt="Brand Image" class="brand-image" :src="logoPath" />
@@ -209,6 +209,24 @@
                             {{
                                 $t('header.menu.developer_workload')
                             }}
+                        </router-link>
+                    </li>
+                    <li class="nav-item" v-if="user?.is_admin">
+                        <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('initiative-overview') }"
+                            :to="{ name: 'initiative-overview' }" class="nav-link text-dark"
+                            @click="unselectHeaderInitiative">
+                            <i class="bi bi-hourglass mx-2"></i>
+                            {{
+                                $t('header.menu.initiatives_overview')
+                            }}
+                        </router-link>
+                    </li>
+                    <li class="nav-item" v-if="user?.is_admin">
+                        <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('activity-logs') }"
+                            :to="{ name: 'activity-logs' }" class="nav-link text-dark"
+                            @click="unselectHeaderInitiative">
+                            <i class="bi bi-activity mx-2"></i>
+                            {{ $t('header.menu.activity_logs') }}
                         </router-link>
                     </li>
                     <!-- <li class="nav-item" v-if="user?.is_admin">

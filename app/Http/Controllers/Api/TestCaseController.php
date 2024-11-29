@@ -12,6 +12,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TestCaseController extends Controller
 {
@@ -50,7 +51,7 @@ class TestCaseController extends Controller
 
             return ApiHelper::response(true, __('messages.test_case.store_success'), $ticketData->testCases()->get(), 200);
         } catch (Exception $e) {
-            dd($e->getMessage());
+            logger()->error($e);
             DB::rollBack();
             return ApiHelper::response(false, __('messages.test_case.store_error'), null, 500);
         }
@@ -125,7 +126,7 @@ class TestCaseController extends Controller
 
             return ApiHelper::response(false, __('messages.test_case.update_error'), null, 400);
         } catch (Exception $e) {
-            dd($e->getMessage());
+            logger()->error($e);
             DB::rollBack();
             return ApiHelper::response(false, __('messages.test_case.update_error'), null, 500);
         }

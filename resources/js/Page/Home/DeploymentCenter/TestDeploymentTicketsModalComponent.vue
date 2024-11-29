@@ -8,31 +8,31 @@
                 </div>
                 <div class="modal-body">
                     <GlobalMessage v-if="showMessage" scope="modal" />
-                    <ul class="list-group">
-                        <li class="list-group-item fw-bold bg-desino text-white">
-                            <div class="row w-100">
-                                <div class="col-md-1" v-if="ticketList.length > 0">
+                    <ul class="list-group mb-3 mt-2">
+                        <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
+                            <div class="row g-1 w-100 align-items-center">
+                                <div class="col-1 col-md-1" v-if="ticketList.length > 0">
                                     <input class="form-check-input" type="checkbox"
                                         v-model="isChkAllTestDeploymentTickets"
                                         @change="handleSelectAllTestDeploymentTickets">
                                 </div>
-                                <div class="col-md-8">
+                                <div class="col-6 col-md-8 fw-bold small">
                                     {{ $t('home.deployment_center.test_deployment.ticket_modal.li.name.text') }}
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-5 col-md-3 fw-bold small text-end">
                                     {{ $t('home.deployment_center.test_deployment.ticket_modal.li.develop_by.text') }}
                                 </div>
                             </div>
                         </li>
-                        <li class="list-group-item list-group-item-action" v-if="ticketList.length > 0"
+                        <li class="border list-group-item p-1 list-group-item-action border-top-0" v-if="ticketList.length > 0"
                             v-for="ticket in ticketList" :key="ticket.id">
-                            <div class="row w-100">
-                                <div class="col-md-1">
+                            <div class="row g-1 w-100 align-items-center">
+                                <div class="col-1 col-md-1">
                                     <input class="form-check-input" type="checkbox"
                                         :id="'chk_test_deployment_ticket_' + ticket.id" v-model="ticket.isChecked"
                                         @change="handleSelectTestDeploymentTicket(ticket)">
                                 </div>
-                                <div class="col-md-8 d-flex align-content-center"
+                                <div class="col-6 col-md-8"
                                     :for="'chk_test_deployment_ticket_' + ticket.id">
                                     {{ ticket?.composed_name }}
                                     <router-link target="_blank"
@@ -41,14 +41,14 @@
                                         <i class="bi bi-link-45deg"></i>
                                     </router-link>
                                 </div>
-                                <div class="col-md-3" :for="'chk_test_deployment_ticket_' + ticket.id">
+                                <div class="col-5 col-md-3 text-end" :for="'chk_test_deployment_ticket_' + ticket.id">
                                     {{ ticket?.develop_action?.user?.name }}
                                 </div>
                             </div>
                         </li>
-                        <li v-else class="list-group-item list-group-item-action fw-bold">
+                        <li v-else class="border list-group-item p-1 list-group-item-action border-top-0">
                             <div class="row w-100">
-                                <div class="col-md-12 text-center">
+                                <div class="col-12 text-center">
                                     {{ $t('home.deployment_center.test_deployment.ticket_modal.no_tickets.text') }}
                                 </div>
                             </div>
@@ -56,13 +56,13 @@
                     </ul>
                 </div>
                 <div class="modal-footer border-0 p-0 justify-content-center">
-                    <div class="row w-100 g-1">
-                        <div class="col-4 col-md-4 col-lg-6">
+                    <div class="row w-100 g-1 align-items-center">
+                        <div class="col-6">
                             <button type="submit" class="btn btn-desino w-100 border-0"
                                 :disabled="selectedTestDeploymentTickets.length > 0 && isAllowProcess ? false : true">{{
                                     $t('home.deployment_center.test_deployment.ticket_modal.submit_but.text') }}</button>
                         </div>
-                        <div class="col-4 col-md-4 col-lg-6">
+                        <div class="col-6">
                             <button type="button" class="btn btn-danger w-100 border-0" data-bs-dismiss="modal">
                                 <i class="bi bi-x-lg"></i>
                             </button>

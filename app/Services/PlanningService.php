@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Initiative;
+use App\Models\Project;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -23,5 +24,13 @@ class PlanningService
     {
         $user = User::select('id', 'name')->get();
         return $user;
+    }
+
+    public static function getProjectsBasedOnInitiatives($initiativeId = '')
+    {
+        $projects = Project::when($initiativeId != '', function ($query) use ($initiativeId) {
+            $query->where('initiative_id', $initiativeId);
+        })->where('status', 1)->get();
+        return $projects;
     }
 }

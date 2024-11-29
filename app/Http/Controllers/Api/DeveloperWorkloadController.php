@@ -72,4 +72,39 @@ class DeveloperWorkloadController extends Controller
         ];
         return ApiHelper::response(true, '', $retData, 200);
     }
+
+    public function getDeveloperWorkloadTicketModalData(Request $request)
+    {
+        $authUser = Auth::user();
+        if (!$authUser->is_admin) {
+            return ApiHelper::response(false, __('messages.developer_workload.dont_have_permission'), null, 404);
+        }
+
+        $tickets = Ticket::select(
+            '*',
+            DB::RAW('IF(dev_estimation_time > 0, dev_estimation_time,initial_estimation_development_time) as estimation_time'),
+        )
+            ->with([
+                'currentAction',
+                'actions',
+                'developAction' => function ($q) {
+                    $q->with('user');
+                }
+            ])
+            ->where('macro_status', '!=', Ticket::MACRO_STATUS_DONE)
+            ->whereHas('actions', function ($query) use ($request) {
+                $query->where('action', TicketAction::getActionDevelop())
+                    ->where('user_id', $request->get('user_id'))
+                    ->where('status', '!=', TicketAction::getStatusDone());
+            })
+            ->when($request->get('type_of_tickets') == 'visible' || $request->get('type_of_tickets') == 'invisible', function ($query) use ($request) {
+                $isVisible = $request->get('type_of_tickets') == 'visible' ? 1 : 0;
+                $query->where('is_visible', $isVisible);
+            })
+            ->get();
+        $passData = [
+            'tickets' => $tickets
+        ];
+        return ApiHelper::response(true, '', $passData, 200);
+    }
 }

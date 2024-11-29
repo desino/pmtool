@@ -8,6 +8,7 @@ import { APP_VARIABLES } from "../constants.js";
 const defaultPath = `${APP_VARIABLES.DEFAULT_API_PATH}/developer-workload`;
 const endpoints = {
     getDeveloperWorkloads: `${defaultPath}`,
+    getDeveloperWorkloadTicketModalData: `${defaultPath}/get-developer-workload-ticket-modal-data`,
 };
 
 const DeveloperWorkloadService = {
@@ -19,7 +20,15 @@ const DeveloperWorkloadService = {
         } catch (error) {
             throw handleError(error);
         }
-    }
+    },
+    async getDeveloperWorkloadTicketModalData(data) {
+        try {
+            const response = await axiosRequest.get(endpoints.getDeveloperWorkloadTicketModalData, { params: data });
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
 };
 
 function handleError(error) {

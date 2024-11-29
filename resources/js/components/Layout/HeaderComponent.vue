@@ -1,34 +1,31 @@
 <template>
     <nav class="app-header navbar navbar-expand">
         <div class="container-fluid">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" role="button" @click.prevent="toggleSidebar">
-                        <i class="bi bi-list me-4"></i>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <h3 class="m-0">{{ headerData.page_title }}</h3>
-                </li>
-                <li class="nav-item">
-                    <span>
-                        <router-link v-if="headerData?.is_solution_design_detail_path"
+            <div class="row g-0 w-100 align-items-center justify-content-between">
+                <div class="col-10 col-md-11">
+                    <h3 class="m-0">
+                        <a class="me-2" role="button" @click.prevent="toggleSidebar">
+                            <i class="bi bi-list"></i>
+                        </a>
+                        <span class="me-2">
+                            {{ headerData.page_title }}
+                        </span>
+                        <router-link class="me-2" v-if="headerData?.is_solution_design_detail_path"
                             :to="{ name: 'solution-design.detail', params: { id: headerData.initiative_id } }">
-                            <i class="bi bi-link-45deg fs-3 ms-2"></i>
+                            <i class="bi bi-link-45deg"></i>
                         </router-link>
-                        <router-link v-if="headerData?.is_solution_design_download"
+                        <router-link class="me-2" v-if="headerData?.is_solution_design_download"
                             :to="{ name: 'solution-design.download', params: { id: headerData.initiative_id } }">
-                            <i class="bi bi-file-earmark-pdf fs-3 ms-2"></i>
+                            <i class="bi bi-file-earmark-pdf"></i>
                         </router-link>
-                    </span>
-                </li>
-            </ul>
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <button class="btn btn-danger btn-sm" type="button" @click="logout"><i
-                            class="bi bi-box-arrow-right"></i> {{ $t('logout_but_text') }}</button>
-                </li>
-            </ul>
+                    </h3>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-danger text-white" type="button" @click="logout">
+                        <i class="bi bi-box-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
         </div>
     </nav>
 </template>

@@ -131,7 +131,7 @@ export default {
                 await Promise.all([
                     this.getDeployments(),
                     this.getInitiativeDataForDeployments(),
-                    this.$route.name == 'deployments' ? eventBus.$emit('selectHeaderInitiativeId', this.$route.params.id) : '',
+                    this.$route.name == 'deployments' ? eventBus.$emit('selectHeaderInitiativeId', this.initiative_id) : '',
                 ]);
             } catch (error) {
                 this.handleError(error);

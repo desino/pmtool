@@ -1,5 +1,5 @@
 <template>
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog">
         <div class="modal-content border-0">
             <div class="modal-header text-white bg-desino border-0 py-2 justify-content-center">
                 <h5 class="modal-title" id="planNewUserModalLabel">
@@ -10,12 +10,12 @@
                 <div class="modal-body">
                     <GlobalMessage v-if="showMessage" scope="modal" />
                     <div class="row w-100">
-                        <div class="col-6 mb-3">
+                        <div class="col-12">
                             <select v-model="formData.user_id" :class="{ 'is-invalid': errors.user_id }"
                                 class="form-select">
                                 <option value="">{{
                                     $t('planning.plan_new_user.modal_select_user_label_text')
-                                    }}</option>
+                                }}</option>
                                 <option v-for="user in usersList" :key="user.id" :value="user.id">{{
                                     user.name }}
                                 </option>
@@ -59,6 +59,7 @@ export default {
         return {
             formData: {
                 initiative_id: '',
+                project_id: '',
                 user_id: ''
             },
             usersList: [],
@@ -73,9 +74,10 @@ export default {
     },
     methods: {
         ...mapActions(['setLoading']),
-        async getPlanNewUserForOpenModalData(existingUsers, initiativeId) {
+        async getPlanNewUserForOpenModalData(existingUsers, initiativeId, projectId) {
             this.clearForm();
             this.formData.initiative_id = initiativeId;
+            this.formData.project_id = projectId;
             this.existingPlanningUsersIds = existingUsers.map(item => item.id);
             try {
                 const { content: { users } } = await PlanningService.getPlanningInitialData();

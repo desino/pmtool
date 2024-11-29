@@ -11,7 +11,7 @@ class Initiative extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
-    protected $appends = ['client_initiative_name'];
+    protected $appends = ['client_initiative_name', 'creation_date'];
 
     public const STATUS_OPPORTUNITY = 1;
     public const STATUS_ONGOING = 2;
@@ -22,6 +22,12 @@ class Initiative extends Model
     {
         return Attribute::make(
             get: fn() => $this->client?->name . " - " . $this->name,
+        );
+    }
+    protected function creationDate(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->created_at ? $this->created_at->format('d/m/Y') : '',
         );
     }
 

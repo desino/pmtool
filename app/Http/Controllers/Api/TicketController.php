@@ -10,6 +10,7 @@ use App\Http\Requests\Api\TicketDetailEstimatedHoursRequest;
 use App\Http\Requests\Api\TicketRequest;
 use App\Http\Requests\UpdateReleaseNoteRequest;
 use App\Models\Functionality;
+use App\Models\Logging;
 use App\Models\Project;
 use App\Models\Release;
 use App\Models\ReleaseTicket;
@@ -130,7 +131,7 @@ class TicketController extends Controller
             $status = false;
             $message = __('messages.something_went_wrong');
             $statusCode = 500;
-            Log::info($e->getMessage());
+            logger()->error($e);
         }
         return ApiHelper::response($status, $message, $retData, $statusCode);
     }
@@ -169,6 +170,28 @@ class TicketController extends Controller
         });
         if (empty($filteredActionDevelop)) {
             return ApiHelper::response($status, __('messages.create_ticket.action_develop_not_exist'), '', 400);
+        }
+
+        $ticketActionsCollect = collect($validateData['ticket_actions']);
+        $filteredDoneActions = $ticketActionsCollect->where('is_checked', true)->where('status', TicketAction::getStatusDone())->sortByDesc('action');
+        $filteredDoneMaxAction = $filteredDoneActions->first();
+        $filterNewMaxAction = $ticketActionsCollect->where('is_checked', true)->whereNull('status')->sortBy('action')->first();
+
+        if (isset($filterNewMaxAction['action']) && isset($filteredDoneMaxAction['action']) && $filterNewMaxAction['action'] < $filteredDoneMaxAction['action']) {
+            return ApiHelper::response($status, __('messages.create_ticket.not_allowed_because_grater_action_is_done'), '', 400);
+        }
+
+        $ticketDoneActionCount = $ticket->actions->where('status', TicketAction::getStatusDone())->count();
+        $filteredDoneActionsCount = $filteredDoneActions->count();
+        if ($ticketDoneActionCount != $filteredDoneActionsCount) {
+            return ApiHelper::response($status, __('messages.create_ticket.not_allowed_because_done_actions_not_match'), '', 400);
+        }
+
+        foreach ($validateData['ticket_actions'] as $action) {
+            $chkDoneAction = $ticket->actions->where('action', $action['action'])->where('status', TicketAction::getStatusDone())->where('user_id', '!=', $action['user_id'])->first();
+            if (!empty($chkDoneAction)) {
+                return ApiHelper::response($status, __('messages.create_ticket.you_cant_update_ticket_action_user_because_this_action_done'), '', 400);
+            }
         }
 
         $projectId = $initiative->asana_project_id;
@@ -212,7 +235,7 @@ class TicketController extends Controller
             $status = false;
             $message = __('messages.something_went_wrong');
             $statusCode = 500;
-            Log::info($e->getMessage());
+            logger()->error($e);
         }
         return ApiHelper::response($status, $message, $retData, $statusCode);
     }
@@ -530,7 +553,7 @@ class TicketController extends Controller
         $meta_data['action_status'] = TicketAction::getAllActionStatus();
         $meta_data['is_allow_case_add_test_section'] = $isAllowCaseAddTestSection;
         $meta_data['is_allow_case_update_test_section'] = $isAllowCaseUpdateTestSection;
-
+        $meta_data['actions'] = $ticket->actions;
         // Return the ticket and related meta data in a success response
         return ApiHelper::response(true, __('messages.ticket.fetched'), $ticket, 200, $meta_data);
     }
@@ -612,7 +635,7 @@ class TicketController extends Controller
             $status = false;
             $message = __('messages.something_went_wrong');
             $statusCode = 500;
-            Log::info($e->getMessage());
+            logger()->error($e);
         }
         return ApiHelper::response($status, $message, '', $statusCode);
     }
@@ -651,7 +674,7 @@ class TicketController extends Controller
             $status = false;
             $message = __('messages.something_went_wrong');
             $statusCode = 500;
-            Log::info($e->getMessage());
+            logger()->error($e);
         }
         return ApiHelper::response($status, $message, '', $statusCode);
     }
@@ -686,7 +709,7 @@ class TicketController extends Controller
             $status = false;
             $message = __('messages.something_went_wrong');
             $statusCode = 500;
-            Log::info($e->getMessage());
+            logger()->error($e);
         }
         return ApiHelper::response($status, $message, '', $statusCode);
     }
@@ -728,16 +751,17 @@ class TicketController extends Controller
         $statusCode = 200;
         DB::beginTransaction();
         try {
-            TicketService::updateTicketActions($ticket, $request->input('action_id'), TicketAction::getStatusDone());
+            $action = TicketService::updateTicketActions($ticket, $request->input('action_id'), TicketAction::getStatusDone());
             TicketService::updateTicketStatus($ticket);
             TicketService::createMacroStatusAndUpdateTicket($ticket);
+            TicketService::storeLogging($ticket, Logging::ACTIVITY_TYPE_MARKED_AS_DONE, $action);
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
             $status = false;
             $message = __('messages.something_went_wrong');
             $statusCode = 500;
-            Log::info($e->getMessage());
+            logger()->error($e);
         }
         return ApiHelper::response($status, $message, '', $statusCode);
     }
@@ -784,16 +808,17 @@ class TicketController extends Controller
         $statusCode = 200;
         DB::beginTransaction();
         try {
-            TicketService::updateTicketPreviousActions($ticket, $request->input('action_id'), TicketAction::getStatusWaitingForDependantAction(), $isReadyForDeploymentToPrd);
+            $action = TicketService::updateTicketPreviousActions($ticket, $request->input('action_id'), $request->input('previous_action_id'), TicketAction::getStatusWaitingForDependantAction(), $isReadyForDeploymentToPrd);
             TicketService::updateTicketStatus($ticket);
             TicketService::createMacroStatusAndUpdateTicket($ticket, true);
+            TicketService::storeLogging($ticket, Logging::ACTIVITY_TYPE_MOVED_BACK_TO, $action);
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
             $status = false;
             $message = __('messages.something_went_wrong');
             $statusCode = 500;
-            Log::info($e->getMessage());
+            logger()->error($e);
         }
         return ApiHelper::response($status, $message, '', $statusCode);
     }
@@ -872,7 +897,7 @@ class TicketController extends Controller
             $status = false;
             $message = __('messages.something_went_wrong');
             $statusCode = 500;
-            Log::info($e->getMessage());
+            logger()->error($e);
         }
         return ApiHelper::response($status, $message, '', $statusCode);
     }
@@ -919,7 +944,7 @@ class TicketController extends Controller
             $status = false;
             $message = __('messages.something_went_wrong');
             $statusCode = 500;
-            Log::info($e->getMessage());
+            logger()->error($e);
         }
         return ApiHelper::response($status, $message, $retData, $statusCode);
     }
@@ -951,7 +976,7 @@ class TicketController extends Controller
             $status = false;
             $message = __('messages.something_went_wrong');
             $statusCode = 500;
-            Log::info($e->getMessage());
+            logger()->error($e);
         }
         return ApiHelper::response($status, $message, '', $statusCode);
     }
@@ -982,7 +1007,7 @@ class TicketController extends Controller
             $status = false;
             $message = __('messages.something_went_wrong');
             $statusCode = 500;
-            Log::info($e->getMessage());
+            logger()->error($e);
         }
         return ApiHelper::response($status, $message, '', $statusCode);
     }
@@ -1009,8 +1034,10 @@ class TicketController extends Controller
         if ($ticket && $ticket->macro_status == Ticket::MACRO_STATUS_DONE) {
             return ApiHelper::response($status, __('messages.ticket.delete_ticket_not_allowed_because_ticket_already_done'), '', 400);
         }
-        if ($ticket->time_bookings_count > 0) {
-            return ApiHelper::response($status, __('messages.ticket.delete_ticket_not_allowed_because_time_bookings_exist'), '', 400);
+        // if ($ticket->time_bookings_count > 0) {
+        if (!$ticket->is_show_delete_but) {
+            // return ApiHelper::response($status, __('messages.ticket.delete_ticket_not_allowed_because_time_bookings_exist'), '', 400);
+            return ApiHelper::response($status, __('messages.ticket.delete_ticket_not_allowed_because_time_bookings_exist_or_any_action_already_done_dev_count_not_zero'), '', 400);
         }
 
         $task = $this->asanaService->deleteTask($ticket->asana_task_id);
@@ -1030,7 +1057,7 @@ class TicketController extends Controller
             $status = false;
             $message = __('messages.something_went_wrong');
             $statusCode = 500;
-            Log::info($e->getMessage());
+            logger()->error($e);
         }
         return ApiHelper::response($status, $message, '', $statusCode);
     }

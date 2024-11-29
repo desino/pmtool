@@ -6,6 +6,7 @@ use App\Models\Client;
 use App\Models\Functionality;
 use App\Models\Initiative;
 use App\Models\InitiativeEnvironment;
+use App\Models\Logging;
 use App\Models\Planning;
 use App\Models\PlanningAssignment;
 use App\Models\Project;
@@ -19,6 +20,7 @@ use App\Observers\ClientObserver;
 use App\Observers\FunctionalityObserver;
 use App\Observers\InitiativeEnvironmentObserver;
 use App\Observers\InitiativeObserver;
+use App\Observers\LoggingObserver;
 use App\Observers\PlanningAssignmentObserver;
 use App\Observers\PlanningObserver;
 use App\Observers\ProjectObserver;
@@ -65,6 +67,7 @@ class AppServiceProvider extends ServiceProvider
         TimeBooking::observe(TimeBookingObserver::class);
         PlanningAssignment::observe(PlanningAssignmentObserver::class);
         Planning::observe(PlanningObserver::class);
+        Logging::observe(LoggingObserver::class);
         Event::listen(
             SocialiteWasCalled::class,
             GraphExtendSocialite::class . '@handle',

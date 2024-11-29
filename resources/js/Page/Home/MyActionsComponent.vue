@@ -3,7 +3,7 @@
         <div class="card-header bg-desino text-white text-center fw-bold fs-4">
             {{ $t('home.my_actions.title') }}
         </div>
-        <div class="card-body p-0">
+        <div class="card-body px-0 py-1">
             <ul class="list-group list-group-flush">
                 <li v-if="initiatives.length > 0" v-for="initiative in initiatives" :key="initiative.id"
                     class="list-group-item list-group-item-action" role="button" @click="openMyTickets(initiative)"
@@ -21,6 +21,11 @@
                                     }}</span>
                             </div>
                         </div>
+                    </div>
+                </li>
+                <li v-else class="list-group-item">
+                    <div class="w-100 fst-italic small text-secondary">
+                        {{ $t('No actionable tickets for you.') }}
                     </div>
                 </li>
             </ul>

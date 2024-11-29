@@ -64,12 +64,15 @@ class PlanningController extends Controller
             'plannings.hours',
             'planning_assignments.initiative_id',
             'initiatives.name as initiative_name',
+            'planning_assignments.project_id',
+            'projects.name as project_name',
             'planning_assignments.user_id',
             'users.name as user_name',
             DB::raw('WEEK(plannings.planning_date) as week')
         )
             ->join('planning_assignments', 'planning_assignments.id', 'plannings.planning_assignment_id')
             ->join('initiatives', 'initiatives.id', 'planning_assignments.initiative_id')
+            ->join('projects', 'projects.id', 'planning_assignments.project_id')
             ->join('users', 'users.id', 'planning_assignments.user_id')
             ->whereBetween('plannings.planning_date', [$startWeekDate, $endWeekDate])
             ->orderBy('id')
@@ -80,21 +83,32 @@ class PlanningController extends Controller
         foreach ($groupByPlanningInitiative as $groupByPlanningInitiativeKey => $groupByPlanningInitiativeValue) {
             $initiativeData = $groupByPlanningInitiativeValue->firstWhere('initiative_id', $groupByPlanningInitiativeKey);
 
-            $initiativeUsersArray = [];
-            $groupByPlanningInitiativeUsers = $groupByPlanningInitiativeValue->groupBy('user_id');
-            foreach ($groupByPlanningInitiativeUsers as $groupByPlanningInitiativeUsersKey => $groupByPlanningInitiativeUsersValue) {
-                $userData = $groupByPlanningInitiativeUsersValue->firstWhere('user_id', $groupByPlanningInitiativeUsersKey);
-                $userHoursPerWeek = [];
-                foreach ($loadWeeks as $loadWeek) {
-                    $hour = $groupByPlanningInitiativeUsersValue->where('planning_date', $loadWeek['date'])->sum('hours');
-                    $userHoursPerWeek[$loadWeek['date']] = [
-                        'hours' => $hour > 0 ? $hour : '',
+            $initiativeProjectsArray = [];
+            $groupByPlanningInitiativeProjects = $groupByPlanningInitiativeValue->groupBy('project_id');
+            foreach ($groupByPlanningInitiativeProjects as $groupByPlanningInitiativeProjectsKey => $groupByPlanningInitiativeProjectsValue) {
+                $projectData = $groupByPlanningInitiativeProjectsValue->firstWhere('project_id', $groupByPlanningInitiativeProjectsKey);
+
+                $initiativeUsersArray = [];
+                $groupByPlanningInitiativeUsers = $groupByPlanningInitiativeProjectsValue->groupBy('user_id');
+                foreach ($groupByPlanningInitiativeUsers as $groupByPlanningInitiativeUsersKey => $groupByPlanningInitiativeUsersValue) {
+                    $userData = $groupByPlanningInitiativeUsersValue->firstWhere('user_id', $groupByPlanningInitiativeUsersKey);
+                    $userHoursPerWeek = [];
+                    foreach ($loadWeeks as $loadWeek) {
+                        $hour = $groupByPlanningInitiativeUsersValue->where('planning_date', $loadWeek['date'])->sum('hours');
+                        $userHoursPerWeek[$loadWeek['date']] = [
+                            'hours' => $hour > 0 ? $hour : '',
+                        ];
+                    }
+                    $initiativeUsersArray[] = [
+                        'id' => $userData->user_id,
+                        'name' => $userData->user_name,
+                        'hours_per_week' => $userHoursPerWeek,
                     ];
                 }
-                $initiativeUsersArray[] = [
-                    'id' => $userData->user_id,
-                    'name' => $userData->user_name,
-                    'hours_per_week' => $userHoursPerWeek,
+                $initiativeProjectsArray[] = [
+                    'project_id' => $projectData->project_id,
+                    'project_name' => $projectData->project_name,
+                    'users' => $initiativeUsersArray
                 ];
             }
 
@@ -114,7 +128,8 @@ class PlanningController extends Controller
                 'default_row_name' => '',
                 'initiative_id' => $initiativeData->initiative_id,
                 'initiative_name' => $initiativeData->initiative_name,
-                'users' => $initiativeUsersArray,
+                // 'users' => $initiativeUsersArray,
+                'projects' => $initiativeProjectsArray,
             ];
         }
 
@@ -124,18 +139,26 @@ class PlanningController extends Controller
             'hours_per_week' => []
         ];
 
+        $projectArray = [
+            'project_id' => '',
+            'project_name' => '',
+            'users' => [$userArray]
+        ];
+
         $planningTotalRow = [
             'default_row_name' => 'heder_total',
             'initiative_id' => '',
             'initiative_name' => 'Total',
-            'users' => [$userArray],
+            'projects' => [$projectArray],
+            // 'users' => [$userArray],
         ];
 
         $planNewInitiativesRow = [
             'default_row_name' => 'plan_new_initiative',
             'initiative_id' => '',
             'initiative_name' => 'Plan New Initiative',
-            'users' => [$userArray],
+            'projects' => [$projectArray],
+            // 'users' => [$userArray],
         ];
 
         $planningTotalRowHoursPerWeek = [];
@@ -148,8 +171,8 @@ class PlanningController extends Controller
                 'hours' => 0
             ];
         }
-        $planningTotalRow['users'][0]['hours_per_week'] = $planningTotalRowHoursPerWeek;
-        $planNewInitiativesRow['users'][0]['hours_per_week'] = $planningNewInitiativeRowHoursPerWeek;
+        $planningTotalRow['projects'][0]['users'][0]['hours_per_week'] = $planningTotalRowHoursPerWeek;
+        $planNewInitiativesRow['projects'][0]['users'][0]['hours_per_week'] = $planningNewInitiativeRowHoursPerWeek;
 
         $planningData = $planningUsersRows;
 
@@ -167,6 +190,7 @@ class PlanningController extends Controller
     {
         $retData = [
             'initiatives' => PlanningService::getInitiatives(),
+            'projects' => PlanningService::getProjectsBasedOnInitiatives(),
             'users' => PlanningService::getUsers(),
         ];
         return ApiHelper::response(true, '', $retData, 200);
@@ -190,21 +214,25 @@ class PlanningController extends Controller
         $statusCode = 200;
         DB::beginTransaction();
         try {
+            $notDeletePlanningAssignmentIds = [];
             foreach ($requestData as $planning) {
                 $planningAssignmentUpdateCondition = [
                     'initiative_id' => $planning['initiative_id'],
+                    'project_id' => $planning['project_id'],
                     'user_id' => $planning['user_id']
                 ];
                 $planningAssignmentInsertData = [
                     'initiative_id' => $planning['initiative_id'],
+                    'project_id' => $planning['project_id'],
                     'user_id' => $planning['user_id'],
                 ];
                 $planningAssignment = PlanningAssignment::updateOrCreate(
                     $planningAssignmentUpdateCondition,
                     $planningAssignmentInsertData
                 );
+                $notDeletePlanningAssignmentIds[] = $planningAssignment->id;
 
-                $deletePlanningIds = [];
+                $notDeletePlanningIds = [];
                 foreach ($planning['hours_per_week'] as $week) {
                     $planning = Planning::updateOrCreate(
                         [
@@ -217,11 +245,14 @@ class PlanningController extends Controller
                             'hours' => $week['hours']
                         ]
                     );
-                    $deletePlanningIds[] = $planning->id;
+                    $notDeletePlanningIds[] = $planning->id;
                 }
-                if (count($deletePlanningIds) > 0) {
-                    Planning::whereNotIn('id', $deletePlanningIds)->where('planning_assignment_id', $planningAssignment->id)->delete();
+                if (count($notDeletePlanningIds) > 0) {
+                    Planning::whereNotIn('id', $notDeletePlanningIds)->where('planning_assignment_id', $planningAssignment->id)->delete();
                 }
+            }
+            if (count($notDeletePlanningAssignmentIds) > 0) {
+                PlanningAssignment::whereNotIn('id', $notDeletePlanningAssignmentIds)->delete();
             }
             DB::commit();
         } catch (\Exception $e) {
@@ -229,8 +260,17 @@ class PlanningController extends Controller
             $status = false;
             $message = __('messages.something_went_wrong');
             $statusCode = 500;
-            Log::info($e->getMessage());
+            logger()->error($e);
         }
         return ApiHelper::response($status, $message, '', $statusCode);
+    }
+
+    public function fetchProjects(Request $request)
+    {
+
+        $retData = [
+            'projects' => PlanningService::getProjectsBasedOnInitiatives($request->get('initiative_id')),
+        ];
+        return ApiHelper::response(true, '', $retData, 200);
     }
 }

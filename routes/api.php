@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ActivityLogsController;
 use App\Http\Controllers\Api\AllTicketsWithoutInitiativeController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\SocialiteController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Api\DeveloperWorkloadController;
 use App\Http\Controllers\Api\HeaderController;
 use App\Http\Controllers\Api\HomeMyActionsController;
 use App\Http\Controllers\Api\InitiativeController;
+use App\Http\Controllers\Api\InitiativeOverviewController;
 use App\Http\Controllers\Api\MyTicketController;
 use App\Http\Controllers\Api\OpportunityController;
 use App\Http\Controllers\Api\PlanningController;
@@ -154,6 +156,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', 'index');
         Route::get('/get-planning-initial-data', 'getPlanningInitialData');
         Route::post('/store-planning', 'storePlanning');
+        Route::get('/fetch-projects', 'fetchProjects');
     });
 
     Route::controller(TimeMappingController::class)->prefix('time-mapping')->group(function () {
@@ -172,6 +175,16 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::controller(DeveloperWorkloadController::class)->prefix('developer-workload')->group(function () {
         Route::get('/', 'index');
+        Route::get('get-developer-workload-ticket-modal-data', 'getDeveloperWorkloadTicketModalData');
+    });
+
+    Route::controller(InitiativeOverviewController::class)->prefix('initiative-overview')->group(function () {
+        Route::get('/', 'index');
+    });
+
+    Route::controller(ActivityLogsController::class)->prefix('activity-logs')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/get-initiative-data-for-activity-logs', 'getInitiativeDataForActivityLogs');
     });
 });
 

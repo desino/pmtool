@@ -20,13 +20,13 @@
                     </div>
                 </div>
                 <div class="modal-footer border-0 p-0 justify-content-center">
-                    <div class="row w-100 g-1">
-                        <div class="col-4 col-md-4 col-lg-6">
+                    <div class="row w-100 g-1 align-items-center">
+                        <div class="col-6">
                             <button class="btn btn-desino w-100 border-0" type="submit">
                                 {{ $t('task_detail.create_testcase_submit_btn_text') }}
                             </button>
                         </div>
-                        <div class="col-4 col-md-4 col-lg-6">
+                        <div class="col-6">
                             <button class="btn btn-danger w-100 border-0" @click="hideModal" data-bs-dismiss="modal"
                                 type="button">
                                 <i class="bi bi-x-lg"></i>

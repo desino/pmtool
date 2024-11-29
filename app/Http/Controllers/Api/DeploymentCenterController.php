@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Initiative;
+use App\Models\Logging;
 use App\Models\Release;
 use App\Models\ReleaseTicket;
 use App\Models\Ticket;
@@ -103,9 +104,10 @@ class DeploymentCenterController extends Controller
         $message = __('message.home.deployment_center.test_deployment.update_status_success');
         $statusCode = 200;
         try {
-            Ticket::whereIn('id', $request->input('ticketIds'))->update(['status' => Ticket::getStatusOngoing()]);
             $tickets = Ticket::whereIn('id', $request->input('ticketIds'))->get();
             foreach ($tickets as $ticket) {
+                $ticket->status = Ticket::getStatusOngoing();
+                $ticket->save();
                 TicketService::createMacroStatusAndUpdateTicket($ticket);
             }
             DB::commit();
@@ -114,7 +116,7 @@ class DeploymentCenterController extends Controller
             $status = false;
             $message = __('messages.something_went_wrong');
             $statusCode = 500;
-            Log::info($e->getMessage());
+            logger()->error($e);
         }
         return ApiHelper::response($status, $message, '', $statusCode);
     }
@@ -188,10 +190,12 @@ class DeploymentCenterController extends Controller
         $statusCode = 200;
         DB::beginTransaction();
         try {
-            Ticket::whereIn('id', $request->input('ticketIds'))->update(['status' => Ticket::getStatusOngoing()]);
             $tickets = Ticket::whereIn('id', $request->input('ticketIds'))->get();
             foreach ($tickets as $ticket) {
+                $ticket->status = Ticket::getStatusOngoing();
+                $ticket->save();
                 TicketService::createMacroStatusAndUpdateTicket($ticket);
+                TicketService::storeLogging($ticket, Logging::ACTIVITY_TYPE_DEPLOYMENT);
             }
             DB::commit();
         } catch (\Exception $e) {
@@ -199,7 +203,7 @@ class DeploymentCenterController extends Controller
             $status = false;
             $message = __('messages.something_went_wrong');
             $statusCode = 500;
-            Log::info($e->getMessage());
+            logger()->error($e);
         }
         return ApiHelper::response($status, $message, '', $statusCode);
     }
@@ -288,20 +292,22 @@ class DeploymentCenterController extends Controller
         $statusCode = 200;
         DB::beginTransaction();
         try {
-            Ticket::whereIn('id', $request->input('ticketIds'))->update(['status' => Ticket::getStatusDone()]);
-            $release->update(['status' => Release::PROCESSED_RELEASE, 'processed_by' => Auth::id(), 'processed_at' => Carbon::now()]);
 
             $tickets = Ticket::whereIn('id', $request->input('ticketIds'))->get();
             foreach ($tickets as $ticket) {
+                $ticket->status = Ticket::getStatusDone();
+                $ticket->save();
                 TicketService::createMacroStatusAndUpdateTicket($ticket);
+                TicketService::storeLogging($ticket, Logging::ACTIVITY_TYPE_MARKED_AS_DONE);
             }
+            $release->update(['status' => Release::PROCESSED_RELEASE, 'processed_by' => Auth::id(), 'processed_at' => Carbon::now()]);
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
             $status = false;
             $message = __('messages.something_went_wrong');
             $statusCode = 500;
-            Log::info($e->getMessage());
+            logger()->error($e);
         }
         return ApiHelper::response($status, $message, '', $statusCode);
     }

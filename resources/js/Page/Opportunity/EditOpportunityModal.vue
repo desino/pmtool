@@ -10,20 +10,18 @@
                     <div class="row w-100">
                     </div>
 
-                    <div class="row w-100">
-                        <div class="col-4">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">{{
-                                    $t('edit_opportunity_modal_select_client_name')
+                    <div class="row g-1 w-100 align-items-center">
+                        <div class="col-12 col-md-6 col-lg-4 mb-3">
+                            <label class="form-label fw-bold">{{
+                                $t('edit_opportunity_modal_select_client_name')
                                 }} <strong class="text-danger">*</strong></label>
-                                <input type="text" v-model="formData.client_name" disabled
-                                    :class="{ 'is-invalid': errors.client_name }" class="form-control">
-                                <div v-if="errors.client_name" class="invalid-feedback">
-                                    <span v-for="(error, index) in errors.client_name" :key="index">{{ error }}</span>
-                                </div>
+                            <input type="text" v-model="formData.client_name" disabled
+                                :class="{ 'is-invalid': errors.client_name }" class="form-control">
+                            <div v-if="errors.client_name" class="invalid-feedback">
+                                <span v-for="(error, index) in errors.client_name" :key="index">{{ error }}</span>
                             </div>
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-12 col-md-6 col-lg-4 mb-3">
                             <label class="form-label fw-bold">{{ $t('edit_opportunity_modal_input_name') }}
                                 <strong class="text-danger">*</strong></label>
                             <input type="text" v-model="formData.name" :class="{ 'is-invalid': errors.name }"
@@ -32,7 +30,7 @@
                                 <span v-for="(error, index) in errors.name" :key="index">{{ error }}</span>
                             </div>
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-12 col-md-6 col-lg-4 mb-3">
                             <label class="form-label fw-bold">{{
                                 $t('edit_opportunity_modal_input_ballpark_development_hours') }} <strong
                                     class="text-danger">*</strong></label>
@@ -44,10 +42,7 @@
                                 </span>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row w-100">
-                        <div class="col-md-4 mb-3">
+                        <div class="col-12 col-lg-4 mb-3">
                             <label class="form-label fw-bold">
                                 {{ $t('create_initiative_modal_select_functional_owner') }}
                             </label>
@@ -64,7 +59,7 @@
                                     }}</span>
                             </div>
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-12 col-lg-4 mb-3">
                             <label class="form-label fw-bold">
                                 {{ $t('create_initiative_modal_select_technical_owner') }}
                             </label>
@@ -81,7 +76,7 @@
                                     }}</span>
                             </div>
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-12 col-lg-4 mb-3">
                             <label class="form-label fw-bold">
                                 {{ $t('create_initiative_modal_select_quality_owner') }}
                             </label>
@@ -115,7 +110,7 @@
                             <h6 class="mb-0">{{ $t('edit_opportunity_modal_card_header_sharepoint_link_text') }}</h6>
                         </div>
                         <div class="card-body">
-                            <div class="mb-3">
+                            <div class="w-100">
                                 <label class="form-label fw-bold">{{
                                     $t('edit_opportunity_modal_input_share_point_url') }}</label>
                                 <input type="text" v-model="formData.share_point_url"
@@ -123,7 +118,7 @@
                                 <div v-if="errors.share_point_url" class="invalid-feedback">
                                     <span v-for="(error, index) in errors.share_point_url" :key="index">{{
                                         error
-                                    }}</span>
+                                        }}</span>
                                 </div>
                             </div>
                         </div>
@@ -133,78 +128,78 @@
                         <div class="card-header">
                             <h6 class="mb-0">{{ $t('edit_opportunity_modal_card_header_servers_text') }}</h6>
                         </div>
-                        <div class="card-body">
-                            <div v-for="(environment, index) in formData.environments" :key="index">
-                                <div class="row w-100">
-                                    <div class="col-md-2 mb-3">
-                                        <label class="form-label fw-bold">{{
-                                            $t('edit_opportunity_modal_input_environment_server_type') }}</label>
-                                        <select v-model="environment.type" :class="{ 'is-invalid': errors.type }"
-                                            class="form-select">
-                                            <option value="">{{
-                                                $t('edit_opportunity_modal_input_environment_server_type_placeholder')
-                                            }}
-                                            </option>
-                                            <option v-for="serverType in serverTypes" :key="serverType.id"
-                                                :value="serverType.id">{{
-                                                    serverType.name }}
-                                            </option>
-                                        </select>
-                                        <div v-if="errors.type" class="invalid-feedback">
-                                            <span v-for="(error, index) in errors.type" :key="index">{{
-                                                error
-                                            }}</span>
+                        <div class="card-body p-1">
+                            <div class="w-100" >
+                                <ul class="list-group list-group-flush">
+                                    <li class="border-0 list-group-item py-3 px-1"
+                                        v-for="(environment, index) in formData.environments" :key="index" >
+                                        <div class="row g-1 w-100 align-items-center">
+                                            <div class="col-12">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" v-model="environment.desino_managed_fl"
+                                                        :class="{ 'is-invalid': errors.desino_managed_fl }" type="checkbox"
+                                                        :id="'desino_managed_fl' + index">
+                                                    <label class="form-check-label fw-bold" :for="'desino_managed_fl' + index">
+                                                        {{ $t('edit_opportunity_modal_input_desino_managed_fl') }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-md-6 col-lg-4 col-xl-2">
+                                                <select v-model="environment.type" :class="{ 'is-invalid': errors.type }"
+                                                    class="form-select">
+                                                    <option value="">{{
+                                                        $t('edit_opportunity_modal_input_environment_server_type_placeholder')
+                                                        }}
+                                                    </option>
+                                                    <option v-for="serverType in serverTypes" :key="serverType.id"
+                                                        :value="serverType.id">{{
+                                                            serverType.name }}
+                                                    </option>
+                                                </select>
+                                                <div v-if="errors.type" class="invalid-feedback">
+                                                    <span v-for="(error, index) in errors.type" :key="index">{{
+                                                        error
+                                                        }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-md-6 col-lg-8 col-xl-3">
+                                                <input type="text" v-model="environment.name"
+                                                    :class="{ 'is-invalid': errors[`environments.${index}.name`] }"
+                                                    class="form-control" :placeholder="$t('edit_opportunity_modal_input_environment_name')">
+                                                <div v-if="errors[`environments.${index}.name`]" class="invalid-feedback">
+                                                    <span v-for="(error, index) in errors[`environments.${index}.name`]"
+                                                        :key="index">{{
+                                                            error
+                                                        }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="col-10 col-md-10 col-lg-11 col-xl-6">
+                                                <input type="text" v-model="environment.url"
+                                                    :class="{ 'is-invalid': errors[`environments.${index}.url`] }"
+                                                    class="form-control" :placeholder="$t('edit_opportunity_modal_input_environment_url')">
+                                                <div v-if="errors[`environments.${index}.url`]" class="invalid-feedback">
+                                                    <span v-for="(error, index) in errors[`environments.${index}.url`]"
+                                                        :key="index">{{
+                                                            error
+                                                        }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-2 col-md-2 col-lg-1 col-xl-1">
+                                                <button v-show="formData.environments.length > 1" type="button"
+                                                    class="btn btn-danger border-0 w-100" @click="removeEnvironment(index)">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-2 mb-3">
-                                        <label class="form-label fw-bold">{{
-                                            $t('edit_opportunity_modal_input_environment_name') }} </label>
-                                        <input type="text" v-model="environment.name"
-                                            :class="{ 'is-invalid': errors[`environments.${index}.name`] }"
-                                            class="form-control">
-                                        <div v-if="errors[`environments.${index}.name`]" class="invalid-feedback">
-                                            <span v-for="(error, index) in errors[`environments.${index}.name`]"
-                                                :key="index">{{
-                                                    error
-                                                }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 mb-3">
-                                        <label class="form-label fw-bold">{{
-                                            $t('edit_opportunity_modal_input_environment_url') }}</label>
-                                        <input type="text" v-model="environment.url"
-                                            :class="{ 'is-invalid': errors[`environments.${index}.url`] }"
-                                            class="form-control">
-                                        <div v-if="errors[`environments.${index}.url`]" class="invalid-feedback">
-                                            <span v-for="(error, index) in errors[`environments.${index}.url`]"
-                                                :key="index">{{
-                                                    error
-                                                }}</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 mb-4 my-auto">
-                                        <div class="form-check">
-                                            <input class="form-check-input" v-model="environment.desino_managed_fl"
-                                                :class="{ 'is-invalid': errors.desino_managed_fl }" type="checkbox"
-                                                :id="'desino_managed_fl' + index">
-                                            <label class="form-check-label fw-bold" :for="'desino_managed_fl' + index">
-                                                {{ $t('edit_opportunity_modal_input_desino_managed_fl') }}
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2 mb-3 my-auto">
-                                        <button v-show="formData.environments.length > 1" type="button"
-                                            class="btn btn-danger mx-1" @click="removeEnvironment(index)">
-                                            {{ $t('edit_opportunity_modal_input_remove') }}
-                                        </button>
-                                        <button v-show="index === formData.environments.length - 1" type="button"
-                                            class="btn btn-desino mx-1" @click="addEnvironment(index)">
-                                            {{ $t('edit_opportunity_modal_input_add') }}
-                                        </button>
-                                    </div>
-                                </div>
+                                    </li>
+                                </ul>
                             </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="button" class="btn btn-desino border-0 w-100" @click="addEnvironment()">
+                                {{ $t('edit_opportunity_modal_input_add') }}
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -379,6 +374,13 @@ export default {
                 const initiativeModal = Modal.getInstance(editInitiativeModalElement);
                 if (initiativeModal) {
                     initiativeModal.hide();
+                }
+            }
+            const editInitiativeOverViewModalElement = document.getElementById('editInitiativeOverviewModal');
+            if (editInitiativeOverViewModalElement) {
+                const initiativeOverViewModal = Modal.getInstance(editInitiativeOverViewModalElement);
+                if (initiativeOverViewModal) {
+                    initiativeOverViewModal.hide();
                 }
             }
         }
