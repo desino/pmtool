@@ -4,13 +4,13 @@
         <ul class="list-group list-group-flush mb-3 mt-2">
             <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
                 <div class="row w-100 align-items-center">
-                    <div class="col-lg-3 col-md-6 fw-bold small ">
+                    <div class="col-lg-3 col-md-6 col-sm-6 col-6 fw-bold small ">
                         {{ $t('initiative_overview_list.name_text') }}
                     </div>
-                    <div class="col-lg-1 col-md-3 fw-bold small ">
+                    <div class="col-lg-1 col-md-3 col-sm-3 col-3 fw-bold small ">
                         {{ $t('initiative_overview_list.total_tickets_count_text') }}
                     </div>
-                    <div class="col-lg-2 fw-bold col-md-3 small ">
+                    <div class="col-lg-2 fw-bold col-md-3 col-sm-3 col-3 small ">
                         {{ $t('initiative_overview_list.visible_tickets_count_text') }}
                     </div>
                     <div class="col-lg-2 fw-bold small d-none d-lg-block">
@@ -31,32 +31,32 @@
                 class="border list-group-item p-1 list-group-item-action border-top-0">
                 <div class="row w-100 align-items-center" role="button"
                     @click="redirectInitiativeTicketsPage(initiative)">
-                    <div class="col-lg-3 col-md-6 small ">
+                    <div class="col-lg-3 col-md-6 col-sm-6 col-6 small ">
                         {{ initiative.client_initiative_name }}
                     </div>
-                    <div class="col-lg-1 col-md-3 small ">
+                    <div class="col-lg-1 col-md-3 col-sm-3 col-3 small ">
                         {{ initiative.total_ticket_count }}
                     </div>
-                    <div class="col-lg-2 col-md-3 small ">
+                    <div class="col-lg-2 col-md-3 col-sm-3 col-3 small ">
                         {{ initiative.visible_ticket_count }}
                     </div>
-                    <div class="col-lg-2 col-md-3 small text-center">
-                        <span class="d-lg-none d-block bg-desino fw-bold text-white py-1 rounded-top mt-2">
+                    <div class="col-lg-2 col-md-3 col-sm-3 col-3 small text-center">
+                        <span class="d-lg-none d-block bg-desino fw-bold text-white py-1 rounded-top mt-2 small">
                             {{ $t('initiative_overview_list.invisible_tickets_count_text') }}
                         </span>
                         {{ initiative.invisible_ticket_count }}
                     </div>
-                    <div class="col-lg-1 col-md-3 small text-center">
-                        <span class="d-lg-none d-block bg-desino fw-bold text-white py-1 rounded-top mt-2">
+                    <div class="col-lg-1 col-md-3 col-sm-3 col-3 small text-center">
+                        <span class="d-lg-none d-block bg-desino fw-bold text-white py-1 rounded-top mt-2 small">
                             {{ $t('initiative_overview_list.estimation_hours_text') }}
                         </span>
-                        <span class="badge rounded-3 bg-success-subtle text-success rounded-top mt-2">
+                        <span class="badge rounded-3 bg-success-subtle text-success rounded-top mt-2 small">
                             {{ initiative.total_ticket_estimation_hours ?? 0 }}
                             {{ $t('initiative_overview_list.hours_text') }}
                         </span>
                     </div>
-                    <div class="col-lg-2 col-md-3 small text-center">
-                        <span class="d-lg-none d-block bg-desino fw-bold text-white py-1 rounded-top mt-2">
+                    <div class="col-lg-2 col-md-3 col-sm-3 col-3 small text-center">
+                        <span class="d-lg-none d-block bg-desino fw-bold text-white py-1 rounded-top mt-2 small">
                             {{ $t('initiative_overview_list.visible_estimation_hours_text') }}
                         </span>
                         <span class="badge rounded-3 bg-success-subtle text-success ">
@@ -64,8 +64,8 @@
                             {{ $t('initiative_overview_list.hours_text') }}
                         </span>
                     </div>
-                    <div class="col-lg-1 col-md-3 small text-end text-center">
-                        <span class="d-lg-none d-block bg-desino fw-bold text-white py-1 rounded-top mt-2">
+                    <div class="col-lg-1 col-md-3 col-sm-3 col-3 small text-end text-center">
+                        <span class="d-lg-none d-block bg-desino fw-bold text-white py-1 rounded-top mt-2 small">
                             {{ $t('initiative_overview_list.action_text') }}
                         </span>
                         <a :title="$t('initiative_overview_list.edit_action_tooltip_text')" data-bs-placement="bottom"

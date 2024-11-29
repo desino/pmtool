@@ -45,23 +45,23 @@
                 </div>
             </div>
         </div>
-        <div class="w-100 mb-3">
+        <div class="w-100 mb-3 g-1">
             <ul class="list-group list-group-flush mb-3 mt-2">
                 <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
                     <div class="row w-100 align-items-center">
-                        <div class="col-lg-4 col-md-4 d-none d-md-block fw-bold small ">
+                        <div class="col-lg-4 col-md-6 col-8 fw-bold small ">
                             {{ $t('activity_logs_list.name_text') }}
                         </div>
-                        <div class="col-lg-2 col-md-2 d-none d-md-block fw-bold small ">
+                        <div class="col-lg-2 col-md-3 col-4 fw-bold small ">
                             {{ $t('activity_logs_list.activity_type_text') }}
                         </div>
-                        <div class="col-lg-2 col-md-2 d-none d-md-block fw-bold small ">
+                        <div class="col-lg-2 col-md-3 d-none d-lg-block d-md-block fw-bold small ">
                             {{ $t('activity_logs_list.activity_detail_text') }}
                         </div>
-                        <div class="col-lg-2 col-md-2 d-none d-md-block fw-bold small ">
+                        <div class="col-lg-2 d-none d-lg-block fw-bold small ">
                             {{ $t('activity_logs_list.user_text') }}
                         </div>
-                        <div class="col-lg-2 col-md-2 d-none d-md-block fw-bold small ">
+                        <div class="col-lg-2 d-none d-lg-block fw-bold small ">
                             {{ $t('activity_logs_list.date_time_text') }}
                         </div>
                     </div>
@@ -69,22 +69,32 @@
                 <li v-if="activityLogs.length > 0" v-for="(activityLog, index) in activityLogs" :key="index"
                     class="border list-group-item p-1 list-group-item-action border-top-0">
                     <div class="row w-100 align-items-center">
-                        <div class="col-lg-4 col-md-4 d-none d-md-block ">
+                        <div class="col-lg-4 col-md-6 col-8">
                             {{ activityLog?.ticket?.initiative?.client_initiative_name }}
                         </div>
-                        <div class="col-lg-2 col-md-2 d-none d-md-block ">
+                        <div class="col-lg-2 col-md-3 col-4">
                             {{ activityLog?.display_activity_type?.name }}
                         </div>
-                        <div class="col-lg-2 col-md-2 d-none d-md-block ">
-                            <span class="badge p-2 w-100 text-wrap"
+                        <div class="col-lg-2 col-md-3 col-4 text-center">
+                            <span
+                                class="d-lg-none d-md-none d-block bg-desino fw-bold text-white py-1 rounded-top mt-2 small">
+                                {{ $t('activity_logs_list.activity_detail_text') }}
+                            </span>
+                            <span class="badge p-2 mt-1 w-100 text-wrap"
                                 :class="activityLog?.display_activity_detail?.color">
                                 {{ activityLog?.display_activity_detail?.name }}
                             </span>
                         </div>
-                        <div class="col-lg-2 col-md-2 d-none d-md-block ">
+                        <div class="col-lg-2 col-md-6 col-4 text-center">
+                            <span class="d-lg-none d-block bg-desino fw-bold text-white py-1 rounded-top mt-2 small">
+                                {{ $t('activity_logs_list.user_text') }}
+                            </span>
                             {{ activityLog?.created_by?.name }}
                         </div>
-                        <div class="col-lg-2 col-md-2 d-none d-md-block ">
+                        <div class="col-lg-2 col-md-6 col-4 text-center">
+                            <span class="d-lg-none d-block bg-desino fw-bold text-white py-1 rounded-top mt-2 small">
+                                {{ $t('activity_logs_list.date_time_text') }}
+                            </span>
                             {{ activityLog?.display_created_at }}
                         </div>
                     </div>
