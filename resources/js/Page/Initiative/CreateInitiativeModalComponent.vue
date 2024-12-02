@@ -59,7 +59,7 @@
                         <div class="col-6">
                             <button type="submit" class="btn btn-desino w-100 border-0">{{
                                 $t('create_initiative_modal_submit_but_text')
-                                }}</button>
+                            }}</button>
                         </div>
                         <div class="col-6">
                             <button type="button" class="btn btn-danger w-100 border-0" data-bs-dismiss="modal">
@@ -134,7 +134,7 @@ export default {
         },
         clearMessages() {
             this.errors = {};
-            messageService.clearMessage();
+            messageService.clearMessage('modal');
         },
         hideModal() {
             const modalElement = document.getElementById('createInitiativeModal');

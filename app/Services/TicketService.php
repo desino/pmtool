@@ -371,6 +371,7 @@ class TicketService
             $selectedTicketActions[] = TicketAction::getActionDevelop();
         }
         $disabledTicketActions = [TicketAction::getActionDevelop()];
+        $maxDoneAction = collect([]);
         $disabledTicketActionUsers = [];
         if ($ticket && $ticket?->actions) {
             $disabledTicketActions = $ticket->actions->where(function ($q) {
@@ -379,11 +380,13 @@ class TicketService
             })->pluck('action')->toArray();
             $disabledTicketActions[] = TicketAction::getActionDevelop();
             $disabledTicketActionUsers = $ticket->actions->where('status', TicketAction::getStatusDone())->pluck('action')->toArray();
+            $maxDoneAction = $ticket?->actions->where('status', TicketAction::getStatusDone())->sortByDesc('action')->first();
         }
+
         foreach ($actions as &$action) {
             $action['action'] = $action['id'];
             $action['is_checked'] = in_array($action['id'], $selectedTicketActions);
-            $action['is_disabled'] = in_array($action['id'], $disabledTicketActions);
+            $action['is_disabled'] = in_array($action['id'], $disabledTicketActions) || ($maxDoneAction && $action['action'] < $maxDoneAction?->action);
             $action['is_user_select_box_disabled'] = in_array($action['id'], $disabledTicketActionUsers);
             $currentAction = [];
             if ($ticket && $ticket?->actions) {

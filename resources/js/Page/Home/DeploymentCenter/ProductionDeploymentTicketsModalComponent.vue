@@ -52,7 +52,7 @@
                         <div class="col-4 col-md-6 col-lg-6">
                             <button type="submit" :disabled="!isAllowProcess" class="btn btn-desino w-100 border-0">{{
                                 $t('home.deployment_center.production_deployment.ticket_modal.submit_but.text')
-                            }}</button>
+                                }}</button>
                         </div>
                         <div class="col-4 col-md-6 col-lg-6">
                             <button type="button" class="btn btn-danger w-100 border-0" data-bs-dismiss="modal">
@@ -203,7 +203,7 @@ export default {
         },
         clearMessages() {
             this.errors = {};
-            messageService.clearMessage();
+            messageService.clearMessage('modal');
         },
     },
     mounted() {

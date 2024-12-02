@@ -18,7 +18,7 @@
                                 class="form-select">
                                 <option value="">{{
                                     $t('time_mapping_for_assign_project.popup_project_select_placeholder_text')
-                                }}</option>
+                                    }}</option>
                                 <option v-for="project in projects" :key="project.id" :value="project.id">{{
                                     project.name }}
                                 </option>
@@ -128,7 +128,7 @@ export default {
         },
         clearMessages() {
             this.errors = {};
-            messageService.clearMessage();
+            messageService.clearMessage('modal');
         },
     }
 }

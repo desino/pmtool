@@ -24,16 +24,15 @@
                                 </div>
                             </div>
                         </li>
-                        <li class="border list-group-item p-1 list-group-item-action border-top-0" v-if="ticketList.length > 0"
-                            v-for="ticket in ticketList" :key="ticket.id">
+                        <li class="border list-group-item p-1 list-group-item-action border-top-0"
+                            v-if="ticketList.length > 0" v-for="ticket in ticketList" :key="ticket.id">
                             <div class="row g-1 w-100 align-items-center">
                                 <div class="col-1 col-md-1">
                                     <input class="form-check-input" type="checkbox"
                                         :id="'chk_test_deployment_ticket_' + ticket.id" v-model="ticket.isChecked"
                                         @change="handleSelectTestDeploymentTicket(ticket)">
                                 </div>
-                                <div class="col-6 col-md-8"
-                                    :for="'chk_test_deployment_ticket_' + ticket.id">
+                                <div class="col-6 col-md-8" :for="'chk_test_deployment_ticket_' + ticket.id">
                                     {{ ticket?.composed_name }}
                                     <router-link target="_blank"
                                         :to="{ name: 'task.detail', params: { initiative_id: ticket.initiative_id, ticket_id: ticket.id } }"
@@ -207,7 +206,7 @@ export default {
         },
         clearMessages() {
             this.errors = {};
-            messageService.clearMessage();
+            messageService.clearMessage('modal');
         },
     },
     mounted() {

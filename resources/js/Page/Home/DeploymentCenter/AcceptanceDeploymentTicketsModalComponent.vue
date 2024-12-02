@@ -210,7 +210,7 @@ export default {
         },
         clearMessages() {
             this.errors = {};
-            messageService.clearMessage();
+            messageService.clearMessage('modal');
         },
     },
     mounted() {

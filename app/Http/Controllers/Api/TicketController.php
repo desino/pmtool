@@ -172,7 +172,8 @@ class TicketController extends Controller
             return ApiHelper::response($status, __('messages.create_ticket.action_develop_not_exist'), '', 400);
         }
 
-        $ticketActionsCollect = collect($validateData['ticket_actions']);
+        // $ticketActionsCollect = collect($validateData['ticket_actions']);
+        $ticketActionsCollect = $ticket->actions;
         $filteredDoneActions = $ticketActionsCollect->where('is_checked', true)->where('status', TicketAction::getStatusDone())->sortByDesc('action');
         $filteredDoneMaxAction = $filteredDoneActions->first();
         $filterNewMaxAction = $ticketActionsCollect->where('is_checked', true)->whereNull('status')->sortBy('action')->first();
