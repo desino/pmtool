@@ -113,7 +113,6 @@ export default {
     methods: {
         ...mapActions(['setLoading']),
         formattedTimeBookingModalTitle() {
-            // return this.$t('ticket_detail_time_booking_modal.modal_title', { 'TICKET_NAME': `<span class='badge bg-secondary'>${this.ticket?.ticket_name}</span>` });
             return this.$t('ticket_detail_time_booking_modal.modal_title', { 'TICKET_NAME': `<span class='badge bg-secondary'>${(this.ticket_name)}</span>` });
         },
         getTimeBookingForTicketDetailData(ticketData) {

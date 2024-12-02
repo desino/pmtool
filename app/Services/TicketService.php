@@ -386,7 +386,7 @@ class TicketService
         foreach ($actions as &$action) {
             $action['action'] = $action['id'];
             $action['is_checked'] = in_array($action['id'], $selectedTicketActions);
-            $action['is_disabled'] = in_array($action['id'], $disabledTicketActions) || ($maxDoneAction && $action['action'] < $maxDoneAction?->action);
+            $action['is_disabled'] = in_array($action['id'], $disabledTicketActions) || ($ticket && $maxDoneAction && $action['action'] < $maxDoneAction?->action);
             $action['is_user_select_box_disabled'] = in_array($action['id'], $disabledTicketActionUsers);
             $currentAction = [];
             if ($ticket && $ticket?->actions) {
