@@ -2,8 +2,11 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content border-0">
             <div class="modal-header text-white bg-desino border-0 py-2 justify-content-center">
-                <h5 class="modal-title" id="timeBookingForTicketDetailModalLabel">
+                <!-- <h5 class="modal-title" id="timeBookingForTicketDetailModalLabel">
                     {{ $t('ticket_detail_time_booking_modal.modal_title') }}
+                </h5> -->
+                <h5 class="modal-title" id="timeBookingForTicketDetailModalLabel"
+                    v-html="formattedTimeBookingModalTitle()">
                 </h5>
             </div>
             <form @submit.prevent="storeTimeBookingForTicketDetail">
@@ -100,6 +103,7 @@ export default {
                 comments: '',
                 booked_date: new Date(),
             },
+            ticket_name: "",
             submitButtonClickedValue: '',
             showErrorMessage: "",
             errors: {},
@@ -108,10 +112,15 @@ export default {
     },
     methods: {
         ...mapActions(['setLoading']),
+        formattedTimeBookingModalTitle() {
+            // return this.$t('ticket_detail_time_booking_modal.modal_title', { 'TICKET_NAME': `<span class='badge bg-secondary'>${this.ticket?.ticket_name}</span>` });
+            return this.$t('ticket_detail_time_booking_modal.modal_title', { 'TICKET_NAME': `<span class='badge bg-secondary'>${(this.ticket_name)}</span>` });
+        },
         getTimeBookingForTicketDetailData(ticketData) {
             this.clearMessages();
             this.formData.initiative_id = ticketData.initiative_id;
             this.formData.ticket_id = ticketData.id;
+            this.ticket_name = ticketData.composed_name;
         },
         handleSubmitButtonClickForTicketDetailTimeBooking(buttonValue) {
             this.submitButtonClickedValue = buttonValue;
