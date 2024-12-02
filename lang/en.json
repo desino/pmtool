@@ -647,7 +647,7 @@
     "ticket_detail.confirm_alert.next_action_change_user_text": "Are you sure you want to change the next action user?",
     "ticket_detail.confirm_alert.current_action_change_status_title": "Change Status",
     "ticket_detail.confirm_alert.current_action_change_status_text": "Are you sure you want to mark this action as done?",
-    "ticket_detail.confirm_alert.current_previous_action_status_text": "Move back ticket to previous action?",
+    "ticket_detail.confirm_alert.current_previous_action_status_text": "Move back ticket to previous action: {PREVIOUS_ACTION_NAME}?",
     "home.deployment_center.title": "Deployment Center",
     "home.deployment_center.production_deployment.title": "Production Deployment",
     "home.deployment_center.acceptance_deployment.title": "Acceptance Deployment",

@@ -703,10 +703,14 @@ export default {
             if (!this.ticketData.is_show_pre_action_but) {
                 return false;
             }
+
+            const previousActionNameForSWAL = this.$t('ticket_detail.confirm_alert.current_previous_action_status_text', {
+                'PREVIOUS_ACTION_NAME': `<span class='badge bg-secondary'>${action?.action_name}</span>`
+            });
+
             this.selected_previous_action_id = action.action;
             this.$swal({
-                // title: this.$t('ticket_detail.confirm_alert.current_action_change_status_title'),
-                title: this.$t('ticket_detail.confirm_alert.current_previous_action_status_text'),
+                title: previousActionNameForSWAL,
                 showCancelButton: true,
                 confirmButtonColor: '#1e6abf',
                 cancelButtonColor: '#d33',
