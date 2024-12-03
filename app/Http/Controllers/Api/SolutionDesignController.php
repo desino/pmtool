@@ -59,6 +59,7 @@ class SolutionDesignController extends Controller
         }
         $sectionsWithFunctionalities = SolutionDesignService::getSectionsWithFunctionalitiesForDownloadList($request);
 
+
         $pdfTitle = trans('messages.solution_design_pdf_title', ['INITIATIVE_NAME' => $initiative->name]);
         $pdf = new MytcpdfService();
         $pdf->SetTitle($pdfTitle);
@@ -89,7 +90,8 @@ class SolutionDesignController extends Controller
         $fontname = \TCPDF_FONTS::addTTFfont(public_path() . '/fonts/Nunito/Nunito-BoldItalic.ttf', 'TrueTypeUnicode');
         $pdf->SetFont($fontname);
 
-        $pdf->data = compact('initiative');
+        $template = $initiative->template;
+        $pdf->data = compact('initiative', 'template');
 
 
         $coverHtml = view('solution-design-pdf.cover_html', compact('initiative'))->render();
@@ -98,19 +100,19 @@ class SolutionDesignController extends Controller
         $pdf->SetMargins(0, 0, 0);
         $pdf->AddPage();
         $pdf->Rect(0, 0, $pdf->getPageWidth(), $pdf->getPageHeight() - 17, 'DF', array('width' => 0),  array(61, 98, 166));
-        $img_file = public_path() . '/images/pdf_cover2.png';
+        $img_file = public_path() . '/images/default_pdf/pdf_cover2.png';
         $pdf->Image($img_file, 0, 50, 90);
         $pdf->writeHTMLCell(0, 0, 95, 72, $coverHtml);
 
         $pdf->SetMargins(0, 30, 0);
         $pdf->setPrintHeader(true);
 
-        $solutionDesignTableContentHTML = view('solution-design-pdf.table_content_html', compact('sectionsWithFunctionalities'));
+        $solutionDesignTableContentHTML = view('solution-design-pdf.table_content_html', compact('sectionsWithFunctionalities', 'template'));
         $pdf->AddPage();
         $pdf->WriteHTML($solutionDesignTableContentHTML);
 
         foreach ($sectionsWithFunctionalities as $sectionsWithFunctionality) {
-            $pdfHtml = view('solution-design-pdf.solution_design_pdf_html', compact('sectionsWithFunctionality'));
+            $pdfHtml = view('solution-design-pdf.solution_design_pdf_html', compact('sectionsWithFunctionality', 'template'));
             $pdf->AddPage();
             $pdf->WriteHTML($pdfHtml, true, 0, true, 0);
         }

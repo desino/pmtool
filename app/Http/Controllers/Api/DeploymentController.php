@@ -138,9 +138,10 @@ class DeploymentController extends Controller
         $fontname = \TCPDF_FONTS::addTTFfont(public_path() . '/fonts/Nunito/Nunito-BoldItalic.ttf', 'TrueTypeUnicode');
         $pdf->SetFont($fontname);
 
-        $pdf->data = compact('release', 'initiative');
+        $template = $initiative->template;
+        $pdf->data = compact('release', 'initiative', 'template');
 
-        $coverHtml = view('deployment.release-note-pdf.cover_html', compact('initiative', 'release'))->render();
+        $coverHtml = view('deployment.release-note-pdf.cover_html', compact('initiative', 'release', 'template'))->render();
 
         $pdf->setPrintHeader(false);
         $pdf->SetMargins(0, 0, 0);
@@ -154,12 +155,12 @@ class DeploymentController extends Controller
         $pdf->setPrintHeader(true);
 
         $tickets = $release->tickets;
-        $tableContentHTML = view('deployment.release-note-pdf.table_content_html', compact('tickets'));
+        $tableContentHTML = view('deployment.release-note-pdf.table_content_html', compact('tickets', 'template'));
         $pdf->AddPage();
         $pdf->WriteHTML($tableContentHTML);
 
         foreach ($tickets as $ticket) {
-            $pdfHtml = view('deployment.release-note-pdf.main_content_pdf_html', compact('ticket'));
+            $pdfHtml = view('deployment.release-note-pdf.main_content_pdf_html', compact('ticket', 'template'));
             $pdf->AddPage();
             $pdf->WriteHTML($pdfHtml, true, 0, true, 0);
         }
@@ -239,9 +240,10 @@ class DeploymentController extends Controller
         $fontname = \TCPDF_FONTS::addTTFfont(public_path() . '/fonts/Nunito/Nunito-BoldItalic.ttf', 'TrueTypeUnicode');
         $pdf->SetFont($fontname);
 
-        $pdf->data = compact('initiative', 'release');
+        $template = $initiative->template;
+        $pdf->data = compact('initiative', 'release', 'template');
 
-        $coverHtml = view('deployment.test-case-pdf.cover_html', compact('initiative', 'release'))->render();
+        $coverHtml = view('deployment.test-case-pdf.cover_html', compact('initiative', 'release', 'template'))->render();
 
         $pdf->setPrintHeader(false);
         $pdf->SetMargins(0, 0, 0);
@@ -256,12 +258,12 @@ class DeploymentController extends Controller
 
         $tickets = $release->tickets;
 
-        $tableContentHTML = view('deployment.test-case-pdf.table_content_html', compact('tickets'));
+        $tableContentHTML = view('deployment.test-case-pdf.table_content_html', compact('tickets', 'template'));
         $pdf->AddPage();
         $pdf->WriteHTML($tableContentHTML);
 
         foreach ($tickets as $ticket) {
-            $pdfHtml = view('deployment.test-case-pdf.main_content_pdf_html', compact('ticket'));
+            $pdfHtml = view('deployment.test-case-pdf.main_content_pdf_html', compact('ticket', 'template'));
             $pdf->AddPage();
             $pdf->WriteHTML($pdfHtml, true, 0, true, 0);
         }

@@ -46,6 +46,11 @@ class Initiative extends Model
         return $this->hasOne(Project::class);
     }
 
+    public function template()
+    {
+        return $this->belongsTo(Template::class);
+    }
+
     public function tickets()
     {
         return $this->hasMany(Ticket::class);
