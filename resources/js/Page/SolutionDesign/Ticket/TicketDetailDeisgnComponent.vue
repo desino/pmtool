@@ -151,8 +151,13 @@
             <ul id="custom-tabs-five-tab" class="nav nav-tabs border-bottom-0" role="tablist">
                 <li class="nav-item">
                     <a id="ticket_detail_tab" aria-controls="ticket_detail_tab" aria-selected="true"
-                        class="nav-link border active" data-bs-toggle="pill" href="#ticket_detail_tab_body"
-                        role="tab">{{ $t('ticket_details.task_details') }}</a>
+                        class="nav-link border active" data-bs-toggle="pill" href="#ticket_detail_description_body"
+                        role="tab">{{ $t('ticket_details.task_description') }}</a>
+                </li>
+                <li class="nav-item">
+                    <a id="ticket_detail_tab" aria-controls="ticket_detail_tab" aria-selected="false"
+                        class="nav-link border" data-bs-toggle="pill" href="#ticket_detail_tab_body" role="tab">{{
+                            $t('ticket_details.task_details') }}</a>
                 </li>
                 <li class="nav-item">
                     <a id="test_cases_tab" aria-controls="test_cases_tab" aria-selected="false" class="nav-link border"
@@ -175,8 +180,48 @@
                 </li>
             </ul>
             <div id="custom-tabs-five-tabContent" class="tab-content">
-                <div id="ticket_detail_tab_body" aria-labelledby="ticket_detail_tab_body"
+                <div id="ticket_detail_description_body" aria-labelledby="ticket_detail_description_body"
                     class="tab-pane fade active show" role="tabpanel">
+                    <div class="card mt-2">
+                        <div class="card-body">
+                            <p> {{ $t('ticket_details.description_body_text') }}</p>
+                            <div v-if="this.user?.is_admin">
+                                <TinyMceEditor v-model="taskDescriptionForm.description" :init="{
+                                    height: 500,
+                                    menubar: 'format',
+                                    plugins: [
+                                        'lists'
+                                    ],
+                                    toolbar: [
+                                        'undo redo | bold italic strikethrough | bullist numlist'
+                                    ],
+                                    menu: {
+                                        format: {
+                                            title: 'Format',
+                                            items: 'bold italic strikethrough code | formats | blocks | fonts | font_sizes | lineheight'
+                                        }
+                                    },
+                                    valid_elements: 'a[href|target=_blank],ol,ul,li,strong,em,code,u,img[src|alt|width|height],hr', // Valid elements
+                                    extended_valid_elements: 'a[href|target=_blank],ol,ul,li,strong,em,code,u,img[src|alt|width|height],hr',
+                                }" />
+                                <div v-if="errors.description" class="text-danger mt-2">
+                                    <span v-for="(error, index) in errors.description" :key="index">{{
+                                        error
+                                    }}</span>
+                                </div>
+                                <button class="btn w-100 btn-desino text-white fw-bold m-2 rounded"
+                                    @click="updateTaskDescription">
+                                    {{ $t('ticket_details.task_description_save_but_text') }}
+                                </button>
+                            </div>
+                            <div v-else>
+                                <div v-html="ticketData.description"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="ticket_detail_tab_body" aria-labelledby="ticket_detail_tab_body" class="tab-pane fade"
+                    role="tabpanel">
                     <div class="row w-100">
                         <div class="col-md-12 my-2">
                             <div class="card h-100">
@@ -258,7 +303,7 @@
                                                 <div v-if="test_case.observations">
                                                     <span class="bg-desino text-white rounded fw-bold p-2">{{
                                                         $t('ticket_detail_test_case_section_actual_behaviour')
-                                                        }}</span>
+                                                    }}</span>
                                                     <div class="p-2" v-html="test_case.observations">
                                                     </div>
                                                 </div>
@@ -337,7 +382,7 @@
                             <div v-if="errors.release_note" class="text-danger mt-2">
                                 <span v-for="(error, index) in errors.release_note" :key="index">{{
                                     error
-                                    }}</span>
+                                }}</span>
                             </div>
                             <button class="btn w-100 btn-desino text-white fw-bold m-2 rounded"
                                 @click="updateReleaseNote">
@@ -354,7 +399,7 @@
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">{{
                                         $t('ticket_details_input_dev_estimation_time')
-                                        }} <strong class="text-danger">*</strong>
+                                    }} <strong class="text-danger">*</strong>
                                     </label>
                                     <input v-model="estimatedHoursFormData.dev_estimation_time"
                                         :class="{ 'is-invalid': errors.dev_estimation_time }" class="form-control"
@@ -446,6 +491,7 @@ export default {
                 is_allow_dev_estimation_time: false,
                 user_actions_count: 0,
                 estimation_time: 0,
+                description: '',
             },
             currentActionFormData: {
                 ticket_id: '',
@@ -481,6 +527,9 @@ export default {
             previous_actions: [],
             copyLabel: "",
             copyLink: "",
+            taskDescriptionForm: {
+                description: '',
+            },
             errors: {},
             showMessage: true,
         };
@@ -553,6 +602,23 @@ export default {
                 this.handleError(error);
             }
         },
+        async updateTaskDescription() {
+            this.clearMessages();
+            try {
+                this.setLoading(true);
+                let data = {
+                    'description': this.taskDescriptionForm.description,
+                    'initiative_id': this.localInitiativeId,
+                    'ticket_id': this.localTicketId
+                }
+                const response = await ticketService.saveTaskDescription(data);
+                this.setData(response.content);
+                showToast(response.message, 'success');
+                this.setLoading(false);
+            } catch (error) {
+                this.handleError(error);
+            }
+        },
         showTestCaseModal(type = 'create', testCaseId = null, status = false) {
             let modalElement;
             if (type === 'create' || testCaseId === null) {
@@ -598,6 +664,7 @@ export default {
             this.ticketData.is_allow_dev_estimation_time = content.is_allow_dev_estimation_time;
             this.ticketData.is_disable_action_user = content.is_disable_action_user;
             this.ticketData.estimation_time = content.estimation_time;
+            this.ticketData.description = content.description;
             this.currentAction = content.current_action;
             this.currentActionFormData.user_id = content.current_action?.user_id;
             this.currentActionFormData.status = content.current_action?.status;
@@ -608,6 +675,7 @@ export default {
             this.previousActionFormData.user_id = content?.previous_action?.user_id;
             this.previousActionFormData.status = content.previous_action?.status;
             this.releaseNoteForm.release_note = content.release_note;
+            this.taskDescriptionForm.description = content.description;
             this.test_cases = content.test_cases;
             this.user_actions_count = content.actions_count;
 

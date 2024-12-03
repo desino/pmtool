@@ -12,6 +12,7 @@ const endpoints = {
     storeTicket: `${defaultPath}/store`,
     fetchTicket: `${defaultPath}/show/:ticket_id`,
     updateReleaseNote: `${defaultPath}/update-release-note/:ticket_id`,
+    saveTaskDescription: `${defaultPath}/save-task-description/:ticket_id`,
     fetchAllTicketForDropDown: `${defaultPath}/all-ticket`,
     getInitiativeProjectList: `${defaultPath}/get-initiative-project-list`,
     assignProject: `${defaultPath}/assign-project`,
@@ -52,6 +53,16 @@ const SolutionDesignService = {
     async updateReleaseNote(data) {
         try {
             const endpoint = endpoints.updateReleaseNote.replace(':initiative_id', data.initiative_id).replace(':ticket_id', data.ticket_id);
+            const response = await axiosRequest.post(endpoint, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async saveTaskDescription(data) {
+        try {
+            console.log('data :: ', data);
+            const endpoint = endpoints.saveTaskDescription.replace(':initiative_id', data.initiative_id).replace(':ticket_id', data.ticket_id);
             const response = await axiosRequest.post(endpoint, data);
             return response.data;
         } catch (error) {

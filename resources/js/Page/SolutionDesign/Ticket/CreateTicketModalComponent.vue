@@ -194,6 +194,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import GlobalMessage from './../../../components/GlobalMessage.vue';
 import messageService from '../../../services/messageService';
 import TicketService from '../../../services/TicketService';
@@ -211,6 +212,9 @@ export default {
     },
     props: {
         selected_initiative_id: Number,
+    },
+    computed: {
+        ...mapGetters(['user', 'currentInitiative']),
     },
     data() {
         return {
@@ -268,7 +272,6 @@ export default {
 
                 this.formData.initiative_id = this.selectedInitiativeId;
                 const response = await TicketService.storeTicket(this.formData);
-                // messageService.setMessage(response.data.message, 'success');
                 if (this.submitButtonClicked === 'create_close') {
                     this.hideModal();
                 }
@@ -280,7 +283,11 @@ export default {
                         );
                     }
                 }
-                this.setLoading(false);
+                await this.setLoading(false);
+                if ((this.submitButtonClicked === 'create_close' || this.submitButtonClicked === 'create_new') && (this.user?.is_admin || this.currentInitiative?.functional_owner_id === this.user?.id || this.currentInitiative?.technical_owner_id === this.user?.id)) {
+                    const ticketDetailRoute = this.$router.resolve({ name: 'task.detail', params: { initiative_id: response.content.ticket?.initiative_id, ticket_id: response.content.ticket?.id } });
+                    window.open(ticketDetailRoute.href, '_blank');
+                }
 
                 showToast(response.message, 'success');
                 this.resetForm();

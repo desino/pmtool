@@ -136,7 +136,7 @@ class TicketService
             $ticketAction = TicketAction::updateOrCreate($condition, $fieldsToUpdateOrCreate);
             $insertedOrUpdateIds[] = $ticketAction->id;
         }
-        if (!empty($insertedOrUpdateIds)) {
+        if (!empty($insertedOrUpdateIds) || empty($ticketActions)) {
             TicketAction::whereNotIn('id', $insertedOrUpdateIds)
                 ->where('ticket_id', $ticketId)
                 ->where('status', '!=', TicketAction::getStatusDone())
