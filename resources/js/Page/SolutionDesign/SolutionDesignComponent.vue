@@ -48,7 +48,7 @@
                                         <div v-if="errors.section_name" class="invalid-feedback ms-4">
                                             <span v-for="(error, index) in errors.section_name" :key="index">{{
                                                 error
-                                                }}</span>
+                                            }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -104,16 +104,19 @@
                                         <span>{{ functionality.display_name }}</span>
                                         <span class="ms-auto d-flex align-items-center">
                                             <a v-if="user?.is_admin" class="nav-link text-dark" href="javascript:"
+                                                data-bs-toggle="tooltip" data-bs-placement="bottom"
                                                 :title="$t('solution_design.functionality_form.actions_create_ticket_tooltip')"
                                                 @click.stop="showFunctionalityCreateTicketModal(functionality)">
                                                 <i class="bi bi-plus-circle mx-2"></i>
                                             </a>
                                             <a v-if="user?.is_admin" class="text-danger me-2" href="javascript:"
+                                                data-bs-toggle="tooltip" data-bs-placement="bottom"
                                                 :title="$t('solution_design.functionality_form.actions_delete_tooltip')"
                                                 @click.stop="deleteFunctionality(functionality)">
                                                 <i class="bi bi-trash3"></i>
                                             </a>
-                                            <span class="badge bg-secondary"
+                                            <span class="badge bg-secondary" data-bs-toggle="tooltip"
+                                                data-bs-placement="bottom"
                                                 :title="$t('solution_design.functionality_form.actions_open_tickets_count_tooltip')"
                                                 @click.stop="user?.is_admin && showFunctionalityDetailModal(functionality)">{{
                                                     functionality?.open_tickets_count
@@ -137,7 +140,7 @@
                         <div class="mb-3">
                             <label class="form-label fw-bold">{{
                                 $t('solution_design.functionality_form.name')
-                                }} <strong class="text-danger">*</strong>
+                            }} <strong class="text-danger">*</strong>
                             </label>
                             <input v-model="functionalityFormData.name" :class="{ 'is-invalid': errors.name }"
                                 class="form-control" placeholder="Enter value" type="text">
@@ -150,13 +153,13 @@
                         <div class="mb-3">
                             <label class="form-label fw-bold">{{
                                 $t('solution_design.functionality_form.section_name_select_box')
-                                }} <strong class="text-danger">*</strong>
+                            }} <strong class="text-danger">*</strong>
                             </label>
                             <select v-model="functionalityFormData.section_id" aria-label="Default select example"
                                 class="form-select" :class="{ 'is-invalid': errors.section_id }">
                                 <option value="">{{
                                     $t('solution_design.functionality_form.section_name_select_box_placeholder')
-                                    }}
+                                }}
                                 </option>
                                 <option v-for="section in sectionsWithFunctionalities" :key="section.id"
                                     :value="section.id">
@@ -172,7 +175,7 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">{{
                         $t('solution_design.functionality_form.description')
-                        }}</label>
+                    }}</label>
                     <TinyMceEditor v-model="functionalityFormData.description" />
                 </div>
                 <div class="mb-3">
@@ -233,7 +236,7 @@ import showToast from '../../utils/toasts';
 import eventBus from '../../eventBus';
 import draggable from 'vuedraggable';
 import { mapActions, mapGetters } from 'vuex';
-import { Modal } from "bootstrap";
+import { Modal, Tooltip } from "bootstrap";
 import CreateTicketModalComponent from './../../Page/SolutionDesign/Ticket/CreateTicketModalComponent.vue';
 import store from '../../store';
 
@@ -373,7 +376,8 @@ export default {
                 }
                 const { content } = await SolutionDesignService.getSectionsWithFunctionalities(passData);
                 this.sectionsWithFunctionalities = content;
-                hasValue ?? this.setLoading(false);
+                await hasValue ?? this.setLoading(false);
+                this.initializeTooltips();
             } catch (error) {
                 this.handleError(error);
             }
@@ -632,7 +636,13 @@ export default {
         objectInValueExistOrNot(obj) {
             const hasValue = Object.values(obj).some(value => value);
             return hasValue;
-        }
+        },
+        initializeTooltips() {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            tooltipTriggerList.forEach((tooltipTriggerEl) => {
+                new Tooltip(tooltipTriggerEl);
+            });
+        },
     },
     mounted() {
         this.fetchData();

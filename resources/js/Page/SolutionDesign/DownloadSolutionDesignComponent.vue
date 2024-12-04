@@ -12,7 +12,7 @@
                 </div>
             </div>
             <div class="col-md-2">
-                <button class="btn btn-desino" @click="downloadPDF"
+                <button class="btn btn-desino" @click="downloadPDF" data-bs-toggle="tooltip" data-bs-placement="bottom"
                     :title="$t('solution_design_download.but_title_text')">
                     <i class="bi bi-download"></i>
                 </button>
@@ -60,6 +60,7 @@ import eventBus from '../../eventBus';
 import { mapActions } from 'vuex';
 import messageService from '../../services/messageService';
 import store from '../../store';
+import { Modal, Tooltip } from 'bootstrap';
 export default {
     name: 'DownloadSolutionDesignComponent',
     mixins: [globalMixin],
@@ -155,6 +156,12 @@ export default {
             const hasValue = Object.values(obj).some(value => value);
             return hasValue;
         },
+        initializeTooltips() {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            tooltipTriggerList.forEach((tooltipTriggerEl) => {
+                new Tooltip(tooltipTriggerEl);
+            });
+        },
         handleError(error) {
             if (error.type === 'validation') {
                 this.errors = error.errors;
@@ -170,6 +177,7 @@ export default {
     },
     mounted() {
         this.fetchData();
+        this.initializeTooltips();
     },
     beforeRouteUpdate(to, from, next) {
         this.initiativeId = to.params.id;

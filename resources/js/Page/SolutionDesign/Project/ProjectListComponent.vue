@@ -33,7 +33,8 @@
                     </div>
                 </div>
             </li>
-            <li class="border list-group-item p-1 list-group-item-action border-top-0" v-if="projects.length > 0" v-for="project in projects">
+            <li class="border list-group-item p-1 list-group-item-action border-top-0" v-if="projects.length > 0"
+                v-for="project in projects">
                 <div class="row w-100 align-items-center">
                     <div class="col-lg-5 col-md-6 col-6">
                         {{ project.name }}
@@ -48,7 +49,8 @@
                         {{ project.tickets_count }}
                     </div>
                     <div class="col-lg-1 col-md-6 col-6 text-end">
-                        <a :title="$t('project.list.actions_edit_tooltip')" class="link-desino" href="javascript:"
+                        <a data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            :title="$t('project.list.actions_edit_tooltip')" class="link-desino" href="javascript:"
                             @click="editProject(project)">
                             <i class="bi bi-pencil-square"></i>
                         </a>
@@ -77,7 +79,7 @@ import { mapActions } from 'vuex';
 import PaginationComponent from './../../../components/PaginationComponent.vue';
 import showToast from './../../../utils/toasts';
 import EditProjectModalComponent from './EditProjectModalComponent.vue';
-import { Modal } from 'bootstrap';
+import { Modal, Tooltip } from 'bootstrap';
 import store from '../../../store';
 import eventBus from '../../../eventBus';
 export default {
@@ -119,7 +121,8 @@ export default {
                 }));
                 this.currentPage = currentPage;
                 this.totalPages = totalPages;
-                this.setLoading(false);
+                await this.setLoading(false);
+                this.initializeTooltips();
             } catch (error) {
                 this.handleError(error);
             }
@@ -159,6 +162,12 @@ export default {
                 const modal = new Modal(modalElement);
                 modal.show();
             }
+        },
+        initializeTooltips() {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            tooltipTriggerList.forEach((tooltipTriggerEl) => {
+                new Tooltip(tooltipTriggerEl);
+            });
         },
         handleError(error) {
             if (error.type === 'validation') {

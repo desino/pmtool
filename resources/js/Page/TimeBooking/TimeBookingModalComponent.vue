@@ -104,7 +104,8 @@
                                     {{ timeBooking.comments }}
                                 </div>
                                 <div class="col-md-3 py-2 text-end">
-                                    <a :title="$t('time_booking.modal.list_table.action_delete_text')"
+                                    <a data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                        :title="$t('time_booking.modal.list_table.action_delete_text')"
                                         class="text-danger me-2" href="javascript:"
                                         @click="handleDeleteTimeBooking(timeBooking)">
                                         <i class="bi bi-trash3"></i>
@@ -153,7 +154,7 @@ import GlobalMessage from '../../components/GlobalMessage.vue';
 import messageService from '../../services/messageService';
 import { mapActions, mapGetters } from 'vuex';
 import TimeBookingService from '../../services/TimeBookingService';
-import { Modal } from 'bootstrap';
+import { Modal, Tooltip } from 'bootstrap';
 
 export default {
     name: 'TimeBookingModalComponent',
@@ -249,7 +250,8 @@ export default {
                 this.timeBookings = timeBookings;
                 this.totalTimeBookingHours = totalTimeBookingHours;
                 this.projects = projects;
-                this.setLoading(false);
+                await this.setLoading(false);
+                this.initializeTooltips();
             } catch (error) {
                 this.handleError(error);
             }
@@ -321,6 +323,12 @@ export default {
                 }
             }).catch(() => {
 
+            });
+        },
+        initializeTooltips() {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            tooltipTriggerList.forEach((tooltipTriggerEl) => {
+                new Tooltip(tooltipTriggerEl);
             });
         },
         handleError(error) {

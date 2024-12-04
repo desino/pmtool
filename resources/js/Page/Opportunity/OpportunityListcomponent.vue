@@ -81,11 +81,13 @@
                             {{ opportunity.creation_date }}
                         </div>
                         <div class="col-xl-1 col-lg-2 col-md-2 col-12 text-start text-md-end">
-                            <a :title="$t('opportunity_list_table.actions_edit_tooltip')" class="text-desino me-2"
+                            <a data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                :title="$t('opportunity_list_table.actions_edit_tooltip')" class="text-desino me-2"
                                 href="javascript:" @click.stop="editOpportunity(opportunity)">
                                 <i class="bi bi-pencil-square"></i>
                             </a>
-                            <a :title="$t('opportunity_list_table.actions_lost_status_tooltip')"
+                            <a data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                :title="$t('opportunity_list_table.actions_lost_status_tooltip')"
                                 class="text-warning me-2" href="javascript:"
                                 @click.stop="updateStatusLostConfirmed(opportunity.id)">
                                 <i class="bi bi-hand-thumbs-down"></i>
@@ -128,7 +130,7 @@ import messageService from '../../services/messageService';
 import OpportunityService from '../../services/OpportunityService';
 import GlobalMessage from '../../components/GlobalMessage.vue';
 import EditOpportunityModalComponent from './EditOpportunityModal.vue';
-import { Modal } from 'bootstrap';
+import { Modal, Tooltip } from 'bootstrap';
 import showToast from '../../utils/toasts';
 import eventBus from './../../eventBus';
 import { mapActions } from 'vuex';
@@ -209,7 +211,8 @@ export default {
                 this.currentPage = content.opportunities.paginationInfo.current_page;
                 this.totalPages = content.opportunities.paginationInfo.last_page;
                 this.ballparkTotal = content.ballparkTotal;
-                this.setLoading(false);
+                await this.setLoading(false);
+                this.initializeTooltips();
             } catch (error) {
                 this.handleError(error);
             }
@@ -252,6 +255,12 @@ export default {
         redirectSolutionDesignPage(opportunity) {
             const solutionDesignRoute = this.$router.resolve({ name: 'solution-design', params: { id: opportunity.id } });
             window.open(solutionDesignRoute.href, '_blank');
+        },
+        initializeTooltips() {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            tooltipTriggerList.forEach((tooltipTriggerEl) => {
+                new Tooltip(tooltipTriggerEl);
+            });
         },
         handleError(error) {
             if (error.type === 'validation') {

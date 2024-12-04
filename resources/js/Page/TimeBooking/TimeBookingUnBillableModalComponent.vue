@@ -110,7 +110,8 @@
                                     {{ timeBooking.comments }}
                                 </div>
                                 <div class="col-md-1 py-2 text-end">
-                                    <a :title="$t('time_booking_un_billable.modal.list_table.action_delete_text')"
+                                    <a data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                        :title="$t('time_booking_un_billable.modal.list_table.action_delete_text')"
                                         class="text-danger me-2" href="javascript:"
                                         @click="handleDeleteTimeBooking(timeBooking)">
                                         <i class="bi bi-trash3"></i>
@@ -157,7 +158,7 @@
 
 <script>
 import { mapActions } from 'vuex';
-import { Modal } from 'bootstrap';
+import { Modal, Tooltip } from 'bootstrap';
 import messageService from '../../services/messageService';
 import GlobalMessage from '../../components/GlobalMessage.vue';
 import showToast from '../../utils/toasts';
@@ -218,7 +219,8 @@ export default {
                 const { content: { timeBookings, totalTimeBookingHours } } = await TimeBookingService.getTimeBookingUnBillableModalInitialData(passData);
                 this.timeBookings = timeBookings;
                 this.totalTimeBookingHours = totalTimeBookingHours;
-                this.setLoading(false);
+                await this.setLoading(false);
+                this.initializeTooltips();
             } catch (error) {
                 this.handleError(error);
             }
@@ -329,6 +331,12 @@ export default {
                 this.showErrorMessage = error.message
             }
             this.setLoading(false);
+        },
+        initializeTooltips() {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            tooltipTriggerList.forEach((tooltipTriggerEl) => {
+                new Tooltip(tooltipTriggerEl);
+            });
         },
         clearMessages() {
             this.errors = {};
