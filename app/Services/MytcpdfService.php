@@ -50,10 +50,11 @@ class MytcpdfService extends TCPDF
 	public function Footer()
 	{
 		$templateData = $this->data['template'];
-		$footerImagePath = public_path() . '/images/default_pdf/pdf_footer_logo.png';
+		$footerImagePath = public_path() . '/images/default_pdf/pdf_footer_logo2.png';
 		if ($templateData?->logo_footer != null && File::exists(public_path() . '/images/download_pdf/' . $templateData?->logo_footer)) {
 			$footerImagePath = public_path() . '/images/download_pdf/' . $templateData?->logo_footer;
 		}
+
 		// $image_file = public_path() . '/images/download_pdf/pdf_footer_logo2.png';
 		$image_file = $footerImagePath;
 		$this->Image($image_file, 70, $this->GetY() - 5, 90);
