@@ -31,31 +31,31 @@
                 class="border list-group-item p-1 list-group-item-action border-top-0">
                 <div class="row g-1 w-100 align-items-center" role="button"
                     @click="redirectInitiativeTicketsPage(initiative)">
-                    <div class="col-xl-5 col-lg-4 col-md-6 col-6 small ">
+                    <div class="col-xl-5 col-lg-4 col-md-6 col-6 ">
                         {{ initiative.client_initiative_name }}
                     </div>
-                    <div class="col-xl-1 col-lg-1 col-md-2 col-2 small text-center">
+                    <div class="col-xl-1 col-lg-1 col-md-2 col-2 text-center">
                         {{ initiative.total_ticket_count }}
                     </div>
-                    <div class="col-xl-1 col-lg-1 col-md-2 col-2 small text-center">
+                    <div class="col-xl-1 col-lg-1 col-md-2 col-2 text-center">
                         {{ initiative.visible_ticket_count }}
                     </div>
-                    <div class="col-xl-1 col-lg-1 col-md-2 col-2 small text-center">
+                    <div class="col-xl-1 col-lg-1 col-md-2 col-2 text-center">
                         {{ initiative.invisible_ticket_count }}
                     </div>
-                    <div class="col-xl-1 offset-lg-0 col-lg-2 offset-md-6 col-md-2 offset-6 col-2 small text-center">
+                    <div class="col-xl-1 offset-lg-0 col-lg-2 offset-md-6 col-md-2 offset-6 col-2 text-center">
                         <span class="badge rounded-3 bg-success-subtle text-success rounded-top mt-2 small">
                             {{ initiative.total_ticket_estimation_hours ?? 0 }}
                             {{ $t('initiative_overview_list.hours_text') }}
                         </span>
                     </div>
-                    <div class="col-xl-1 col-lg-2 col-md-2 col-2 small text-center">
+                    <div class="col-xl-1 col-lg-2 col-md-2 col-2 text-center">
                         <span class="badge rounded-3 bg-success-subtle text-success ">
                             {{ initiative.visible_ticket_estimation_hours ?? 0 }}
                             {{ $t('initiative_overview_list.hours_text') }}
                         </span>
                     </div>
-                    <div class="col-xl-2 col-lg-1 col-md-2 col-2 small text-end">
+                    <div class="col-xl-2 col-lg-1 col-md-2 col-2 text-end">
                         <a :title="$t('initiative_overview_list.edit_action_tooltip_text')" data-bs-placement="bottom"
                             data-bs-toggle="tooltip" class="text-desino me-1" href="javascript:"
                             @click.stop="editInitiativeOverview(initiative)">
