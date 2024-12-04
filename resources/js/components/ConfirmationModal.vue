@@ -1,13 +1,13 @@
 <template>
     <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content border-0">
                 <div class="modal-header text-white bg-desino border-0 py-2 justify-content-center">
                     <h5 class="modal-title" id="confirmationModalLabel">{{ title }}</h5>
                 </div>
                 <div class="modal-body">
-                    <div class="row w-100 g-1 text-center">
+                    <div class="row w-100 g-1">
                         <span class="fw-bold align-middle ">
                             {{ message }}
                         </span>

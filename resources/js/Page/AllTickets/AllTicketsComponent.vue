@@ -87,20 +87,12 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="w-100 p-1">
-                        <!-- <button class="btn btn-desino w-100" :disabled="selectedTickets.length === 0" type="button"
-                            @click="markAsVisibleInvisible(1)">
-                            {{ $t('ticket.mark_as_visible.button_text') }}
-                        </button> -->
                         <button class="btn btn-desino w-100" :disabled="selectedTickets.length === 0" type="button"
                             @click="showConfirmation('markAsVisibleConfirmation', markAsVisibleInvisible, 1)">
                             {{ $t('ticket.mark_as_visible.button_text') }}
                         </button>
                     </div>
                     <div class="w-100 p-1">
-                        <!-- <button class="btn btn-desino w-100" :disabled="selectedTickets.length === 0" type="button"
-                            @click="markAsVisibleInvisible(0)">
-                            {{ $t('ticket.mark_as_invisible.button_text') }}
-                        </button> -->
                         <button class="btn btn-desino w-100" :disabled="selectedTickets.length === 0" type="button"
                             @click="showConfirmation('markAsInvisibleConfirmation', markAsVisibleInvisible, 0)">
                             {{ $t('ticket.mark_as_invisible.button_text') }}
@@ -351,22 +343,20 @@ export default {
             });
         },
         showConfirmation(modalType, callback, callbackParam) {
-            if (modalType === 'addPriorityConfirmation' || modalType === 'removePriorityConfirmation') {
-                this.modalTitle = this.$t('all_ticket_without_initiative_list.priority.conformation_popup_title');
-                if (modalType === 'addPriorityConfirmation') {
-                    this.modalMessage = this.$t('all_ticket_without_initiative_list.add_priority.conformation_popup_text');
-                } else if (modalType === 'removePriorityConfirmation') {
-                    this.modalMessage = this.$t('all_ticket_without_initiative_list.remove_priority.conformation_popup_text');
-                }
+            if (modalType === 'addPriorityConfirmation') {
+                this.modalTitle = this.$t('all_ticket_without_initiative_list.add_priority.button_text');
+                this.modalMessage = this.$t('all_ticket_without_initiative_list.add_priority.conformation_popup_text');
+            } else if (modalType === 'removePriorityConfirmation') {
+                this.modalTitle = this.$t('ticket.remove_priority.button_text');
+                this.modalMessage = this.$t('all_ticket_without_initiative_list.remove_priority.conformation_popup_text');
             }
-            if (modalType === 'markAsVisibleConfirmation' || modalType === 'markAsInvisibleConfirmation') {
-                this.modalTitle = this.$t('all_ticket_without_initiative_list.visible.conformation_popup_title');
-                if (modalType === 'markAsVisibleConfirmation') {
-                    this.modalMessage = this.$t('all_ticket_without_initiative_list.is_visible.conformation_popup_text');
-                }
-                if (modalType === 'markAsInvisibleConfirmation') {
-                    this.modalMessage = this.$t('all_ticket_without_initiative_list.is_invisible.conformation_popup_text');
-                }
+            if (modalType === 'markAsVisibleConfirmation') {
+                this.modalTitle = this.$t('ticket.mark_as_visible.button_text');
+                this.modalMessage = this.$t('all_ticket_without_initiative_list.is_visible.conformation_popup_text');
+            }
+            if (modalType === 'markAsInvisibleConfirmation') {
+                this.modalTitle = this.$t('ticket.mark_as_invisible.button_text');
+                this.modalMessage = this.$t('all_ticket_without_initiative_list.is_invisible.conformation_popup_text');
             }
 
             this.modalConfirmCallback = () => callback(callbackParam);
