@@ -14,7 +14,7 @@
                         <div class="col-12 col-md-6 col-lg-6 mb-3">
                             <label class="form-label fw-bold">{{
                                 $t('edit_opportunity_modal_select_client_name')
-                                }} <strong class="text-danger">*</strong></label>
+                            }} <strong class="text-danger">*</strong></label>
                             <input type="text" v-model="formData.client_name" disabled
                                 :class="{ 'is-invalid': errors.client_name }" class="form-control">
                             <div v-if="errors.client_name" class="invalid-feedback">
@@ -135,7 +135,7 @@
                                 <div v-if="errors.share_point_url" class="invalid-feedback">
                                     <span v-for="(error, index) in errors.share_point_url" :key="index">{{
                                         error
-                                        }}</span>
+                                    }}</span>
                                 </div>
                             </div>
                         </div>
@@ -168,7 +168,7 @@
                                                     :class="{ 'is-invalid': errors.type }" class="form-select">
                                                     <option value="">{{
                                                         $t('edit_opportunity_modal_input_environment_server_type_placeholder')
-                                                        }}
+                                                    }}
                                                     </option>
                                                     <option v-for="serverType in serverTypes" :key="serverType.id"
                                                         :value="serverType.id">{{
@@ -178,7 +178,7 @@
                                                 <div v-if="errors.type" class="invalid-feedback">
                                                     <span v-for="(error, index) in errors.type" :key="index">{{
                                                         error
-                                                        }}</span>
+                                                    }}</span>
                                                 </div>
                                             </div>
                                             <div class="col-6 col-md-6 col-lg-8 col-xl-3">
@@ -299,7 +299,7 @@ export default {
             this.formData.client_id = opportunity.client_id;
             this.formData.name = opportunity.name;
             this.formData.ballpark_development_hours = opportunity.ballpark_development_hours;
-            this.formData.template_id = opportunity.template_id;
+            this.formData.template_id = opportunity.template_id ?? '';
             this.formData.is_sold = opportunity.status === 2 ?? false;
             this.formData.client_name = opportunity.client.name;
             this.formData.share_point_url = opportunity.share_point_url;
