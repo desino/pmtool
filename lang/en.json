@@ -855,7 +855,7 @@
     "initiative_overview_list.logs_action_text": "Logs",
     "initiative_overview_list.edit_action_tooltip_text": "Edit",
     "activity_logs.page_title": "Activity Logs",
-    "activity_logs_list.name_text": "Initiative",
+    "activity_logs_list.name_text": "Ticket",
     "activity_logs_list.activity_type_text": "Activity Type",
     "activity_logs_list.activity_detail_text": "Activity Detail",
     "activity_logs_list.user_text": "User",

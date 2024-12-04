@@ -24,7 +24,7 @@ class ActivityLogsController extends Controller
         $logging = Logging::select('*')
             ->with([
                 'ticket' => function ($query) {
-                    $query->select('id', 'name', 'initiative_id');
+                    $query->select('id', 'name', 'initiative_id', 'composed_name');
                 },
                 'createdBy'
             ])

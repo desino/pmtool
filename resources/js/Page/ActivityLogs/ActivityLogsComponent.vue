@@ -70,13 +70,16 @@
                     class="border list-group-item p-1 list-group-item-action border-top-0">
                     <div class="row g-1 w-100 align-items-center">
                         <div class="col-12 col-md-6 col-lg-4">
-                            {{ activityLog?.ticket?.initiative?.client_initiative_name }}
+                            <small class="badge bg-secondary">{{ activityLog?.ticket?.initiative?.name }}</small>
+                            {{ activityLog?.ticket?.composed_name }}
+                            <!-- {{ activityLog?.ticket?.initiative?.client_initiative_name }} -->
                         </div>
                         <div class="offset-1 col-5 offset-md-0 col-md-3 col-lg-2">
                             {{ activityLog?.display_activity_type?.name }}
                         </div>
                         <div class="col-6 col-md-3 col-lg-2 text-center">
-                            <span class="badge p-2 mt-1 w-100 text-wrap" :class="activityLog?.display_activity_detail?.color">
+                            <span class="badge p-2 mt-1 w-100 text-wrap"
+                                :class="activityLog?.display_activity_detail?.color">
                                 {{ activityLog?.display_activity_detail?.name }}
                             </span>
                         </div>
