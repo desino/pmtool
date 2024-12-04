@@ -6,6 +6,7 @@ use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Functionality;
 use App\Models\Release;
+use App\Models\Template;
 use App\Models\TestCase;
 use App\Services\InitiativeService;
 use Illuminate\Http\Request;
@@ -139,6 +140,10 @@ class DeploymentController extends Controller
         $pdf->SetFont($fontname);
 
         $template = $initiative->template;
+        $coverHtmlPageColor = array(61, 98, 166);
+        if ($template?->primary_color) {
+            $coverHtmlPageColor = Template::hexToRgb($template?->primary_color);
+        }
         $pdf->data = compact('release', 'initiative', 'template');
 
         $coverHtml = view('deployment.release-note-pdf.cover_html', compact('initiative', 'release', 'template'))->render();
@@ -146,7 +151,7 @@ class DeploymentController extends Controller
         $pdf->setPrintHeader(false);
         $pdf->SetMargins(0, 0, 0);
         $pdf->AddPage();
-        $pdf->Rect(0, 0, $pdf->getPageWidth(), $pdf->getPageHeight() - 17, 'DF', array('width' => 0),  array(61, 98, 166));
+        $pdf->Rect(0, 0, $pdf->getPageWidth(), $pdf->getPageHeight() - 17, 'DF', array('width' => 0),  $coverHtmlPageColor);
         $img_file = public_path() . '/images/pdf_cover2.png';
         $pdf->Image($img_file, 0, 50, 90);
         $pdf->writeHTMLCell(0, 0, 95, 72, $coverHtml);
@@ -241,6 +246,11 @@ class DeploymentController extends Controller
         $pdf->SetFont($fontname);
 
         $template = $initiative->template;
+        $coverHtmlPageColor = array(61, 98, 166);
+        if ($template?->primary_color) {
+            $coverHtmlPageColor = Template::hexToRgb($template?->primary_color);
+        }
+
         $pdf->data = compact('initiative', 'release', 'template');
 
         $coverHtml = view('deployment.test-case-pdf.cover_html', compact('initiative', 'release', 'template'))->render();
@@ -248,7 +258,8 @@ class DeploymentController extends Controller
         $pdf->setPrintHeader(false);
         $pdf->SetMargins(0, 0, 0);
         $pdf->AddPage();
-        $pdf->Rect(0, 0, $pdf->getPageWidth(), $pdf->getPageHeight() - 17, 'DF', array('width' => 0),  array(61, 98, 166));
+        // $pdf->Rect(0, 0, $pdf->getPageWidth(), $pdf->getPageHeight() - 17, 'DF', array('width' => 0),  array(61, 98, 166));
+        $pdf->Rect(0, 0, $pdf->getPageWidth(), $pdf->getPageHeight() - 17, 'DF', array('width' => 0),  $coverHtmlPageColor);
         $img_file = public_path() . '/images/pdf_cover2.png';
         $pdf->Image($img_file, 0, 50, 90);
         $pdf->writeHTMLCell(0, 0, 95, 72, $coverHtml);

@@ -8,6 +8,7 @@ use App\Http\Requests\Api\FunctionalityRequest;
 use App\Http\Requests\Api\SectionRequest;
 use App\Models\Functionality;
 use App\Models\Section;
+use App\Models\Template;
 use App\Services\ClientService;
 use App\Services\InitiativeService;
 use App\Services\MytcpdfService;
@@ -91,6 +92,10 @@ class SolutionDesignController extends Controller
         $pdf->SetFont($fontname);
 
         $template = $initiative->template;
+        $coverHtmlPageColor = array(61, 98, 166);
+        if ($template?->primary_color) {
+            $coverHtmlPageColor = Template::hexToRgb($template?->primary_color);
+        }
         $pdf->data = compact('initiative', 'template');
 
 
@@ -99,7 +104,7 @@ class SolutionDesignController extends Controller
         $pdf->setPrintHeader(false);
         $pdf->SetMargins(0, 0, 0);
         $pdf->AddPage();
-        $pdf->Rect(0, 0, $pdf->getPageWidth(), $pdf->getPageHeight() - 17, 'DF', array('width' => 0),  array(61, 98, 166));
+        $pdf->Rect(0, 0, $pdf->getPageWidth(), $pdf->getPageHeight() - 17, 'DF', array('width' => 0),  $coverHtmlPageColor);
         $img_file = public_path() . '/images/default_pdf/pdf_cover2.png';
         $pdf->Image($img_file, 0, 50, 90);
         $pdf->writeHTMLCell(0, 0, 95, 72, $coverHtml);

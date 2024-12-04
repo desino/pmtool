@@ -6,11 +6,11 @@
 </style>
 @php
     $titleBlockColor = '#f6cf47';
-    if ($template->title_block_color != null) {
+    if ($template?->title_block_color != null) {
         $titleBlockColor = $template->title_block_color;
     }
     $primaryColor = '#3D62A6';
-    if ($template->primary_color != null) {
+    if ($template?->primary_color != null) {
         $primaryColor = $template->primary_color;
     }
 @endphp

@@ -53,6 +53,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import globalMixin from '@/globalMixin';
 import GlobalMessage from './../../components/GlobalMessage.vue';
 import SolutionDesignService from './../../services/SolutionDesignService';
@@ -80,6 +81,9 @@ export default {
                 name: ""
             }
         };
+    },
+    computed: {
+        ...mapGetters(['user', 'currentInitiative']),
     },
     methods: {
         ...mapActions(['setLoading']),
@@ -144,7 +148,7 @@ export default {
                 const blob = new Blob([response.data], { type: 'application/pdf' });
                 const link = document.createElement('a');
                 link.href = window.URL.createObjectURL(blob);
-                link.download = 'generated.pdf';
+                link.download = this.$t('solution_design_download.page_download_text') + '- ' + this.currentInitiative?.name + '.pdf';
                 link.click();
                 this.setLoading(false);
             } catch (error) {

@@ -38,6 +38,7 @@ class EditOpportunityRequest extends FormRequest
                 'numeric',
                 'regex:/^(0(\.[0-9]{1,2})?|[1-9][0-9]{0,5}(\.[0-9]{1,2})?)$/'
             ],
+            'template_id' => 'nullable|exists:templates,id',
             'share_point_url' => 'nullable|url',
             'functional_owner_id' => 'nullable|exists:users,id',
             'quality_owner_id' => 'nullable|exists:users,id',
