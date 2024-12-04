@@ -866,5 +866,7 @@
     "activity_logs.filter.activity_type_placeholder": "Activity Type",
     "activity_logs.filter.activity_details_placeholder": "Activity Detail",
     "activity_logs.filter.users_placeholder": "User",
-    "initiative_overview_list.hours_text": " hrs"
+    "initiative_overview_list.hours_text": " hrs",
+    "confirmation_popup.default_title": "Confirm Action",
+    "confirmation_popup.default_message": "Are you sure you want to perform this action?"
 }
