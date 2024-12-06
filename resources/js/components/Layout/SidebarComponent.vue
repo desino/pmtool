@@ -5,24 +5,22 @@
                 <img alt="Brand Image" class="brand-image" :src="logoPath" />
             </router-link>
         </div>
-        <div class="p-2 border-bottom">
-            <div class="my-3 d-flex ">
-                <div class="image my-auto text-center">
-                    <img alt="User Image" class="user-image rounded-circle shadow w-75"
-                        src="https://avatars.githubusercontent.com/u/165763425?v=4&size=64">
+        <div class="w-100 border-bottom p-2">
+            <div v-if="user"  class="row g-1 w-100 align-items-center">
+                <div class="col-auto me-1" style="width:65px">
+                    <img class="user-image rounded-circle shadow w-100" :src="user.profile_photo_url" />
                 </div>
-                <div v-if="user" class="info">
-                    <span class="d-block">{{ user.name }}</span>
-                    <span> {{ user.email }}</span>
+                <div class="col-auto" style="width: calc(100% - 75px)">
+                    <div class="small fw-bold">{{ user.name }}</div>
+                    <div class="small">{{ user.email }}</div>
                 </div>
             </div>
         </div>
-        <div class="p-2 border rounded m-1 shadow">
+        <div class="p-2 border rounded m-2 shadow">
             <div class="form-group pb-0">
                 <HeaderInitiativeDropBoxComponent />
             </div>
-            <div
-                v-if="isActive('solution-design') || isActive('tasks') || isActive('my-tickets') || isActive('task.detail') || isActive('projects') || isActive('solution-design.detail') || isActive('solution-design.download') || isActive('bulk-create-tickets') || isActive('deployments')">
+            <div v-if="isActive('solution-design') || isActive('tasks') || isActive('my-tickets') || isActive('task.detail') || isActive('projects') || isActive('solution-design.detail') || isActive('solution-design.download') || isActive('bulk-create-tickets') || isActive('deployments')">
                 <div class="shadow">
                     <div class="p-2 rounded-bottom">
                         <nav class="mt-1">
@@ -134,14 +132,8 @@
         </div>
         <hr>
         <div class="border rounded mx-2 shadow mb-3">
-            <nav class="mt-1">
+            <nav class="">
                 <ul class="nav sidebar-menu flex-column">
-                    <li class="nav-item">
-                        <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('home') }" :to="{ name: 'home' }"
-                            class="nav-link text-dark" @click="unselectHeaderInitiative">
-                            <i class="bi bi-house mx-2"></i> {{ $t('header.menu.home') }}
-                        </router-link>
-                    </li>
                     <li class="nav-item" v-if="user?.is_admin">
                         <a class="nav-link text-dark" href="javascript:" @click="showCreateClientModal"><i
                                 class="bi bi-people mx-2"></i> {{
@@ -163,6 +155,7 @@
                             }}
                         </router-link>
                     </li>
+                    <li class="nav-item" v-if="user?.is_admin"><hr /></li>
                     <li class="nav-item">
                         <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('time-booking.booking') }"
                             :to="{ name: 'time-booking.booking' }" class="nav-link text-dark"
@@ -191,6 +184,7 @@
                             }}
                         </router-link>
                     </li>
+                    <li class="nav-item" v-if="user?.is_admin"><hr /></li>
                     <li class="nav-item" v-if="user?.is_admin">
                         <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('all-ticket-without-initiative') }"
                             :to="{ name: 'all-ticket-without-initiative' }" class="nav-link text-dark"
