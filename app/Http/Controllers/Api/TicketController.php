@@ -608,42 +608,15 @@ class TicketController extends Controller
         }
         $requestData = $request->validated();
 
-        // // Create a default configuration for HTMLPurifier
-        // $config = HTMLPurifier_Config::createDefault();
+        // $data = [
+        //     'html_notes' => "<body>" . str_replace(['<p>', '</p>'], '', $requestData['description']) . "</body>",
+        // ];
 
-        // // Allow more HTML tags and attributes, including style
-        // $config->set('HTML.Allowed', 'p,strong,h1,span,a[href],b,i,u,em,ul,ol,li,br'); // Add more tags like <ul>, <ol>, <li>, etc.
-        // $config->set('HTML.AllowedAttributes', 'href,style'); // Allow 'href' and 'style' attributes
-        // $config->set('CSS.AllowedProperties', 'color,background-color,font-size,font-family,text-align'); // Allow CSS properties
-
-        // // Remove empty <p></p> tags if necessary (optional)
-        // $config->set('HTML.Nofollow', true); // Ignore 'nofollow' attribute
-        // $config->set('HTML.Doctype', 'HTML5'); // Use HTML5 doctype for proper rendering
-
-        // // Initialize HTMLPurifier with the configuration
-        // $purifier = new HTMLPurifier($config);
-        // $sanitizedHtml = $purifier->purify($requestData['description']);
-
-        // $config = HTMLPurifier_Config::createDefault();
-        // $config->set('HTML.Doctype', 'HTML 4.01 Transitional'); // Set to a supported doctype
-        // $config->set('HTML.Allowed', 'p,strong,h1,span,a[href],b,i,u,em,ul,ol,li,br'); // Allow additional tags
-        // $config->set('CSS.AllowedProperties', 'color,background-color,font-size,font-family,text-align'); // Allow CSS properties
-
-        // // Initialize purifier and sanitize content
-        // $purifier = new HTMLPurifier($config);
-        // $sanitizedHtml = $purifier->purify($request->input('html_notes'));
-
-        $data = [
-            'html_notes' => "<body>" . str_replace(['<p>', '</p>'], '', $requestData['description']) . "</body>",
-            // 'html_notes' => $requestData['description'],
-            // 'html_notes' => $sanitizedHtml,
-        ];
-
-        $task = $this->asanaService->updateTask($ticket->asana_task_id, $data);
-        if ($task['error_status']) {
-            return ApiHelper::response($status, __('messages.asana.update_ticket.update_error'), '', 500);
-        }
-        $validateData['asana_task_id'] = $task['data']['data']['gid'];
+        // $task = $this->asanaService->updateTask($ticket->asana_task_id, $data);
+        // if ($task['error_status']) {
+        //     return ApiHelper::response($status, __('messages.asana.update_ticket.update_error'), '', 500);
+        // }
+        // $validateData['asana_task_id'] = $task['data']['data']['gid'];
 
         $status = true;
         $code = 200;
