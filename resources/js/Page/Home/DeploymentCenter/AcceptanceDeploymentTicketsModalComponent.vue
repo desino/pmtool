@@ -2,15 +2,15 @@
     <div class="modal-dialog modal-lg">
         <form>
             <div class="modal-content border-0">
-                <div class="modal-header modal-header text-white bg-desino border-0 py-2 justify-content-center">
+                <div class="modal-header text-white bg-desino border-0 py-2 justify-content-center">
                     <h5 class="modal-title" id="acceptanceDeploymentTicketsModalLabel"
                         v-html="formattedModalTitleACCDeployment()"></h5>
                 </div>
                 <div class="modal-body">
                     <GlobalMessage v-if="showMessage" scope="modal" />
-                    <ul class="list-group">
-                        <li class="list-group-item fw-bold bg-desino text-white">
-                            <div class="row w-100">
+                    <ul class="list-group mb-3 mt-2">
+                        <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
+                            <div class="row g-1 w-100 align-items-center">
                                 <div class="col-md-1" v-if="ticketList.length > 0">
                                     <input class="form-check-input" type="checkbox" id="chk_all_tickets"
                                         v-model="isChkAllAcceptanceDeploymentTickets"
@@ -26,9 +26,9 @@
                                 </div>
                             </div>
                         </li>
-                        <li class="list-group-item list-group-item-action" v-if="ticketList.length > 0"
+                        <li class="border list-group-item p-1 list-group-item-action border-top-0" v-if="ticketList.length > 0"
                             v-for="ticket in ticketList" :key="ticket.id">
-                            <div class="row w-100">
+                            <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
                                 <div class="col-md-1">
                                     <input class="form-check-input" type="checkbox"
                                         :id="'chk_acceptance_deployment_ticket_' + ticket.id" v-model="ticket.isChecked"
@@ -47,18 +47,17 @@
                                 </div>
                             </div>
                         </li>
-                        <li v-else class="list-group-item list-group-item-action fw-bold">
-                            <div class="row w-100">
-                                <div class="col-md-12 text-center">
-                                    {{ $t('home.deployment_center.acceptance_deployment.ticket_modal.no_tickets.text')
-                                    }}
+                        <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
+                            <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
+                                <div class="col-12 fw-bold fst-italic text-center">
+                                    {{ $t('home.deployment_center.acceptance_deployment.ticket_modal.no_tickets.text') }}
                                 </div>
                             </div>
                         </li>
                     </ul>
                 </div>
                 <div class="modal-footer border-0 p-0 justify-content-center">
-                    <div class="row w-100 g-1">
+                    <div class="row g-1 w-100 align-items-center">
                         <div class="col-4 col-md-6 col-lg-6">
                             <button type="button" ref="popoverBtn" data-bs-toggle="popover"
                                 :title="$t('home.deployment_center.acceptance_deployment.ticket_modal.submit.alert.text')"

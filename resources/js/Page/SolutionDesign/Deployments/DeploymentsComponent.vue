@@ -1,92 +1,103 @@
 <template>
     <GlobalMessage />
     <div class="app-content mt-3">
-        <div class="row w-100 mb-3 align-items-center">
-            <div class="col-12 col-md-3 mb-2 mb-md-0">
-                <input v-model="filter.name" :placeholder="$t('deployments.filter.deployment_name')"
-                    class="form-control" type="text" @keyup="getDeployments">
-            </div>
-            <div class="col-12 col-md-3 mb-2 mb-md-0">
-                <input v-model="filter.ticket_name" :placeholder="$t('deployments.filter.ticket_name')"
-                    class="form-control" type="text" @keyup="getDeployments">
-            </div>
-            <div class="col-12 col-md-3 mb-2 mb-md-0">
-                <multiselect v-model="filter.functionalities" ref="multiselect" :multiple="true"
-                    :options="functionalities" :searchable="true" deselect-label="" label="display_name"
-                    :placeholder="$t('ticket.filter.functionalities_placeholder')" track-by="id"
-                    @select="getDeployments" @Remove="getDeployments">
-                </multiselect>
+        <div class="w-100 mb-3">
+            <div class="row g-0 w-100 align-items-center">
+                <div class="col-12 col-md-4">
+                    <div class="w-100 p-1">
+                        <input v-model="filter.name" :placeholder="$t('deployments.filter.deployment_name')"
+                            class="form-control" type="text" @keyup="getDeployments">
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="w-100 p-1">
+                        <input v-model="filter.ticket_name" :placeholder="$t('deployments.filter.ticket_name')"
+                            class="form-control" type="text" @keyup="getDeployments">
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="w-100 p-1">
+                        <multiselect v-model="filter.functionalities" ref="multiselect" :multiple="true"
+                            :options="functionalities" :searchable="true" deselect-label="" label="display_name"
+                            :placeholder="$t('ticket.filter.functionalities_placeholder')" track-by="id"
+                            @select="getDeployments" @Remove="getDeployments">
+                        </multiselect>
+                    </div>
+                </div>
             </div>
         </div>
-        <ul class="list-group list-group-flush mb-3 mt-2">
-            <li class="font-weight-bold bg-desino text-white rounded-top list-group-item">
-                <div class="row w-100">
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
-                        {{ $t('deployments.list.column_request_date') }}
+        <div class="w-100 mb-3">
+            <ul class="list-group list-group-flush mb-3 mt-2">
+                <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
+                    <div class="row g-1 w-100 align-items-center">
+                        <div class="col-lg-2 col-md-6 col-6 fw-bold small">
+                            {{ $t('deployments.list.column_request_date') }}
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-6 fw-bold small">
+                            {{ $t('deployments.list.column_deployment_date') }}
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-6 fw-bold small">
+                            {{ $t('deployments.list.column_name') }}
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-6 fw-bold small">
+                            {{ $t('deployments.list.column_tickets_included') }}
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-6 fw-bold small">
+                            {{ $t('deployments.list.column_status') }}
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-6 fw-bold small text-end">
+                            {{ $t('deployments.list.column_actions') }}
+                        </div>
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
-                        {{ $t('deployments.list.column_deployment_date') }}
+                </li>
+                <li v-for="(deployment, index) in deployments" v-if="deployments.length > 0" :key="index"
+                    class="border list-group-item p-1 list-group-item-action border-top-0">
+                    <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
+                        <div class="col-lg-2 col-md-6 col-6">
+                            {{ deployment?.request_date_format }}
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-6">
+                            {{ deployment?.deployment_date_format }}
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-6">
+                            {{ deployment?.name }}
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-6">
+                            {{ deployment?.tickets_count }}
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-6">
+                            {{ deployment?.status_name }}
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-6 text-end">
+                            <router-link
+                                :to="{ name: 'tasks', params: { id: deployment?.initiative_id }, query: { deployment_id: deployment?.id } }"
+                                class="text-success me-2">
+                                <i class="bi bi-box-arrow-up-right fw-bold"></i>
+                            </router-link>
+                            <a href="javascript:" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                :title="$t('deployments.list.column.action.download_release_note_text')"
+                                @click="downloadReleaseNotes(deployment)" class="text-info me-2">
+                                <i class="bi bi-file-pdf"></i>
+                            </a>
+                            <a href="javascript:" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                :title="$t('deployments.list.column.action.download_test_results_text')"
+                                @click="downloadTestResults(deployment)" class="text-secondary">
+                                <i class="bi bi-file-pdf"></i>
+                            </a>
+                        </div>
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
-                        {{ $t('deployments.list.column_name') }}
+                </li>
+                <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
+                    <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
+                        <div class="col-12 fw-bold fst-italic text-center">
+                            {{ $t('deployments.list.not_record_found') }}
+                        </div>
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
-                        {{ $t('deployments.list.column_tickets_included') }}
-                    </div>
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
-                        {{ $t('deployments.list.column_status') }}
-                    </div>
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2 text-end">
-                        {{ $t('deployments.list.column_actions') }}
-                    </div>
-                </div>
-            </li>
-
-            <li v-for="(deployment, index) in deployments" v-if="deployments.length > 0" :key="index"
-                class="border list-group-item">
-                <div class="row w-100 align-items-center">
-                    <div class="col-lg-2 col-md-6 col-6">
-                        {{ deployment?.request_date_format }}
-                    </div>
-                    <div class="col-lg-2 col-md-6 col-6">
-                        {{ deployment?.deployment_date_format }}
-                    </div>
-                    <div class="col-lg-2 col-md-6 col-6">
-                        {{ deployment?.name }}
-                    </div>
-                    <div class="col-lg-2 col-md-6 col-6">
-                        {{ deployment?.tickets_count }}
-                    </div>
-                    <div class="col-lg-2 col-md-6 col-6">
-                        {{ deployment?.status_name }}
-                    </div>
-                    <div class="col-lg-2 col-md-6 col-6 text-end">
-                        <!-- target="_blank" -->
-                        <router-link
-                            :to="{ name: 'tasks', params: { id: deployment?.initiative_id }, query: { deployment_id: deployment?.id } }"
-                            class="text-success me-2">
-                            <i class="bi bi-box-arrow-up-right fw-bold"></i>
-                        </router-link>
-                        <a href="javascript:" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                            :title="$t('deployments.list.column.action.download_release_note_text')"
-                            @click="downloadReleaseNotes(deployment)" class="text-info me-2">
-                            <i class="bi bi-file-pdf"></i>
-                        </a>
-                        <a href="javascript:" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                            :title="$t('deployments.list.column.action.download_test_results_text')"
-                            @click="downloadTestResults(deployment)" class="text-secondary">
-                            <i class="bi bi-file-pdf"></i>
-                        </a>
-                    </div>
-                </div>
-            </li>
-            <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
-                <div class="fw-bold fst-italic text-center w-100">{{ $t('deployments.list.not_record_found') }}
-                </div>
-            </li>
-        </ul>
-        <PaginationComponent :currentPage="Number(currentPage)" :totalPages="Number(totalPages)"
-            @page-changed="getDeployments" />
+                </li>
+            </ul>
+            <PaginationComponent :currentPage="Number(currentPage)" :totalPages="Number(totalPages)"
+                @page-changed="getDeployments" />
+        </div>
     </div>
 </template>
 

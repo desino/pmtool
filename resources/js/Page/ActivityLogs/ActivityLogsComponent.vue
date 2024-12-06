@@ -1,51 +1,53 @@
 <template>
     <GlobalMessage v-if="showMessage" />
-    <div class="app-content my-3">
-        <div class="row g-0 w-100 align-items-center mb-3">
-            <div class="col-12 col-md-12 col-lg-3">
-                <div class="w-100 p-1">
-                    <multiselect v-model="filter.initiative_id" :multiple="false" :options="initiatives"
-                        :searchable="true" select-label="" deselect-label="" label="client_initiative_name"
-                        :placeholder="$t('activity_logs.filter.initiative_placeholder')" track-by="id"
-                        @select="getActivityLogsData" @Remove="getActivityLogsData">
-                    </multiselect>
+    <div class="app-content mt-3">
+        <div class="w-100 mb-3">
+            <div class="row g-1 w-100 align-items-center">
+                <div class="col-12 col-md-12 col-lg-3">
+                    <div class="w-100 p-1">
+                        <multiselect v-model="filter.initiative_id" :multiple="false" :options="initiatives"
+                            :searchable="true" select-label="" deselect-label="" label="client_initiative_name"
+                            :placeholder="$t('activity_logs.filter.initiative_placeholder')" track-by="id"
+                            @select="getActivityLogsData" @Remove="getActivityLogsData">
+                        </multiselect>
+                    </div>
                 </div>
-            </div>
-            <div class="col-12 col-md-12 col-lg-3">
-                <div class="w-100 p-1">
-                    <multiselect v-model="filter.activity_type" :multiple="true" :options="allActivityTypes"
-                        :searchable="true" select-label="" deselect-label="" label="name"
-                        :placeholder="$t('activity_logs.filter.activity_type_placeholder')" track-by="id"
-                        @select="getActivityLogsData" @Remove="getActivityLogsData">
-                    </multiselect>
+                <div class="col-12 col-md-12 col-lg-3">
+                    <div class="w-100 p-1">
+                        <multiselect v-model="filter.activity_type" :multiple="true" :options="allActivityTypes"
+                            :searchable="true" select-label="" deselect-label="" label="name"
+                            :placeholder="$t('activity_logs.filter.activity_type_placeholder')" track-by="id"
+                            @select="getActivityLogsData" @Remove="getActivityLogsData">
+                        </multiselect>
+                    </div>
                 </div>
-            </div>
-            <div class="col-12 col-md-12 col-lg-3">
-                <div class="w-100 p-1">
-                    <multiselect v-model="filter.activity_detail" :multiple="true" :options="allActivityDetails"
-                        :searchable="true" select-label="" deselect-label="" label="name"
-                        :placeholder="$t('activity_logs.filter.activity_details_placeholder')" track-by="id"
-                        @select="getActivityLogsData" @Remove="getActivityLogsData">
-                        <template #tag="{ option, remove }">
-                            <span class="multiselect__tag_for_macro_status" :class="option.color">
-                                <span>{{ option.name }}</span>
-                                <i tabindex="1" class="multiselect__tag-icon" @click="remove(option)"></i>
-                            </span>
-                        </template>
-                    </multiselect>
+                <div class="col-12 col-md-12 col-lg-3">
+                    <div class="w-100 p-1">
+                        <multiselect v-model="filter.activity_detail" :multiple="true" :options="allActivityDetails"
+                            :searchable="true" select-label="" deselect-label="" label="name"
+                            :placeholder="$t('activity_logs.filter.activity_details_placeholder')" track-by="id"
+                            @select="getActivityLogsData" @Remove="getActivityLogsData">
+                            <template #tag="{ option, remove }">
+                                <span class="multiselect__tag_for_macro_status" :class="option.color">
+                                    <span>{{ option.name }}</span>
+                                    <i tabindex="1" class="multiselect__tag-icon" @click="remove(option)"></i>
+                                </span>
+                            </template>
+                        </multiselect>
+                    </div>
                 </div>
-            </div>
-            <div class="col-12 col-md-12 col-lg-3">
-                <div class="w-100 p-1">
-                    <multiselect v-model="filter.user_id" :multiple="false" :options="users" :searchable="true"
-                        select-label="" deselect-label="" label="name"
-                        :placeholder="$t('activity_logs.filter.users_placeholder')" track-by="id"
-                        @select="getActivityLogsData" @Remove="getActivityLogsData">
-                    </multiselect>
+                <div class="col-12 col-md-12 col-lg-3">
+                    <div class="w-100 p-1">
+                        <multiselect v-model="filter.user_id" :multiple="false" :options="users" :searchable="true"
+                            select-label="" deselect-label="" label="name"
+                            :placeholder="$t('activity_logs.filter.users_placeholder')" track-by="id"
+                            @select="getActivityLogsData" @Remove="getActivityLogsData">
+                        </multiselect>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="w-100 mb-3 g-1">
+        <div class="w-100 mb-3">
             <ul class="list-group list-group-flush mb-3 mt-2">
                 <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
                     <div class="row g-1 w-100 align-items-center">
@@ -68,7 +70,7 @@
                 </li>
                 <li v-if="activityLogs.length > 0" v-for="(activityLog, index) in activityLogs" :key="index"
                     class="border list-group-item p-1 list-group-item-action border-top-0">
-                    <div class="row g-1 w-100 align-items-center">
+                    <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
                         <div class="col-12 col-md-6 col-lg-4">
                             <small class="badge bg-secondary">{{ activityLog?.ticket?.initiative?.name }}</small>
                             {{ activityLog?.ticket?.composed_name }}
@@ -94,8 +96,10 @@
                     </div>
                 </li>
                 <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
-                    <div class="fw-bold fst-italic text-center w-100">
-                        {{ $t('activity_logs_list.no_activity_logs_found_text') }}
+                    <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
+                        <div class="col-12 fw-bold fst-italic text-center">
+                            {{ $t('activity_logs_list.no_activity_logs_found_text') }}
+                        </div>
                     </div>
                 </li>
             </ul>

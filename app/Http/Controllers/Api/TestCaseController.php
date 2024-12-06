@@ -6,13 +6,16 @@ use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StoreTestCaseRequest;
 use App\Models\Initiative;
+use App\Models\TestCase;
 use App\Models\Ticket;
 use App\Models\TicketAction;
+use App\Services\InitiativeService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
 class TestCaseController extends Controller
 {
@@ -160,6 +163,65 @@ class TestCaseController extends Controller
             }
         }
         return $isAllowCaseAddTestSection;
+    }
+
+    public function deleteTestCase(Request $request, $initiativeId, $ticketId, $testCaseId)
+    {
+        $status = false;
+
+        $initiative = InitiativeService::getInitiative($request, $initiativeId);
+        if (!$initiative) {
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
+        }
+        $ticket = Ticket::with('testCases', 'actions')->find($ticketId);
+        if (!$ticket) {
+            return ApiHelper::response('false', __('messages.ticket.not_found'), [], 404);
+        }
+
+        $testAction = $ticket->actions->where('action', TicketAction::getActionTest());
+        $isAllowCaseAddTestSection = false;
+        if ($ticket->macro_status != Ticket::MACRO_STATUS_DONE) {
+            if ($testAction->count() > 0 && (
+                $initiative->functional_owner_id == Auth::id() ||
+                $initiative->technical_owner_id == Auth::id() ||
+                ($ticket->macro_status == Ticket::MACRO_STATUS_TEST
+                    && (
+                        $ticket->currentAction->user_id == Auth::id() ||
+                        $initiative->quality_owner_id == Auth::id()
+                    )
+                )
+            )) {
+                $isAllowCaseAddTestSection = true;
+            } else if ($initiative->functional_owner_id == Auth::id() || $initiative->technical_owner_id == Auth::id()) {
+                $isAllowCaseAddTestSection = true;
+            }
+        }
+
+        if (!$isAllowCaseAddTestSection) {
+            return ApiHelper::response(false, __('messages.ticket.test_case_delete_not_allowed'), '', 400);
+        }
+
+        $testCase = $ticket->testCases->find($testCaseId)->first();
+        if (!$testCase) {
+            return ApiHelper::response(false, __('messages.test_case.not_found'), '', 400);
+        }
+
+        $status = true;
+        $statusCode = 200;
+        $message = __('messages.test_case.delete_success');
+
+        DB::beginTransaction();
+        try {
+            TestCase::where('id', $testCaseId)->delete();
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            $status = false;
+            $message = __('messages.something_went_wrong');
+            $statusCode = 500;
+            logger()->error($e);
+        }
+        return ApiHelper::response($status, $message, '', $statusCode);
     }
 
     /**

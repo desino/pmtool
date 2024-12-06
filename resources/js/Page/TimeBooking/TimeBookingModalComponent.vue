@@ -14,7 +14,7 @@
                 </div>
                 <form @submit.prevent="storeTimeBooking">
                     <div class="mb-3 p-3 shadow">
-                        <div class="row w-100 g-1">
+                        <div class="row g-1 w-100 align-items-top">
                             <div class="col-4">
                                 <div class="mb-3">
                                     <input type="text" v-model="formData.hours" :class="{ 'is-invalid': errors.hours }"
@@ -53,14 +53,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row w-100 g-1">
+                        <div class="row g-1 w-100 align-items-top">
                             <div class="col-6">
-                                <button type="submit" class="btn btn-desino w-100"
+                                <button type="submit" class="btn btn-desino w-100 border-0"
                                     @click="handleSubmitButtonClickForTimeBooking('create')">{{
                                         $t('time_booking.modal_submit_but_text') }}</button>
                             </div>
                             <div class="col-6">
-                                <button type="submit" class="btn btn-desino w-100"
+                                <button type="submit" class="btn btn-desino w-100 border-0"
                                     @click="handleSubmitButtonClickForTimeBooking('create_close')">{{
                                         $t('time_booking.modal_submit_and_close_but_text') }}</button>
                             </div>
@@ -75,7 +75,7 @@
                     </button>
                     <ul class="list-group list-group-flush mb-3 mt-2">
                         <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
-                            <div class="row w-100 align-items-center">
+                            <div class="row g-1 w-100 align-items-center">
                                 <div class="col-3">
                                     <div class="row g-0 h-100 align-items-center">
                                         <div class="col-auto me-1" style="width:20px">
@@ -97,7 +97,7 @@
                         </li>
                         <li class="border list-group-item p-1 list-group-item-action border-top-0"
                             v-if="timeBookings.length > 0" v-for="(timeBooking, index) in timeBookings">
-                            <div class="row g-1 w-100 align-items-center">
+                            <div class="row g-1 w-100 align-items-center" style="min-height: 45px;">
                                 <div class="col-3">
                                     <div class="row g-0 h-100 align-items-center">
                                         <div class="col-auto me-1" style="width:20px">
@@ -105,7 +105,9 @@
                                                 type="checkbox" @change="handleSelectAllTimeBooking(timeBooking)">
                                         </div>
                                         <div class="col-auto" style="width: calc(100% - 40px)">
-                                            {{ timeBooking.hours }}
+                                            <span class="badge rounded-3 bg-success-subtle text-success mb-0">
+                                                {{ timeBooking.hours }} hrs
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -123,10 +125,12 @@
                         </li>
                         <li class="border list-group-item p-1 list-group-item-action border-top-0"
                             v-if="totalTimeBookingHours > 0">
-                            <div class="row g-1 w-100 align-items-center">
+                            <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
                                 <div class="col-3 fw-bold">
-                                    {{ $t('time_booking.modal.list_table.footer_total_text') }}: {{
-                                        totalTimeBookingHours }}
+                                    {{ $t('time_booking.modal.list_table.footer_total_text') }}:
+                                    <span class="badge rounded-3 bg-success-subtle text-success mb-0">
+                                        {{ totalTimeBookingHours }} hrs
+                                    </span>
                                 </div>
                                 <div class="col-7 fw-bold">
                                 </div>
@@ -134,18 +138,19 @@
                                 </div>
                             </div>
                         </li>
-                        <li v-if="timeBookings.length === 0"
-                            class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
-                            <div class="fw-bold fst-italic text-center w-100">
-                                {{ $t('time_booking.modal.list_table.no_data_text') }}
+                        <li v-if="timeBookings.length === 0" class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
+                            <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
+                                <div class="col-12 fw-bold fst-italic text-center">
+                                    {{ $t('time_booking.modal.list_table.no_data_text') }}
+                                </div>
                             </div>
                         </li>
                     </ul>
                 </div>
             </div>
             <div class="modal-footer border-0 p-0 justify-content-center">
-                <div class="row w-100 g-1">
-                    <div class="col-12 col-md-12 col-lg-3 w-100">
+                <div class="row g-1 w-100 align-items-center">
+                    <div class="col-12">
                         <button class="btn btn-danger w-100 border-0" data-bs-dismiss="modal" type="button">
                             <i class="bi bi-x-lg"></i>
                         </button>

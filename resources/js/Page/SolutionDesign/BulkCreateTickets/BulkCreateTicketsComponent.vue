@@ -1,34 +1,34 @@
 <template>
     <GlobalMessage v-if="showMessage" />
-    <div class="app-content mt-3">
+    <div class="app-content my-3">
         <form>
-            <ul class="list-group">
-                <li class="list-group-item font-weight-bold bg-desino text-white rounded-top">
-                    <div class="row w-100">
-                        <div class="col-md-4">
+            <ul class="list-group list-group-flush mb-3 mt-2">
+                <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
+                    <div class="row w-100 align-items-center">
+                        <div class="col-md-4 fw-bold small">
                             {{ $t('bulk_create_tickets.functionalities_text') }}
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4 fw-bold small">
                             {{ $t('bulk_create_tickets.hours_text') }}
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4 fw-bold small">
                             {{ $t('bulk_create_tickets.clarify_and_estimation_text') }}
                         </div>
                     </div>
                 </li>
                 <li v-if="sectionsWithFunctionalities.length > 0"
                     v-for="(section, section_index) in sectionsWithFunctionalities" :key="section_index"
-                    class="list-group-item">
+                    class="border list-group-item p-1 list-group-item-action border-top-0">
                     <span class="fw-bold">{{ section.display_name }}</span>
-                    <ul class="list-group list-group-flush">
+                    <ul class="list-group list-group-flush my-2">
                         <li v-if="section.functionalities.length > 0"
                             v-for="(functionality, index) in section.functionalities" :key="index"
-                            class="list-group-item">
-                            <div class="row w-100 align-items-center">
-                                <div class="col-md-4">
+                            class="border list-group-item list-group-item-action border-top-0 border-start-0 border-end-0">
+                            <div class="row g-1 w-100 align-items-center">
+                                <div class="col-12 col-md-4">
                                     {{ functionality.display_name }}
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-12 col-md-4">
                                     <input type="text" class="form-control"
                                         :class="{ 'is-invalid': errors[`sections.${section_index}.functionality.${index}.initial_estimation_development_time`] }"
                                         v-model="functionality.initial_estimation_development_time"
@@ -42,7 +42,7 @@
                                         </span>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-12 col-md-4">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox"
                                             v-model="functionality.clarify_estimate_checked">
@@ -53,18 +53,18 @@
                     </ul>
                 </li>
                 <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
-                    <div class="fw-bold fst-italic text-center w-100">{{ $t('bulk_create_tickets.list.not_record_found')
-                        }}
+                    <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
+                        <div class="col-12 fw-bold fst-italic text-center">
+                            {{ $t('bulk_create_tickets.list.not_record_found') }}
+                        </div>
                     </div>
                 </li>
             </ul>
-            <button type="button" @click="showConfirmation('createBulkTickets', createBulkTickets)"
-                class="btn btn-desino mt-3 w-100">{{
-                    $t('bulk_create_tickets.button_create_bulk_tickets')
-                }}</button>
+            <button v-if="sectionsWithFunctionalities.length > 0" type="button" @click="showConfirmation('createBulkTickets', createBulkTickets)" class="btn btn-desino mt-3 w-100">
+                {{ $t('bulk_create_tickets.button_create_bulk_tickets') }}
+            </button>
         </form>
-        <ConfirmationModal ref="dynamicConfirmationModal" :title="modalTitle" :message="modalMessage"
-            @confirm="modalConfirmCallback" />
+        <ConfirmationModal ref="dynamicConfirmationModal" :title="modalTitle" :message="modalMessage" @confirm="modalConfirmCallback" />
     </div>
 </template>
 
