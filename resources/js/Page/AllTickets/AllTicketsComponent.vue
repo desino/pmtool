@@ -2,7 +2,7 @@
     <GlobalMessage v-if="showMessage" />
     <div class="app-content mt-3">
         <div class="w-100 mb-3">
-            <div class="row g-0 w-100 align-items-center">
+            <div class="row g-1 w-100 align-items-center">
                 <div class="col-12 col-md-6 col-lg-3">
                     <div class="w-100 p-1">
                         <select v-model="filter.action_owner" class="form-select"
@@ -70,7 +70,7 @@
             </div>
         </div>
         <div class="w-100 mb-3">
-            <div class="row g-0 w-100">
+            <div class="row g-1 w-100 align-items-center">
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="w-100 p-1">
                         <button @click="showConfirmation('addPriorityConfirmation', addRemovePriority, 1)"
