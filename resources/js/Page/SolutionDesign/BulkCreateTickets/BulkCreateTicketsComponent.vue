@@ -1,7 +1,7 @@
 <template>
     <GlobalMessage v-if="showMessage" />
     <div class="app-content mt-3">
-        <form @submit.prevent="createBulkTickets">
+        <form>
             <ul class="list-group">
                 <li class="list-group-item font-weight-bold bg-desino text-white rounded-top">
                     <div class="row w-100">
@@ -52,15 +52,19 @@
                         </li>
                     </ul>
                 </li>
-                <li v-else class="list-group-item border p-4">
-                    <div class="col h4 fw-bold text-center">{{ $t('bulk_create_tickets.list.not_record_found') }}
+                <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
+                    <div class="fw-bold fst-italic text-center w-100">{{ $t('bulk_create_tickets.list.not_record_found')
+                        }}
                     </div>
                 </li>
             </ul>
-            <button type="submit" class="btn btn-desino mt-3 w-100">{{
-                $t('bulk_create_tickets.button_create_bulk_tickets')
+            <button type="button" @click="showConfirmation('createBulkTickets', createBulkTickets)"
+                class="btn btn-desino mt-3 w-100">{{
+                    $t('bulk_create_tickets.button_create_bulk_tickets')
                 }}</button>
         </form>
+        <ConfirmationModal ref="dynamicConfirmationModal" :title="modalTitle" :message="modalMessage"
+            @confirm="modalConfirmCallback" />
     </div>
 </template>
 
@@ -83,6 +87,9 @@ export default {
             initiative_id: this.$route.params.id,
             initiativeData: {},
             sectionsWithFunctionalities: [],
+            modalTitle: '',
+            modalMessage: '',
+            modalConfirmCallback: null,
             errors: {},
             showMessage: true
         }
@@ -111,63 +118,57 @@ export default {
         },
         async createBulkTickets() {
             this.clearMessages();
-            this.$swal({
-                title: this.$t('bulk_create_tickets.confirm_store_alert.title'),
-                text: this.$t('bulk_create_tickets.confirm_store_alert.text'),
-                showCancelButton: true,
-                confirmButtonColor: '#1e6abf',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '<i class="bi bi-check-lg"></i>',
-                cancelButtonText: '<i class="bi bi-x-lg"></i>',
-                customClass: {
-                    confirmButton: 'btn-desino',
-                },
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    const passData = {
-                        'initiative_id': '',
-                        'sections': [],
-                    };
-                    this.sectionsWithFunctionalities.forEach(section => {
-                        const sectionData = {
-                            'section_id': '',
-                            'functionality': [],
-                        }
-                        section.functionalities.forEach(functionality => {
-                            // if (parseInt(functionality.initial_estimation_development_time) > 0) {
-                            let functionalitiesFormData = {
-                                functionality_id: functionality.id,
-                                functionality_name: functionality.name,
-                                // initial_estimation_development_time: parseInt(functionality.initial_estimation_development_time),
-                                initial_estimation_development_time: functionality.initial_estimation_development_time,
-                                clarify_estimate_checked: functionality.clarify_estimate_checked
-                            }
-                            sectionData.section_id = section.id
-                            sectionData.functionality.push(functionalitiesFormData)
-                            // }
-                        })
-                        if (sectionData.section_id) {
-                            passData.sections.push(sectionData);
-                        }
-                    })
-                    if (passData.sections.length > 0) {
-                        this.setLoading(true);
-                        try {
-                            passData.initiative_id = this.initiative_id;
-                            const { message } = await BulkCreateService.storeNewBulkTickets(passData);
-                            showToast(message, 'success');
-                            this.setLoading(false);
-                            this.getInitialDataForBulkCreate();
-                        } catch (error) {
-                            this.handleError(error);
-                        }
-                    } else {
-                        this.getInitialDataForBulkCreate();
+
+            const passData = {
+                'initiative_id': '',
+                'sections': [],
+            };
+            this.sectionsWithFunctionalities.forEach(section => {
+                const sectionData = {
+                    'section_id': '',
+                    'functionality': [],
+                }
+                section.functionalities.forEach(functionality => {
+                    // if (parseInt(functionality.initial_estimation_development_time) > 0) {
+                    let functionalitiesFormData = {
+                        functionality_id: functionality.id,
+                        functionality_name: functionality.name,
+                        // initial_estimation_development_time: parseInt(functionality.initial_estimation_development_time),
+                        initial_estimation_development_time: functionality.initial_estimation_development_time,
+                        clarify_estimate_checked: functionality.clarify_estimate_checked
                     }
-                } else {
-                    this.getInitialDataForBulkCreate();
+                    sectionData.section_id = section.id
+                    sectionData.functionality.push(functionalitiesFormData)
+                    // }
+                })
+                if (sectionData.section_id) {
+                    passData.sections.push(sectionData);
                 }
             })
+            if (passData.sections.length > 0) {
+                this.setLoading(true);
+                try {
+                    passData.initiative_id = this.initiative_id;
+                    const { message } = await BulkCreateService.storeNewBulkTickets(passData);
+                    showToast(message, 'success');
+                    this.setLoading(false);
+                    this.getInitialDataForBulkCreate();
+                } catch (error) {
+                    this.handleError(error);
+                }
+            } else {
+                this.getInitialDataForBulkCreate();
+            }
+        },
+        showConfirmation(modalType, callback) {
+            if (modalType === 'createBulkTickets') {
+                this.modalTitle = this.$t('bulk_create_tickets.confirm_store_alert.title');
+                this.modalMessage = this.$t('bulk_create_tickets.confirm_store_alert.text');
+            }
+
+            this.modalConfirmCallback = () => callback();
+
+            this.$refs.dynamicConfirmationModal.showModal();
         },
         handleError(error) {
             if (error.type === 'validation') {

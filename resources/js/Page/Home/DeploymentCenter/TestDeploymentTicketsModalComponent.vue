@@ -1,6 +1,6 @@
 <template>
     <div class="modal-dialog modal-lg">
-        <form @submit.prevent="submitTestDeploymentTicket">
+        <form>
             <div class="modal-content border-0">
                 <div class="modal-header text-white bg-desino border-0 py-2 justify-content-center">
                     <h5 class="modal-title" id="testDeploymentTicketsModalLabel"
@@ -24,16 +24,15 @@
                                 </div>
                             </div>
                         </li>
-                        <li class="border list-group-item p-1 list-group-item-action border-top-0" v-if="ticketList.length > 0"
-                            v-for="ticket in ticketList" :key="ticket.id">
+                        <li class="border list-group-item p-1 list-group-item-action border-top-0"
+                            v-if="ticketList.length > 0" v-for="ticket in ticketList" :key="ticket.id">
                             <div class="row g-1 w-100 align-items-center">
                                 <div class="col-1 col-md-1">
                                     <input class="form-check-input" type="checkbox"
                                         :id="'chk_test_deployment_ticket_' + ticket.id" v-model="ticket.isChecked"
                                         @change="handleSelectTestDeploymentTicket(ticket)">
                                 </div>
-                                <div class="col-6 col-md-8"
-                                    :for="'chk_test_deployment_ticket_' + ticket.id">
+                                <div class="col-6 col-md-8" :for="'chk_test_deployment_ticket_' + ticket.id">
                                     {{ ticket?.composed_name }}
                                     <router-link target="_blank"
                                         :to="{ name: 'task.detail', params: { initiative_id: ticket.initiative_id, ticket_id: ticket.id } }"
@@ -58,7 +57,9 @@
                 <div class="modal-footer border-0 p-0 justify-content-center">
                     <div class="row w-100 g-1 align-items-center">
                         <div class="col-6">
-                            <button type="submit" class="btn btn-desino w-100 border-0"
+                            <button type="button" ref="popoverBtn" data-bs-toggle="popover"
+                                :title="$t('home.deployment_center.test_deployment.ticket_modal.submit.alert.text')"
+                                v-bind:data-bs-content="popoverContent" class="btn btn-desino w-100 border-0"
                                 :disabled="selectedTestDeploymentTickets.length > 0 && isAllowProcess ? false : true">{{
                                     $t('home.deployment_center.test_deployment.ticket_modal.submit_but.text') }}</button>
                         </div>
@@ -76,7 +77,7 @@
 
 <script>
 import messageService from '../../../services/messageService';
-import { Modal } from 'bootstrap';
+import { Modal, Popover } from 'bootstrap';
 import showToast from '../../../utils/toasts';
 import { mapActions } from 'vuex';
 import eventBus from "@/eventBus.js";
@@ -96,7 +97,13 @@ export default {
             initiativeId: "",
             initiative: {},
             errors: {},
-            showMessage: true
+            showMessage: true,
+            popoverContent: `
+            <div class="text-center w-100">
+                <a href="javascript:void(0)" id="yesTestDeploymentButton" class="btn btn-desino w-100 border-0 my-1">
+                    <i class="bi bi-check-lg"></i>
+                </a>
+            </div>`,
         };
     },
     methods: {
@@ -125,39 +132,22 @@ export default {
             if (this.selectedTestDeploymentTickets.length == 0) {
                 return false;
             }
-            this.$swal({
-                title: this.$t('home.deployment_center.test_deployment.ticket_modal.submit.alert.text'),
-                showCancelButton: true,
-                confirmButtonColor: '#1e6abf',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '<i class="bi bi-check-lg"></i>',
-                cancelButtonText: '<i class="bi bi-x-lg"></i>',
-                customClass: {
-                    confirmButton: 'btn-desino',
-                },
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    try {
-                        const params = {
-                            initiative_id: this.initiativeId,
-                            ticketIds: this.selectedTestDeploymentTickets,
-                        }
-                        await this.setLoading(true);
-                        const { message } = await DeploymentCenterService.submitTestDeploymentTicket(params);
-                        this.hideTestDeploymentModal();
-                        showToast(message, 'success');
-                        await this.setLoading(false);
-                        this.$emit('pageUpdated');
-                    } catch (error) {
-                        this.handleError(error);
-                        this.resetTestDeploymentTicketList();
-                    }
-                } else {
-                    this.resetTestDeploymentTicketList();
+
+            try {
+                const params = {
+                    initiative_id: this.initiativeId,
+                    ticketIds: this.selectedTestDeploymentTickets,
                 }
-            }).catch(() => {
+                await this.setLoading(true);
+                const { message } = await DeploymentCenterService.submitTestDeploymentTicket(params);
+                this.hideTestDeploymentModal();
+                showToast(message, 'success');
+                await this.setLoading(false);
+                this.$emit('pageUpdated');
+            } catch (error) {
+                this.handleError(error);
                 this.resetTestDeploymentTicketList();
-            });
+            }
         },
         handleSelectAllTestDeploymentTickets() {
             this.selectedTestDeploymentTickets = [];
@@ -197,6 +187,22 @@ export default {
                 }
             }
         },
+        initializePopover() {
+            const popoverButton = this.$refs.popoverBtn;
+            if (popoverButton) {
+                const popover = new Popover(popoverButton, {
+                    html: true,
+                    trigger: 'focus',
+                });
+
+                popoverButton.addEventListener('shown.bs.popover', () => {
+                    const yesButton = document.getElementById('yesTestDeploymentButton');
+                    if (yesButton) {
+                        yesButton.addEventListener('click', this.submitTestDeploymentTicket);
+                    }
+                });
+            }
+        },
         handleError(error) {
             if (error.type === 'validation') {
                 this.errors = error.errors;
@@ -207,11 +213,14 @@ export default {
         },
         clearMessages() {
             this.errors = {};
-            messageService.clearMessage();
+            messageService.clearMessage('modal');
         },
     },
     mounted() {
         this.clearMessages();
+        this.$nextTick(() => {
+            this.initializePopover();
+        });
     },
     beforeUnmount() {
         this.showMessage = false;

@@ -5,7 +5,7 @@
                 <div class="modal-header text-white bg-desino border-0 py-2 justify-content-center">
                     <h5 id="updateTestCaseModalLabel" class="modal-title font-italic">{{
                         $t('task_detail.update_testcase_heading')
-                    }}
+                        }}
                     </h5>
                 </div>
                 <div class="modal-body">
@@ -139,7 +139,7 @@ export default {
         },
     },
     mounted() {
-        this.clearMessages();
+        this.clearMessages('modal');
     },
     beforeUnmount() {
         this.showMessage = false;

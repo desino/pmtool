@@ -8,7 +8,7 @@
 			<div style="font-size:10pt">&nbsp;</div>{{ $initiative->name }}
 		</td>
 		<td width="20%" align="right">
-			<img src="{{ public_path().'/images/pdf_header_logo.png' }}" style="width: 60px;" />
+			<img src="{{ public_path().'/images/default_pdf/pdf_header_logo.png' }}" style="width: 60px;" />
 		</td>
 		<td width="2%">&nbsp;</td>
 	</tr>

@@ -15,7 +15,7 @@
                                 class="form-select" @change="fetchUsers">
                                 <option value="">{{
                                     $t('planning.plan_new_project.modal_select_project_label_text')
-                                }}</option>
+                                    }}</option>
                                 <option v-for="project in projectList" :key="project.id" :value="project.id">{{
                                     project.name }}
                                 </option>
@@ -29,7 +29,7 @@
                                 class="form-select">
                                 <option value="">{{
                                     $t('planning.plan_new_project.modal_select_user_label_text')
-                                }}</option>
+                                    }}</option>
                                 <option v-for="user in usersList" :key="user.id" :value="user.id">{{
                                     user.name }}
                                 </option>
@@ -133,7 +133,7 @@ export default {
         },
         clearMessages() {
             this.errors = {};
-            messageService.clearMessage();
+            messageService.clearMessage('modal');
         },
         clearForm() {
             this.formData.project_id = '';

@@ -12,7 +12,7 @@
                 </div>
             </div>
             <div class="col-md-2">
-                <button class="btn btn-desino" @click="downloadPDF"
+                <button class="btn btn-desino" @click="downloadPDF" data-bs-toggle="tooltip" data-bs-placement="bottom"
                     :title="$t('solution_design_download.but_title_text')">
                     <i class="bi bi-download"></i>
                 </button>
@@ -53,6 +53,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import globalMixin from '@/globalMixin';
 import GlobalMessage from './../../components/GlobalMessage.vue';
 import SolutionDesignService from './../../services/SolutionDesignService';
@@ -60,6 +61,7 @@ import eventBus from '../../eventBus';
 import { mapActions } from 'vuex';
 import messageService from '../../services/messageService';
 import store from '../../store';
+import { Modal, Tooltip } from 'bootstrap';
 export default {
     name: 'DownloadSolutionDesignComponent',
     mixins: [globalMixin],
@@ -79,6 +81,9 @@ export default {
                 name: ""
             }
         };
+    },
+    computed: {
+        ...mapGetters(['user', 'currentInitiative']),
     },
     methods: {
         ...mapActions(['setLoading']),
@@ -143,7 +148,7 @@ export default {
                 const blob = new Blob([response.data], { type: 'application/pdf' });
                 const link = document.createElement('a');
                 link.href = window.URL.createObjectURL(blob);
-                link.download = 'generated.pdf';
+                link.download = this.$t('solution_design_download.page_download_text') + '- ' + this.currentInitiative?.name + '.pdf';
                 link.click();
                 this.setLoading(false);
             } catch (error) {
@@ -154,6 +159,12 @@ export default {
         objectInValueExistOrNot(obj) {
             const hasValue = Object.values(obj).some(value => value);
             return hasValue;
+        },
+        initializeTooltips() {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            tooltipTriggerList.forEach((tooltipTriggerEl) => {
+                new Tooltip(tooltipTriggerEl);
+            });
         },
         handleError(error) {
             if (error.type === 'validation') {
@@ -170,6 +181,7 @@ export default {
     },
     mounted() {
         this.fetchData();
+        this.initializeTooltips();
     },
     beforeRouteUpdate(to, from, next) {
         this.initiativeId = to.params.id;

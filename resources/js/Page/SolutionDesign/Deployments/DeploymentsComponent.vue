@@ -67,19 +67,21 @@
                             class="text-success me-2">
                             <i class="bi bi-box-arrow-up-right fw-bold"></i>
                         </router-link>
-                        <a href="javascript:" :title="$t('deployments.list.column.action.download_release_note_text')"
+                        <a href="javascript:" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            :title="$t('deployments.list.column.action.download_release_note_text')"
                             @click="downloadReleaseNotes(deployment)" class="text-info me-2">
                             <i class="bi bi-file-pdf"></i>
                         </a>
-                        <a href="javascript:" :title="$t('deployments.list.column.action.download_test_results_text')"
+                        <a href="javascript:" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            :title="$t('deployments.list.column.action.download_test_results_text')"
                             @click="downloadTestResults(deployment)" class="text-secondary">
                             <i class="bi bi-file-pdf"></i>
                         </a>
                     </div>
                 </div>
             </li>
-            <li v-else class="list-group-item border p-4">
-                <div class="col h4 fw-bold text-center">{{ $t('deployments.list.not_record_found') }}
+            <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
+                <div class="fw-bold fst-italic text-center w-100">{{ $t('deployments.list.not_record_found') }}
                 </div>
             </li>
         </ul>
@@ -98,6 +100,7 @@ import DeploymentService from '../../../services/DeploymentsService';
 import PaginationComponent from '../../../components/PaginationComponent.vue';
 import Multiselect from "vue-multiselect";
 import store from '../../../store';
+import { Modal, Tooltip } from 'bootstrap';
 export default {
     name: 'DeploymentsComponent',
     mixins: [globalMixin],
@@ -150,7 +153,8 @@ export default {
                 this.deployments = data;
                 this.currentPage = current_page;
                 this.totalPages = last_page;
-                this.setLoading(false);
+                await this.setLoading(false);
+                this.initializeTooltips();
             } catch (error) {
                 this.handleError(error);
             }
@@ -212,6 +216,12 @@ export default {
                 error.message = this.$t('deployments.download_release_note.error_message');
                 this.handleError(error);
             }
+        },
+        initializeTooltips() {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            tooltipTriggerList.forEach((tooltipTriggerEl) => {
+                new Tooltip(tooltipTriggerEl);
+            });
         },
         handleError(error) {
             if (error.type === 'validation') {

@@ -174,7 +174,7 @@ export default {
         clearMessages() {
             this.showErrorMessage = "";
             this.errors = {};
-            messageService.clearMessage();
+            messageService.clearMessage('modal');
         },
         hideErrorMessage() {
             this.showErrorMessage = "";

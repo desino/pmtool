@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\EditOpportunityRequest;
 use App\Models\Initiative;
 use App\Models\InitiativeEnvironment;
+use App\Models\Template;
 use App\Models\User;
 use App\Services\AsanaService;
 use App\Services\ClientService;
@@ -146,6 +147,7 @@ class OpportunityController extends Controller
         $retData = [
             'clients' => $clientList,
             'initiative_server_type' => InitiativeEnvironment::getServerTypeAll(),
+            'pdf_templates' => Template::get()
         ];
         return ApiHelper::response(true, '', $retData, 200);
     }

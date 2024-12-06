@@ -94,7 +94,7 @@ export default {
         },
         clearMessages() {
             this.errors = {};
-            messageService.clearMessage();
+            messageService.clearMessage('modal');
         },
         hideModal() {
             const modalElement = document.getElementById('editProjectModal');

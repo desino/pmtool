@@ -1,6 +1,6 @@
 <template>
     <div class="modal-dialog modal-lg">
-        <form @submit.prevent="submitProductionDeploymentTicket">
+        <form>
             <div class="modal-content border-0">
                 <div class="modal-header modal-header text-white bg-desino border-0 py-2 justify-content-center">
                     <h5 class="modal-title" id="productionDeploymentTicketsModalLabel"
@@ -50,9 +50,12 @@
                 <div class="modal-footer border-0 p-0 justify-content-center">
                     <div class="row w-100 g-1">
                         <div class="col-4 col-md-6 col-lg-6">
-                            <button type="submit" :disabled="!isAllowProcess" class="btn btn-desino w-100 border-0">{{
-                                $t('home.deployment_center.production_deployment.ticket_modal.submit_but.text')
-                            }}</button>
+                            <button type="button" ref="popoverBtn" data-bs-toggle="popover"
+                                :title="$t('home.deployment_center.production_deployment.ticket_modal.submit.alert.text')"
+                                v-bind:data-bs-content="popoverContent" :disabled="!isAllowProcess"
+                                class="btn btn-desino w-100 border-0">{{
+                                    $t('home.deployment_center.production_deployment.ticket_modal.submit_but.text')
+                                }}</button>
                         </div>
                         <div class="col-4 col-md-6 col-lg-6">
                             <button type="button" class="btn btn-danger w-100 border-0" data-bs-dismiss="modal">
@@ -68,7 +71,7 @@
 
 <script>
 import messageService from '../../../services/messageService';
-import { Modal } from 'bootstrap';
+import { Modal, Popover } from 'bootstrap';
 import showToast from '../../../utils/toasts';
 import { mapActions } from 'vuex';
 import eventBus from "@/eventBus.js";
@@ -89,7 +92,13 @@ export default {
             initiative: {},
             initiativeId: "",
             errors: {},
-            showMessage: true
+            showMessage: true,
+            popoverContent: `
+            <div class="text-center w-100">
+                <a href="javascript:void(0)" id="yesPrdDeploymentButton" class="btn btn-desino w-100 border-0 my-1">
+                    <i class="bi bi-check-lg"></i>
+                </a>                                
+            </div>`,
         };
     },
     methods: {
@@ -119,41 +128,24 @@ export default {
             });
         },
         async submitProductionDeploymentTicket() {
+            console.log('this.release :: ', this.release);
             this.clearMessages();
-            this.$swal({
-                title: this.$t('home.deployment_center.production_deployment.ticket_modal.submit.alert.text'),
-                showCancelButton: true,
-                confirmButtonColor: '#1e6abf',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '<i class="bi bi-check-lg"></i>',
-                cancelButtonText: '<i class="bi bi-x-lg"></i>',
-                customClass: {
-                    confirmButton: 'btn-desino',
-                },
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    try {
-                        const params = {
-                            initiative_id: this.initiativeId,
-                            ticketIds: this.selectedProductionDeploymentTickets,
-                            release_id: this.release.id
-                        }
-                        await this.setLoading(true);
-                        const { message } = await DeploymentCenterService.submitProductionDeploymentTicket(params);
-                        this.hideProductionDeploymentModal();
-                        showToast(message, 'success');
-                        await this.setLoading(false);
-                        this.$emit('pageUpdated');
-                    } catch (error) {
-                        this.handleError(error);
-                        this.resetProductionDeploymentTicketList();
-                    }
-                } else {
-                    this.resetProductionDeploymentTicketList();
+            try {
+                const params = {
+                    initiative_id: this.initiativeId,
+                    ticketIds: this.selectedProductionDeploymentTickets,
+                    release_id: this.release?.id
                 }
-            }).catch(() => {
+                await this.setLoading(true);
+                const { message } = await DeploymentCenterService.submitProductionDeploymentTicket(params);
+                this.hideProductionDeploymentModal();
+                showToast(message, 'success');
+                await this.setLoading(false);
+                this.$emit('pageUpdated');
+            } catch (error) {
+                this.handleError(error);
                 this.resetProductionDeploymentTicketList();
-            });
+            }
         },
         handleSelectAllProductionDeploymentTickets() {
             this.selectedProductionDeploymentTickets = [];
@@ -193,6 +185,22 @@ export default {
                 }
             }
         },
+        initializePopover() {
+            const popoverButton = this.$refs.popoverBtn;
+            if (popoverButton) {
+                const popover = new Popover(popoverButton, {
+                    html: true,
+                    trigger: 'focus',
+                });
+
+                popoverButton.addEventListener('shown.bs.popover', () => {
+                    const yesButton = document.getElementById('yesPrdDeploymentButton');
+                    if (yesButton) {
+                        yesButton.addEventListener('click', this.submitProductionDeploymentTicket);
+                    }
+                });
+            }
+        },
         handleError(error) {
             if (error.type === 'validation') {
                 this.errors = error.errors;
@@ -203,11 +211,14 @@ export default {
         },
         clearMessages() {
             this.errors = {};
-            messageService.clearMessage();
+            messageService.clearMessage('modal');
         },
     },
     mounted() {
         this.clearMessages();
+        this.$nextTick(() => {
+            this.initializePopover();
+        });
     },
     beforeUnmount() {
         this.showMessage = false;

@@ -33,7 +33,8 @@
                     </div>
                 </div>
             </li>
-            <li class="border list-group-item p-1 list-group-item-action border-top-0" v-if="projects.length > 0" v-for="project in projects">
+            <li class="border list-group-item p-1 list-group-item-action border-top-0" v-if="projects.length > 0"
+                v-for="project in projects">
                 <div class="row w-100 align-items-center">
                     <div class="col-lg-5 col-md-6 col-6">
                         {{ project.name }}
@@ -41,14 +42,16 @@
                     <div class="col-lg-3 col-md-6 col-6">
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
-                                v-model="project.status" @change="handleCheckboxChange(project)">
+                                v-model="project.status"
+                                @change="showConfirmation('handleCheckboxChange', handleCheckboxChange, project)">
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-6 col-6">
                         {{ project.tickets_count }}
                     </div>
                     <div class="col-lg-1 col-md-6 col-6 text-end">
-                        <a :title="$t('project.list.actions_edit_tooltip')" class="link-desino" href="javascript:"
+                        <a data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            :title="$t('project.list.actions_edit_tooltip')" class="link-desino" href="javascript:"
                             @click="editProject(project)">
                             <i class="bi bi-pencil-square"></i>
                         </a>
@@ -56,7 +59,7 @@
                 </div>
             </li>
             <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
-                <div class="h4 fw-bold text-center">{{ $t('project.list.projects_not_found_text') }}
+                <div class="fw-bold fst-italic text-center w-100">{{ $t('project.list.projects_not_found_text') }}
                 </div>
             </li>
         </ul>
@@ -67,6 +70,8 @@
             tabindex="-1">
             <EditProjectModalComponent ref="editProjectModalComponent" @projectUpdated="getProjectList" />
         </div>
+        <ConfirmationModal ref="dynamicConfirmationModal" :title="modalTitle" :message="modalMessage"
+            @confirm="modalConfirmCallback" />
     </div>
 </template>
 <script>
@@ -77,7 +82,7 @@ import { mapActions } from 'vuex';
 import PaginationComponent from './../../../components/PaginationComponent.vue';
 import showToast from './../../../utils/toasts';
 import EditProjectModalComponent from './EditProjectModalComponent.vue';
-import { Modal } from 'bootstrap';
+import { Modal, Tooltip } from 'bootstrap';
 import store from '../../../store';
 import eventBus from '../../../eventBus';
 export default {
@@ -97,6 +102,9 @@ export default {
                 active: true,
                 inactive: false
             },
+            modalTitle: '',
+            modalMessage: '',
+            modalConfirmCallback: null,
             errors: {},
             showMessage: true
         }
@@ -115,42 +123,27 @@ export default {
                 const { content: { projects: { records, paginationInfo: { current_page: currentPage, last_page: totalPages } } } } = await ProjectService.getProjects(params);
                 this.projects = records.map(item => ({
                     ...item,
-                    status: Boolean(item.status)
+                    status: Boolean(item.status),
+                    originalStatus: Boolean(item.status)
                 }));
                 this.currentPage = currentPage;
                 this.totalPages = totalPages;
-                this.setLoading(false);
+                await this.setLoading(false);
+                this.initializeTooltips();
             } catch (error) {
                 this.handleError(error);
             }
         },
-        handleCheckboxChange(project) {
-            this.$swal({
-                title: this.$t('project.list.actions_change_status_modal_title_text'),
-                text: this.$t('project.list.actions_change_status_modal_text'),
-                showCancelButton: true,
-                confirmButtonColor: '#1e6abf',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '<i class="bi bi-check-lg"></i>',
-                cancelButtonText: '<i class="bi bi-x-lg"></i>',
-                customClass: {
-                    confirmButton: 'btn-desino',
-                }
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    try {
-                        project.initiative_id = this.initiative_id;
-                        const { message } = await ProjectService.updateProjectStatus(project);
-                        showToast(message, 'success');
-                        // this.getProjectList();
-                    } catch (error) {
-                        project.status = !project.status;
-                        this.handleError(error);
-                    }
-                } else {
-                    project.status = !project.status;
-                }
-            });
+        async handleCheckboxChange(project) {
+            try {
+                project.initiative_id = this.initiative_id;
+                const { message } = await ProjectService.updateProjectStatus(project);
+                showToast(message, 'success');
+                this.getProjectList();
+            } catch (error) {
+                project.status = !project.status;
+                this.handleError(error);
+            }
         },
         async editProject(project) {
             this.$refs.editProjectModalComponent.getEditProjectFormData(project);
@@ -159,6 +152,32 @@ export default {
                 const modal = new Modal(modalElement);
                 modal.show();
             }
+        },
+        initializeTooltips() {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            tooltipTriggerList.forEach((tooltipTriggerEl) => {
+                new Tooltip(tooltipTriggerEl);
+            });
+        },
+        showConfirmation(modalType, callback, callbackParam) {
+            if (modalType === 'handleCheckboxChange') {
+                this.modalTitle = this.$t('project.list.actions_change_status_modal_title_text');
+                this.modalMessage = this.$t('project.list.actions_change_status_modal_text');
+            }
+
+            this.modalConfirmCallback = () => callback(callbackParam);
+
+            this.$refs.dynamicConfirmationModal.showModal();
+
+            const modalElement = document.getElementById('confirmationModal');
+            modalElement.addEventListener('hidden.bs.modal', () => {
+                if (!this.$refs.dynamicConfirmationModal.isConfirmed) {
+                    this.resetSwitchValue(callbackParam);
+                }
+            }, { once: true });
+        },
+        resetSwitchValue(project) {
+            project.status = Boolean(project.originalStatus);
         },
         handleError(error) {
             if (error.type === 'validation') {

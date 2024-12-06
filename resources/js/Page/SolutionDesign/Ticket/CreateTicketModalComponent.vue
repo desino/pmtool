@@ -50,7 +50,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">{{
                             $t('create_ticket_modal_modal_input_initial_estimation_development_time')
-                            }} <strong class="text-danger">*</strong>
+                        }} <strong class="text-danger">*</strong>
                         </label>
                         <input v-model="formData.initial_estimation_development_time"
                             :class="{ 'is-invalid': errors.initial_estimation_development_time }" class="form-control"
@@ -109,7 +109,7 @@
                         <div v-if="errors.auto_wait_for_client_approval" class="invalid-feedback">
                             <span v-for="(error, index) in errors.auto_wait_for_client_approval" :key="index">{{
                                 error
-                            }}</span>
+                                }}</span>
                         </div>
                     </div>
                     <div class="card mb-3">
@@ -140,7 +140,7 @@
                                             @change="updateUser(action.id, $event.target.value)">
                                             <option value="">{{
                                                 $t('create_ticket_modal_select_action_user_placeholder')
-                                            }}</option>
+                                                }}</option>
                                             <option v-for="user in users" :key="user.id" :value="user.id">
                                                 {{ user.name }}
                                             </option>
@@ -194,6 +194,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import GlobalMessage from './../../../components/GlobalMessage.vue';
 import messageService from '../../../services/messageService';
 import TicketService from '../../../services/TicketService';
@@ -211,6 +212,9 @@ export default {
     },
     props: {
         selected_initiative_id: Number,
+    },
+    computed: {
+        ...mapGetters(['user', 'currentInitiative']),
     },
     data() {
         return {
@@ -268,7 +272,6 @@ export default {
 
                 this.formData.initiative_id = this.selectedInitiativeId;
                 const response = await TicketService.storeTicket(this.formData);
-                // messageService.setMessage(response.data.message, 'success');
                 if (this.submitButtonClicked === 'create_close') {
                     this.hideModal();
                 }
@@ -280,7 +283,11 @@ export default {
                         );
                     }
                 }
-                this.setLoading(false);
+                await this.setLoading(false);
+                if ((this.submitButtonClicked === 'create_close' || this.submitButtonClicked === 'create_new') && (this.user?.is_admin || this.currentInitiative?.functional_owner_id === this.user?.id || this.currentInitiative?.technical_owner_id === this.user?.id)) {
+                    const ticketDetailRoute = this.$router.resolve({ name: 'task.detail', params: { initiative_id: response.content.ticket?.initiative_id, ticket_id: response.content.ticket?.id } });
+                    window.open(ticketDetailRoute.href, '_blank');
+                }
 
                 showToast(response.message, 'success');
                 this.resetForm();
@@ -345,7 +352,7 @@ export default {
         },
         clearMessages() {
             this.errors = {};
-            messageService.clearMessage();
+            messageService.clearMessage('modal');
         },
     },
     mounted() {

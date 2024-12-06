@@ -86,6 +86,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('show/{ticket_id}', 'show');
             Route::get('all-ticket/', 'allTicketsForDropdown');
             Route::post('update-release-note/{ticket_id}', 'updateReleaseNote');
+            Route::post('save-task-description/{ticket_id}', 'saveTaskDescription');
             Route::get('get-initiative-project-list', 'getInitiativeProjectList');
             Route::post('assign-project', 'assignProject');
             Route::post('assign-or-remove-project-for-task', 'assignOrRemoveProjectForTask');

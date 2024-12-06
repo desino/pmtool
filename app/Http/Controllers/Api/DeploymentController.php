@@ -6,6 +6,7 @@ use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Functionality;
 use App\Models\Release;
+use App\Models\Template;
 use App\Models\TestCase;
 use App\Services\InitiativeService;
 use Illuminate\Http\Request;
@@ -138,14 +139,19 @@ class DeploymentController extends Controller
         $fontname = \TCPDF_FONTS::addTTFfont(public_path() . '/fonts/Nunito/Nunito-BoldItalic.ttf', 'TrueTypeUnicode');
         $pdf->SetFont($fontname);
 
-        $pdf->data = compact('release', 'initiative');
+        $template = $initiative->template;
+        $coverHtmlPageColor = array(61, 98, 166);
+        if ($template?->primary_color) {
+            $coverHtmlPageColor = Template::hexToRgb($template?->primary_color);
+        }
+        $pdf->data = compact('release', 'initiative', 'template');
 
-        $coverHtml = view('deployment.release-note-pdf.cover_html', compact('initiative', 'release'))->render();
+        $coverHtml = view('deployment.release-note-pdf.cover_html', compact('initiative', 'release', 'template'))->render();
 
         $pdf->setPrintHeader(false);
         $pdf->SetMargins(0, 0, 0);
         $pdf->AddPage();
-        $pdf->Rect(0, 0, $pdf->getPageWidth(), $pdf->getPageHeight() - 17, 'DF', array('width' => 0),  array(61, 98, 166));
+        $pdf->Rect(0, 0, $pdf->getPageWidth(), $pdf->getPageHeight() - 17, 'DF', array('width' => 0),  $coverHtmlPageColor);
         $img_file = public_path() . '/images/pdf_cover2.png';
         $pdf->Image($img_file, 0, 50, 90);
         $pdf->writeHTMLCell(0, 0, 95, 72, $coverHtml);
@@ -154,12 +160,12 @@ class DeploymentController extends Controller
         $pdf->setPrintHeader(true);
 
         $tickets = $release->tickets;
-        $tableContentHTML = view('deployment.release-note-pdf.table_content_html', compact('tickets'));
+        $tableContentHTML = view('deployment.release-note-pdf.table_content_html', compact('tickets', 'template'));
         $pdf->AddPage();
         $pdf->WriteHTML($tableContentHTML);
 
         foreach ($tickets as $ticket) {
-            $pdfHtml = view('deployment.release-note-pdf.main_content_pdf_html', compact('ticket'));
+            $pdfHtml = view('deployment.release-note-pdf.main_content_pdf_html', compact('ticket', 'template'));
             $pdf->AddPage();
             $pdf->WriteHTML($pdfHtml, true, 0, true, 0);
         }
@@ -239,14 +245,21 @@ class DeploymentController extends Controller
         $fontname = \TCPDF_FONTS::addTTFfont(public_path() . '/fonts/Nunito/Nunito-BoldItalic.ttf', 'TrueTypeUnicode');
         $pdf->SetFont($fontname);
 
-        $pdf->data = compact('initiative', 'release');
+        $template = $initiative->template;
+        $coverHtmlPageColor = array(61, 98, 166);
+        if ($template?->primary_color) {
+            $coverHtmlPageColor = Template::hexToRgb($template?->primary_color);
+        }
 
-        $coverHtml = view('deployment.test-case-pdf.cover_html', compact('initiative', 'release'))->render();
+        $pdf->data = compact('initiative', 'release', 'template');
+
+        $coverHtml = view('deployment.test-case-pdf.cover_html', compact('initiative', 'release', 'template'))->render();
 
         $pdf->setPrintHeader(false);
         $pdf->SetMargins(0, 0, 0);
         $pdf->AddPage();
-        $pdf->Rect(0, 0, $pdf->getPageWidth(), $pdf->getPageHeight() - 17, 'DF', array('width' => 0),  array(61, 98, 166));
+        // $pdf->Rect(0, 0, $pdf->getPageWidth(), $pdf->getPageHeight() - 17, 'DF', array('width' => 0),  array(61, 98, 166));
+        $pdf->Rect(0, 0, $pdf->getPageWidth(), $pdf->getPageHeight() - 17, 'DF', array('width' => 0),  $coverHtmlPageColor);
         $img_file = public_path() . '/images/pdf_cover2.png';
         $pdf->Image($img_file, 0, 50, 90);
         $pdf->writeHTMLCell(0, 0, 95, 72, $coverHtml);
@@ -256,12 +269,12 @@ class DeploymentController extends Controller
 
         $tickets = $release->tickets;
 
-        $tableContentHTML = view('deployment.test-case-pdf.table_content_html', compact('tickets'));
+        $tableContentHTML = view('deployment.test-case-pdf.table_content_html', compact('tickets', 'template'));
         $pdf->AddPage();
         $pdf->WriteHTML($tableContentHTML);
 
         foreach ($tickets as $ticket) {
-            $pdfHtml = view('deployment.test-case-pdf.main_content_pdf_html', compact('ticket'));
+            $pdfHtml = view('deployment.test-case-pdf.main_content_pdf_html', compact('ticket', 'template'));
             $pdf->AddPage();
             $pdf->WriteHTML($pdfHtml, true, 0, true, 0);
         }

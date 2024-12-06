@@ -6,6 +6,7 @@ use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\AssignProjectRequest;
 use App\Http\Requests\Api\CreateReleaseRequest;
+use App\Http\Requests\Api\SaveTaskDescriptionRequest;
 use App\Http\Requests\Api\TicketDetailEstimatedHoursRequest;
 use App\Http\Requests\Api\TicketRequest;
 use App\Http\Requests\UpdateReleaseNoteRequest;
@@ -23,6 +24,8 @@ use App\Services\ProjectService;
 use App\Services\ReleaseService;
 use App\Services\TicketService;
 use Exception;
+use HTMLPurifier;
+use HTMLPurifier_Config;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -172,10 +175,11 @@ class TicketController extends Controller
             return ApiHelper::response($status, __('messages.create_ticket.action_develop_not_exist'), '', 400);
         }
 
-        $ticketActionsCollect = collect($validateData['ticket_actions']);
-        $filteredDoneActions = $ticketActionsCollect->where('is_checked', true)->where('status', TicketAction::getStatusDone())->sortByDesc('action');
+        // $ticketActionsCollect = collect($validateData['ticket_actions']);
+        $ticketActionsCollect = $ticket->actions;
+        $filteredDoneActions = $ticketActionsCollect->where('status', TicketAction::getStatusDone())->sortByDesc('action');
         $filteredDoneMaxAction = $filteredDoneActions->first();
-        $filterNewMaxAction = $ticketActionsCollect->where('is_checked', true)->whereNull('status')->sortBy('action')->first();
+        $filterNewMaxAction = collect($validateData['ticket_actions'])->where('is_checked', true)->whereNull('status')->sortBy('action')->first();
 
         if (isset($filterNewMaxAction['action']) && isset($filteredDoneMaxAction['action']) && $filterNewMaxAction['action'] < $filteredDoneMaxAction['action']) {
             return ApiHelper::response($status, __('messages.create_ticket.not_allowed_because_grater_action_is_done'), '', 400);
@@ -386,12 +390,6 @@ class TicketController extends Controller
         })->get(['id', 'display_name']);
 
         $projects = ProjectService::getInitiativeProjects($initiative_id);
-        $staticProject = array(
-            'id' => 0,
-            'initiative_id' => $initiative_id,
-            'name' => __('messages.static_not_allocated_project_text'),
-        );
-        $projects->prepend($staticProject);
 
         $meta['projects'] = $projects;
         $meta['users'] = TicketService::getUsers();
@@ -576,7 +574,54 @@ class TicketController extends Controller
                 $ticket->update($requestData);
             });
         } catch (Exception $e) {
-            \Log::error('Update Release Note Failed: ' . $e->getMessage());
+            Log::error('Update Release Note Failed: ' . $e->getMessage());
+
+            $status = false;
+            $code = 500;
+            $message = __('messages.ticket.update_failed');
+        }
+
+        return ApiHelper::response($status, $message, $ticket, $code);
+    }
+
+    public function saveTaskDescription($initiativeId, $ticketId, SaveTaskDescriptionRequest $request)
+    {
+        $status = false;
+        $request->merge(['initiative_id' => $initiativeId]);
+        $initiative = InitiativeService::getInitiative($request);
+        if (!$initiative) {
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
+        }
+
+        $ticket = Ticket::find($ticketId);
+        if (!$ticket) {
+            return ApiHelper::response($status, __('messages.ticket.ticket_not_exist'), '', 400);
+        }
+        if (!Auth::user()->is_admin && $initiative->functional_owner_id != Auth::id() && $initiative->technical_owner_id != Auth::id()) {
+            return ApiHelper::response($status, __('messages.ticket.dont_have_permission'), '', 400);
+        }
+        $requestData = $request->validated();
+
+        // $data = [
+        //     'html_notes' => "<body>" . str_replace(['<p>', '</p>'], '', $requestData['description']) . "</body>",
+        // ];
+
+        // $task = $this->asanaService->updateTask($ticket->asana_task_id, $data);
+        // if ($task['error_status']) {
+        //     return ApiHelper::response($status, __('messages.asana.update_ticket.update_error'), '', 500);
+        // }
+        // $validateData['asana_task_id'] = $task['data']['data']['gid'];
+
+        $status = true;
+        $code = 200;
+        $message = __('messages.ticket.update_description_success');
+
+        try {
+            DB::transaction(function () use ($ticket, $requestData) {
+                $ticket->update($requestData);
+            });
+        } catch (Exception $e) {
+            Log::error('Update description Note Failed: ' . $e->getMessage());
 
             $status = false;
             $code = 500;

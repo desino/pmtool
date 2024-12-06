@@ -15,7 +15,7 @@
                                 class="form-select">
                                 <option value="">{{
                                     $t('planning.plan_new_user.modal_select_user_label_text')
-                                }}</option>
+                                    }}</option>
                                 <option v-for="user in usersList" :key="user.id" :value="user.id">{{
                                     user.name }}
                                 </option>
@@ -113,7 +113,7 @@ export default {
         },
         clearMessages() {
             this.errors = {};
-            messageService.clearMessage();
+            messageService.clearMessage('modal');
         },
         clearForm() {
             this.formData.user_id = '';

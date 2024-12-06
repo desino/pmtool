@@ -206,6 +206,10 @@ class SolutionDesignService
                 $eachMoveToSection->increment('order_no');
                 $eachMoveToSection->display_name = $eachMoveToSection->order_no . " " . $eachMoveToSection->name;
                 $eachMoveToSection->save();
+                $eachMoveToSection->functionalities->each(function ($functionality, $index) use ($eachMoveToSection) {
+                    $functionality->display_name = $eachMoveToSection->order_no . "." . $functionality->order_no . " " . $functionality->name;
+                    $functionality->save();
+                });
             });
 
 

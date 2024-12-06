@@ -11,17 +11,17 @@
                     </div>
 
                     <div class="row g-1 w-100 align-items-center">
-                        <div class="col-12 col-md-6 col-lg-4 mb-3">
+                        <div class="col-12 col-md-6 col-lg-6 mb-3">
                             <label class="form-label fw-bold">{{
                                 $t('edit_opportunity_modal_select_client_name')
-                                }} <strong class="text-danger">*</strong></label>
+                            }} <strong class="text-danger">*</strong></label>
                             <input type="text" v-model="formData.client_name" disabled
                                 :class="{ 'is-invalid': errors.client_name }" class="form-control">
                             <div v-if="errors.client_name" class="invalid-feedback">
                                 <span v-for="(error, index) in errors.client_name" :key="index">{{ error }}</span>
                             </div>
                         </div>
-                        <div class="col-12 col-md-6 col-lg-4 mb-3">
+                        <div class="col-12 col-md-6 col-lg-6 mb-3">
                             <label class="form-label fw-bold">{{ $t('edit_opportunity_modal_input_name') }}
                                 <strong class="text-danger">*</strong></label>
                             <input type="text" v-model="formData.name" :class="{ 'is-invalid': errors.name }"
@@ -30,7 +30,7 @@
                                 <span v-for="(error, index) in errors.name" :key="index">{{ error }}</span>
                             </div>
                         </div>
-                        <div class="col-12 col-md-6 col-lg-4 mb-3">
+                        <div class="col-12 col-md-6 col-lg-6 mb-3">
                             <label class="form-label fw-bold">{{
                                 $t('edit_opportunity_modal_input_ballpark_development_hours') }} <strong
                                     class="text-danger">*</strong></label>
@@ -38,6 +38,23 @@
                                 :class="{ 'is-invalid': errors.ballpark_development_hours }" class="form-control">
                             <div v-if="errors.ballpark_development_hours" class="invalid-feedback">
                                 <span v-for="(error, index) in errors.ballpark_development_hours" :key="index">
+                                    {{ error }} <br>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6 mb-3">
+                            <label class="form-label fw-bold">{{
+                                $t('edit_opportunity_modal_select_pdf_template_text') }}</label>
+                            <select v-model="formData.template_id" :class="{ 'is-invalid': errors.template_id }"
+                                class="form-select">
+                                <option value="">{{
+                                    $t('edit_opportunity_modal_select_template_placeholder') }}</option>
+                                <option v-for="template in pdfTemplates" :key="template.id" :value="template.id">
+                                    {{ template.name }}
+                                </option>
+                            </select>
+                            <div v-if="errors.template_id" class="invalid-feedback">
+                                <span v-for="(error, index) in errors.template_id" :key="index">
                                     {{ error }} <br>
                                 </span>
                             </div>
@@ -118,7 +135,7 @@
                                 <div v-if="errors.share_point_url" class="invalid-feedback">
                                     <span v-for="(error, index) in errors.share_point_url" :key="index">{{
                                         error
-                                        }}</span>
+                                    }}</span>
                                 </div>
                             </div>
                         </div>
@@ -129,27 +146,29 @@
                             <h6 class="mb-0">{{ $t('edit_opportunity_modal_card_header_servers_text') }}</h6>
                         </div>
                         <div class="card-body p-1">
-                            <div class="w-100" >
+                            <div class="w-100">
                                 <ul class="list-group list-group-flush">
                                     <li class="border-0 list-group-item py-3 px-1"
-                                        v-for="(environment, index) in formData.environments" :key="index" >
+                                        v-for="(environment, index) in formData.environments" :key="index">
                                         <div class="row g-1 w-100 align-items-center">
                                             <div class="col-12">
                                                 <div class="form-check">
-                                                    <input class="form-check-input" v-model="environment.desino_managed_fl"
-                                                        :class="{ 'is-invalid': errors.desino_managed_fl }" type="checkbox"
-                                                        :id="'desino_managed_fl' + index">
-                                                    <label class="form-check-label fw-bold" :for="'desino_managed_fl' + index">
+                                                    <input class="form-check-input"
+                                                        v-model="environment.desino_managed_fl"
+                                                        :class="{ 'is-invalid': errors.desino_managed_fl }"
+                                                        type="checkbox" :id="'desino_managed_fl' + index">
+                                                    <label class="form-check-label fw-bold"
+                                                        :for="'desino_managed_fl' + index">
                                                         {{ $t('edit_opportunity_modal_input_desino_managed_fl') }}
                                                     </label>
                                                 </div>
                                             </div>
                                             <div class="col-6 col-md-6 col-lg-4 col-xl-2">
-                                                <select v-model="environment.type" :class="{ 'is-invalid': errors.type }"
-                                                    class="form-select">
+                                                <select v-model="environment.type"
+                                                    :class="{ 'is-invalid': errors.type }" class="form-select">
                                                     <option value="">{{
                                                         $t('edit_opportunity_modal_input_environment_server_type_placeholder')
-                                                        }}
+                                                    }}
                                                     </option>
                                                     <option v-for="serverType in serverTypes" :key="serverType.id"
                                                         :value="serverType.id">{{
@@ -159,14 +178,16 @@
                                                 <div v-if="errors.type" class="invalid-feedback">
                                                     <span v-for="(error, index) in errors.type" :key="index">{{
                                                         error
-                                                        }}</span>
+                                                    }}</span>
                                                 </div>
                                             </div>
                                             <div class="col-6 col-md-6 col-lg-8 col-xl-3">
                                                 <input type="text" v-model="environment.name"
                                                     :class="{ 'is-invalid': errors[`environments.${index}.name`] }"
-                                                    class="form-control" :placeholder="$t('edit_opportunity_modal_input_environment_name')">
-                                                <div v-if="errors[`environments.${index}.name`]" class="invalid-feedback">
+                                                    class="form-control"
+                                                    :placeholder="$t('edit_opportunity_modal_input_environment_name')">
+                                                <div v-if="errors[`environments.${index}.name`]"
+                                                    class="invalid-feedback">
                                                     <span v-for="(error, index) in errors[`environments.${index}.name`]"
                                                         :key="index">{{
                                                             error
@@ -177,8 +198,10 @@
                                             <div class="col-10 col-md-10 col-lg-11 col-xl-6">
                                                 <input type="text" v-model="environment.url"
                                                     :class="{ 'is-invalid': errors[`environments.${index}.url`] }"
-                                                    class="form-control" :placeholder="$t('edit_opportunity_modal_input_environment_url')">
-                                                <div v-if="errors[`environments.${index}.url`]" class="invalid-feedback">
+                                                    class="form-control"
+                                                    :placeholder="$t('edit_opportunity_modal_input_environment_url')">
+                                                <div v-if="errors[`environments.${index}.url`]"
+                                                    class="invalid-feedback">
                                                     <span v-for="(error, index) in errors[`environments.${index}.url`]"
                                                         :key="index">{{
                                                             error
@@ -187,7 +210,8 @@
                                             </div>
                                             <div class="col-2 col-md-2 col-lg-1 col-xl-1">
                                                 <button v-show="formData.environments.length > 1" type="button"
-                                                    class="btn btn-danger border-0 w-100" @click="removeEnvironment(index)">
+                                                    class="btn btn-danger border-0 w-100"
+                                                    @click="removeEnvironment(index)">
                                                     <i class="bi bi-x-lg"></i>
                                                 </button>
                                             </div>
@@ -205,11 +229,11 @@
                 </div>
                 <div class="modal-footer border-0 p-0 justify-content-center">
                     <div class="row w-100 g-1">
-                        <div class="col-4 col-md-6 col-lg-6">
+                        <div class="col-6">
                             <button type="submit" class="btn btn-desino w-100 border-0">{{
                                 $t('edit_opportunity_modal_submit_but_text') }}</button>
                         </div>
-                        <div class="col-4 col-md-6 col-lg-6">
+                        <div class="col-6">
                             <button type="button" class="btn btn-danger w-100 border-0" data-bs-dismiss="modal">
                                 <i class="bi bi-x-lg"></i>
                             </button>
@@ -241,6 +265,7 @@ export default {
                 client_id: '',
                 name: '',
                 ballpark_development_hours: '',
+                template_id: '',
                 is_sold: false,
                 client_name: '',
                 share_point_url: '',
@@ -259,6 +284,7 @@ export default {
             },
             modalTitle: '',
             users: [],
+            pdfTemplates: [],
             serverTypes: [],
             errors: {},
             showMessage: true
@@ -273,6 +299,7 @@ export default {
             this.formData.client_id = opportunity.client_id;
             this.formData.name = opportunity.name;
             this.formData.ballpark_development_hours = opportunity.ballpark_development_hours;
+            this.formData.template_id = opportunity.template_id ?? '';
             this.formData.is_sold = opportunity.status === 2 ?? false;
             this.formData.client_name = opportunity.client.name;
             this.formData.share_point_url = opportunity.share_point_url;
@@ -343,6 +370,7 @@ export default {
                 const response = await OpportunityService.getEditOpportunityData();
                 this.users = response.content.clients;
                 this.serverTypes = response.content.initiative_server_type;
+                this.pdfTemplates = response.content.pdf_templates;
                 this.setLoading(false);
             } catch (error) {
                 this.handleError(error);
@@ -359,7 +387,7 @@ export default {
         },
         clearMessages() {
             this.errors = {};
-            messageService.clearMessage();
+            messageService.clearMessage('modal');
         },
         hideModal() {
             const modalElement = document.getElementById('editOpportunityModal');

@@ -15,7 +15,7 @@
                                 class="form-select" @change="fetchProjects">
                                 <option value="">{{
                                     $t('planning.plan_new_initiative.modal_select_initiative_label_text')
-                                }}</option>
+                                    }}</option>
                                 <option v-for="initiative in initiativesList" :key="initiative.id"
                                     :value="initiative.id">{{
                                         initiative.name }}
@@ -30,7 +30,7 @@
                                 class="form-select">
                                 <option value="">{{
                                     $t('planning.plan_new_initiative.modal_select_project_label_text')
-                                }}</option>
+                                    }}</option>
                                 <option v-for="project in projectList" :key="project.id" :value="project.id">{{
                                     project.name }}
                                 </option>
@@ -44,7 +44,7 @@
                                 class="form-select">
                                 <option value="">{{
                                     $t('planning.plan_new_initiative.modal_select_user_label_text')
-                                }}</option>
+                                    }}</option>
                                 <option v-for="user in usersList" :key="user.id" :value="user.id">{{
                                     user.name }}
                                 </option>
@@ -164,7 +164,7 @@ export default {
         },
         clearMessages() {
             this.errors = {};
-            messageService.clearMessage();
+            messageService.clearMessage('modal');
         },
         clearForm() {
             this.formData.initiative_id = '';

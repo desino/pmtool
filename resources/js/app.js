@@ -8,6 +8,7 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 import MainComponent from "./components/Layout/MainComponent.vue";
 import './../../public/tinymce/tinymce.min.js'
 import i18n from './i18n.js';
+import ConfirmationModal from './components/ConfirmationModal.vue';
 
 const app = createApp({
     components: {
@@ -24,6 +25,7 @@ app.config.globalProperties.$constants = {
 app.use(i18n);
 app.use(router);
 app.use(store);
+app.component('ConfirmationModal', ConfirmationModal);
 app.mount('#app');
 
 
