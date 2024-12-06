@@ -107,6 +107,7 @@ Route::middleware('auth:sanctum')->group(function () {
                 Route::post('/store', 'store');
                 Route::post('/update/{test_case_id}', 'update');
                 Route::get('/show/{test_case_id}', 'show');
+                Route::post('/delete-test-case/{test_case_id}', 'deleteTestCase');
             });
         });
 
