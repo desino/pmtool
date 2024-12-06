@@ -97,10 +97,7 @@ export default {
             <div class="text-center w-100">
                 <a href="javascript:void(0)" id="yesPrdDeploymentButton" class="btn btn-desino w-100 border-0 my-1">
                     <i class="bi bi-check-lg"></i>
-                </a>
-                <a href="javascript:void(0)" id="noButton" class="btn btn-danger w-100 border-0 my-1" data-bs-dismiss="modal">
-                    <i class="bi bi-x-lg"></i>
-                </a>                
+                </a>                                
             </div>`,
         };
     },

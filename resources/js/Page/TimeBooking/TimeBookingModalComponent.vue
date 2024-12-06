@@ -354,10 +354,7 @@ export default {
                 <div class="text-center w-100">
                     <a href="javascript:void(0)" class="btn btn-desino w-100 border-0 my-1" id="yesDeleteTimeBookingButton_${index}" data-index="${index}">
                         <i class="bi bi-check-lg"></i>
-                    </a>
-                    <a href="javascript:void(0)"  class="btn btn-danger w-100 border-0 my-1 cancel-delete-btn" data-index="${index}">
-                        <i class="bi bi-x-lg"></i>
-                    </a>
+                    </a>                    
                 </div>`;
         },
         handleError(error) {
@@ -399,9 +396,6 @@ export default {
     },
     mounted() {
         this.clearMessages();
-        // this.$nextTick(() => {
-        //     this.initializePopover();
-        // });
     },
 }
 </script>

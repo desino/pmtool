@@ -110,12 +110,6 @@
                                     {{ timeBooking.comments }}
                                 </div>
                                 <div class="col-md-1 py-2 text-end">
-                                    <!-- <a data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                        :title="$t('time_booking_un_billable.modal.list_table.action_delete_text')"
-                                        class="text-danger me-2" href="javascript:"
-                                        @click="handleDeleteTimeBooking(timeBooking)">
-                                        <i class="bi bi-trash3"></i>
-                                    </a> -->
                                     <a ref="deletePopoverBtns" data-bs-toggle="popover" data-bs-trigger="focus"
                                         :title="$t('time_booking_un_billable.modal.list_table.action_delete_text')"
                                         class="text-danger me-2" href="javascript:">
@@ -356,10 +350,7 @@ export default {
                 <div class="text-center w-100">
                     <a href="javascript:void(0)" class="btn btn-desino w-100 border-0 my-1" id="yesDeleteTimeBookingUnBillableButton_${index}" data-index="${index}">
                         <i class="bi bi-check-lg"></i>
-                    </a>
-                    <a href="javascript:void(0)"  class="btn btn-danger w-100 border-0 my-1 cancel-delete-btn" data-index="${index}">
-                        <i class="bi bi-x-lg"></i>
-                    </a>
+                    </a>                    
                 </div>`;
         },
         clearMessages() {
