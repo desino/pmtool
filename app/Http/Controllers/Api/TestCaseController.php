@@ -6,6 +6,7 @@ use App\Helper\ApiHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StoreTestCaseRequest;
 use App\Models\Initiative;
+use App\Models\TestCase;
 use App\Models\Ticket;
 use App\Models\TicketAction;
 use App\Services\InitiativeService;
@@ -211,7 +212,7 @@ class TestCaseController extends Controller
 
         DB::beginTransaction();
         try {
-            $testCase->delete();
+            TestCase::where('id', $testCaseId)->delete();
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
