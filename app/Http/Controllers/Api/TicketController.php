@@ -390,12 +390,6 @@ class TicketController extends Controller
         })->get(['id', 'display_name']);
 
         $projects = ProjectService::getInitiativeProjects($initiative_id);
-        $staticProject = array(
-            'id' => 0,
-            'initiative_id' => $initiative_id,
-            'name' => __('messages.static_not_allocated_project_text'),
-        );
-        $projects->prepend($staticProject);
 
         $meta['projects'] = $projects;
         $meta['users'] = TicketService::getUsers();
