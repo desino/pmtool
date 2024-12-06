@@ -9,10 +9,11 @@ const endpoints = {
     show: `${defaultPath}/show/:test_case_id`,
     store: `${defaultPath}/store`,
     update: `${defaultPath}/update/:test_case_id`,
+    deleteTestCase: `${defaultPath}/delete-test-case/:test_case_id`,
 }
 
 const TestCaseService = {
-    async getTestCase(initiative_id,ticket_id,test_case_id) {
+    async getTestCase(initiative_id, ticket_id, test_case_id) {
         try {
             const endpoint = endpoints.show.replace(':initiative_id', initiative_id).replace(':ticket_id', ticket_id).replace(':test_case_id', test_case_id);
             const response = await axiosRequest.get(endpoint);
@@ -33,6 +34,16 @@ const TestCaseService = {
     async updateTestCase(data) {
         try {
             const endpoint = endpoints.update.replace(':initiative_id', data.initiative_id).replace(':ticket_id', data.ticket_id).replace(':test_case_id', data.test_case_id);
+            const response = await axiosRequest.post(endpoint, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+
+    async deleteTestCase(data) {
+        try {
+            const endpoint = endpoints.deleteTestCase.replace(':initiative_id', data.initiative_id).replace(':ticket_id', data.ticket_id).replace(':test_case_id', data.test_case_id);;
             const response = await axiosRequest.post(endpoint, data);
             return response.data;
         } catch (error) {

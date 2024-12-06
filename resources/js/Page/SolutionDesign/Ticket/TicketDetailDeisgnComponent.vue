@@ -183,7 +183,7 @@
                     class="tab-pane fade active show" role="tabpanel">
                     <div class="w-100">
                         <div v-if="this.user?.is_admin">
-                            <TinyMceEditor v-model="taskDescriptionForm.description"  />
+                            <TinyMceEditor v-model="taskDescriptionForm.description" />
                             <div v-if="errors.description" class="text-danger mt-2">
                                 <span v-for="(error, index) in errors.description" :key="index">{{
                                     error
@@ -199,7 +199,8 @@
                         </div>
                     </div>
                 </div>
-                <div id="ticketdetail_feature_tab" aria-labelledby="ticketdetail_feature_tab" class="tab-pane fade" role="tabpanel">
+                <div id="ticketdetail_feature_tab" aria-labelledby="ticketdetail_feature_tab" class="tab-pane fade"
+                    role="tabpanel">
                     <div class="w-100">
                         <div class="bg-desino text-white rounded fw-bold p-2 w-100">
                             <span v-if="ticketData.display_functionality_name">
@@ -210,21 +211,24 @@
                         <div class="w-100 py-3" v-html="ticketData.functionality_description"></div>
                     </div>
                 </div>
-                <div id="ticketdetail_testcase_tab" aria-labelledby="ticketdetail_testcase_tab" class="tab-pane fade" role="tabpanel">
+                <div id="ticketdetail_testcase_tab" aria-labelledby="ticketdetail_testcase_tab" class="tab-pane fade"
+                    role="tabpanel">
                     <div class="w-100">
                         <div class="w-100">
                             <button class="btn btn-desino border-0" @click="showTestCaseModal"
-                                v-if="is_allow_case_add_test_section"> <i class="bi bi-plus-lg"></i> {{ $t('ticket_detail_test_case_add_test_section_but_text') }}
+                                v-if="is_allow_case_add_test_section"> <i class="bi bi-plus-lg"></i> {{
+                                    $t('ticket_detail_test_case_add_test_section_but_text') }}
                             </button>
                         </div>
-                        <div class="w-100 mt-3" v-if="test_cases?.length > 0" >
+                        <div class="w-100 mt-3" v-if="test_cases?.length > 0">
                             <div class="row g-2 align-items-center w-100">
                                 <div class="col-12 col-lg-6" v-for="(test_case, index) in test_cases" :key="index">
                                     <div class="card">
                                         <div class="card-header bg-secondary text-white border border-secondary p-2">
                                             <span class="fw-bold me-2">Test {{ index + 1 }}</span>
-                                            <span v-if="test_case.status !== -1" class="badge rounded-pill" :class="test_case.status === 1 ? 'bg-success' : 'bg-danger'">
-                                                {{ test_case.status === 1 ? 'success' : 'failed'}}
+                                            <span v-if="test_case.status !== -1" class="badge rounded-pill"
+                                                :class="test_case.status === 1 ? 'bg-success' : 'bg-danger'">
+                                                {{ test_case.status === 1 ? 'success' : 'failed' }}
                                             </span>
                                         </div>
                                         <div class="card-body max-h-250 optimize-image p-2">
@@ -242,21 +246,28 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="card-footer p-2" v-if="is_allow_case_update_test_section">
+                                        <div class="card-footer p-2">
                                             <div class="row g-1 align-items-center w-100">
-                                                <div class="col-6">
+                                                <div class="col-4" v-if="is_allow_case_update_test_section">
                                                     <button class="btn btn-success btn-sm w-100 border-0"
                                                         :disabled="test_case.status === 1"
                                                         @click="handleTestCaseAction(test_case.id, 'success')">
                                                         <i class="bi-check-lg text-white"></i>
                                                     </button>
                                                 </div>
-                                                <div class="col-6">
+                                                <div class="col-4" v-if="is_allow_case_update_test_section">
                                                     <button
                                                         :disabled="test_case.status !== 1 && test_case.status !== -1"
                                                         class="btn btn-danger btn-sm w-100 border-0"
                                                         @click="handleTestCaseAction(test_case.id, 'failed')">
                                                         <i class="bi-x-lg text-white"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="col-4">
+                                                    <button :disabled="!is_allow_case_add_test_section"
+                                                        class="btn btn-dark btn-sm w-100 border-0"
+                                                        @click="showConfirmation('deleteTestCase', deleteTestCase, test_case.id)">
+                                                        <i class="bi bi-trash3"></i>
                                                     </button>
                                                 </div>
                                             </div>
@@ -265,22 +276,21 @@
                                 </div>
                             </div>
                         </div>
-                        <div v-else class="w-100 mt-3 text-center" >
+                        <div v-else class="w-100 mt-3 text-center">
                             <span class="fw-bold fst-italic">
                                 {{ $t('ticket_detail_test_case_section_no_test_case') }}
                             </span>
                         </div>
-                        <div id="createTestCaseModal" aria-hidden="true"
-                            aria-labelledby="createTestCaseModalLabel" class="modal fade" tabindex="-1">
+                        <div id="createTestCaseModal" aria-hidden="true" aria-labelledby="createTestCaseModalLabel"
+                            class="modal fade" tabindex="-1">
                             <CreateTestCaseModalComponent ref="createTestCaseModalComponent"
                                 @stored-testcase="updateTestCaseList" :ticket_id="selectedTask"
                                 :initiative_id="localInitiativeId" />
                         </div>
-                        <div id="updateTestCaseModal" aria-hidden="true"
-                            aria-labelledby="updateTestCaseModalLabel" class="modal fade" tabindex="-1">
-                            <UpdateTestCaseModalComponent ref="updateTestCaseModalComponent"
-                                :ticket_id="selectedTask" :initiative_id="localInitiativeId"
-                                @stored-testcase="updateTestCaseList" />
+                        <div id="updateTestCaseModal" aria-hidden="true" aria-labelledby="updateTestCaseModalLabel"
+                            class="modal fade" tabindex="-1">
+                            <UpdateTestCaseModalComponent ref="updateTestCaseModalComponent" :ticket_id="selectedTask"
+                                :initiative_id="localInitiativeId" @stored-testcase="updateTestCaseList" />
                         </div>
                     </div>
                 </div>
@@ -808,6 +818,10 @@ export default {
                     'PREVIOUS_ACTION_NAME': `<span class='badge bg-secondary'>${callbackParam?.action_name}</span>`
                 });
             }
+            if (modalType === 'deleteTestCase') {
+                this.modalTitle = this.$t('ticket_detail.confirm_alert.delete_test_case_title');
+                this.modalMessage = this.$t('ticket_detail.confirm_alert.delete_test_case_text');
+            }
 
             this.modalConfirmCallback = () => callback(callbackParam);
 
@@ -825,6 +839,23 @@ export default {
         },
         resetSwitchValue(previousUserId) {
             this.currentActionFormData.user_id = previousUserId;
+        },
+        async deleteTestCase(testCaseId) {
+            try {
+                await this.setLoading(true);
+                const passData = {
+                    initiative_id: this.localInitiativeId,
+                    ticket_id: this.localTicketId,
+                    test_case_id: testCaseId,
+                }
+                const { message, status } = await testCaseService.deleteTestCase(passData);
+                showToast(message, 'success');
+                await this.setLoading(false);
+                this.fetchTicketData(this.localTicketId);
+                this.clearMessages();
+            } catch (error) {
+                this.handleError(error);
+            }
         },
     },
     mounted() {
