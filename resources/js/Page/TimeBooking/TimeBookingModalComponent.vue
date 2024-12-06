@@ -31,7 +31,7 @@
                                         class="form-select">
                                         <option value="">{{
                                             $t('time_booking.modal_input_project_label_text')
-                                            }}</option>
+                                        }}</option>
                                         <option v-for="project in projects" :key="project.id" :value="project.id">{{
                                             project.name }}
                                         </option>
@@ -68,54 +68,51 @@
                     </div>
                 </form>
 
-                <!-- <button type="button" ref="popoverBtn" data-bs-toggle="popover"
-                    :title="$t('home.deployment_center.test_deployment.ticket_modal.submit.alert.text')"
-                    v-bind:data-bs-content="popoverContent" class="btn btn-desino w-100 border-0">{{
-                        $t('home.deployment_center.test_deployment.ticket_modal.submit_but.text') }}</button> -->
-
                 <div class="mb-3 p-3 shadow">
                     <button type="button" class="btn btn-sm btn-danger border-0"
                         :disabled="selectedTimeBookings.length === 0" @click="handleDeleteSelectAllTimeBookings">
                         <i class="bi bi-trash3"></i> {{ $t('time_booking.modal_delete_but_text') }}
                     </button>
                     <ul class="list-group list-group-flush mb-3 mt-2">
-                        <li class="font-weight-bold bg-desino text-white rounded-top list-group-item">
-                            <div class="row w-100">
-                                <div class="col-md-1 fw-bold py-2">
-                                    <input class="form-check-input" type="checkbox" v-model="isChkAllTimeBookings"
-                                        @change="handleSelectAllTimeBookings">
+                        <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
+                            <div class="row w-100 align-items-center">
+                                <div class="col-3">
+                                    <div class="row g-0 h-100 align-items-center">
+                                        <div class="col-auto me-1" style="width:20px">
+                                            <input class="form-check-input" type="checkbox"
+                                                v-model="isChkAllTimeBookings" @change="handleSelectAllTimeBookings">
+                                        </div>
+                                        <div class="col-auto fw-bold small" style="width: calc(100% - 40px)">
+                                            {{ $t('time_booking.modal.list_table.hours') }}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-md-2 fw-bold py-2">
-                                    {{ $t('time_booking.modal.list_table.hours') }}
-                                </div>
-                                <div class="col-md-6 fw-bold py-2">
+                                <div class="col-7 fw-bold small">
                                     {{ $t('time_booking.modal.list_table.comments') }}
                                 </div>
-                                <div class="col-md-3 fw-bold py-2 text-end">
+                                <div class="col-2 fw-bold small text-end">
                                     {{ $t('time_booking.modal.list_table.action') }}
                                 </div>
                             </div>
                         </li>
-                        <li class="border list-group-item" v-if="timeBookings.length > 0"
-                            v-for="(timeBooking, index) in timeBookings">
-                            <div class="row w-100">
-                                <div class="col-md-1 py-2">
-                                    <input v-model="timeBooking.is_checked" class="form-check-input" type="checkbox"
-                                        @change="handleSelectAllTimeBooking(timeBooking)">
+                        <li class="border list-group-item p-1 list-group-item-action border-top-0"
+                            v-if="timeBookings.length > 0" v-for="(timeBooking, index) in timeBookings">
+                            <div class="row g-1 w-100 align-items-center">
+                                <div class="col-3">
+                                    <div class="row g-0 h-100 align-items-center">
+                                        <div class="col-auto me-1" style="width:20px">
+                                            <input v-model="timeBooking.is_checked" class="form-check-input"
+                                                type="checkbox" @change="handleSelectAllTimeBooking(timeBooking)">
+                                        </div>
+                                        <div class="col-auto" style="width: calc(100% - 40px)">
+                                            {{ timeBooking.hours }}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-md-2 py-2">
-                                    {{ timeBooking.hours }}
-                                </div>
-                                <div class="col-md-6 py-2">
+                                <div class="col-7">
                                     {{ timeBooking.comments }}
                                 </div>
-                                <div class="col-md-3 py-2 text-end">
-                                    <!-- <a data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                        :title="$t('time_booking.modal.list_table.action_delete_text')"
-                                        class="text-danger me-2" href="javascript:"
-                                        @click="handleDeleteTimeBooking(timeBooking)">
-                                        <i class="bi bi-trash3"></i>
-                                    </a> -->
+                                <div class="col-2 text-end">
                                     <a ref="deletePopoverBtns" data-bs-toggle="popover" data-bs-trigger="focus"
                                         :title="$t('time_booking.modal.list_table.action_delete_text')"
                                         class="text-danger me-2" href="javascript:">
@@ -124,25 +121,23 @@
                                 </div>
                             </div>
                         </li>
-                        <li class="border list-group-item" v-if="totalTimeBookingHours > 0">
-                            <div class="row w-100">
-                                <div class="col-md-1 py-2 fw-bold">
-                                    {{ $t('time_booking.modal.list_table.footer_total_text') }}
+                        <li class="border list-group-item p-1 list-group-item-action border-top-0"
+                            v-if="totalTimeBookingHours > 0">
+                            <div class="row g-1 w-100 align-items-center">
+                                <div class="col-3 fw-bold">
+                                    {{ $t('time_booking.modal.list_table.footer_total_text') }}: {{
+                                        totalTimeBookingHours }}
                                 </div>
-                                <div class="col-md-2 py-2 fw-bold">
-                                    {{ totalTimeBookingHours }}
+                                <div class="col-7 fw-bold">
                                 </div>
-                                <div class="col-md-6 py-2 fw-bold">
-                                </div>
-                                <div class="col-md-3 py-2">
+                                <div class="col-2">
                                 </div>
                             </div>
                         </li>
-                        <li class="border list-group-item" v-if="timeBookings.length === 0">
-                            <div class="row w-100">
-                                <div class="col-md-12 py-2 fw-bold text-center">
-                                    {{ $t('time_booking.modal.list_table.no_data_text') }}
-                                </div>
+                        <li v-if="timeBookings.length === 0"
+                            class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
+                            <div class="fw-bold fst-italic text-center w-100">
+                                {{ $t('time_booking.modal.list_table.no_data_text') }}
                             </div>
                         </li>
                     </ul>

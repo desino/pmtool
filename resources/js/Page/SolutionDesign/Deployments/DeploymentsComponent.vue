@@ -80,8 +80,8 @@
                     </div>
                 </div>
             </li>
-            <li v-else class="list-group-item border p-4">
-                <div class="col h4 fw-bold text-center">{{ $t('deployments.list.not_record_found') }}
+            <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
+                <div class="fw-bold fst-italic text-center w-100">{{ $t('deployments.list.not_record_found') }}
                 </div>
             </li>
         </ul>

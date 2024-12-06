@@ -204,8 +204,9 @@
                         </div>
                     </div>
                 </li>
-                <li v-else class="list-group-item border p-4">
-                    <div class="col h4 fw-bold text-center">{{ $t('all_ticket_without_initiative_list.not_ticket') }}
+                <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
+                    <div class="fw-bold fst-italic text-center w-100">{{
+                        $t('all_ticket_without_initiative_list.not_ticket') }}
                     </div>
                 </li>
             </ul>

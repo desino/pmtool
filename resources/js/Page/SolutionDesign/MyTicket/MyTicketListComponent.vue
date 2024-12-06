@@ -119,7 +119,7 @@
                     </div>
                 </li>
                 <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
-                    <div class="h4 fw-bold text-center">{{ $t('my_ticket.list.not_ticket') }}</div>
+                    <div class="fw-bold fst-italic text-center w-100">{{ $t('my_ticket.list.not_ticket') }}</div>
                 </li>
             </ul>
         </div>
