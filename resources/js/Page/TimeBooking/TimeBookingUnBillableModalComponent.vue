@@ -73,71 +73,78 @@
                         <i class="bi bi-trash3"></i> {{ $t('time_booking_un_billable.modal_delete_but_text') }}
                     </button>
                     <ul class="list-group list-group-flush mb-3 mt-2">
-                        <li class="font-weight-bold bg-desino text-white rounded-top list-group-item">
-                            <div class="row w-100">
-                                <div class="col-md-1 fw-bold py-2">
-                                    <input class="form-check-input" type="checkbox" v-model="isChkAllTimeBookings"
-                                        @change="handleSelectAllTimeBookings">
+                        <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
+                            <div class="row w-100 align-items-center">
+                                <div class="col-2">
+                                    <div class="row g-0 h-100 align-items-center">
+                                        <div class="col-auto me-1" style="width:20px">
+                                            <input class="form-check-input" type="checkbox"
+                                                v-model="isChkAllTimeBookings" @change="handleSelectAllTimeBookings">
+                                        </div>
+                                        <div class="col-auto fw-bold small" style="width: calc(100% - 40px)">
+                                            {{ $t('time_booking_un_billable.modal.list_table.hours') }}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-md-2 fw-bold py-2">
-                                    {{ $t('time_booking_un_billable.modal.list_table.hours') }}
-                                </div>
-                                <div class="col-md-2 fw-bold py-2">
+                                <div class="col-2 fw-bold small">
                                     {{ $t('time_booking_un_billable.modal.list_table.project_name') }}
                                 </div>
-                                <div class="col-md-6 fw-bold py-2">
+                                <div class="col-6 fw-bold small">
                                     {{ $t('time_booking_un_billable.modal.list_table.comments') }}
                                 </div>
-                                <div class="col-md-1 fw-bold py-2 text-end">
+                                <div class="col-2 fw-bold small text-end">
                                     {{ $t('time_booking_un_billable.modal.list_table.action') }}
                                 </div>
                             </div>
                         </li>
-                        <li class="border list-group-item" v-if="timeBookings.length > 0"
-                            v-for="timeBooking in timeBookings">
-                            <div class="row w-100">
-                                <div class="col-md-1 py-2">
-                                    <input v-model="timeBooking.is_checked" class="form-check-input" type="checkbox"
-                                        @change="handleSelectAllTimeBooking(timeBooking)">
+                        <li class="border list-group-item p-1 list-group-item-action border-top-0"
+                            v-if="timeBookings.length > 0" v-for="timeBooking in timeBookings">
+                            <div class="row w-100 align-items-center">
+                                <div class="col-2">
+                                    <div class="row g-0 h-100 align-items-center">
+                                        <div class="col-auto me-1" style="width:20px">
+                                            <input v-model="timeBooking.is_checked" class="form-check-input"
+                                                type="checkbox" @change="handleSelectAllTimeBooking(timeBooking)">
+                                        </div>
+                                        <div class="col-auto" style="width: calc(100% - 40px)">
+                                            {{ timeBooking.hours }}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-md-2 py-2">
-                                    {{ timeBooking.hours }}
-                                </div>
-                                <div class="col-md-2 fw-bold py-2">
+                                <div class="col-2">
                                     {{ timeBooking.project_name }}
                                 </div>
-                                <div class="col-md-6 py-2">
+                                <div class="col-6">
                                     {{ timeBooking.comments }}
                                 </div>
-                                <div class="col-md-1 py-2 text-end">
-                                    <a data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                <div class="col-2 text-end">
+                                    <a ref="deletePopoverBtns" data-bs-toggle="popover" data-bs-trigger="focus"
                                         :title="$t('time_booking_un_billable.modal.list_table.action_delete_text')"
-                                        class="text-danger me-2" href="javascript:"
-                                        @click="handleDeleteTimeBooking(timeBooking)">
+                                        class="text-danger me-2" href="javascript:">
                                         <i class="bi bi-trash3"></i>
                                     </a>
                                 </div>
                             </div>
                         </li>
-                        <li class="border list-group-item" v-if="totalTimeBookingHours > 0">
-                            <div class="row w-100">
-                                <div class="col-md-1 py-2 fw-bold">
-                                    {{ $t('time_booking_un_billable.modal.list_table.footer_total_text') }}
+                        <li class="border list-group-item p-1 list-group-item-action border-top-0"
+                            v-if="totalTimeBookingHours > 0">
+                            <div class="row g-1 w-100 align-items-center">
+                                <div class="col-2 fw-bold">
+                                    {{ $t('time_booking_un_billable.modal.list_table.footer_total_text') }}: {{
+                                        totalTimeBookingHours }}
                                 </div>
-                                <div class="col-md-2 py-2 fw-bold">
-                                    {{ totalTimeBookingHours }}
+                                <div class="col-2">
                                 </div>
-                                <div class="col-md-6 py-2 fw-bold">
+                                <div class="col-6">
                                 </div>
-                                <div class="col-md-3 py-2">
+                                <div class="col-2">
                                 </div>
                             </div>
                         </li>
-                        <li class="border list-group-item" v-if="timeBookings.length === 0">
-                            <div class="row w-100">
-                                <div class="col-md-12 py-2 fw-bold text-center">
-                                    {{ $t('time_booking_un_billable.modal.list_table.no_data_text') }}
-                                </div>
+                        <li v-if="timeBookings.length === 0"
+                            class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
+                            <div class="fw-bold fst-italic text-center w-100">
+                                {{ $t('time_booking_un_billable.modal.list_table.no_data_text') }}
                             </div>
                         </li>
                     </ul>
@@ -158,7 +165,7 @@
 
 <script>
 import { mapActions } from 'vuex';
-import { Modal, Tooltip } from 'bootstrap';
+import { Modal, Tooltip, Popover } from 'bootstrap';
 import messageService from '../../services/messageService';
 import GlobalMessage from '../../components/GlobalMessage.vue';
 import showToast from '../../utils/toasts';
@@ -221,6 +228,7 @@ export default {
                 this.totalTimeBookingHours = totalTimeBookingHours;
                 await this.setLoading(false);
                 this.initializeTooltips();
+                this.initializePopover();
             } catch (error) {
                 this.handleError(error);
             }
@@ -285,43 +293,24 @@ export default {
         },
         async deleteTimeBooking(timeBookingIds = [], action = '') {
             this.clearMessages();
-            this.$swal({
-                title: this.$t('time_booking_un_billable.modal.delete_alert.title'),
-                text: this.$t('time_booking_un_billable.modal.delete_alert.text'),
-                showCancelButton: true,
-                confirmButtonColor: '#1e6abf',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '<i class="bi bi-check-lg"></i>',
-                cancelButtonText: '<i class="bi bi-x-lg"></i>',
-                customClass: {
-                    confirmButton: 'btn-desino',
-                },
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    this.setLoading(true);
-                    try {
-                        const passData = {
-                            'timeBookingIds': timeBookingIds
-                        }
-                        const { message } = await TimeBookingService.deleteTimeBookings(passData);
-                        showToast(message, 'success');
-                        this.$emit('pageUpdated', this.weekDays);
-                        this.showMessage = true;
-                        this.setLoading(false);
-                        this.getTimeBookingUnBillableModalInitialData();
-                        if (action === 'deleteAll') {
-                            this.isChkAllTimeBookings = false;
-                            this.selectedTimeBookings = [];
-                        }
-                    } catch (error) {
-                        this.handleError(error);
-                    }
-                } else {
-
+            this.setLoading(true);
+            try {
+                const passData = {
+                    'timeBookingIds': timeBookingIds
                 }
-            }).catch(() => {
-
-            });
+                const { message } = await TimeBookingService.deleteTimeBookings(passData);
+                showToast(message, 'success');
+                this.$emit('pageUpdated', this.weekDays);
+                this.showMessage = true;
+                this.setLoading(false);
+                this.getTimeBookingUnBillableModalInitialData();
+                if (action === 'deleteAll') {
+                    this.isChkAllTimeBookings = false;
+                    this.selectedTimeBookings = [];
+                }
+            } catch (error) {
+                this.handleError(error);
+            }
         },
         handleError(error) {
             if (error.type === 'validation') {
@@ -337,6 +326,40 @@ export default {
             tooltipTriggerList.forEach((tooltipTriggerEl) => {
                 new Tooltip(tooltipTriggerEl);
             });
+        },
+        initializePopover() {
+            const popoverBtns = this.$refs.deletePopoverBtns;
+
+            if (popoverBtns && popoverBtns.length) {
+                popoverBtns.forEach((btn, index) => {
+                    if (btn.getAttribute('data-initialized') === 'true') {
+                        return;
+                    }
+                    const popover = new Popover(btn, {
+                        html: true,
+                        trigger: 'focus',
+                        content: this.popoverContentForDelete(index),
+                    });
+                    btn.setAttribute('data-initialized', 'true');
+
+                    btn.addEventListener('shown.bs.popover', () => {
+                        const yesButton = document.getElementById('yesDeleteTimeBookingUnBillableButton_' + index);
+                        if (yesButton) {
+                            yesButton.addEventListener('click', () => {
+                                this.handleDeleteTimeBooking(this.timeBookings[index]);
+                            }, { once: true });
+                        }
+                    });
+                });
+            }
+        },
+        popoverContentForDelete(index) {
+            return `
+                <div class="text-center w-100">
+                    <a href="javascript:void(0)" class="btn btn-desino w-100 border-0 my-1" id="yesDeleteTimeBookingUnBillableButton_${index}" data-index="${index}">
+                        <i class="bi bi-check-lg"></i>
+                    </a>                    
+                </div>`;
         },
         clearMessages() {
             this.errors = {};
@@ -367,6 +390,9 @@ export default {
     },
     mounted() {
         this.clearMessages();
+        this.$nextTick(() => {
+            this.initializePopover();
+        });
     },
 };
 </script>

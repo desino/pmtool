@@ -89,7 +89,7 @@
                         <div v-if="currentAction">
                             <select v-model="currentActionFormData.user_id"
                                 :disabled="!ticketData.is_disable_action_user" class="form-select"
-                                @change="handleCurrentActionChangeUser($event.target.value)">
+                                @change="showConfirmation('handleCurrentActionChangeUser', handleCurrentActionChangeUser, $event.target.value)">
                                 <option value="">---</option>
                                 <option v-for="user in users" :key="user.id" :value="user.id">
                                     {{ user.name }}
@@ -116,16 +116,9 @@
                         <a v-if="ticketData.is_show_mark_as_done_but" role="button"
                             class="btn btn-desino w-100 border-0 text-white mb-2"
                             :class="{ 'disabled': !ticketData.is_enable_mark_as_done_but }"
-                            @click="handleCurrentActionChangeStatus()">
+                            @click="showConfirmation('handleCurrentActionChangeStatus', handleCurrentActionChangeStatus)">
                             {{ $t('ticket_details.task_current_action_completed_but_text') }}
                         </a>
-
-                        <!-- <a role="button" class="btn btn-warning w-100 border-0 text-dark"
-                            v-if="ticketData.is_show_pre_action_but"
-                            :class="{ 'disabled': !ticketData.is_show_pre_action_but }"
-                            @click="handlePreviousActionStatus()" :title="$t('ticket_action.move_to_previous_action')">
-                            {{ $t('ticket_details.task_previous_action_completed_but_text') }}
-                        </a> -->
                         <div class="dropdown" v-if="ticketData.is_show_pre_action_but && previous_actions.length > 0">
                             <button class="btn btn-secondary dropdown-toggle w-100" type="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
@@ -133,9 +126,15 @@
                             </button>
                             <ul class="dropdown-menu">
                                 <li v-for="action in previous_actions" :key="action.id">
-                                    <a class="dropdown-item"
+                                    <!-- <a class="dropdown-item"
                                         :class="{ 'active': action.action == selected_previous_action_id }"
                                         href="javascript:void(0)" @click="handlePreviousActionStatus(action)">
+                                        {{ action.action_name }}
+                                    </a> -->
+                                    <a class="dropdown-item"
+                                        :class="{ 'active': action.action == selected_previous_action_id }"
+                                        href="javascript:void(0)"
+                                        @click="showConfirmation('handlePreviousActionStatus', handlePreviousActionStatus, action)">
                                         {{ action.action_name }}
                                     </a>
                                 </li>
@@ -207,7 +206,7 @@
                                 <div v-if="errors.description" class="text-danger mt-2">
                                     <span v-for="(error, index) in errors.description" :key="index">{{
                                         error
-                                    }}</span>
+                                        }}</span>
                                 </div>
                                 <button class="btn w-100 btn-desino text-white fw-bold m-2 rounded"
                                     @click="updateTaskDescription">
@@ -303,7 +302,7 @@
                                                 <div v-if="test_case.observations">
                                                     <span class="bg-desino text-white rounded fw-bold p-2">{{
                                                         $t('ticket_detail_test_case_section_actual_behaviour')
-                                                    }}</span>
+                                                        }}</span>
                                                     <div class="p-2" v-html="test_case.observations">
                                                     </div>
                                                 </div>
@@ -382,7 +381,7 @@
                             <div v-if="errors.release_note" class="text-danger mt-2">
                                 <span v-for="(error, index) in errors.release_note" :key="index">{{
                                     error
-                                }}</span>
+                                    }}</span>
                             </div>
                             <button class="btn w-100 btn-desino text-white fw-bold m-2 rounded"
                                 @click="updateReleaseNote">
@@ -399,7 +398,7 @@
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">{{
                                         $t('ticket_details_input_dev_estimation_time')
-                                    }} <strong class="text-danger">*</strong>
+                                        }} <strong class="text-danger">*</strong>
                                     </label>
                                     <input v-model="estimatedHoursFormData.dev_estimation_time"
                                         :class="{ 'is-invalid': errors.dev_estimation_time }" class="form-control"
@@ -424,6 +423,8 @@
         class="modal fade" tabindex="-1">
         <TimeBookingForTicketDetailComponent ref="timeBookingForTicketDetailComponent" />
     </div>
+    <ConfirmationModal ref="dynamicConfirmationModal" :title="modalTitle" :message="modalMessage"
+        @confirm="modalConfirmCallback" />
     <span id="copyableLink" style="cursor: pointer; text-decoration: underline; color: blue; display: none">
         <a v-bind:href="copyLink">{{ copyLabel }}</a>
     </span>
@@ -530,6 +531,9 @@ export default {
             taskDescriptionForm: {
                 description: '',
             },
+            modalTitle: '',
+            modalMessage: '',
+            modalConfirmCallback: null,
             errors: {},
             showMessage: true,
         };
@@ -704,107 +708,55 @@ export default {
             this.showTestCaseModal('update', testCaseId, status);
         },
         handleCurrentActionChangeUser(userId) {
-            const previousUserId = this.currentAction?.user?.id;
-            this.$swal({
-                title: this.$t('ticket_detail.confirm_alert.current_action_change_user_title'),
-                text: this.$t('ticket_detail.confirm_alert.current_action_change_user_text'),
-                showCancelButton: true,
-                confirmButtonColor: '#1e6abf',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '<i class="bi bi-check-lg"></i>',
-                cancelButtonText: '<i class="bi bi-x-lg"></i>',
-                customClass: {
-                    confirmButton: 'btn-desino',
-                },
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    this.currentActionFormData = {
-                        user_id: userId,
-                        action_id: this.currentAction.id,
-                        action: this.currentAction.action,
-                        ticket_id: this.localTicketId,
-                        status: this.currentActionFormData.status,
-                        initiative_id: this.localInitiativeId,
-                        action_text: 'current_action',
-                    }
-                    this.changeActionUser(this.currentActionFormData);
-                } else {
-                    this.currentActionFormData.user_id = previousUserId;
-                }
-            }).catch(() => {
-                this.currentActionFormData.user_id = previousUserId;
-            });
+            if (!this.ticketData.is_disable_action_user) {
+                return false;
+            }
+            this.currentActionFormData = {
+                user_id: userId,
+                action_id: this.currentAction.id,
+                action: this.currentAction.action,
+                ticket_id: this.localTicketId,
+                status: this.currentActionFormData.status,
+                initiative_id: this.localInitiativeId,
+                action_text: 'current_action',
+            }
+            this.changeActionUser(this.currentActionFormData);
         },
         handleCurrentActionChangeStatus() {
             if (!this.ticketData.is_enable_mark_as_done_but) {
                 return false;
             }
-            this.$swal({
-                // title: this.$t('ticket_detail.confirm_alert.current_action_change_status_title'),
-                title: this.$t('ticket_detail.confirm_alert.current_action_change_status_text'),
-                showCancelButton: true,
-                confirmButtonColor: '#1e6abf',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '<i class="bi bi-check-lg"></i>',
-                cancelButtonText: '<i class="bi bi-x-lg"></i>',
-                customClass: {
-                    confirmButton: 'btn-desino',
-                },
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    this.currentActionFormData = {
-                        user_id: this.currentAction?.user?.id,
-                        action_id: this.currentAction.id,
-                        action: this.currentAction.action,
-                        ticket_id: this.localTicketId,
-                        status: this.currentAction.status,
-                        initiative_id: this.localInitiativeId,
-                        action_text: 'current_action',
-                    }
-                    this.changeActionStatus(this.currentActionFormData);
-                } else {
-                }
-            }).catch(() => {
-            });
+
+            this.currentActionFormData = {
+                user_id: this.currentAction?.user?.id,
+                action_id: this.currentAction.id,
+                action: this.currentAction.action,
+                ticket_id: this.localTicketId,
+                status: this.currentAction.status,
+                initiative_id: this.localInitiativeId,
+                action_text: 'current_action',
+            }
+            this.changeActionStatus(this.currentActionFormData);
         },
         handlePreviousActionStatus(action) {
             if (!this.ticketData.is_show_pre_action_but) {
                 return false;
             }
 
-            const previousActionNameForSWAL = this.$t('ticket_detail.confirm_alert.current_previous_action_status_text', {
-                'PREVIOUS_ACTION_NAME': `<span class='badge bg-secondary'>${action?.action_name}</span>`
-            });
-
             this.selected_previous_action_id = action.action;
-            this.$swal({
-                title: previousActionNameForSWAL,
-                showCancelButton: true,
-                confirmButtonColor: '#1e6abf',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '<i class="bi bi-check-lg"></i>',
-                cancelButtonText: '<i class="bi bi-x-lg"></i>',
-                customClass: {
-                    confirmButton: 'btn-desino',
-                },
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    this.previousActionFormData = {
-                        user_id: this.currentAction?.user?.id,
-                        // action_id: this.currentAction?.id,
-                        action_id: this.action?.id,
-                        action: this.currentAction?.action,
-                        ticket_id: this.localTicketId,
-                        status: this.currentAction?.status,
-                        initiative_id: this.localInitiativeId,
-                        previous_action_id: this.selected_previous_action_id,
-                        action_text: 'previous_action',
-                    }
-                    this.changePreviousActionStatus(this.previousActionFormData);
-                } else {
-                }
-            }).catch(() => {
-            });
+
+            this.previousActionFormData = {
+                user_id: this.currentAction?.user?.id,
+                // action_id: this.currentAction?.id,
+                action_id: this.action?.id,
+                action: this.currentAction?.action,
+                ticket_id: this.localTicketId,
+                status: this.currentAction?.status,
+                initiative_id: this.localInitiativeId,
+                previous_action_id: this.selected_previous_action_id,
+                action_text: 'previous_action',
+            }
+            this.changePreviousActionStatus(this.previousActionFormData);
         },
         async changeActionUser(passData) {
             try {
@@ -831,7 +783,6 @@ export default {
         },
         async changePreviousActionStatus(passData) {
             try {
-                console.log('passData :: ', passData);
                 await this.setLoading(true);
                 const { message } = await ticketService.changePreviousActionStatus(passData);
                 showToast(message, 'success');
@@ -935,7 +886,40 @@ export default {
         },
         refreshTicketDetail() {
             this.fetchTicketData(this.localTicketId);
-        }
+        },
+        showConfirmation(modalType, callback, callbackParam = null) {
+            if (modalType === 'handleCurrentActionChangeUser') {
+                this.modalTitle = this.$t('ticket_detail.confirm_alert.current_action_change_user_title');
+                this.modalMessage = this.$t('ticket_detail.confirm_alert.current_action_change_user_text');
+            }
+            if (modalType === 'handleCurrentActionChangeStatus') {
+                this.modalTitle = this.$t('ticket_detail.confirm_alert.current_action_change_status_title');
+                this.modalMessage = this.$t('ticket_detail.confirm_alert.current_action_change_status_text');
+            }
+            if (modalType === 'handlePreviousActionStatus') {
+                this.modalTitle = this.$t('ticket_detail.confirm_alert.current_action_change_status_title');
+                this.modalMessage = this.$t('ticket_detail.confirm_alert.current_previous_action_status_text', {
+                    'PREVIOUS_ACTION_NAME': `<span class='badge bg-secondary'>${callbackParam?.action_name}</span>`
+                });
+            }
+
+            this.modalConfirmCallback = () => callback(callbackParam);
+
+            this.$refs.dynamicConfirmationModal.showModal();
+
+            if (modalType === 'handleCurrentActionChangeUser') {
+                const modalElement = document.getElementById('confirmationModal');
+                modalElement.addEventListener('hidden.bs.modal', () => {
+                    if (!this.$refs.dynamicConfirmationModal.isConfirmed) {
+                        const previousUserId = this.currentAction?.user?.id;
+                        this.resetSwitchValue(previousUserId);
+                    }
+                }, { once: true });
+            }
+        },
+        resetSwitchValue(previousUserId) {
+            this.currentActionFormData.user_id = previousUserId;
+        },
     },
     mounted() {
         const setHeaderData = {

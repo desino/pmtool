@@ -48,7 +48,7 @@
                                         <div v-if="errors.section_name" class="invalid-feedback ms-4">
                                             <span v-for="(error, index) in errors.section_name" :key="index">{{
                                                 error
-                                            }}</span>
+                                                }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -81,7 +81,8 @@
                                                     <i class="bi bi-pencil-square"></i>
                                                 </a>
                                                 <a v-if="user?.is_admin" class="btn btn-danger btn-sm border-0 me-1"
-                                                    href="javascript:" @click="deleteSection(section)">
+                                                    href="javascript:"
+                                                    @click="showConfirmation('deleteSection', deleteSection, section)">
                                                     <i class="bi bi-trash3"></i>
                                                 </a>
                                             </span>
@@ -112,7 +113,7 @@
                                             <a v-if="user?.is_admin" class="text-danger me-2" href="javascript:"
                                                 data-bs-toggle="tooltip" data-bs-placement="bottom"
                                                 :title="$t('solution_design.functionality_form.actions_delete_tooltip')"
-                                                @click.stop="deleteFunctionality(functionality)">
+                                                @click.stop="showConfirmation('deleteFunctionality', deleteFunctionality, functionality)">
                                                 <i class="bi bi-trash3"></i>
                                             </a>
                                             <span class="badge bg-secondary" data-bs-toggle="tooltip"
@@ -140,7 +141,7 @@
                         <div class="mb-3">
                             <label class="form-label fw-bold">{{
                                 $t('solution_design.functionality_form.name')
-                            }} <strong class="text-danger">*</strong>
+                                }} <strong class="text-danger">*</strong>
                             </label>
                             <input v-model="functionalityFormData.name" :class="{ 'is-invalid': errors.name }"
                                 class="form-control" placeholder="Enter value" type="text">
@@ -153,13 +154,13 @@
                         <div class="mb-3">
                             <label class="form-label fw-bold">{{
                                 $t('solution_design.functionality_form.section_name_select_box')
-                            }} <strong class="text-danger">*</strong>
+                                }} <strong class="text-danger">*</strong>
                             </label>
                             <select v-model="functionalityFormData.section_id" aria-label="Default select example"
                                 class="form-select" :class="{ 'is-invalid': errors.section_id }">
                                 <option value="">{{
                                     $t('solution_design.functionality_form.section_name_select_box_placeholder')
-                                }}
+                                    }}
                                 </option>
                                 <option v-for="section in sectionsWithFunctionalities" :key="section.id"
                                     :value="section.id">
@@ -175,7 +176,7 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">{{
                         $t('solution_design.functionality_form.description')
-                    }}</label>
+                        }}</label>
                     <TinyMceEditor v-model="functionalityFormData.description" />
                 </div>
                 <div class="mb-3">
@@ -188,14 +189,6 @@
                     </div>
                 </div>
                 <div class="mb-3 d-flex gap-3" v-if="!functionalityFormData.functionality_id">
-                    <!-- <button :disabled="!functionalityFormData.section_id" class="btn btn-desino w-100" type="submit">
-                        {{
-                            functionalityFormData.functionality_id ?
-                                $t('solution_design.functionality_form.submit_update_but_text') :
-                                $t('solution_design.functionality_form.submit_save_but_text')
-                        }}
-                    </button> -->
-
                     <button class="btn btn-desino w-50" type="submit"
                         @click="handleFunctionalitySubmitButtonClick('create')">{{
                             $t('solution_design.functionality_form.submit_create_but_text') }}
@@ -222,6 +215,8 @@
             aria-labelledby="createFunctionalityTicketModalLabel" class="modal fade" tabindex="-1">
             <CreateTicketModalComponent ref="createFunctionalityTicketModalComponent" @pageUpdated="fetchData" />
         </div>
+        <ConfirmationModal ref="dynamicConfirmationModal" :title="modalTitle" :message="modalMessage"
+            @confirm="modalConfirmCallback" />
     </div>
 </template>
 
@@ -278,7 +273,10 @@ export default {
             functionalitySubmitButtonClickedValue: "",
             solutionDesignFilters: {
                 name: '',
-            }
+            },
+            modalTitle: '',
+            modalMessage: '',
+            modalConfirmCallback: null
         };
     },
     watch: {
@@ -439,79 +437,57 @@ export default {
         isSelected(functionalityId) {
             return this.selectedFunctionalityId === functionalityId;
         },
+        showConfirmation(modalType, callback, callbackParam) {
+            if (modalType === 'deleteFunctionality') {
+                this.modalTitle = this.$t('solution_design.functionality_delete_actions_modal_title');
+                this.modalMessage = this.$t('solution_design.functionality_delete_actions_modal_text');
+            }
+            if (modalType === 'deleteSection') {
+                this.modalTitle = this.$t('solution_design.section_delete_actions_modal_title');
+                this.modalMessage = this.$t('solution_design.section_delete_actions_modal_text');
+            }
+
+            this.modalConfirmCallback = () => callback(callbackParam);
+
+            this.$refs.dynamicConfirmationModal.showModal();
+        },
         async deleteFunctionality(functionality) {
             this.clearMessages();
-            this.$swal({
-                title: this.$t('solution_design.functionality_delete_actions_modal_title'),
-                text: this.$t('solution_design.functionality_delete_actions_modal_text'),
-                showCancelButton: true,
-                confirmButtonColor: '#1e6abf',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '<i class="bi bi-check-lg"></i>',
-                cancelButtonText: '<i class="bi bi-x-lg"></i>',
-                customClass: {
-                    confirmButton: 'btn-desino',
-                }
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    try {
-                        this.setLoading(true);
-                        functionality.initiative_id = this.initiativeId;
-                        const oldSelectedFunctionalityId = functionality;
-                        const {
-                            content,
-                            message
-                        } = await SolutionDesignService.deleteFunctionality(functionality);
-                        const section = this.findItem(functionality.section_id);
-                        section.functionalities = section.functionalities.filter(item => item.id !== functionality.id);
-                        const index = section.functionalities.findIndex(func => func.id === functionality.id);
-                        if (index !== -1) section.functionalities.splice(index, 1);
-                        if (this.selectedFunctionalityId == functionality.id) {
-                            this.resetForm();
-                        }
-                        this.getSectionsWithFunctionalities();
-                        showToast(message, 'success');
-                        this.setLoading(false);
-                    } catch (error) {
-                        this.handleError(error);
-                    }
-                }
-            })
+
+            this.setLoading(true);
+            functionality.initiative_id = this.initiativeId;
+            const oldSelectedFunctionalityId = functionality;
+            const { content, message } = await SolutionDesignService.deleteFunctionality(functionality);
+            const section = this.findItem(functionality.section_id);
+            section.functionalities = section.functionalities.filter(item => item.id !== functionality.id);
+            const index = section.functionalities.findIndex(func => func.id === functionality.id);
+            if (index !== -1) section.functionalities.splice(index, 1);
+            if (this.selectedFunctionalityId == functionality.id) {
+                this.resetForm();
+            }
+            this.getSectionsWithFunctionalities();
+            showToast(message, 'success');
+            this.setLoading(false);
         },
         async deleteSection(section) {
             this.clearMessages();
-            this.$swal({
-                title: this.$t('solution_design.section_delete_actions_modal_title'),
-                text: this.$t('solution_design.section_delete_actions_modal_text'),
-                showCancelButton: true,
-                confirmButtonColor: '#1e6abf',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '<i class="bi bi-check-lg"></i>',
-                cancelButtonText: '<i class="bi bi-x-lg"></i>',
-                customClass: {
-                    confirmButton: 'btn-desino',
+            try {
+                this.setLoading(true);
+                let result = section.functionalities.find(item => item['id'] === this.activeSectionId);
+                delete section.functionalities;
+                const { content, message } = await SolutionDesignService.deleteSection(section);
+                const index = this.sectionsWithFunctionalities.findIndex(sec => sec.id === section.id);
+                if (index !== -1) this.sectionsWithFunctionalities.splice(index, 1);
+                if (result) {
+                    this.resetForm();
                 }
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    try {
-                        this.setLoading(true);
-                        let result = section.functionalities.find(item => item['id'] === this.activeSectionId);
-                        delete section.functionalities;
-                        const { content, message } = await SolutionDesignService.deleteSection(section);
-                        const index = this.sectionsWithFunctionalities.findIndex(sec => sec.id === section.id);
-                        if (index !== -1) this.sectionsWithFunctionalities.splice(index, 1);
-                        if (result) {
-                            this.resetForm();
-                        }
-                        showToast(message, 'success');
-                        this.getSectionsWithFunctionalities();
-                        this.setLoading(false);
-                    } catch (error) {
-                        this.getSectionsWithFunctionalities();
-                        this.handleError(error);
-                    }
-                }
-            })
+                showToast(message, 'success');
+                this.getSectionsWithFunctionalities();
+                this.setLoading(false);
+            } catch (error) {
+                this.getSectionsWithFunctionalities();
+                this.handleError(error);
+            }
         },
         editSection(section) {
             this.editingSectionId = section.id;

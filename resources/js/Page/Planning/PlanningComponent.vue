@@ -136,9 +136,10 @@
     </div>
     <div class="container-fluid mt-3">
         <div class="row w-100 mx-0">
-            <button class="btn btn-desino text-uppercase" @click="storePlanning">{{
-                $t('planning.store_button_text')
-            }}</button>
+            <button class="btn btn-desino text-uppercase"
+                @click="showConfirmation('storePlanningConfirmation', storePlanning)">{{
+                    $t('planning.store_button_text')
+                }}</button>
         </div>
     </div>
 
@@ -156,6 +157,8 @@
         tabindex="-1">
         <PlanNewUserModalComponent ref="planNewUserModalComponent" @add-plan-new-user="addPlanNewUserFromModal" />
     </div>
+    <ConfirmationModal ref="dynamicConfirmationModal" :title="modalTitle" :message="modalMessage"
+        @confirm="modalConfirmCallback" />
 </template>
 <script>
 import Multiselect from 'vue-multiselect';
@@ -164,7 +167,7 @@ import GlobalMessage from '../../components/GlobalMessage.vue';
 import messageService from '../../services/messageService';
 import PlanningService from '../../services/PlanningService';
 import PlanNewInitiativeModalComponent from './PlanNewInitiativeModalComponent.vue';
-import { Modal } from 'bootstrap';
+import { Modal, Tooltip } from 'bootstrap';
 import showToast from '../../utils/toasts';
 import PlanNewUserModalComponent from './PlanNewUserModalComponent.vue';
 import store from '../../store';
@@ -193,6 +196,9 @@ export default {
             loadWeeks: [],
             plannings: [],
             passData: [],
+            modalTitle: '',
+            modalMessage: '',
+            modalConfirmCallback: null,
             errors: {},
             showMessage: true
         };
@@ -333,72 +339,55 @@ export default {
             project.users.splice(project.users.length, 0, addNewUser);
         },
         async storePlanning() {
-            this.$swal({
-                title: this.$t('planning.confirm_store_alert.title'),
-                text: this.$t('planning.confirm_store_alert.text'),
-                showCancelButton: true,
-                confirmButtonColor: '#1e6abf',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '<i class="bi bi-check-lg"></i>',
-                cancelButtonText: '<i class="bi bi-x-lg"></i>',
-                customClass: {
-                    confirmButton: 'btn-desino',
-                },
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    const passData = [];
-                    this.plannings.forEach(planning => {
-                        if (planning.default_row_name == '') {
-                            planning.projects.forEach(project => {
-                                project.users.forEach(user => {
-                                    const passInitiativeData = {
-                                        'initiative_id': '',
-                                        'initiative_name': '',
-                                        'user_id': '',
-                                        'user_name': '',
-                                        'hours_per_week': [],
-                                    }
-                                    this.loadWeeks.forEach(week => {
-                                        if (user.hours_per_week[week.date].hours > 0 && user.id != '') {
-                                            passInitiativeData.initiative_id = planning.initiative_id;
-                                            passInitiativeData.initiative_name = planning.initiative_name;
-                                            passInitiativeData.project_id = project.project_id;
-                                            passInitiativeData.project_name = project.project_name;
-                                            passInitiativeData.user_id = user.id;
-                                            passInitiativeData.user_name = user.name;
-                                            passInitiativeData.hours_per_week.push({
-                                                'date': week.date,
-                                                'hours': user.hours_per_week[week.date].hours
-                                            });
-                                        }
+            const passData = [];
+            this.plannings.forEach(planning => {
+                if (planning.default_row_name == '') {
+                    planning.projects.forEach(project => {
+                        project.users.forEach(user => {
+                            const passInitiativeData = {
+                                'initiative_id': '',
+                                'initiative_name': '',
+                                'user_id': '',
+                                'user_name': '',
+                                'hours_per_week': [],
+                            }
+                            this.loadWeeks.forEach(week => {
+                                if (user.hours_per_week[week.date].hours > 0 && user.id != '') {
+                                    passInitiativeData.initiative_id = planning.initiative_id;
+                                    passInitiativeData.initiative_name = planning.initiative_name;
+                                    passInitiativeData.project_id = project.project_id;
+                                    passInitiativeData.project_name = project.project_name;
+                                    passInitiativeData.user_id = user.id;
+                                    passInitiativeData.user_name = user.name;
+                                    passInitiativeData.hours_per_week.push({
+                                        'date': week.date,
+                                        'hours': user.hours_per_week[week.date].hours
                                     });
-                                    if (passInitiativeData.initiative_id != '') {
-                                        passData.push(passInitiativeData);
-                                    }
-                                });
+                                }
                             });
-                        }
-                    })
-                    if (passData.length > 0) {
-                        this.setLoading(true);
-                        try {
-                            const { message } = await PlanningService.storePlanning(passData);
-                            showToast(message, 'success');
-                            this.setLoading(false);
-                            await this.getPlanningData();
-                            this.handleInitiativeFilterChange();
-                            this.handleProjectFilterChange();
-                            this.handleUserFilterChange();
-                        } catch (error) {
-                            this.handleError(error);
-                        }
-                    } else {
-                        this.getPlanningData();
-                    }
-                } else {
-                    this.getPlanningData();
+                            if (passInitiativeData.initiative_id != '') {
+                                passData.push(passInitiativeData);
+                            }
+                        });
+                    });
                 }
-            })
+            });
+            if (passData.length > 0) {
+                this.setLoading(true);
+                try {
+                    const { message } = await PlanningService.storePlanning(passData);
+                    showToast(message, 'success');
+                    this.setLoading(false);
+                    await this.getPlanningData();
+                    this.handleInitiativeFilterChange();
+                    this.handleProjectFilterChange();
+                    this.handleUserFilterChange();
+                } catch (error) {
+                    this.handleError(error);
+                }
+            } else {
+                this.getPlanningData();
+            }
         },
         handleInitiativeFilterChange() {
             const filterInitiativeId = this.filter.initiative_id?.id;
@@ -541,6 +530,16 @@ export default {
                     })
                 }
             });
+        },
+        showConfirmation(modalType, callback) {
+            if (modalType === 'storePlanningConfirmation') {
+                this.modalTitle = this.$t('planning.confirm_store_alert.title');
+                this.modalMessage = this.$t('planning.confirm_store_alert.text');
+            }
+
+            this.modalConfirmCallback = () => callback();
+
+            this.$refs.dynamicConfirmationModal.showModal();
         },
         handleError(error) {
             if (error.type === 'validation') {

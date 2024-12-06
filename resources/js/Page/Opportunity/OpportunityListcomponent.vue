@@ -89,7 +89,7 @@
                             <a data-bs-toggle="tooltip" data-bs-placement="bottom"
                                 :title="$t('opportunity_list_table.actions_lost_status_tooltip')"
                                 class="text-warning me-2" href="javascript:"
-                                @click.stop="updateStatusLostConfirmed(opportunity.id)">
+                                @click.stop="showConfirmation('updateStatusLost', updateStatusLost, opportunity.id)">
                                 <i class="bi bi-hand-thumbs-down"></i>
                             </a>
                         </div>
@@ -109,7 +109,8 @@
                     </div>
                 </li>
                 <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
-                    <div class="h4 fw-bold text-center">{{ $t('opportunity_list_table.opportunities_not_found_text') }}
+                    <div class="fw-bold fst-italic text-center w-100">{{
+                        $t('opportunity_list_table.opportunities_not_found_text') }}
                     </div>
                 </li>
             </ul>
@@ -120,6 +121,8 @@
             tabindex="-1">
             <EditOpportunityModalComponent ref="editOpportunityModalComponent" @pageUpdated="fetchAllOpportunities" />
         </div>
+        <ConfirmationModal ref="dynamicConfirmationModal" :title="modalTitle" :message="modalMessage"
+            @confirm="modalConfirmCallback" />
     </div>
 </template>
 
@@ -158,6 +161,9 @@ export default {
                 is_opportunities: true,
                 is_lost: false
             },
+            modalTitle: '',
+            modalMessage: '',
+            modalConfirmCallback: null,
             showMessage: true
         }
     },
@@ -225,24 +231,6 @@ export default {
                 modal.show();
             }
         },
-        updateStatusLostConfirmed(id) {
-            this.$swal({
-                title: this.$t('opportunity_list_table.actions_lost_status_modal_title'),
-                text: this.$t('opportunity_list_table.actions_lost_status_modal_text'),
-                showCancelButton: true,
-                confirmButtonColor: '#1e6abf',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '<i class="bi bi-check-lg"></i>',
-                cancelButtonText: '<i class="bi bi-x-lg"></i>',
-                customClass: {
-                    confirmButton: 'btn-desino',
-                }
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    this.updateStatusLost(id);
-                }
-            })
-        },
         async updateStatusLost(id) {
             try {
                 const response = await OpportunityService.updateStatusLost({ id: id });
@@ -261,6 +249,16 @@ export default {
             tooltipTriggerList.forEach((tooltipTriggerEl) => {
                 new Tooltip(tooltipTriggerEl);
             });
+        },
+        showConfirmation(modalType, callback, callbackParam) {
+            if (modalType === 'updateStatusLost') {
+                this.modalTitle = this.$t('opportunity_list_table.actions_lost_status_modal_title');
+                this.modalMessage = this.$t('opportunity_list_table.actions_lost_status_modal_text');
+            }
+
+            this.modalConfirmCallback = () => callback(callbackParam);
+
+            this.$refs.dynamicConfirmationModal.showModal();
         },
         handleError(error) {
             if (error.type === 'validation') {

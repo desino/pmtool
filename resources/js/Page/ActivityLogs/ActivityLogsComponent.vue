@@ -94,7 +94,7 @@
                     </div>
                 </li>
                 <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
-                    <div class="h4 fw-bold text-center">
+                    <div class="fw-bold fst-italic text-center w-100">
                         {{ $t('activity_logs_list.no_activity_logs_found_text') }}
                     </div>
                 </li>
