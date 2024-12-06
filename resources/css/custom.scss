@@ -6,6 +6,12 @@
     max-height: 100%;
     overflow-x: hidden !important;
 }
+#sidebar_scrolling_section{
+    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+}
 
 .active>.page-link,
 .page-link.active {
