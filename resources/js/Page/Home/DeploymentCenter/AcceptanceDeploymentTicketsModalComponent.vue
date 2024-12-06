@@ -1,6 +1,6 @@
 <template>
     <div class="modal-dialog modal-lg">
-        <form @submit.prevent="submitAcceptanceDeploymentTicket">
+        <form>
             <div class="modal-content border-0">
                 <div class="modal-header modal-header text-white bg-desino border-0 py-2 justify-content-center">
                     <h5 class="modal-title" id="acceptanceDeploymentTicketsModalLabel"
@@ -60,7 +60,9 @@
                 <div class="modal-footer border-0 p-0 justify-content-center">
                     <div class="row w-100 g-1">
                         <div class="col-4 col-md-6 col-lg-6">
-                            <button type="submit" class="btn btn-desino w-100 border-0"
+                            <button type="button" ref="popoverBtn" data-bs-toggle="popover"
+                                :title="$t('home.deployment_center.acceptance_deployment.ticket_modal.submit.alert.text')"
+                                v-bind:data-bs-content="popoverContent" class="btn btn-desino w-100 border-0"
                                 :disabled="selectedAcceptanceDeploymentTickets.length > 0 && isAllowProcess ? false : true">{{
                                     $t('home.deployment_center.acceptance_deployment.ticket_modal.submit_but.text')
                                 }}</button>
@@ -79,7 +81,7 @@
 
 <script>
 import messageService from '../../../services/messageService';
-import { Modal } from 'bootstrap';
+import { Modal, Popover } from 'bootstrap';
 import showToast from '../../../utils/toasts';
 import { mapActions } from 'vuex';
 import eventBus from "@/eventBus.js";
@@ -99,7 +101,16 @@ export default {
             initiative: {},
             initiativeId: "",
             errors: {},
-            showMessage: true
+            showMessage: true,
+            popoverContent: `
+            <div class="text-center w-100">
+                <a href="javascript:void(0)" id="yesAccDeploymentButton" class="btn btn-desino w-100 border-0 my-1">
+                    <i class="bi bi-check-lg"></i>
+                </a>
+                <a href="javascript:void(0)" id="noButton" class="btn btn-danger w-100 border-0 my-1" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg"></i>
+                </a>                
+            </div>`,
         };
     },
     methods: {
@@ -128,39 +139,21 @@ export default {
             if (this.selectedAcceptanceDeploymentTickets.length == 0) {
                 return false;
             }
-            this.$swal({
-                title: this.$t('home.deployment_center.acceptance_deployment.ticket_modal.submit.alert.text'),
-                showCancelButton: true,
-                confirmButtonColor: '#1e6abf',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '<i class="bi bi-check-lg"></i>',
-                cancelButtonText: '<i class="bi bi-x-lg"></i>',
-                customClass: {
-                    confirmButton: 'bg-desino',
-                },
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    try {
-                        const params = {
-                            initiative_id: this.initiativeId,
-                            ticketIds: this.selectedAcceptanceDeploymentTickets,
-                        }
-                        await this.setLoading(true);
-                        const { message } = await DeploymentCenterService.submitAcceptanceDeploymentTicket(params);
-                        this.hideAcceptanceDeploymentModal();
-                        showToast(message, 'success');
-                        await this.setLoading(false);
-                        this.$emit('pageUpdated');
-                    } catch (error) {
-                        this.handleError(error);
-                        this.resetAcceptanceDeploymentTicketList();
-                    }
-                } else {
-                    this.resetAcceptanceDeploymentTicketList();
+            try {
+                const params = {
+                    initiative_id: this.initiativeId,
+                    ticketIds: this.selectedAcceptanceDeploymentTickets,
                 }
-            }).catch(() => {
+                await this.setLoading(true);
+                const { message } = await DeploymentCenterService.submitAcceptanceDeploymentTicket(params);
+                this.hideAcceptanceDeploymentModal();
+                showToast(message, 'success');
+                await this.setLoading(false);
+                this.$emit('pageUpdated');
+            } catch (error) {
+                this.handleError(error);
                 this.resetAcceptanceDeploymentTicketList();
-            });
+            }
         },
         handleSelectAllAcceptanceDeploymentTickets() {
             this.selectedAcceptanceDeploymentTickets = [];
@@ -200,6 +193,22 @@ export default {
                 }
             }
         },
+        initializePopover() {
+            const popoverButton = this.$refs.popoverBtn;
+            if (popoverButton) {
+                const popover = new Popover(popoverButton, {
+                    html: true,
+                    trigger: 'focus',
+                });
+
+                popoverButton.addEventListener('shown.bs.popover', () => {
+                    const yesButton = document.getElementById('yesAccDeploymentButton');
+                    if (yesButton) {
+                        yesButton.addEventListener('click', this.submitAcceptanceDeploymentTicket);
+                    }
+                });
+            }
+        },
         handleError(error) {
             if (error.type === 'validation') {
                 this.errors = error.errors;
@@ -215,6 +224,9 @@ export default {
     },
     mounted() {
         this.clearMessages();
+        this.$nextTick(() => {
+            this.initializePopover();
+        });
     },
     beforeUnmount() {
         this.showMessage = false;

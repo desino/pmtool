@@ -19,7 +19,7 @@
                                 class="form-select" @change="fetchTickets">
                                 <option value="">{{
                                     $t('time_booking_on_new_initiative_or_ticket.modal_select_initiative_label_text')
-                                    }}</option>
+                                }}</option>
                                 <option v-for="initiative in initiatives" :key="initiative.id" :value="initiative.id">{{
                                     initiative.name }}
                                 </option>
@@ -33,7 +33,7 @@
                                 class="form-select">
                                 <option value="">{{
                                     $t('time_booking_on_new_initiative_or_ticket.modal_select_ticket_label_text')
-                                    }}</option>
+                                }}</option>
                                 <option v-for="ticket in tickets" :key="ticket.id" :value="ticket.id">{{
                                     ticket.composed_name }}
                                 </option>
@@ -125,7 +125,6 @@ export default {
     methods: {
         ...mapActions(['setLoading']),
         getTimeBookingData(weekDay, weekDays, userId) {
-            console.log('userId :: ', userId);
             this.clearFormData();
             this.clearMessages();
             this.formData.booked_date = weekDay.date;

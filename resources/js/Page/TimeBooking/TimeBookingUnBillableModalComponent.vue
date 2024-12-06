@@ -110,10 +110,15 @@
                                     {{ timeBooking.comments }}
                                 </div>
                                 <div class="col-md-1 py-2 text-end">
-                                    <a data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    <!-- <a data-bs-toggle="tooltip" data-bs-placement="bottom"
                                         :title="$t('time_booking_un_billable.modal.list_table.action_delete_text')"
                                         class="text-danger me-2" href="javascript:"
                                         @click="handleDeleteTimeBooking(timeBooking)">
+                                        <i class="bi bi-trash3"></i>
+                                    </a> -->
+                                    <a ref="deletePopoverBtns" data-bs-toggle="popover" data-bs-trigger="focus"
+                                        :title="$t('time_booking_un_billable.modal.list_table.action_delete_text')"
+                                        class="text-danger me-2" href="javascript:">
                                         <i class="bi bi-trash3"></i>
                                     </a>
                                 </div>
@@ -158,7 +163,7 @@
 
 <script>
 import { mapActions } from 'vuex';
-import { Modal, Tooltip } from 'bootstrap';
+import { Modal, Tooltip, Popover } from 'bootstrap';
 import messageService from '../../services/messageService';
 import GlobalMessage from '../../components/GlobalMessage.vue';
 import showToast from '../../utils/toasts';
@@ -221,6 +226,7 @@ export default {
                 this.totalTimeBookingHours = totalTimeBookingHours;
                 await this.setLoading(false);
                 this.initializeTooltips();
+                this.initializePopover();
             } catch (error) {
                 this.handleError(error);
             }
@@ -285,43 +291,24 @@ export default {
         },
         async deleteTimeBooking(timeBookingIds = [], action = '') {
             this.clearMessages();
-            this.$swal({
-                title: this.$t('time_booking_un_billable.modal.delete_alert.title'),
-                text: this.$t('time_booking_un_billable.modal.delete_alert.text'),
-                showCancelButton: true,
-                confirmButtonColor: '#1e6abf',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '<i class="bi bi-check-lg"></i>',
-                cancelButtonText: '<i class="bi bi-x-lg"></i>',
-                customClass: {
-                    confirmButton: 'btn-desino',
-                },
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    this.setLoading(true);
-                    try {
-                        const passData = {
-                            'timeBookingIds': timeBookingIds
-                        }
-                        const { message } = await TimeBookingService.deleteTimeBookings(passData);
-                        showToast(message, 'success');
-                        this.$emit('pageUpdated', this.weekDays);
-                        this.showMessage = true;
-                        this.setLoading(false);
-                        this.getTimeBookingUnBillableModalInitialData();
-                        if (action === 'deleteAll') {
-                            this.isChkAllTimeBookings = false;
-                            this.selectedTimeBookings = [];
-                        }
-                    } catch (error) {
-                        this.handleError(error);
-                    }
-                } else {
-
+            this.setLoading(true);
+            try {
+                const passData = {
+                    'timeBookingIds': timeBookingIds
                 }
-            }).catch(() => {
-
-            });
+                const { message } = await TimeBookingService.deleteTimeBookings(passData);
+                showToast(message, 'success');
+                this.$emit('pageUpdated', this.weekDays);
+                this.showMessage = true;
+                this.setLoading(false);
+                this.getTimeBookingUnBillableModalInitialData();
+                if (action === 'deleteAll') {
+                    this.isChkAllTimeBookings = false;
+                    this.selectedTimeBookings = [];
+                }
+            } catch (error) {
+                this.handleError(error);
+            }
         },
         handleError(error) {
             if (error.type === 'validation') {
@@ -337,6 +324,43 @@ export default {
             tooltipTriggerList.forEach((tooltipTriggerEl) => {
                 new Tooltip(tooltipTriggerEl);
             });
+        },
+        initializePopover() {
+            const popoverBtns = this.$refs.deletePopoverBtns;
+
+            if (popoverBtns && popoverBtns.length) {
+                popoverBtns.forEach((btn, index) => {
+                    if (btn.getAttribute('data-initialized') === 'true') {
+                        return;
+                    }
+                    const popover = new Popover(btn, {
+                        html: true,
+                        trigger: 'focus',
+                        content: this.popoverContentForDelete(index),
+                    });
+                    btn.setAttribute('data-initialized', 'true');
+
+                    btn.addEventListener('shown.bs.popover', () => {
+                        const yesButton = document.getElementById('yesDeleteTimeBookingUnBillableButton_' + index);
+                        if (yesButton) {
+                            yesButton.addEventListener('click', () => {
+                                this.handleDeleteTimeBooking(this.timeBookings[index]);
+                            }, { once: true });
+                        }
+                    });
+                });
+            }
+        },
+        popoverContentForDelete(index) {
+            return `
+                <div class="text-center w-100">
+                    <a href="javascript:void(0)" class="btn btn-desino w-100 border-0 my-1" id="yesDeleteTimeBookingUnBillableButton_${index}" data-index="${index}">
+                        <i class="bi bi-check-lg"></i>
+                    </a>
+                    <a href="javascript:void(0)"  class="btn btn-danger w-100 border-0 my-1 cancel-delete-btn" data-index="${index}">
+                        <i class="bi bi-x-lg"></i>
+                    </a>
+                </div>`;
         },
         clearMessages() {
             this.errors = {};
@@ -367,6 +391,9 @@ export default {
     },
     mounted() {
         this.clearMessages();
+        this.$nextTick(() => {
+            this.initializePopover();
+        });
     },
 };
 </script>

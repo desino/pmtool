@@ -31,7 +31,7 @@
                                         class="form-select">
                                         <option value="">{{
                                             $t('time_booking.modal_input_project_label_text')
-                                        }}</option>
+                                            }}</option>
                                         <option v-for="project in projects" :key="project.id" :value="project.id">{{
                                             project.name }}
                                         </option>
@@ -67,6 +67,12 @@
                         </div>
                     </div>
                 </form>
+
+                <!-- <button type="button" ref="popoverBtn" data-bs-toggle="popover"
+                    :title="$t('home.deployment_center.test_deployment.ticket_modal.submit.alert.text')"
+                    v-bind:data-bs-content="popoverContent" class="btn btn-desino w-100 border-0">{{
+                        $t('home.deployment_center.test_deployment.ticket_modal.submit_but.text') }}</button> -->
+
                 <div class="mb-3 p-3 shadow">
                     <button type="button" class="btn btn-sm btn-danger border-0"
                         :disabled="selectedTimeBookings.length === 0" @click="handleDeleteSelectAllTimeBookings">
@@ -91,7 +97,7 @@
                             </div>
                         </li>
                         <li class="border list-group-item" v-if="timeBookings.length > 0"
-                            v-for="timeBooking in timeBookings">
+                            v-for="(timeBooking, index) in timeBookings">
                             <div class="row w-100">
                                 <div class="col-md-1 py-2">
                                     <input v-model="timeBooking.is_checked" class="form-check-input" type="checkbox"
@@ -104,10 +110,15 @@
                                     {{ timeBooking.comments }}
                                 </div>
                                 <div class="col-md-3 py-2 text-end">
-                                    <a data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    <!-- <a data-bs-toggle="tooltip" data-bs-placement="bottom"
                                         :title="$t('time_booking.modal.list_table.action_delete_text')"
                                         class="text-danger me-2" href="javascript:"
                                         @click="handleDeleteTimeBooking(timeBooking)">
+                                        <i class="bi bi-trash3"></i>
+                                    </a> -->
+                                    <a ref="deletePopoverBtns" data-bs-toggle="popover" data-bs-trigger="focus"
+                                        :title="$t('time_booking.modal.list_table.action_delete_text')"
+                                        class="text-danger me-2" href="javascript:">
                                         <i class="bi bi-trash3"></i>
                                     </a>
                                 </div>
@@ -154,7 +165,7 @@ import GlobalMessage from '../../components/GlobalMessage.vue';
 import messageService from '../../services/messageService';
 import { mapActions, mapGetters } from 'vuex';
 import TimeBookingService from '../../services/TimeBookingService';
-import { Modal, Tooltip } from 'bootstrap';
+import { Modal, Tooltip, Popover } from 'bootstrap';
 
 export default {
     name: 'TimeBookingModalComponent',
@@ -184,7 +195,7 @@ export default {
             submitButtonClickedValue: '',
             showErrorMessage: "",
             errors: {},
-            showMessage: true
+            showMessage: true,
         }
     },
     computed: {
@@ -252,6 +263,7 @@ export default {
                 this.projects = projects;
                 await this.setLoading(false);
                 this.initializeTooltips();
+                this.initializePopover();
             } catch (error) {
                 this.handleError(error);
             }
@@ -288,48 +300,65 @@ export default {
         },
         async deleteTimeBooking(timeBookingIds = [], action = '') {
             this.clearMessages();
-            this.$swal({
-                title: this.$t('time_booking.modal.delete_alert.title'),
-                text: this.$t('time_booking.modal.delete_alert.text'),
-                showCancelButton: true,
-                confirmButtonColor: '#1e6abf',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '<i class="bi bi-check-lg"></i>',
-                cancelButtonText: '<i class="bi bi-x-lg"></i>',
-                customClass: {
-                    confirmButton: 'btn-desino',
-                },
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    this.setLoading(true);
-                    try {
-                        const passData = {
-                            'timeBookingIds': timeBookingIds
-                        }
-                        const { content } = await TimeBookingService.deleteTimeBookings(passData);
-                        this.$emit('pageUpdated', this.weekDays);
-                        this.showMessage = true;
-                        this.setLoading(false);
-                        this.getTimeBookingModalInitialData();
-                        if (action === 'deleteAll') {
-                            this.isChkAllTimeBookings = false;
-                            this.selectedTimeBookings = [];
-                        }
-                    } catch (error) {
-                        this.handleError(error);
-                    }
-                } else {
-
+            try {
+                const passData = {
+                    'timeBookingIds': timeBookingIds
                 }
-            }).catch(() => {
-
-            });
+                const { content } = await TimeBookingService.deleteTimeBookings(passData);
+                this.$emit('pageUpdated', this.weekDays);
+                this.showMessage = true;
+                this.setLoading(false);
+                this.getTimeBookingModalInitialData();
+                if (action === 'deleteAll') {
+                    this.isChkAllTimeBookings = false;
+                    this.selectedTimeBookings = [];
+                }
+            } catch (error) {
+                this.handleError(error);
+            }
         },
         initializeTooltips() {
             const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
             tooltipTriggerList.forEach((tooltipTriggerEl) => {
                 new Tooltip(tooltipTriggerEl);
             });
+        },
+        initializePopover() {
+            const popoverBtns = this.$refs.deletePopoverBtns;
+
+            if (popoverBtns && popoverBtns.length) {
+                popoverBtns.forEach((btn, index) => {
+                    if (btn.getAttribute('data-initialized') === 'true') {
+                        return;
+                    }
+                    const popover = new Popover(btn, {
+                        html: true,
+                        trigger: 'focus',
+                        content: this.popoverContentForDelete(index),
+                    });
+                    btn.setAttribute('data-initialized', 'true');
+
+                    btn.addEventListener('shown.bs.popover', () => {
+                        const yesButton = document.getElementById('yesDeleteTimeBookingButton_' + index);
+                        if (yesButton) {
+                            yesButton.addEventListener('click', () => {
+                                this.handleDeleteTimeBooking(this.timeBookings[index]);
+                            }, { once: true });
+                        }
+                    });
+                });
+            }
+        },
+        popoverContentForDelete(index) {
+            return `
+                <div class="text-center w-100">
+                    <a href="javascript:void(0)" class="btn btn-desino w-100 border-0 my-1" id="yesDeleteTimeBookingButton_${index}" data-index="${index}">
+                        <i class="bi bi-check-lg"></i>
+                    </a>
+                    <a href="javascript:void(0)"  class="btn btn-danger w-100 border-0 my-1 cancel-delete-btn" data-index="${index}">
+                        <i class="bi bi-x-lg"></i>
+                    </a>
+                </div>`;
         },
         handleError(error) {
             if (error.type === 'validation') {
@@ -370,6 +399,9 @@ export default {
     },
     mounted() {
         this.clearMessages();
+        // this.$nextTick(() => {
+        //     this.initializePopover();
+        // });
     },
 }
 </script>

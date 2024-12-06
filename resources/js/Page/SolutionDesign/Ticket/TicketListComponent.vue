@@ -101,13 +101,13 @@
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="w-100 p-1">
                     <button class="btn btn-desino w-100" :disabled="selectedTasks.length === 0" type="button"
-                        @click="addRemovePriority(1)">
+                        @click="showConfirmation('addPriorityConfirmation', addRemovePriority, 1)">
                         {{ $t('ticket.add_priority.button_text') }}
                     </button>
                 </div>
                 <div class="w-100 p-1">
                     <button class="btn btn-desino w-100" :disabled="selectedTasks.length === 0" type="button"
-                        @click="addRemovePriority(0)">
+                        @click="showConfirmation('removePriorityConfirmation', addRemovePriority, 0)">
                         {{ $t('ticket.remove_priority.button_text') }}
                     </button>
                 </div>
@@ -115,13 +115,13 @@
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="w-100 p-1">
                     <button class="btn btn-desino w-100" :disabled="selectedTasks.length === 0" type="button"
-                        @click="markAsVisibleInvisible(1)">
+                        @click="showConfirmation('markAsVisibleConfirmation', markAsVisibleInvisible, 1)">
                         {{ $t('ticket.mark_as_visible.button_text') }}
                     </button>
                 </div>
                 <div class="w-100 p-1">
                     <button class="btn btn-desino w-100" :disabled="selectedTasks.length === 0" type="button"
-                        @click="markAsVisibleInvisible(0)">
+                        @click="showConfirmation('markAsInvisibleConfirmation', markAsVisibleInvisible, 0)">
                         {{ $t('ticket.mark_as_invisible.button_text') }}
                     </button>
                 </div>
@@ -195,11 +195,12 @@
                             deselect-label="" label="name" :placeholder="$t('ticket.filter.projects_placeholder')"
                             track-by="id" :ref="'taskProjectDropdowns-' + index"
                             @open="storePreviousProject(task.project, index)"
-                            @select="assignOrRemoveProjectForTask(task.id, 'assign', index, $event)"
-                            @Remove="assignOrRemoveProjectForTask(task.id, 'remove', index, $event)">
+                            @select="showConfirmation('assign', assignOrRemoveProjectForTask, task.id, index, $event)"
+                            @Remove="showConfirmation('remove', assignOrRemoveProjectForTask, task.id, index, $event)">
                         </multiselect>
                     </div>
-                    <div class="offset-1 col-2 offset-md-1 col-md-5 col-lg-5 offset-xl-0 col-xl-1 text-start py-2 py-lg-0">
+                    <div
+                        class="offset-1 col-2 offset-md-1 col-md-5 col-lg-5 offset-xl-0 col-xl-1 text-start py-2 py-lg-0">
                         <span class="badge rounded-3 bg-success-subtle text-success mb-0">
                             {{ task.estimation_time }}{{ $t('ticket.list.estimation_hours_text') }}
                         </span>
@@ -216,7 +217,7 @@
                         </span>
                     </div>
                     <div class="col-4 col-md-3 col-lg-3 col-xl-1 text-end py-2 py-lg-0">
-                        <div v-if="user?.is_admin" >
+                        <div v-if="user?.is_admin">
                             <a data-bs-toggle="tooltip" data-bs-placement="bottom"
                                 :title="$t('ticket.list.column.action.copy_text')" class="text-primary me-1"
                                 href="javascript:" @click.stop="copyToClipboard(task)">
@@ -249,8 +250,9 @@
                                 <i class="bi bi-clock-history"></i>
                             </a>
                             <a v-if="user?.is_admin && task.is_show_delete_but" class="text-danger" href="javascript:"
-                                @click.stop="deleteTicket(task)" data-bs-toggle="tooltip"
-                                :title="$t('ticket_details.delete_text')" data-bs-placement="bottom">
+                                @click.stop="showConfirmation('deleteTicket', deleteTicket, task)"
+                                data-bs-toggle="tooltip" :title="$t('ticket_details.delete_text')"
+                                data-bs-placement="bottom">
                                 <i class="bi bi-trash3"></i>
                             </a>
                         </div>
@@ -286,6 +288,8 @@
         <span id="copyableLink" style="cursor: pointer; text-decoration: underline; color: blue; display: none">
             <a v-bind:href="copyLink">{{ copyLabel }}</a>
         </span>
+        <ConfirmationModal ref="dynamicConfirmationModal" :title="modalTitle" :message="modalMessage"
+            @confirm="modalConfirmCallback" />
     </div>
 </template>
 
@@ -353,6 +357,9 @@ export default {
             prdMacroStatus: "",
             copyLabel: "",
             copyLink: "",
+            modalTitle: "",
+            modalMessage: "",
+            modalConfirmCallback: null,
             errors: {},
             showMessage: true,
             tooltipBtn: null,
@@ -460,44 +467,22 @@ export default {
         },
         async assignOrRemoveProjectForTask(taskId, type, index, selectedOption) {
             this.clearMessages();
-            const alertText = type == 'assign' ? this.$t('ticket.assign_or_remove.project.conformation_popup_assign_text') : this.$t('ticket.assign_or_remove.project.conformation_popup_remove_text');
-            this.$swal({
-                title: this.$t('ticket.assign_or_remove.project.conformation_popup_title'),
-                text: alertText,
-                showCancelButton: true,
-                confirmButtonColor: '#1e6abf',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '<i class="bi bi-check-lg"></i>',
-                cancelButtonText: '<i class="bi bi-x-lg"></i>',
-                customClass: {
-                    confirmButton: 'btn-desino',
-                },
-                didClose: () => {
-                    this.closeDropdown(index);
+            try {
+                const params = {
+                    taskId: taskId,
+                    type: type,
+                    initiative_id: this.initiative_id,
+                    selectedOption: selectedOption,
                 }
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    try {
-                        const params = {
-                            taskId: taskId,
-                            type: type,
-                            initiative_id: this.initiative_id,
-                            selectedOption: selectedOption,
-                        }
-                        await this.setLoading(true);
-                        const { message } = await ticketService.assignOrRemoveProjectForTask(params);
-                        showToast(message, 'success');
-                        await this.setLoading(false);
-                    } catch (error) {
-                        this.handleError(error);
-                        this.tasks[index].project = this.previousProject;
-                    }
-                } else {
-                    this.tasks[index].project = this.previousProject;
-                }
-            }).catch(() => {
+                await this.setLoading(true);
+                const { message } = await ticketService.assignOrRemoveProjectForTask(params);
+                showToast(message, 'success');
+                await this.setLoading(false);
+                this.previousProject = selectedOption;
+            } catch (error) {
+                this.handleError(error);
                 this.tasks[index].project = this.previousProject;
-            });
+            }
         },
         closeDropdown(index) {
             const dropdown = this.$refs['taskProjectDropdowns-' + index][0];
@@ -535,117 +520,60 @@ export default {
             }
         },
         async addRemovePriority(isPriority) {
-            let alertText = '';
-            if (isPriority) {
-                alertText = this.$t('ticket.add_priority.conformation_popup_text');
-            } else {
-                alertText = this.$t('ticket.remove_priority.conformation_popup_text');
-            }
-            this.$swal({
-                title: this.$t('ticket.priority.conformation_popup_title'),
-                text: alertText,
-                showCancelButton: true,
-                confirmButtonColor: '#1e6abf',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '<i class="bi bi-check-lg"></i>',
-                cancelButtonText: '<i class="bi bi-x-lg"></i>',
-                customClass: {
-                    confirmButton: 'btn-desino',
-                },
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    try {
-                        const passData = {
-                            initiative_id: this.initiative_id,
-                            is_priority: isPriority,
-                            ticket_ids: this.selectedTasks
-                        }
-                        this.setLoading(true);
-                        const { message, status } = await ticketService.addRemovePriority(passData);
-                        showToast(message, 'success');
-                        this.setLoading(false);
-                        this.clearMessages();
-                        this.fetchAllTasks();
-                    } catch (error) {
-                        this.handleError(error);
-                        this.tasks[index].project = this.previousProject;
-                    }
+            this.clearMessages();
+            try {
+                const passData = {
+                    initiative_id: this.initiative_id,
+                    is_priority: isPriority,
+                    ticket_ids: this.selectedTasks
                 }
-            })
+                this.setLoading(true);
+                const { message, status } = await ticketService.addRemovePriority(passData);
+                showToast(message, 'success');
+                this.setLoading(false);
+                this.clearMessages();
+                this.fetchAllTasks();
+            } catch (error) {
+                this.handleError(error);
+            }
         },
         async markAsVisibleInvisible(isVisible) {
-            let alertText = '';
-            if (isVisible) {
-                alertText = this.$t('ticket.is_visible.conformation_popup_text');
-            } else {
-                alertText = this.$t('ticket.is_invisible.conformation_popup_text');
-            }
-            this.$swal({
-                title: this.$t('ticket.visible.conformation_popup_title'),
-                text: alertText,
-                showCancelButton: true,
-                confirmButtonColor: '#1e6abf',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '<i class="bi bi-check-lg"></i>',
-                cancelButtonText: '<i class="bi bi-x-lg"></i>',
-                customClass: {
-                    confirmButton: 'btn-desino',
-                },
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    try {
-                        const passData = {
-                            initiative_id: this.initiative_id,
-                            is_visible: isVisible,
-                            ticket_ids: this.selectedTasks
-                        }
-                        this.setLoading(true);
-                        const { message, status } = await ticketService.markAsVisibleInvisible(passData);
-                        showToast(message, 'success');
-                        this.setLoading(false);
-                        this.clearMessages();
-                        this.fetchAllTasks();
-                    } catch (error) {
-                        this.handleError(error);
-                        this.tasks[index].project = this.previousProject;
-                    }
+
+            try {
+                const passData = {
+                    initiative_id: this.initiative_id,
+                    is_visible: isVisible,
+                    ticket_ids: this.selectedTasks
                 }
-            })
+                this.setLoading(true);
+                const { message, status } = await ticketService.markAsVisibleInvisible(passData);
+                showToast(message, 'success');
+                this.setLoading(false);
+                this.clearMessages();
+                this.fetchAllTasks();
+            } catch (error) {
+                this.handleError(error);
+            }
         },
         async deleteTicket(task) {
             if (!this.user?.is_admin) {
                 return;
             }
-            this.$swal({
-                title: this.$t('ticket.delete.conformation_popup_title'),
-                text: this.$t('ticket.delete.conformation_popup_text'),
-                showCancelButton: true,
-                confirmButtonColor: '#1e6abf',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '<i class="bi bi-check-lg"></i>',
-                cancelButtonText: '<i class="bi bi-x-lg"></i>',
-                customClass: {
-                    confirmButton: 'btn-desino',
-                },
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    try {
-                        const passData = {
-                            initiative_id: this.initiative_id,
-                            ticket_id: task.id
-                        }
-                        this.setLoading(true);
-                        const { message, status } = await ticketService.deleteTicket(passData);
-                        showToast(message, 'success');
-                        this.setLoading(false);
-                        this.clearMessages();
-                        this.fetchAllTasks();
-                    } catch (error) {
-                        this.handleError(error);
-                        this.tasks[index].project = this.previousProject;
-                    }
+
+            try {
+                const passData = {
+                    initiative_id: this.initiative_id,
+                    ticket_id: task.id
                 }
-            })
+                this.setLoading(true);
+                const { message, status } = await ticketService.deleteTicket(passData);
+                showToast(message, 'success');
+                this.setLoading(false);
+                this.clearMessages();
+                this.fetchAllTasks();
+            } catch (error) {
+                this.handleError(error);
+            }
         },
         handleError(error) {
             if (error.type === 'validation') {
@@ -728,7 +656,52 @@ export default {
                     linkElement.style.display = 'none';
                 }
             });
-        }
+        },
+        showConfirmation(modalType, callback, callbackParam, index = null, event = null) {
+            if (modalType === 'assign' || modalType === 'remove') {
+                this.modalTitle = this.$t('ticket.assign_or_remove.project.conformation_popup_title');
+                if (modalType === 'assign') {
+                    this.modalMessage = this.$t('ticket.assign_or_remove.project.conformation_popup_assign_text');
+                } else if (modalType === 'remove') {
+                    this.modalMessage = this.$t('ticket.assign_or_remove.project.conformation_popup_remove_text');
+                }
+            }
+
+            if (modalType === 'addPriorityConfirmation') {
+                this.modalTitle = this.$t('ticket.add_priority.button_text');
+                this.modalMessage = this.$t('ticket.add_priority.conformation_popup_text');
+            } else if (modalType === 'removePriorityConfirmation') {
+                this.modalTitle = this.$t('ticket.remove_priority.button_text');
+                this.modalMessage = this.$t('ticket.remove_priority.conformation_popup_text');
+            }
+
+            if (modalType === 'markAsVisibleConfirmation') {
+                this.modalTitle = this.$t('ticket.mark_as_visible.button_text');
+                this.modalMessage = this.$t('ticket.is_visible.conformation_popup_text');
+            } else if (modalType === 'markAsInvisibleConfirmation') {
+                this.modalTitle = this.$t('ticket.mark_as_invisible.button_text');
+                this.modalMessage = this.$t('ticket.is_invisible.conformation_popup_text');
+            }
+
+            if (modalType === 'deleteTicket') {
+                this.modalTitle = this.$t('ticket.delete.conformation_popup_title');
+                this.modalMessage = this.$t('ticket.delete.conformation_popup_text');
+            }
+
+            this.modalConfirmCallback = () => callback(callbackParam, modalType, index, event);
+
+            this.$refs.dynamicConfirmationModal.showModal();
+
+            if (modalType === 'assign' || modalType === 'remove') {
+                const modalElement = document.getElementById('confirmationModal');
+                modalElement.addEventListener('hidden.bs.modal', () => {
+                    if (!this.$refs.dynamicConfirmationModal.isConfirmed) {
+                        this.closeDropdown(index);
+                        this.tasks[index].project = this.previousProject;
+                    }
+                }, { once: true });
+            }
+        },
     },
     mounted() {
         eventBus.$emit('selectHeaderInitiativeId', this.initiative_id);

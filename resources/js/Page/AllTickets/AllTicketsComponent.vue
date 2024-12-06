@@ -364,41 +364,6 @@ export default {
             this.$refs.dynamicConfirmationModal.showModal();
         },
         async addRemovePriority(isPriority) {
-            // let alertText = '';
-            // if (isPriority) {
-            //     alertText = this.$t('all_ticket_without_initiative_list.add_priority.conformation_popup_text');
-            // } else {
-            //     alertText = this.$t('all_ticket_without_initiative_list.remove_priority.conformation_popup_text');
-            // }
-            // this.$swal({
-            //     title: this.$t('all_ticket_without_initiative_list.priority.conformation_popup_title'),
-            //     text: alertText,
-            //     showCancelButton: true,
-            //     confirmButtonColor: '#1e6abf',
-            //     cancelButtonColor: '#d33',
-            //     confirmButtonText: '<i class="bi bi-check-lg"></i>',
-            //     cancelButtonText: '<i class="bi bi-x-lg"></i>',
-            //     customClass: {
-            //         confirmButton: 'btn-desino',
-            //     },
-            // }).then(async (result) => {
-            //     if (result.isConfirmed) {
-            //         try {
-            //             const passData = {
-            //                 is_priority: isPriority,
-            //                 ticket_ids: this.selectedTickets
-            //             }
-            //             this.setLoading(true);
-            //             const { message, status } = await AllTicketsWithoutInitiativeService.addRemovePriority(passData);
-            //             showToast(message, 'success');
-            //             this.setLoading(false);
-            //             this.clearMessages();
-            //             this.getAllTicketsWithoutInitiative();
-            //         } catch (error) {
-            //             this.handleError(error);
-            //         }
-            //     }
-            // })
             try {
                 const passData = {
                     is_priority: isPriority,
@@ -415,41 +380,6 @@ export default {
             }
         },
         async markAsVisibleInvisible(isVisible) {
-            // let alertText = '';
-            // if (isVisible) {
-            //     alertText = this.$t('all_ticket_without_initiative_list.is_visible.conformation_popup_text');
-            // } else {
-            //     alertText = this.$t('all_ticket_without_initiative_list.is_invisible.conformation_popup_text');
-            // }
-            // this.$swal({
-            //     title: this.$t('all_ticket_without_initiative_list.visible.conformation_popup_title'),
-            //     text: alertText,
-            //     showCancelButton: true,
-            //     confirmButtonColor: '#1e6abf',
-            //     cancelButtonColor: '#d33',
-            //     confirmButtonText: '<i class="bi bi-check-lg"></i>',
-            //     cancelButtonText: '<i class="bi bi-x-lg"></i>',
-            //     customClass: {
-            //         confirmButton: 'btn-desino',
-            //     },
-            // }).then(async (result) => {
-            //     if (result.isConfirmed) {
-            //         try {
-            //             const passData = {
-            //                 is_visible: isVisible,
-            //                 ticket_ids: this.selectedTickets
-            //             }
-            //             this.setLoading(true);
-            //             const { message, status } = await AllTicketsWithoutInitiativeService.markAsVisibleInvisible(passData);
-            //             showToast(message, 'success');
-            //             this.setLoading(false);
-            //             this.clearMessages();
-            //             this.getAllTicketsWithoutInitiative();
-            //         } catch (error) {
-            //             this.handleError(error);
-            //         }
-            //     }
-            // })
             try {
                 const passData = {
                     is_visible: isVisible,

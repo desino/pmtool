@@ -18,14 +18,14 @@
                                 {{ initiative?.tickets_count }}
                                 <span class="small">{{
                                     $t('home.my_actions.tickets.text')
-                                    }}</span>
+                                }}</span>
                             </div>
                         </div>
                     </div>
                 </li>
                 <li v-else class="list-group-item">
                     <div class="w-100 fst-italic small text-secondary">
-                        {{ $t('No actionable tickets for you.') }}
+                        {{ $t('home.my_actions.no_tickets.text') }}
                     </div>
                 </li>
             </ul>

@@ -42,7 +42,8 @@
                     <div class="col-lg-3 col-md-6 col-6">
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
-                                v-model="project.status" @change="handleCheckboxChange(project)">
+                                v-model="project.status"
+                                @change="showConfirmation('handleCheckboxChange', handleCheckboxChange, project)">
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-6 col-6">
@@ -69,6 +70,8 @@
             tabindex="-1">
             <EditProjectModalComponent ref="editProjectModalComponent" @projectUpdated="getProjectList" />
         </div>
+        <ConfirmationModal ref="dynamicConfirmationModal" :title="modalTitle" :message="modalMessage"
+            @confirm="modalConfirmCallback" />
     </div>
 </template>
 <script>
@@ -99,6 +102,9 @@ export default {
                 active: true,
                 inactive: false
             },
+            modalTitle: '',
+            modalMessage: '',
+            modalConfirmCallback: null,
             errors: {},
             showMessage: true
         }
@@ -117,7 +123,8 @@ export default {
                 const { content: { projects: { records, paginationInfo: { current_page: currentPage, last_page: totalPages } } } } = await ProjectService.getProjects(params);
                 this.projects = records.map(item => ({
                     ...item,
-                    status: Boolean(item.status)
+                    status: Boolean(item.status),
+                    originalStatus: Boolean(item.status)
                 }));
                 this.currentPage = currentPage;
                 this.totalPages = totalPages;
@@ -127,33 +134,16 @@ export default {
                 this.handleError(error);
             }
         },
-        handleCheckboxChange(project) {
-            this.$swal({
-                title: this.$t('project.list.actions_change_status_modal_title_text'),
-                text: this.$t('project.list.actions_change_status_modal_text'),
-                showCancelButton: true,
-                confirmButtonColor: '#1e6abf',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '<i class="bi bi-check-lg"></i>',
-                cancelButtonText: '<i class="bi bi-x-lg"></i>',
-                customClass: {
-                    confirmButton: 'btn-desino',
-                }
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    try {
-                        project.initiative_id = this.initiative_id;
-                        const { message } = await ProjectService.updateProjectStatus(project);
-                        showToast(message, 'success');
-                        // this.getProjectList();
-                    } catch (error) {
-                        project.status = !project.status;
-                        this.handleError(error);
-                    }
-                } else {
-                    project.status = !project.status;
-                }
-            });
+        async handleCheckboxChange(project) {
+            try {
+                project.initiative_id = this.initiative_id;
+                const { message } = await ProjectService.updateProjectStatus(project);
+                showToast(message, 'success');
+                this.getProjectList();
+            } catch (error) {
+                project.status = !project.status;
+                this.handleError(error);
+            }
         },
         async editProject(project) {
             this.$refs.editProjectModalComponent.getEditProjectFormData(project);
@@ -168,6 +158,26 @@ export default {
             tooltipTriggerList.forEach((tooltipTriggerEl) => {
                 new Tooltip(tooltipTriggerEl);
             });
+        },
+        showConfirmation(modalType, callback, callbackParam) {
+            if (modalType === 'handleCheckboxChange') {
+                this.modalTitle = this.$t('project.list.actions_change_status_modal_title_text');
+                this.modalMessage = this.$t('project.list.actions_change_status_modal_text');
+            }
+
+            this.modalConfirmCallback = () => callback(callbackParam);
+
+            this.$refs.dynamicConfirmationModal.showModal();
+
+            const modalElement = document.getElementById('confirmationModal');
+            modalElement.addEventListener('hidden.bs.modal', () => {
+                if (!this.$refs.dynamicConfirmationModal.isConfirmed) {
+                    this.resetSwitchValue(callbackParam);
+                }
+            }, { once: true });
+        },
+        resetSwitchValue(project) {
+            project.status = Boolean(project.originalStatus);
         },
         handleError(error) {
             if (error.type === 'validation') {
