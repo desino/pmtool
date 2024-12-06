@@ -29,9 +29,9 @@ export default defineComponent({
                 suffix: '.min', // Suffix for TinyMCE resources
                 license_key: 'gpl', // for use without api key
                 entity_encoding: 'UTF-8',
-                height: 375,
+                height: 650,
                 width: '100%',
-                menubar: 'format table',
+                menubar: false,
                 contextmenu: 'paste | link image inserttable | cell row column deletetable',
                 extended_valid_elements: 'img[!src|border:0|alt|title|width|height|style]a[name|href|target|title|onclick]',
                 plugins: [
@@ -58,9 +58,7 @@ export default defineComponent({
                     toolbar_mode: 'wrap',
                 },
                 toolbar:
-                    'undo redo | blocks | bold italic underline strikethrough forecolor backcolor '
-                    + 'fontselect | alignleft aligncenter alignright alignjustify | '
-                    + 'bullist numlist outdent indent | table | removeformat | image ',
+                    'undo redo | blocks | bold italic underline strikethrough forecolor backcolor | align bullist numlist | lineheight outdent indent | table',
             };
         },
     },
