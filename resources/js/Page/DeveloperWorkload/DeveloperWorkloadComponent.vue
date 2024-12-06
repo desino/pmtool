@@ -1,10 +1,10 @@
 <template>
     <GlobalMessage v-if="showMessage" />
-    <div class="app-content my-3">
+    <div class="app-content mt-3">
         <div class="w-100 mb-3">
             <ul class="list-group list-group-flush mb-3 mt-2">
                 <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
-                    <div class="row w-100 align-items-center">
+                    <div class="row g-1 w-100 align-items-center">
                         <div class="col-3 fw-bold small">
                             {{ $t('developer_workload_table.resource_th_text') }}
                         </div>
@@ -62,8 +62,11 @@
                     </div>
                 </li>
                 <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
-                    <div class="fw-bold fst-italic text-center w-100">{{
-                        $t('developer_workload_table.no_developer_workload_found_text') }}</div>
+                    <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
+                        <div class="col-12 fw-bold fst-italic text-center">
+                            {{ $t('developer_workload_table.no_developer_workload_found_text') }}
+                        </div>
+                    </div>
                 </li>
             </ul>
         </div>

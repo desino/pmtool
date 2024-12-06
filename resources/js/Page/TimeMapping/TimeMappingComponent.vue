@@ -10,113 +10,124 @@
     </div> -->
     <GlobalMessage v-if="showMessage" />
     <div class="app-content mt-3">
-        <div class="row w-100 mb-3 align-items-center">
-            <div class="col-md-2">
-                <select v-model="filter.initiative_id" class="form-select"
-                    @change="getProjectListAndTimeMappings($event)">
-                    <option value="">{{ $t('time_mapping.list_filter.initiative') }}</option>
-                    <option v-for="initiative in initiatives" :key="initiative.id" :value="initiative.id">
-                        {{ initiative.name }}
-                    </option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <select v-model="filter.project_id" class="form-select" :disabled="disabledProjectList()"
-                    @change="getTimeMappings">
-                    <option value="">{{ $t('time_mapping.list_filter.project') }}</option>
-                    <option v-for="project in projects" :key="project.id" :value="project.id">
-                        {{ project.name }}
-                    </option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <select v-model="filter.user_id" class="form-select" @change="getTimeMappings">
-                    <option value="">{{ $t('time_mapping.list_filter.user') }}</option>
-                    <option v-for="user in users" :key="user.id" :value="user.id">
-                        {{ user.name }}
-                    </option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <input v-model="filter.days" :placeholder="$t('time_mapping.list_filter.days')" class="form-control"
-                    type="text" @keyup="getTimeMappings" @input="allowOnlyNumbers">
-            </div>
-            <div class="col-md-2">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" v-model="filter.include_mapped"
-                        @change="getTimeMappings" id="include_mapped">
-                    <label class="form-check-label fw-bold" for="include_mapped">
-                        {{ $t('time_mapping.list_filter.include_mapped') }}
-                    </label>
+        <div class="w-100 mb-3">
+            <div class="row g-1 w-100 align-items-center">
+                <div class="col-md-2">
+                    <select v-model="filter.initiative_id" class="form-select"
+                        @change="getProjectListAndTimeMappings($event)">
+                        <option value="">{{ $t('time_mapping.list_filter.initiative') }}</option>
+                        <option v-for="initiative in initiatives" :key="initiative.id" :value="initiative.id">
+                            {{ initiative.name }}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select v-model="filter.project_id" class="form-select" :disabled="disabledProjectList()"
+                        @change="getTimeMappings">
+                        <option value="">{{ $t('time_mapping.list_filter.project') }}</option>
+                        <option v-for="project in projects" :key="project.id" :value="project.id">
+                            {{ project.name }}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select v-model="filter.user_id" class="form-select" @change="getTimeMappings">
+                        <option value="">{{ $t('time_mapping.list_filter.user') }}</option>
+                        <option v-for="user in users" :key="user.id" :value="user.id">
+                            {{ user.name }}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input v-model="filter.days" :placeholder="$t('time_mapping.list_filter.days')" class="form-control"
+                        type="text" @keyup="getTimeMappings" @input="allowOnlyNumbers">
+                </div>
+                <div class="col-md-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" v-model="filter.include_mapped"
+                            @change="getTimeMappings" id="include_mapped">
+                        <label class="form-check-label fw-bold" for="include_mapped">
+                            {{ $t('time_mapping.list_filter.include_mapped') }}
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="row w-100 mb-3 align-items-center">
-            <div class="col-md-2">
-                <button class="btn btn-desino" type="button"
-                    :disabled="!selectedTimeBookings.length > 0 || filter.initiative_id == ''"
-                    @click="bulkAssignProjectForTimeMappings">
-                    {{ $t('time_mapping.list.button.bulk_assign_project') }}
-                </button>
+        <div class="w-100 mb-3">
+            <div class="row g-1 w-100 align-items-center">
+                <div class="col-md-2">
+                    <button class="btn btn-desino" type="button"
+                        :disabled="!selectedTimeBookings.length > 0 || filter.initiative_id == ''"
+                        @click="bulkAssignProjectForTimeMappings">
+                        {{ $t('time_mapping.list.button.bulk_assign_project') }}
+                    </button>
+                </div>
             </div>
         </div>
-        <ul class="list-group list-group-flush mb-3 mt-2">
-            <li class="font-weight-bold bg-desino text-white rounded-top list-group-item">
-                <div class="row w-100">
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
-                        <input class="form-check-input mx-1" type="checkbox" v-model="isChkAllTimeBookings"
-                            @change="handleSelectAllTimeBookings">
-                        {{ $t('time_mapping.list_table.date') }}
+        <div class="w-100 mb-3">
+            <ul class="list-group list-group-flush mb-3 mt-2">
+                <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
+                    <div class="row g-1 w-100 align-items-center">
+                        <div class="col-lg-2 col-md-6 col-6 fw-bold small">
+                            <input class="form-check-input mx-1" type="checkbox" v-model="isChkAllTimeBookings"
+                                @change="handleSelectAllTimeBookings">
+                            {{ $t('time_mapping.list_table.date') }}
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-6 fw-bold small">
+                            {{ $t('time_mapping.list_table.user') }}
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-6 fw-bold small">
+                            {{ $t('time_mapping.list_table.time') }}
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-6 fw-bold small">
+                            {{ $t('time_mapping.list_table.initiative_name') }}
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-6 fw-bold small">
+                            {{ $t('time_mapping.list_table.project_name') }}
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-6 fw-bold small">
+                            {{ $t('time_mapping.list_table.description') }}
+                        </div>
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
-                        {{ $t('time_mapping.list_table.user') }}
+                </li>
+                <li v-if="timeMappingList.length > 0" v-for="(timeMapping, index) in timeMappingList" :key="index"
+                    class="border list-group-item p-1 list-group-item-action border-top-0">
+                    <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
+                        <div class="col-lg-2 col-md-6 col-6">
+                            <input class="form-check-input" type="checkbox" :id="'chk_ticket_' + timeMapping.id"
+                                v-model="timeMapping.isChecked" @change="handleSelectTimeBookings(timeMapping)"
+                                style="margin-right: 10px;">
+                                <span class="badge bg-secondary text-wrap">{{ timeMapping.show_booked_date }}</span>
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-6">
+                            {{ timeMapping.user?.name }}
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-6">
+                            <span class="badge rounded-3 bg-success-subtle text-success mb-0">
+                                {{ timeMapping.hours }}{{ $t('ticket.list.estimation_hours_text') }}
+                            </span>
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-6">
+                            {{ timeMapping.initiative?.name }}
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-6">
+                            {{ timeMapping.project?.name }}
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-6" v-html="timeMapping.comments">
+                        </div>
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
-                        {{ $t('time_mapping.list_table.time') }}
+                </li>
+                <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
+                    <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
+                        <div class="col-12 fw-bold fst-italic text-center">
+                            {{ $t('time_mapping.list_table.no_data_text') }}
+                        </div>
                     </div>
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
-                        {{ $t('time_mapping.list_table.initiative_name') }}
-                    </div>
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
-                        {{ $t('time_mapping.list_table.project_name') }}
-                    </div>
-                    <div class="col-lg-2 col-md-6 col-6 fw-bold py-2">
-                        {{ $t('time_mapping.list_table.description') }}
-                    </div>
-                </div>
-            </li>
-            <li v-if="timeMappingList.length > 0" v-for="(timeMapping, index) in timeMappingList" :key="index"
-                class="border list-group-item">
-                <div class="row w-100">
-                    <div class="col-lg-2 col-md-6 col-6 align-items-center">
-                        <input class="form-check-input" type="checkbox" :id="'chk_ticket_' + timeMapping.id"
-                            v-model="timeMapping.isChecked" @change="handleSelectTimeBookings(timeMapping)"
-                            style="margin-right: 10px;">
-                        {{ timeMapping.show_booked_date }}
-                    </div>
-                    <div class="col-lg-2 col-md-6 col-6">
-                        {{ timeMapping.user?.name }}
-                    </div>
-                    <div class="col-lg-2 col-md-6 col-6">
-                        {{ timeMapping.hours }}
-                    </div>
-                    <div class="col-lg-2 col-md-6 col-6">
-                        {{ timeMapping.initiative?.name }}
-                    </div>
-                    <div class="col-lg-2 col-md-6 col-6">
-                        {{ timeMapping.project?.name }}
-                    </div>
-                    <div class="col-lg-2 col-md-6 col-6" v-html="timeMapping.comments">
-                    </div>
-                </div>
-            </li>
-            <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
-                <div class="fw-bold fst-italic text-center w-100">{{ $t('time_mapping.list_table.no_data_text') }}
-                </div>
-            </li>
-        </ul>
-        <PaginationComponent :currentPage="Number(currentPage)" :totalPages="Number(totalPages)"
-            @page-changed="getTimeMappings" />
+                </li>
+            </ul>
+            <PaginationComponent :currentPage="Number(currentPage)" :totalPages="Number(totalPages)"
+                @page-changed="getTimeMappings" />
+        </div>
         <div id="timeMappingForAssignProjectModal" aria-hidden="true" aria-labelledby="timeMappingForAssignProjectLabel"
             class="modal fade" tabindex="-1">
             <TimeMappingForAssignProjectModalComponent ref="timeMappingForAssignProjectModalComponent"

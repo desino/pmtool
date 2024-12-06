@@ -109,8 +109,10 @@
                     </div>
                 </li>
                 <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
-                    <div class="fw-bold fst-italic text-center w-100">{{
-                        $t('opportunity_list_table.opportunities_not_found_text') }}
+                    <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
+                        <div class="col-12 fw-bold fst-italic text-center">
+                            {{ $t('opportunity_list_table.opportunities_not_found_text') }}
+                        </div>
                     </div>
                 </li>
             </ul>

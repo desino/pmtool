@@ -104,7 +104,7 @@
         <div class="w-100 mb-3">
             <ul class="list-group list-group-flush mb-3 mt-2">
                 <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
-                    <div class="row w-100 align-items-center">
+                    <div class="row g-1 w-100 align-items-center">
                         <div class="col-lg-5 col-md-9 col-12 fw-bold small">
                             <div class="row g-0 h-100 align-items-center">
                                 <div class="col-auto me-1" style="width:10px"></div>
@@ -134,7 +134,7 @@
                 <li v-for="(ticket, index) in tickets" v-if="tickets.length > 0" :key="ticket.id"
                     class="border list-group-item p-1 list-group-item-action border-top-0" role="button"
                     @click="redirectTaskDetailPage(ticket)">
-                    <div class="row w-100 align-items-center" style="min-height: 48px;">
+                    <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
                         <div class="col-lg-5 col-md-9 col-12">
                             <div class="row g-0 h-100 align-items-center">
                                 <div class="col-auto me-1" style="width:10px">
@@ -205,8 +205,10 @@
                     </div>
                 </li>
                 <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
-                    <div class="fw-bold fst-italic text-center w-100">{{
-                        $t('all_ticket_without_initiative_list.not_ticket') }}
+                    <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
+                        <div class="col-12 fw-bold fst-italic text-center">
+                            {{ $t('all_ticket_without_initiative_list.not_ticket') }}
+                        </div>
                     </div>
                 </li>
             </ul>
