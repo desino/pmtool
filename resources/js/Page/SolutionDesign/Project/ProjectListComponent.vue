@@ -44,8 +44,8 @@
                         </div>
                         <div class="col-lg-3 col-md-6 col-6">
                             <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
-                                    v-model="project.status"
+                                <input class="form-check-input" type="checkbox" role="switch"
+                                    id="flexSwitchCheckChecked" v-model="project.status"
                                     @change="showConfirmation('handleCheckboxChange', handleCheckboxChange, project)">
                             </div>
                         </div>
@@ -126,7 +126,7 @@ export default {
                     filters: this.filter,
                     initiative_id: this.initiative_id
                 }
-                this.setLoading(true);
+                await this.setLoading(true);
                 const { content: { projects: { records, paginationInfo: { current_page: currentPage, last_page: totalPages } } } } = await ProjectService.getProjects(params);
                 this.projects = records.map(item => ({
                     ...item,

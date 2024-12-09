@@ -199,7 +199,7 @@ export default {
         async getMyTickets(page = 1) {
             this.clearMessages();
             try {
-                this.setLoading(true);
+                await this.setLoading(true);
                 const params = {
                     page: page,
                     initiative_id: this.initiative_id,
