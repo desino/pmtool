@@ -112,6 +112,7 @@ export default {
             modalTitle: '',
             modalMessage: '',
             modalConfirmCallback: null,
+            initiativeData: {},
             errors: {},
             showMessage: true
         }
@@ -127,7 +128,7 @@ export default {
                     initiative_id: this.initiative_id
                 }
                 await this.setLoading(true);
-                const { content: { projects: { records, paginationInfo: { current_page: currentPage, last_page: totalPages } } } } = await ProjectService.getProjects(params);
+                const { content: { projects: { records, paginationInfo: { current_page: currentPage, last_page: totalPages } } }, meta_data: { initiative } } = await ProjectService.getProjects(params);
                 this.projects = records.map(item => ({
                     ...item,
                     status: Boolean(item.status),
@@ -135,8 +136,10 @@ export default {
                 }));
                 this.currentPage = currentPage;
                 this.totalPages = totalPages;
+                this.initiativeData = initiative;
                 await this.setLoading(false);
                 this.initializeTooltips();
+                this.setPageHeader();
             } catch (error) {
                 this.handleError(error);
             }
@@ -186,6 +189,12 @@ export default {
         resetSwitchValue(project) {
             project.status = Boolean(project.originalStatus);
         },
+        setPageHeader() {
+            const setHeaderData = {
+                page_title: this.$t('project.list.page_title') + ' - ' + this.initiativeData?.name,
+            }
+            store.commit("setHeaderData", setHeaderData);
+        },
         handleError(error) {
             if (error.type === 'validation') {
                 this.errors = error.errors;
@@ -203,10 +212,6 @@ export default {
         eventBus.$emit('selectHeaderInitiativeId', this.initiative_id);
         this.clearMessages();
         this.getProjectList();
-        const setHeaderData = {
-            page_title: this.$t('project.list.page_title'),
-        }
-        store.commit("setHeaderData", setHeaderData);
     },
     beforeUnmount() {
         this.showMessage = false;

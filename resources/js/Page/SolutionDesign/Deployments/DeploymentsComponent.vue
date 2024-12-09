@@ -133,6 +133,7 @@ export default {
             deployments: [],
             currentPage: "",
             totalPages: "",
+            initiativeData: {},
             errors: {},
             showMessage: true
         }
@@ -177,9 +178,11 @@ export default {
                 const params = {
                     initiative_id: this.initiative_id,
                 }
-                const { content: { functionalities } } = await DeploymentService.getInitiativeDataForDeployments(params);
+                const { content: { functionalities, initiative } } = await DeploymentService.getInitiativeDataForDeployments(params);
                 this.functionalities = functionalities;
+                this.initiativeData = initiative;
                 this.setLoading(false);
+                this.setPageHeader();
             } catch (error) {
                 this.handleError(error);
             }
@@ -234,6 +237,12 @@ export default {
                 new Tooltip(tooltipTriggerEl);
             });
         },
+        setPageHeader() {
+            const setHeaderData = {
+                page_title: this.$t('deployments.page_title') + ' - ' + this.initiativeData?.name,
+            }
+            store.commit("setHeaderData", setHeaderData);
+        },
         handleError(error) {
             if (error.type === 'validation') {
                 this.errors = error.errors;
@@ -250,10 +259,6 @@ export default {
     mounted() {
         this.clearMessages();
         this.fetchData();
-        const setHeaderData = {
-            page_title: this.$t('deployments.page_title'),
-        }
-        store.commit("setHeaderData", setHeaderData);
     },
     beforeRouteUpdate(to, from, next) {
         this.initiative_id = to.params.id;

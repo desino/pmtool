@@ -174,6 +174,7 @@ export default {
             totalPages: "",
             copyLabel: "",
             copyLink: "",
+            initiativeData: {},
             errors: {},
             showMessage: true
         }
@@ -210,8 +211,10 @@ export default {
                 this.currentPage = content.current_page;
                 this.totalPages = content.last_page;
                 this.filterTaskTypes = meta_data.task_type;
+                this.initiativeData = meta_data.initiative;
                 await this.setLoading(false);
                 this.initializeTooltips();
+                this.setPageHeader();
             } catch (error) {
                 this.handleError(error);
             }
@@ -268,6 +271,12 @@ export default {
                 }
             });
         },
+        setPageHeader() {
+            const setHeaderData = {
+                page_title: this.$t('my_ticket.page_title') + ' - ' + this.initiativeData?.name,
+            }
+            store.commit("setHeaderData", setHeaderData);
+        },
         handleError(error) {
             if (error.type === 'validation') {
                 this.errors = error.errors;
@@ -283,10 +292,6 @@ export default {
     },
     mounted() {
         this.fetchData();
-        const setHeaderData = {
-            page_title: this.$t('my_ticket.page_title'),
-        }
-        store.commit("setHeaderData", setHeaderData);
     },
     beforeRouteUpdate(to, from, next) {
         this.initiative_id = to.params.id;

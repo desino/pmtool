@@ -75,7 +75,7 @@ class OpportunityController extends Controller
             if ($project['error_status']) {
                 return ApiHelper::response($status, __('messages.asana.initiative.store_error'), '', 500);
             }
-            $requestData['asana_project_id'] = $project['data']['data']['gid'];
+            // $requestData['asana_project_id'] = $project['data']['data']['gid'];
         }
         $status = true;
         $message = __('messages.opportunity.update_success');

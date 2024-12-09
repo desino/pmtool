@@ -87,6 +87,7 @@ class MyTicketController extends Controller
         // ->paginate(10);
         $meta['task_type'] = Ticket::getAllTypes();
         $meta['macro_status'] = Ticket::getAllMacroStatus();
+        $meta['initiative'] = $initiative;
         return ApiHelper::response(true, '', $tickets, 200, $meta);
     }
 }

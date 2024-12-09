@@ -766,7 +766,7 @@
     "planning.plan_new_project.modal_select_user_label_text": "User",
     "planning.plan_new_project.modal_submit_but_text": "Add New Project",
     "planning.table.header_week_text": "Week",
-    "bulk_create_tickets.page_title": "{INITIATIVE_NAME} - Create Bulk Tickets",
+    "bulk_create_tickets.page_title": "Create Bulk Tickets - {INITIATIVE_NAME}",
     "bulk_create_tickets.input_initial_estimation_development_time_placeholder": "Initial Estimation (Development Time)",
     "bulk_create_tickets.checkbox_clarify_estimation": "Clarify & Estimation",
     "bulk_create_tickets.button_create_bulk_tickets": "Create Bulk Tickets",
