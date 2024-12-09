@@ -1,6 +1,6 @@
 <template>
     <GlobalMessage v-if="showMessage" />
-
+    {{ currentInitiative?.name }}
     <div class="app-content row position-relative">
         <div class="col-md-4 border-end border-bottom sticky top-0 d-none d-lg-block">
             <div class="input-group sticky-top pt-3 pb-1 bg-white">
@@ -37,21 +37,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- <div class="col-md-8 border-start border-bottom border-top">
-            <section class="p-2 border-bottom section_detail" v-for="section in sectionsWithFunctionalities"
-                :key="section.id" :id="'section_' + section.id">
-                <h5 class="mb-2 text-desino"> {{ section.display_name }}</h5>
-                <div v-if="section.functionalities.length > 0" class="px-4"
-                    v-for="functionality in section.functionalities" :key="functionality.id"
-                    :id="'functionality_' + functionality.id">
-                    <h6> {{ functionality.display_name }}</h6>
-
-                    <p class="ps-3 text-break mw-100" v-html="functionality.description">
-                    </p>
-                </div>
-            </section>
-        </div> -->
         <div class="col-md-8 border-start border-bottom optimize-image">
             <div class="p-3">
                 <div v-for="section in sectionsWithFunctionalities" :key="section.id" :id="'section_' + section.id"
@@ -107,15 +92,14 @@ export default {
         };
     },
     methods: {
-        ...mapActions(['setLoading']),
+        ...mapActions(['setLoading', 'currentInitiative']),
         async fetchData() {
             try {
                 this.setLoading(true);
-                await Promise.all([
-                    this.getInitiativeData(),
-                    this.getSectionsWithFunctionalities(),
-                    eventBus.$emit('selectHeaderInitiativeId', this.initiativeId)
-                ]);
+                const sectionsWithFunctionalitiesPromise = this.getSectionsWithFunctionalities();
+                await sectionsWithFunctionalitiesPromise;
+                this.getInitiativeData();
+                eventBus.$emit('selectHeaderInitiativeId', this.initiativeId)
                 this.setLoading(false);
                 this.clearMessages();
             } catch (error) {
@@ -124,17 +108,10 @@ export default {
         },
         async getInitiativeData() {
             try {
-                const { content } = await SolutionDesignService.getInitiativeData({ initiative_id: this.initiativeId });
-                if (!content) {
-                    messageService.setMessage(response.message, 'danger');
-                    this.$router.push({ name: 'home' });
-                } else {
-                    this.initiativeData = content;
-                    const setHeaderData = {
-                        page_title: this.$t('solution_design.page_title') + ' - ' + this.initiativeData?.name,
-                    }
-                    store.commit("setHeaderData", setHeaderData);
+                const setHeaderData = {
+                    page_title: this.$t('solution_design.page_title') + ' - ' + this.initiativeData?.name,
                 }
+                store.commit("setHeaderData", setHeaderData);
             } catch (error) {
                 this.handleError(error);
             }
@@ -147,8 +124,9 @@ export default {
                     initiative_id: this.initiativeId,
                     name: this.solutionDesignFilters.name
                 }
-                const { content } = await SolutionDesignService.getSectionsWithFunctionalities(passData);
+                const { content, meta_data: { initiative } } = await SolutionDesignService.getSectionsWithFunctionalities(passData);
                 this.sectionsWithFunctionalities = content;
+                this.initiativeData = initiative;
                 this.setLoading(false);
             } catch (error) {
                 this.handleError(error);

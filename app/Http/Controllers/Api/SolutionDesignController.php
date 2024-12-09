@@ -33,7 +33,8 @@ class SolutionDesignController extends Controller
             return ApiHelper::response(false, __('messages.solution_design.section.initiative_not_exist'), '', 404);
         }
         $getSectionsWithFunctionalities = SolutionDesignService::getSectionsWithFunctionalities($request);
-        return ApiHelper::response(true, '', $getSectionsWithFunctionalities, 200);
+        $meta_data['initiative'] = $initiative;
+        return ApiHelper::response(true, '', $getSectionsWithFunctionalities, 200, $meta_data);
     }
     public function downloadList(Request $request)
     {

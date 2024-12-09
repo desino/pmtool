@@ -48,7 +48,7 @@
                                         <div v-if="errors.section_name" class="invalid-feedback ms-4">
                                             <span v-for="(error, index) in errors.section_name" :key="index">{{
                                                 error
-                                            }}</span>
+                                                }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -141,7 +141,7 @@
                         <div class="mb-3">
                             <label class="form-label fw-bold">{{
                                 $t('solution_design.functionality_form.name')
-                            }} <strong class="text-danger">*</strong>
+                                }} <strong class="text-danger">*</strong>
                             </label>
                             <input v-model="functionalityFormData.name" :class="{ 'is-invalid': errors.name }"
                                 class="form-control" placeholder="Enter value" type="text">
@@ -154,13 +154,13 @@
                         <div class="mb-3">
                             <label class="form-label fw-bold">{{
                                 $t('solution_design.functionality_form.section_name_select_box')
-                            }} <strong class="text-danger">*</strong>
+                                }} <strong class="text-danger">*</strong>
                             </label>
                             <select v-model="functionalityFormData.section_id" aria-label="Default select example"
                                 class="form-select" :class="{ 'is-invalid': errors.section_id }">
                                 <option value="">{{
                                     $t('solution_design.functionality_form.section_name_select_box_placeholder')
-                                }}
+                                    }}
                                 </option>
                                 <option v-for="section in sectionsWithFunctionalities" :key="section.id"
                                     :value="section.id">
@@ -176,7 +176,7 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">{{
                         $t('solution_design.functionality_form.description')
-                    }}</label>
+                        }}</label>
                     <TinyMceEditor v-model="functionalityFormData.description" />
                 </div>
                 <div class="mb-3">
@@ -297,11 +297,10 @@ export default {
         async fetchData() {
             try {
                 this.setLoading(true);
-                await Promise.all([
-                    this.getInitiativeData(),
-                    this.getSectionsWithFunctionalities(),
-                    eventBus.$emit('selectHeaderInitiativeId', this.initiativeId)
-                ]);
+                const sectionsWithFunctionalitiesPromise = this.getSectionsWithFunctionalities();
+                await sectionsWithFunctionalitiesPromise;
+                this.getInitiativeData();
+                eventBus.$emit('selectHeaderInitiativeId', this.initiativeId);
                 this.setLoading(false);
                 this.clearMessages();
             } catch (error) {
@@ -346,22 +345,13 @@ export default {
         },
         async getInitiativeData() {
             try {
-                this.setLoading(true);
-                const { content } = await SolutionDesignService.getInitiativeData({ initiative_id: this.initiativeId });
-                if (!content) {
-                    messageService.setMessage(response.message, 'danger');
-                    this.$router.push({ name: 'home' });
-                } else {
-                    this.initiativeData = content;
-                    const setHeaderData = {
-                        page_title: this.$t('solution_design.page_title') + ' - ' + this.initiativeData?.name,
-                        is_solution_design_detail_path: true,
-                        is_solution_design_download: true,
-                        initiative_id: this.initiativeData?.id,
-                    }
-                    store.commit("setHeaderData", setHeaderData);
+                const setHeaderData = {
+                    page_title: this.$t('solution_design.page_title') + ' - ' + this.initiativeData?.name,
+                    is_solution_design_detail_path: true,
+                    is_solution_design_download: true,
+                    initiative_id: this.initiativeData?.id,
                 }
-                this.setLoading(false);
+                store.commit("setHeaderData", setHeaderData);
             } catch (error) {
                 this.handleError(error);
             }
@@ -369,13 +359,14 @@ export default {
         async getSectionsWithFunctionalities() {
             try {
                 const hasValue = this.objectInValueExistOrNot(this.solutionDesignFilters);
-                hasValue ?? this.setLoading(true);
+                await hasValue ?? this.setLoading(true);
                 const passData = {
                     initiative_id: this.initiativeId,
                     name: this.solutionDesignFilters.name
                 }
-                const { content } = await SolutionDesignService.getSectionsWithFunctionalities(passData);
+                const { content, meta_data: { initiative } } = await SolutionDesignService.getSectionsWithFunctionalities(passData);
                 this.sectionsWithFunctionalities = content;
+                this.initiativeData = initiative;
                 await hasValue ?? this.setLoading(false);
                 this.initializeTooltips();
             } catch (error) {

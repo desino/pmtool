@@ -7,7 +7,7 @@
                 </router-link>
             </div>
             <div class="w-100 border-bottom p-2">
-                <div v-if="user"  class="row g-1 w-100 align-items-center">
+                <div v-if="user" class="row g-1 w-100 align-items-center">
                     <div class="col-auto me-1" style="width:65px">
                         <img class="user-image rounded-circle shadow w-100" :src="user.profile_photo_url" />
                     </div>
@@ -21,7 +21,8 @@
                 <div class="form-group pb-0">
                     <HeaderInitiativeDropBoxComponent />
                 </div>
-                <div v-if="isActive('solution-design') || isActive('tasks') || isActive('my-tickets') || isActive('task.detail') || isActive('projects') || isActive('solution-design.detail') || isActive('solution-design.download') || isActive('bulk-create-tickets') || isActive('deployments')">
+                <div
+                    v-if="isActive('solution-design') || isActive('tasks') || isActive('my-tickets') || isActive('task.detail') || isActive('projects') || isActive('solution-design.detail') || isActive('solution-design.download') || isActive('bulk-create-tickets') || isActive('deployments')">
                     <div class="shadow">
                         <div class="p-2 rounded-bottom">
                             <nav class="mt-1">
@@ -59,7 +60,8 @@
                                         </router-link>
                                     </li> -->
                                     <li class="nav-item" v-if="user?.is_admin && currentInitiative?.id">
-                                        <a class="nav-link text-dark" href="javascript:" @click="showEditOpportunityModal">
+                                        <a class="nav-link text-dark" href="javascript:"
+                                            @click="showEditOpportunityModal">
                                             <i class="bi bi-pencil-square"></i>
                                             {{ $t('header.menu.edit_initiative') }}
                                         </a>
@@ -126,7 +128,8 @@
                                 {{ environment.name }}
                             </a>
                         </li>
-                        <li v-if="initiativeData?.initiative_environments?.length === 0" class="list-group-item border-0">
+                        <li v-if="initiativeData?.initiative_environments?.length === 0"
+                            class="list-group-item border-0">
                         </li>
                     </ul>
                 </div>
@@ -156,7 +159,9 @@
                                 }}
                             </router-link>
                         </li>
-                        <li class="nav-item" v-if="user?.is_admin"><hr /></li>
+                        <li class="nav-item" v-if="user?.is_admin">
+                            <hr />
+                        </li>
                         <li class="nav-item">
                             <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('time-booking.booking') }"
                                 :to="{ name: 'time-booking.booking' }" class="nav-link text-dark"
@@ -178,16 +183,20 @@
                         </li>
                         <li class="nav-item" v-if="user?.is_admin">
                             <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('time-mapping') }"
-                                :to="{ name: 'time-mapping' }" class="nav-link text-dark" @click="unselectHeaderInitiative">
+                                :to="{ name: 'time-mapping' }" class="nav-link text-dark"
+                                @click="unselectHeaderInitiative">
                                 <i class="bi bi-clock-history mx-2"></i>
                                 {{
                                     $t('header.menu.time_mapping')
                                 }}
                             </router-link>
                         </li>
-                        <li class="nav-item" v-if="user?.is_admin"><hr /></li>
                         <li class="nav-item" v-if="user?.is_admin">
-                            <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('all-ticket-without-initiative') }"
+                            <hr />
+                        </li>
+                        <li class="nav-item" v-if="user?.is_admin">
+                            <router-link
+                                :class="{ 'bg-opacity-25 bg-primary': isActive('all-ticket-without-initiative') }"
                                 :to="{ name: 'all-ticket-without-initiative' }" class="nav-link text-dark"
                                 @click="unselectHeaderInitiative">
                                 <i class="bi bi-card-checklist mx-2"></i>
@@ -354,7 +363,7 @@ export default {
         },
         sidebarSelectHeaderInitiativeId(id) {
             this.sidebar_selected_initiative_id = id;
-            this.getInitiativeData();
+            // this.getInitiativeData();
         },
         async getInitiativeData() {
             if (this.sidebar_selected_initiative_id) {

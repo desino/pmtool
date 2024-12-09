@@ -70,6 +70,7 @@ class DeploymentController extends Controller
         })->get(['id', 'display_name']);
         $data = array(
             'functionalities' => $functionalities,
+            'initiative' => $initiative,
         );
         return ApiHelper::response(true, '', $data, 200);
     }
