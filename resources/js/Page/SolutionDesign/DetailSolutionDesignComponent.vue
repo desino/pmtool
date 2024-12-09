@@ -142,7 +142,7 @@ export default {
         async getSectionsWithFunctionalities() {
             try {
                 const hasValue = this.objectInValueExistOrNot(this.solutionDesignFilters);
-                hasValue ?? this.setLoading(true);
+                await hasValue ?? this.setLoading(true);
                 const passData = {
                     initiative_id: this.initiativeId,
                     name: this.solutionDesignFilters.name
