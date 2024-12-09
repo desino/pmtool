@@ -9,6 +9,7 @@ const defaultPath = `${APP_VARIABLES.DEFAULT_API_PATH}/solution-design`;
 
 const endpoints = {
     getSectionsWithFunctionalities: `${defaultPath}`,
+    getSectionsWithFunctionalitiesForRead: `${defaultPath}/read`,
     getInitiative: `${defaultPath}/get-initiative`,
     storeSection: `${defaultPath}/store-section`,
     storeUpdateFunctionality: `${defaultPath}/store-update-functionality`,
@@ -19,6 +20,7 @@ const endpoints = {
     updateSectionOrderNo: `${defaultPath}/update-section-order-no`,
     getSectionsWithFunctionalitiesForDownloadList: `${defaultPath}/download-list`,
     getSectionsWithFunctionalitiesForDownloadPDF: `${defaultPath}/download-pdf`,
+    getSectionFunctionality: `${defaultPath}/get-section-functionality`,
 }
 
 const SolutionDesignService = {
@@ -42,6 +44,14 @@ const SolutionDesignService = {
     async getSectionsWithFunctionalities(data) {
         try {
             const response = await axiosRequest.post(endpoints.getSectionsWithFunctionalities, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async getSectionsWithFunctionalitiesForRead(data) {
+        try {
+            const response = await axiosRequest.post(endpoints.getSectionsWithFunctionalitiesForRead, data);
             return response.data;
         } catch (error) {
             throw handleError(error);
@@ -111,7 +121,15 @@ const SolutionDesignService = {
         } catch (error) {
             throw handleError(error);
         }
-    }
+    },
+    async getSectionFunctionality(data) {
+        try {
+            const response = await axiosRequest.post(endpoints.getSectionFunctionality, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
 
 }
 
