@@ -1,6 +1,7 @@
 <template>
     <div id="loading_screen" v-if="loading">
-        <img src="../../assets/images/loading.svg" alt="Loading" />
+        <img src="./../../assets/images/loading.svg" alt="Loading" />
+        <!-- <img :src="baseUrl + '/assets/images/loading.svg'" alt="Loading" /> -->
     </div>
 </template>
 
@@ -8,9 +9,14 @@
 import { mapState } from 'vuex';
 
 export default {
+    data() {
+        return {
+            baseUrl: window.location.origin
+        }
+    },
     computed: {
         ...mapState(['loading'])
-    }
+    },
 };
 </script>
 
