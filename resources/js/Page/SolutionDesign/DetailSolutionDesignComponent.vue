@@ -124,7 +124,7 @@ export default {
                     initiative_id: this.initiativeId,
                     name: this.solutionDesignFilters.name
                 }
-                const { content, meta_data: { initiative } } = await SolutionDesignService.getSectionsWithFunctionalities(passData);
+                const { content, meta_data: { initiative } } = await SolutionDesignService.getSectionsWithFunctionalitiesForRead(passData);
                 this.sectionsWithFunctionalities = content;
                 this.initiativeData = initiative;
                 this.setLoading(false);

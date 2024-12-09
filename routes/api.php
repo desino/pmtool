@@ -69,6 +69,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::controller(SolutionDesignController::class)->prefix('solution-design')->group(function () {
         Route::post('/', 'index');
+        Route::post('/read', 'solutionDesignRead');
         Route::post('/download-list', 'downloadList');
         Route::post('/download-pdf', 'downloadPDF');
         Route::post('/get-initiative', 'getInitiative');
@@ -79,6 +80,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/update-section', 'updateSection');
         Route::post('/update-functionality-order-no', 'updateFunctionalityOrderNo');
         Route::post('/update-section-order-no', 'updateSectionOrderNo');
+        Route::post('/get-section-functionality', 'getSectionFunctionality');
 
         Route::controller(TicketController::class)->prefix('{initiative_id}/ticket')->group(function () {
             Route::get('all', 'index');

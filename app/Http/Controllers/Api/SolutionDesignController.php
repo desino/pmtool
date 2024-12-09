@@ -23,6 +23,45 @@ class SolutionDesignController extends Controller
 {
     public function index(Request $request)
     {
+        $authUser = Auth::user();
+        if (!$authUser->is_admin) {
+            return ApiHelper::response(false, __('messages.solution_design.dont_have_permission'), null, 404);
+        }
+        $initiative = InitiativeService::getInitiative($request, $request->get('initiative_id'));
+        if (!$initiative) {
+            return ApiHelper::response(false, __('messages.solution_design.section.initiative_not_exist'), '', 404);
+        }
+        $getSectionsWithFunctionalities = SolutionDesignService::getSectionsWithFunctionalities($request);
+        $meta_data['initiative'] = $initiative;
+        return ApiHelper::response(true, '', $getSectionsWithFunctionalities, 200, $meta_data);
+    }
+
+    public function getSectionFunctionality(Request $request)
+    {
+        $initiative = InitiativeService::getInitiative($request, $request->get('initiative_id'));
+        if (!$initiative) {
+            return ApiHelper::response(false, __('messages.solution_design.section.initiative_not_exist'), '', 404);
+        }
+        $functionality = Functionality::select(
+            'id',
+            'id AS functionality_id',
+            'section_id',
+            'name',
+            'description',
+            DB::RAW('CASE WHEN include_in_solution_design = 1 THEN "true" ELSE "false" END AS include_in_solution_design'),
+        )->find($request->get('id'));
+        if (!$functionality) {
+            return ApiHelper::response(false, __('messages.solution_design.functionality.functionality_not_exist'), '', 404);
+        }
+        $functionality->setAttribute('initiative_id', $initiative->id);
+        $retData = [
+            'functionalityData' => $functionality
+        ];
+        return ApiHelper::response(true, '', $retData, 200);
+    }
+
+    public function solutionDesignRead(Request $request)
+    {
         // return ApiHelper::response(false, __('messages.solution_design.dont_have_permission'), null, 404);
         $authUser = Auth::user();
         // if (!$authUser->is_admin) {
@@ -32,7 +71,7 @@ class SolutionDesignController extends Controller
         if (!$initiative) {
             return ApiHelper::response(false, __('messages.solution_design.section.initiative_not_exist'), '', 404);
         }
-        $getSectionsWithFunctionalities = SolutionDesignService::getSectionsWithFunctionalities($request);
+        $getSectionsWithFunctionalities = SolutionDesignService::solutionDesignRead($request);
         $meta_data['initiative'] = $initiative;
         return ApiHelper::response(true, '', $getSectionsWithFunctionalities, 200, $meta_data);
     }

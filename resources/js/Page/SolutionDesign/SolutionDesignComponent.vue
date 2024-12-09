@@ -410,21 +410,35 @@ export default {
         findItem(sectionId) {
             return this.sectionsWithFunctionalities.find(section => section.id === sectionId);
         },
-        selectFunctionality(functionality) {
+        async selectFunctionality(functionality) {
             if (this.selectedFunctionalityId === functionality.id) {
                 this.selectedFunctionalityId = null;
                 this.resetForm();
             } else {
-                this.functionalityFormData = {
-                    section_id: functionality.section_id,
-                    name: functionality.name,
-                    description: functionality.description ?? '',
-                    functionality_id: functionality.id,
-                    initiative_id: this.initiativeId,
-                    include_in_solution_design: functionality.include_in_solution_design == 1 ?? false,
-                };
-                this.selectedFunctionalityId = functionality.id;
-                this.activeSectionId = null;
+                // this.functionalityFormData = {
+                //     section_id: functionality.section_id,
+                //     name: functionality.name,
+                //     description: functionality.description ?? '',
+                //     functionality_id: functionality.id,
+                //     initiative_id: this.initiativeId,
+                //     include_in_solution_design: functionality.include_in_solution_design == 1 ?? false,
+                // };
+                // this.selectedFunctionalityId = functionality.id;
+
+                try {
+                    await this.setLoading(true);
+                    const passData = {
+                        id: functionality.id,
+                        initiative_id: this.initiativeId,
+                    }
+                    const { content: { functionalityData } } = await SolutionDesignService.getSectionFunctionality(passData);
+                    this.functionalityFormData = functionalityData;
+                    this.selectedFunctionalityId = functionalityData.id;
+                    this.activeSectionId = null;
+                    await this.setLoading(false);
+                } catch (error) {
+                    this.handleError(error);
+                }
             }
         },
         isSelected(functionalityId) {

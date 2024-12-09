@@ -12,6 +12,30 @@ class SolutionDesignService
 {
     public static function getSectionsWithFunctionalities($request)
     {
+        $sectionWithFunctionalities = Section::select(
+            'id',
+            'initiative_id',
+            'name',
+            'display_name',
+            'order_no',
+        )
+            ->with(['functionalities' => function ($query) use ($request) {
+                $query->select('id', 'section_id', 'name', 'display_name', 'order_no');
+                $query->withCount('openTickets');
+                $query->when($request->post('name') != '', function (Builder $query) use ($request) {
+                    $query->whereLike('display_name', '%' . $request->post('name') . '%');
+                });
+                $query->when($request->post('include_in_solution_design') == true, function (Builder $query) use ($request) {
+                    $query->where('include_in_solution_design', 1);
+                });
+            }])
+            ->InitiativeId($request->post('initiative_id'))
+            ->orderBy('order_no')
+            ->get();
+        return $sectionWithFunctionalities;
+    }
+    public static function solutionDesignRead($request)
+    {
         $sectionWithFunctionalities = Section::with(['functionalities' => function ($query) use ($request) {
             $query->when($request->post('name') != '', function (Builder $query) use ($request) {
                 $query->whereLike('display_name', '%' . $request->post('name') . '%');
