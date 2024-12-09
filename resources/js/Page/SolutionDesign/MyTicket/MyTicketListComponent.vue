@@ -185,10 +185,12 @@ export default {
         ...mapActions(['setLoading']),
         async fetchData() {
             try {
+                this.setLoading(true);
                 await Promise.all([
                     this.getMyTickets(),
                     eventBus.$emit('selectHeaderInitiativeId', this.initiative_id),
                 ]);
+                this.setLoading(false);
                 this.clearMessages();
             } catch (error) {
                 this.handleError(error);
