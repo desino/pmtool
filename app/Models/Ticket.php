@@ -26,7 +26,7 @@ class Ticket extends Model
         'is_disable_action_user',
         'is_show_pre_action_but',
         'is_allow_dev_estimation_time',
-        'is_show_delete_but',
+        // 'is_show_delete_but',
     ];
 
     public const TYPE_CHANGE_REQUEST = 1;
@@ -193,18 +193,11 @@ class Ticket extends Model
             }
         }
         return false;
-        // return $this->initiative_id ? $this->initiative->functional_owner_id == Auth::id() || $this->currentAction?->user_id == Auth::id() ?? false : false;
     }
 
     protected function getIsAllowDevEstimationTimeAttribute()
     {
         return $this->currentAction && $this->currentAction->user_id == Auth::id() && $this->currentAction->action == TicketAction::getActionClarifyAndEstimate() ? true : false;
-    }
-
-    protected function getIsShowDeleteButAttribute()
-    {
-        $ticketDoneActions = $this->actions->where('status', TicketAction::getStatusDone());
-        return Auth::user()->is_admin && $this->timeBookings->count() == 0 && $ticketDoneActions->count() == 0 && $this->moved_back_to_dev_action_count == 0 ?? false;
     }
 
     protected function getIsEnableMarkAsDoneButAttribute()
@@ -216,12 +209,6 @@ class Ticket extends Model
         return $this->initiative_id ? $this->initiative->functional_owner_id == Auth::id() || $this->initiative->technical_owner_id == Auth::id() ?? false : false;
     }
 
-    /*************  ✨ Codeium Command ⭐  *************/
-    /**
-     * current action owner or functional owner allow only show pre action button
-     * @return bool
-     */
-    /******  ee11988b-c4ca-43c4-88ed-b4c3367d4fbe  *******/
     protected function getIsShowPreActionButAttribute()
     {
         if (

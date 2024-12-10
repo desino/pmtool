@@ -5,8 +5,8 @@
             <div class="row g-1 w-100 align-items-center">
                 <div class="col-12 col-md-12 col-lg-3">
                     <div class="w-100 p-1">
-                        <input v-model="filter.task_name" :placeholder="$t('ticket.filter.task_name')" class="form-control"
-                            type="text" @keyup="fetchAllTasks">
+                        <input v-model="filter.task_name" :placeholder="$t('ticket.filter.task_name')"
+                            class="form-control" type="text" @keyup="fetchAllTasks">
                     </div>
                     <div class="w-100 p-1">
                         <multiselect v-model="filter.macro_status" ref="multiselect" :multiple="true"
@@ -26,7 +26,8 @@
                     <div class="w-100 p-1">
                         <select v-model="filter.task_type" class="form-select" @change="fetchAllTasks">
                             <option value="">{{ $t('ticket.filter.task_type_placeholder') }}</option>
-                            <option v-for="type in filterTaskTypes" :key="type.id" :value="type.id">{{ type.name }}</option>
+                            <option v-for="type in filterTaskTypes" :key="type.id" :value="type.id">{{ type.name }}
+                            </option>
                         </select>
                     </div>
                     <div class="w-100 p-1">
@@ -60,8 +61,9 @@
                     <div class="w-100 p-1">
                         <select v-model="filter.deployment_id" class="form-select" @change="fetchAllTasks">
                             <option value="">{{ $t('ticket.filter.deployments_placeholder') }}</option>
-                            <option v-for="deployment in filterDeployments" :key="deployment.id" :value="deployment.id">{{
-                                deployment.name }}
+                            <option v-for="deployment in filterDeployments" :key="deployment.id" :value="deployment.id">
+                                {{
+                                    deployment.name }}
                             </option>
                         </select>
                     </div>
@@ -254,7 +256,8 @@
                                     :title="$t('ticket_details.time_booking')">
                                     <i class="bi bi-clock-history"></i>
                                 </a>
-                                <a v-if="user?.is_admin && task.is_show_delete_but" class="text-danger" href="javascript:"
+                                <a v-if="user?.is_admin && task.is_show_delete_but" class="text-danger"
+                                    href="javascript:"
                                     @click.stop="showConfirmation('deleteTicket', deleteTicket, task)"
                                     data-bs-toggle="tooltip" :title="$t('ticket_details.delete_text')"
                                     data-bs-placement="bottom">

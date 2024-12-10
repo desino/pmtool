@@ -283,33 +283,58 @@ class TicketController extends Controller
             'is_visible',
             'initial_estimation_development_time',
             'dev_estimation_time',
+            'moved_back_to_dev_action_count',
             DB::RAW('IF(dev_estimation_time > 0, dev_estimation_time,initial_estimation_development_time) as estimation_time'),
             DB::RAW('IF(macro_status = ' . Ticket::MACRO_STATUS_DONE . ', true,false) as is_ticket_done'),
         )
-            ->with(['project' => function ($q) {
-                $q->select(
-                    'id',
-                    'initiative_id',
-                    'name',
-                );
-            }, 'functionality' => function ($q) {
-                $q->select(
-                    'id',
-                    'section_id',
-                );
-                $q->with(['section' => function ($q) {
+            ->with([
+                'project' => function ($q) {
                     $q->select(
                         'id',
                         'initiative_id',
+                        'name',
                     );
-                    $q->with(['initiative' => function ($q) {
+                },
+                'functionality' => function ($q) {
+                    $q->select(
+                        'id',
+                        'section_id',
+                    );
+                    $q->with(['section' => function ($q) {
                         $q->select(
                             'id',
-                            'asana_project_id'
+                            'initiative_id',
                         );
+                        $q->with(['initiative' => function ($q) {
+                            $q->select(
+                                'id',
+                                'asana_project_id'
+                            );
+                        }]);
                     }]);
-                }]);
-            }, 'initiative', 'currentAction', 'releaseTickets', 'createdBy'])
+                },
+                'initiative' => function ($q) {
+                    $q->select('id', 'client_id', 'name', 'asana_project_id')
+                        ->with(['client' => function ($q) {
+                            $q->select('id', 'name');
+                        }]);
+                },
+                'currentAction' => function ($q) {
+                    $q->select('id', 'ticket_id', 'action', 'status', 'user_id')
+                        ->with(['user' => function ($q) {
+                            $q->select('id', 'name');
+                        }]);
+                },
+                'releaseTickets' => function ($q) {
+                    $q->select('id', 'release_id', 'ticket_id');
+                },
+                'actions' => function ($q) {
+                    $q->select('id', 'ticket_id', 'action', 'status', 'user_id');
+                },
+                'timeBookings' => function ($q) {
+                    $q->select('id', 'ticket_id', 'booked_date');
+                }
+            ])
             ->withCount([
                 'actions',
                 'doneActions',
@@ -382,8 +407,10 @@ class TicketController extends Controller
             ->when($filters['is_include_done'] == 'false', function (Builder $query) use ($filters) {
                 $query->where('macro_status', '!=', Ticket::MACRO_STATUS_DONE);
             })
-            ->get();
-        // ->paginate(10);
+            ->get()->each(function ($ticket) {
+                $ticketDoneActions = $ticket->actions->where('status', TicketAction::getStatusDone());
+                $ticket->is_show_delete_but = Auth::user()->is_admin && $ticket->timeBookings->count() == 0 && $ticketDoneActions->count() == 0 && $ticket->moved_back_to_dev_action_count == 0 ?? false;
+            });
         $meta['task_type'] = Ticket::getAllTypes();
         $meta['functionalities'] = Functionality::whereHas('section', function ($query) use ($initiative_id) {
             $query->where('initiative_id', $initiative_id);
@@ -1072,16 +1099,18 @@ class TicketController extends Controller
             return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
         }
 
-        $ticket = Ticket::withCount('timeBookings')->find($request->post('ticket_id'));
+        $ticket = Ticket::with('actions')->withCount('timeBookings')->find($request->post('ticket_id'));
         if (!$ticket) {
             return ApiHelper::response($status, __('messages.ticket.ticket_not_exist'), '', 400);
         }
         if ($ticket && $ticket->macro_status == Ticket::MACRO_STATUS_DONE) {
             return ApiHelper::response($status, __('messages.ticket.delete_ticket_not_allowed_because_ticket_already_done'), '', 400);
         }
-        // if ($ticket->time_bookings_count > 0) {
+
+        $ticketDoneActions = $ticket->actions->where('status', TicketAction::getStatusDone());
+        $ticket->is_show_delete_but = Auth::user()->is_admin && $ticket->timeBookings->count() == 0 && $ticketDoneActions->count() == 0 && $ticket->moved_back_to_dev_action_count == 0 ?? false;
+
         if (!$ticket->is_show_delete_but) {
-            // return ApiHelper::response($status, __('messages.ticket.delete_ticket_not_allowed_because_time_bookings_exist'), '', 400);
             return ApiHelper::response($status, __('messages.ticket.delete_ticket_not_allowed_because_time_bookings_exist_or_any_action_already_done_dev_count_not_zero'), '', 400);
         }
 
