@@ -20,8 +20,35 @@ class AllTicketsWithoutInitiativeController extends Controller
     {
         $filters = $request->get('filters');
 
-        $tickets = Ticket::select('*')
-            ->with(['currentAction', 'initiative'])
+        $tickets = Ticket::select(
+            'id',
+            'name',
+            'type',
+            'project_id',
+            'created_at',
+            'created_by',
+            'asana_task_id',
+            'functionality_id',
+            'initiative_id',
+            'composed_name',
+            'status',
+            'macro_status',
+            'is_priority',
+            'is_visible',
+            'initial_estimation_development_time',
+            'dev_estimation_time',
+            'moved_back_to_dev_action_count',
+            DB::RAW('IF(dev_estimation_time > 0, dev_estimation_time,initial_estimation_development_time) as estimation_time'),
+            DB::RAW('IF(macro_status = ' . Ticket::MACRO_STATUS_DONE . ', true,false) as is_ticket_done'),
+        )
+            ->with([
+                'currentAction' => function ($query) {
+                    $query->select('id', 'ticket_id', 'action', 'status', 'user_id');
+                },
+                'initiative' => function ($query) {
+                    $query->select('id', 'name');
+                }
+            ])
             ->where('macro_status', '!=', Ticket::MACRO_STATUS_DONE)
             ->when(!empty($filters['action_owner']) != '', function (Builder $query) use ($filters) {
                 $query->whereHas('actions', function ($query) use ($filters) {
@@ -55,8 +82,12 @@ class AllTicketsWithoutInitiativeController extends Controller
 
     public function getInitialData(Request $request)
     {
-        $users = User::get();
-        $initiatives = Initiative::with('client')->get();
+        $users = User::select('id', 'name')->get();
+        $initiatives = Initiative::select('id', 'name', 'client_id')
+            ->with(['client' => function ($query) {
+                $query->select('id', 'name');
+            }])
+            ->get();
         $macroStatus = Ticket::getAllMacroStatus();
         $visibleList = Config::get('myapp.ticket_filters_visible_in_visible');
         $retData = [

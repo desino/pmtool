@@ -65,12 +65,16 @@ class DeploymentController extends Controller
             return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
         }
 
-        $functionalities = Functionality::whereHas('section', function ($query) use ($initiative_id) {
+        $functionalities = Functionality::select('id', 'display_name', 'section_id')->whereHas('section', function ($query) use ($initiative_id) {
             $query->where('initiative_id', $initiative_id);
-        })->get(['id', 'display_name']);
+        })->get();
+        $initiativeData = array(
+            'id' => $initiative->id,
+            'name' => $initiative->name,
+        );
         $data = array(
             'functionalities' => $functionalities,
-            'initiative' => $initiative,
+            'initiative' => $initiativeData,
         );
         return ApiHelper::response(true, '', $data, 200);
     }

@@ -431,7 +431,13 @@ class TicketController extends Controller
             $meta['deployments'] = Release::getAllReleases($initiative_id);
             $meta['prd_macro_status'] = Ticket::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_PRD;
         }
-        $meta['initiative'] = TicketService::getInitiative($initiative_id);
+
+        $initiative = TicketService::getInitiative($initiative_id);
+        $initiativeData = array(
+            'id' => $initiative->id,
+            'name' => $initiative->name,
+        );
+        $meta['initiative'] = $initiativeData;
         $meta['ticket_count'] = $tickets->count();
         $meta['ticket_sum'] = $tickets->sum('estimation_time');
         $meta['filter_has_value'] = $hasValue;

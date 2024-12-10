@@ -1,23 +1,4 @@
 <template>
-    <!-- <div class="app-content-header pb-0">
-        <div class="container-fluid">
-            <div class="row w-100">
-                <div class="col-sm-6">
-                    <h3 class="m-0 mb-3">{{ $t('solution_design.page_title') }} - {{ initiativeData.name }}
-                        <span>
-                            <router-link :to="{ name: 'solution-design.detail', params: { id: initiativeData.id } }">
-                                <i class="bi bi-link-45deg"></i>
-                            </router-link>
-                            <router-link :to="{ name: 'solution-design.download', params: { id: initiativeData.id } }">
-                                <i class="bi bi-file-earmark-pdf"></i>
-                            </router-link>
-                        </span>
-                    </h3>
-                </div>
-            </div>
-        </div>
-    </div> -->
-
     <GlobalMessage v-if="showMessage" />
 
     <div class="app-content mt-3 row">
@@ -48,7 +29,7 @@
                                         <div v-if="errors.section_name" class="invalid-feedback ms-4">
                                             <span v-for="(error, index) in errors.section_name" :key="index">{{
                                                 error
-                                                }}</span>
+                                            }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -141,7 +122,7 @@
                         <div class="mb-3">
                             <label class="form-label fw-bold">{{
                                 $t('solution_design.functionality_form.name')
-                                }} <strong class="text-danger">*</strong>
+                            }} <strong class="text-danger">*</strong>
                             </label>
                             <input v-model="functionalityFormData.name" :class="{ 'is-invalid': errors.name }"
                                 class="form-control" placeholder="Enter value" type="text">
@@ -154,13 +135,13 @@
                         <div class="mb-3">
                             <label class="form-label fw-bold">{{
                                 $t('solution_design.functionality_form.section_name_select_box')
-                                }} <strong class="text-danger">*</strong>
+                            }} <strong class="text-danger">*</strong>
                             </label>
                             <select v-model="functionalityFormData.section_id" aria-label="Default select example"
                                 class="form-select" :class="{ 'is-invalid': errors.section_id }">
                                 <option value="">{{
                                     $t('solution_design.functionality_form.section_name_select_box_placeholder')
-                                    }}
+                                }}
                                 </option>
                                 <option v-for="section in sectionsWithFunctionalities" :key="section.id"
                                     :value="section.id">
@@ -176,7 +157,7 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">{{
                         $t('solution_design.functionality_form.description')
-                        }}</label>
+                    }}</label>
                     <TinyMceEditor v-model="functionalityFormData.description" />
                 </div>
                 <div class="mb-3">

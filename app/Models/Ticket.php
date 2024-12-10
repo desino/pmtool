@@ -231,7 +231,7 @@ class Ticket extends Model
 
     public function createdBy()
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class, 'created_by')->select(['id', 'name']);
     }
 
     public function functionality(): BelongsTo
@@ -271,7 +271,9 @@ class Ticket extends Model
     public function currentAction()
     {
         return $this->hasOne(TicketAction::class)
-            ->with('user')
+            ->with(['user' => function ($query) {
+                $query->select(['id', 'name']);
+            }])
             ->where('status', '!=', TicketAction::getStatusDone())
             ->orderBy('action')->latest();
     }

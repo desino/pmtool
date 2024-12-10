@@ -46,20 +46,9 @@ class MyTicketController extends Controller
                     $q->select('id', 'name', 'display_name');
                 }
             ])
-            // ->LEFTJOIN(DB::raw(
-            //     "(SELECT `ticket_id`, MIN(ACTION) AS first_action, `user_id` FROM ticket_actions WHERE `status` != " . TicketAction::getStatusDone() . " GROUP BY `ticket_id` HAVING `user_id` = " . Auth::id() . ") as ta"
-            // ), 'ta.ticket_id', '=', 'tickets.id')
+
             ->where('tickets.initiative_id', $initiative_id)
             ->where('tickets.is_visible', 1)
-            // ->where(function ($q) {
-            //     // $q->whereNotNull('ta.first_action')
-            //     $q->whereHas('currentAction', function ($q) {
-            //         $q->where('user_id', Auth::id());
-            //     });
-            //     // ->orWhereHas('actions', function ($q) {
-            //     //     $q->where('user_id', Auth::id());
-            //     // });
-            // })
             ->whereHas('actions', function ($query) {
                 $query->where('user_id', Auth::id())
                     ->where('action', function ($subQuery) {
@@ -86,8 +75,11 @@ class MyTicketController extends Controller
             ->get();
         // ->paginate(10);
         $meta['task_type'] = Ticket::getAllTypes();
-        $meta['macro_status'] = Ticket::getAllMacroStatus();
-        $meta['initiative'] = $initiative;
+        $initiativeData = array(
+            'id' => $initiative->id,
+            'name' => $initiative->name,
+        );
+        $meta['initiative'] = $initiativeData;
         return ApiHelper::response(true, '', $tickets, 200, $meta);
     }
 }

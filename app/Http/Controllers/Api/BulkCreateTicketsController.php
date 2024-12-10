@@ -63,8 +63,12 @@ class BulkCreateTicketsController extends Controller
                     ->having('tickets_count', 0);
             })
             ->get();
+        $initiativeData = array(
+            'id' => $initiative->id,
+            'name' => $initiative->name,
+        );
         $retData = [
-            'initiative' => $initiative,
+            'initiative' => $initiativeData,
             'sectionsWithFunctionalities' => $sectionsWithFunctionalities
         ];
         return ApiHelper::response(true, '', $retData, 200);
