@@ -21,11 +21,6 @@ class Ticket extends Model
         'display_created_at',
         'display_created_by',
         'asana_task_link',
-        'is_show_mark_as_done_but',
-        'is_enable_mark_as_done_but',
-        'is_disable_action_user',
-        'is_show_pre_action_but',
-        'is_allow_dev_estimation_time',
     ];
 
     public const TYPE_CHANGE_REQUEST = 1;
@@ -183,49 +178,48 @@ class Ticket extends Model
         );
     }
 
-    protected function getIsShowMarkAsDoneButAttribute()
+    public static function isShowMarkAsDoneBtn($initiative_id, $initiative, $macro_status, $currentAction)
     {
-
-        if ($this->initiative_id) {
-            if (($this->initiative->functional_owner_id == Auth::id() || $this->currentAction?->user_id == Auth::id()) && $this->macro_status != self::MACRO_STATUS_DONE) {
+        if ($initiative_id) {
+            if (($initiative->functional_owner_id == Auth::id() || $currentAction?->user_id == Auth::id()) && $macro_status != self::MACRO_STATUS_DONE) {
                 return true;
             }
         }
         return false;
     }
 
-    protected function getIsAllowDevEstimationTimeAttribute()
+    public static function isAllowDevEstimationTime($currentAction)
     {
-        return $this->currentAction && $this->currentAction->user_id == Auth::id() && $this->currentAction->action == TicketAction::getActionClarifyAndEstimate() ? true : false;
+        return $currentAction && $currentAction->user_id == Auth::id() && $currentAction->action == TicketAction::getActionClarifyAndEstimate() ? true : false;
     }
 
-    protected function getIsEnableMarkAsDoneButAttribute()
+    public static function isEnableMarkAsDoneBtn($status)
     {
-        return $this->status == Self::getStatusOngoing() ?? false;
+        return $status == Self::getStatusOngoing() ?? false;
     }
-    protected function getIsDisableActionUserAttribute()
+    public static function isDisableActionUser($initiative_id, $initiative)
     {
-        return $this->initiative_id ? $this->initiative->functional_owner_id == Auth::id() || $this->initiative->technical_owner_id == Auth::id() ?? false : false;
+        return $initiative_id ? $initiative->functional_owner_id == Auth::id() || $initiative->technical_owner_id == Auth::id() ?? false : false;
     }
 
-    protected function getIsShowPreActionButAttribute()
+    public static function isShowPreActionBtn($previousAction, $macro_status, $currentAction, $initiative_id, $initiative)
     {
         if (
-            $this->previousAction &&
-            $this->macro_status != Self::MACRO_STATUS_DONE &&
+            $previousAction &&
+            $macro_status != Self::MACRO_STATUS_DONE &&
             (
-                ($this->currentAction && $this->currentAction->user_id == Auth::id()) &&
+                ($currentAction && $currentAction->user_id == Auth::id()) &&
                 (
-                    $this->macro_status == Self::MACRO_STATUS_CLARIFY_AND_ESTIMATE ||
-                    $this->macro_status == Self::MACRO_STATUS_DEVELOP_WAIT_FOR_CLIENT ||
-                    $this->macro_status == Self::MACRO_STATUS_DEVELOP ||
-                    $this->macro_status == Self::MACRO_STATUS_TEST_WAIT_FOR_DEPLOYMENT_TO_TEST ||
-                    $this->macro_status == Self::MACRO_STATUS_TEST ||
-                    $this->macro_status == Self::MACRO_STATUS_VALIDATE_WAITING_FOR_DEPLOYMENT_TO_ACC ||
-                    $this->macro_status == Self::MACRO_STATUS_VALIDATE ||
-                    $this->macro_status == Self::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_PRD
+                    $macro_status == Self::MACRO_STATUS_CLARIFY_AND_ESTIMATE ||
+                    $macro_status == Self::MACRO_STATUS_DEVELOP_WAIT_FOR_CLIENT ||
+                    $macro_status == Self::MACRO_STATUS_DEVELOP ||
+                    $macro_status == Self::MACRO_STATUS_TEST_WAIT_FOR_DEPLOYMENT_TO_TEST ||
+                    $macro_status == Self::MACRO_STATUS_TEST ||
+                    $macro_status == Self::MACRO_STATUS_VALIDATE_WAITING_FOR_DEPLOYMENT_TO_ACC ||
+                    $macro_status == Self::MACRO_STATUS_VALIDATE ||
+                    $macro_status == Self::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_PRD
                 ) ||
-                ($this->initiative_id && $this->initiative->functional_owner_id == Auth::id())
+                ($initiative_id && $initiative->functional_owner_id == Auth::id())
             )
         ) {
             return true;

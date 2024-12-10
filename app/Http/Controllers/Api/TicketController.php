@@ -481,20 +481,65 @@ class TicketController extends Controller
         }
 
         $ticket = Ticket::select(
-            '*',
+            'id',
+            'asana_task_id',
+            'functionality_id',
+            'initiative_id',
+            'name',
+            'composed_name',
+            'type',
+            'initial_estimation_development_time',
+            'dev_estimation_time',
+            'release_note',
+            'description',
+            'auto_wait_for_client_approval',
+            'status',
+            'macro_status',
             DB::RAW('IF(dev_estimation_time > 0, dev_estimation_time,initial_estimation_development_time) as estimation_time')
         )
             ->with([
-                'functionality',
-                'initiative',
-                'initiative.functionalOwner',
-                'initiative.qualityOwner',
+                'functionality' => function ($q) {
+                    $q->select('id', 'section_id', 'name', 'display_name', 'description');
+                },
+                'initiative' => function ($q) {
+                    $q->select('id', 'name', 'client_id', 'functional_owner_id', 'quality_owner_id', 'technical_owner_id', 'asana_project_id')
+                        ->with([
+                            'client' => function ($q) {
+                                $q->select('id', 'name');
+                            }
+                        ]);
+                },
+                'initiative.functionalOwner' => function ($q) {
+                    $q->select('id', 'name');
+                },
+                'initiative.qualityOwner' => function ($q) {
+                    $q->select('id', 'name');
+                },
                 'initiative.technicalOwner',
-                'currentAction',
-                'nextAction',
-                'previousAction',
-                'testCases',
-                'actions',
+                'currentAction' => function ($q) {
+                    $q->select('id', 'ticket_id', 'user_id', 'action', 'status')
+                        ->with(['user' => function ($q) {
+                            $q->select('id', 'name');
+                        }]);
+                },
+                'nextAction' => function ($q) {
+                    $q->select('id', 'ticket_id', 'user_id', 'action', 'status')
+                        ->with(['user' => function ($q) {
+                            $q->select('id', 'name');
+                        }]);
+                },
+                'previousAction' => function ($q) {
+                    $q->select('id', 'ticket_id', 'user_id', 'action', 'status')
+                        ->with(['user' => function ($q) {
+                            $q->select('id', 'name');
+                        }]);
+                },
+                'testCases' => function ($q) {
+                    $q->select('id', 'ticket_id', 'expected_behaviour', 'observations', 'owner_id', 'status');
+                },
+                'actions' => function ($q) {
+                    $q->select('id', 'ticket_id', 'user_id', 'action', 'status');
+                },
             ])
             ->withCount([
                 'actions' => function ($query) {
@@ -506,6 +551,12 @@ class TicketController extends Controller
                 ['initiative_id', '=', $initiative_id]
             ])
             ->first();
+
+        $ticket->is_allow_dev_estimation_time = Ticket::isAllowDevEstimationTime($ticket->currentAction);
+        $ticket->is_show_pre_action_btn = Ticket::isShowPreActionBtn($ticket->previousAction, $ticket->macro_status, $ticket->currentAction, $ticket->initiative_id, $ticket->initiative);
+        $ticket->is_disable_action_user = Ticket::isDisableActionUser($ticket->initiative_id, $ticket->initiative);
+        $ticket->is_enable_mark_as_done_btn = Ticket::isEnableMarkAsDoneBtn($ticket->status);
+        $ticket->is_show_mark_as_done_btn = Ticket::isShowMarkAsDoneBtn($ticket->initiative_id, $ticket->initiative, $ticket->macro_status, $ticket->currentAction);
 
         // If the ticket is not found, return a 404 response
         if (!$ticket) {
@@ -551,13 +602,6 @@ class TicketController extends Controller
         )
             ->where('initiative_id', $initiative_id)
             ->when(!Auth::user()->is_admin, function (Builder $query) {
-                // $query->LEFTJOIN(DB::raw(
-                //     "(SELECT `ticket_id`, MIN(ACTION) AS first_action, `user_id` FROM ticket_actions WHERE `status` != " . TicketAction::getStatusDone() . " GROUP BY `ticket_id` HAVING `user_id` = " . Auth::id() . ") as ta"
-                // ), 'ta.ticket_id', '=', 'tickets.id')
-                //     ->where(function ($q) {
-                //         $q->where('tickets.is_visible', 1)
-                //             ->orWhereNotNull('ta.first_action');
-                //     });
                 $query->where('tickets.is_visible', 1)
                     ->whereHas('actions', function ($query) {
                         $query->where('user_id', Auth::id())

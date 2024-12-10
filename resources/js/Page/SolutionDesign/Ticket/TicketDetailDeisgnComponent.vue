@@ -113,13 +113,13 @@
             <div class="col-6 col-md-12 col-lg-12 col-xl-3 text-center mb-2 mb-md-0">
                 <div class="card shadow-none h-100 border-0 bg-transparent">
                     <div class="card-body border-0 bg-transparent p-0">
-                        <a v-if="ticketData.is_show_mark_as_done_but" role="button"
+                        <a v-if="ticketData.is_show_mark_as_done_btn" role="button"
                             class="btn btn-desino w-100 border-0 text-white mb-2"
-                            :class="{ 'disabled': !ticketData.is_enable_mark_as_done_but }"
+                            :class="{ 'disabled': !ticketData.is_enable_mark_as_done_btn }"
                             @click="showConfirmation('handleCurrentActionChangeStatus', handleCurrentActionChangeStatus)">
                             {{ $t('ticket_details.task_current_action_completed_but_text') }}
                         </a>
-                        <div class="dropdown" v-if="ticketData.is_show_pre_action_but && previous_actions.length > 0">
+                        <div class="dropdown" v-if="ticketData.is_show_pre_action_btn && previous_actions.length > 0">
                             <button class="btn btn-secondary dropdown-toggle w-100" type="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                                 {{ $t('ticket_action.move_to_previous_action') }}
@@ -187,7 +187,7 @@
                             <div v-if="errors.description" class="text-danger mt-2">
                                 <span v-for="(error, index) in errors.description" :key="index">{{
                                     error
-                                    }}</span>
+                                }}</span>
                             </div>
                             <button class="btn w-100 btn-desino text-white fw-bold m-2 rounded"
                                 @click="updateTaskDescription">
@@ -314,7 +314,7 @@
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">{{
                                         $t('ticket_details_input_dev_estimation_time')
-                                        }} <strong class="text-danger">*</strong>
+                                    }} <strong class="text-danger">*</strong>
                                     </label>
                                     <input v-model="estimatedHoursFormData.dev_estimation_time"
                                         :class="{ 'is-invalid': errors.dev_estimation_time }" class="form-control"
@@ -386,25 +386,18 @@ export default {
             },
             ticketData: {
                 name: '',
-                initial_dev_time: '',
                 dev_estimation_time: '',
                 task_type: '',
                 functionality_name: '',
                 asana_task_link: '',
                 status_label: '',
-                functional_owner: '',
-                functional_owner_id: '',
-                quality_owner: '',
-                quality_owner_id: '',
-                technical_owner: '',
-                technical_owner_id: '',
                 macro_status_label: {},
                 initiative_name: '',
                 display_functionality_name: '',
                 functionality_description: '',
-                is_show_mark_as_done_but: false,
-                is_enable_mark_as_done_but: false,
-                is_show_pre_action_but: false,
+                is_show_mark_as_done_btn: false,
+                is_enable_mark_as_done_btn: false,
+                is_show_pre_action_btn: false,
                 is_allow_dev_estimation_time: false,
                 user_actions_count: 0,
                 estimation_time: 0,
@@ -560,7 +553,6 @@ export default {
             this.ticketData.initiative_id = content.initiative_id;
             this.ticketData.name = content.name;
             this.ticketData.composed_name = content.composed_name;
-            this.ticketData.initial_dev_time = content.initial_estimation_development_time;
             this.ticketData.dev_estimation_time = content.dev_estimation_time;
             this.estimatedHoursFormData.dev_estimation_time = content.dev_estimation_time;
             this.ticketData.task_type = content.type_label;
@@ -569,18 +561,12 @@ export default {
             this.ticketData.initiative_name = content.initiative?.name;
             this.ticketData.display_functionality_name = content?.functionality?.display_name;
             this.ticketData.functionality_description = content?.functionality?.description;
-            this.ticketData.functional_owner = content.initiative?.functional_owner?.name;
-            this.ticketData.functional_owner_id = content.initiative?.functional_owner?.id;
-            this.ticketData.quality_owner = content.initiative?.quality_owner?.name;
-            this.ticketData.quality_owner_id = content.initiative?.quality_owner?.id;
-            this.ticketData.technical_owner = content.initiative?.technical_owner?.name;
-            this.ticketData.technical_owner_id = content.initiative?.technical_owner?.id;
             this.ticketData.asana_task_link = content.asana_task_link;
             this.ticketData.auto_wait_for_client_approval = content.auto_wait_for_client_approval == 1 ? true : false;
             this.ticketData.macro_status_label = content.macro_status_label;
-            this.ticketData.is_show_mark_as_done_but = content.is_show_mark_as_done_but;
-            this.ticketData.is_enable_mark_as_done_but = content.is_enable_mark_as_done_but;
-            this.ticketData.is_show_pre_action_but = content.is_show_pre_action_but;
+            this.ticketData.is_show_mark_as_done_btn = content.is_show_mark_as_done_btn;
+            this.ticketData.is_enable_mark_as_done_btn = content.is_enable_mark_as_done_btn;
+            this.ticketData.is_show_pre_action_btn = content.is_show_pre_action_btn;
             this.ticketData.is_allow_dev_estimation_time = content.is_allow_dev_estimation_time;
             this.ticketData.is_disable_action_user = content.is_disable_action_user;
             this.ticketData.estimation_time = content.estimation_time;
@@ -639,7 +625,7 @@ export default {
             this.changeActionUser(this.currentActionFormData);
         },
         handleCurrentActionChangeStatus() {
-            if (!this.ticketData.is_enable_mark_as_done_but) {
+            if (!this.ticketData.is_enable_mark_as_done_btn) {
                 return false;
             }
 
@@ -655,7 +641,7 @@ export default {
             this.changeActionStatus(this.currentActionFormData);
         },
         handlePreviousActionStatus(action) {
-            if (!this.ticketData.is_show_pre_action_but) {
+            if (!this.ticketData.is_show_pre_action_btn) {
                 return false;
             }
 
@@ -707,14 +693,6 @@ export default {
             } catch (error) {
                 this.handleError(error);
             }
-        },
-        showHideProcessingButton() {
-            return true;
-            let allowProcessTestCase = false;
-            if (this.user?.id === this.ticketData.quality_owner_id && this.currentAction.action == 4 && this.currentAction.status == 1) {
-                allowProcessTestCase = true;
-            }
-            return allowProcessTestCase;
         },
         async updateTicketDetailEstimatedHours() {
             this.clearMessages();
