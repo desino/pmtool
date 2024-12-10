@@ -408,15 +408,19 @@ export default {
                 const response = await ticketService.fetchAllTickets(this.initiative_id, params);
                 this.currentPage = response.content.current_page;
                 this.totalPages = response.content.last_page;
-                this.filterTaskTypes = response.meta_data.task_type;
-                this.filterDeployments = response.meta_data.deployments;
-                this.functionalities = response.meta_data.functionalities;
-                this.projects = response.meta_data.projects;
-                this.actionOwners = response.meta_data.users;
-                this.nextActionOwners = response.meta_data.users;
                 this.initiative = response.meta_data.initiative;
-                this.filterMacroStatus = response.meta_data.macro_status;
-                this.prdMacroStatus = response.meta_data.prd_macro_status;
+
+                if (response.meta_data.filter_has_value == false) {
+                    this.nextActionOwners = response.meta_data.users;
+                    this.prdMacroStatus = response.meta_data.prd_macro_status;
+                    this.filterDeployments = response.meta_data.deployments;
+                    this.filterMacroStatus = response.meta_data.macro_status;
+                    this.actionOwners = response.meta_data.users;
+                    this.projects = response.meta_data.projects;
+                    this.functionalities = response.meta_data.functionalities;
+                    this.filterTaskTypes = response.meta_data.task_type;
+                }
+
                 this.tasks = response.content.map(task => ({
                     ...task,
                     isChecked: false,

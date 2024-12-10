@@ -246,7 +246,6 @@ class TicketController extends Controller
 
     public function index($initiative_id, Request $request)
     {
-
         $authUser = Auth::user();
         if (!$authUser->is_admin) {
             return ApiHelper::response(false, __('messages.initiative.dont_have_permission'), null, 404);
@@ -411,21 +410,31 @@ class TicketController extends Controller
                 $ticketDoneActions = $ticket->actions->where('status', TicketAction::getStatusDone());
                 $ticket->is_show_delete_btn = Auth::user()->is_admin && $ticket->timeBookings->count() == 0 && $ticketDoneActions->count() == 0 && $ticket->moved_back_to_dev_action_count == 0 ?? false;
             });
-        $meta['task_type'] = Ticket::getAllTypes();
-        $meta['functionalities'] = Functionality::whereHas('section', function ($query) use ($initiative_id) {
-            $query->where('initiative_id', $initiative_id);
-        })->get(['id', 'display_name']);
 
-        $projects = ProjectService::getInitiativeProjects($initiative_id);
-
-        $meta['projects'] = $projects;
-        $meta['users'] = TicketService::getUsers();
+        $hasValue = false;
+        foreach ($filters as $key => $value) {
+            if ($value == 'true' || (!empty($value) && $value != 'false')) {
+                $hasValue = true;
+                break;
+            }
+        }
+        $meta = [];
+        if (!$hasValue) {
+            $meta['task_type'] = Ticket::getAllTypes();
+            $meta['functionalities'] = Functionality::whereHas('section', function ($query) use ($initiative_id) {
+                $query->where('initiative_id', $initiative_id);
+            })->get(['id', 'display_name']);
+            $projects = ProjectService::getInitiativeProjects($initiative_id);
+            $meta['projects'] = $projects;
+            $meta['users'] = TicketService::getUsers();
+            $meta['macro_status'] = Ticket::getAllMacroStatus();
+            $meta['deployments'] = Release::getAllReleases($initiative_id);
+            $meta['prd_macro_status'] = Ticket::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_PRD;
+        }
         $meta['initiative'] = TicketService::getInitiative($initiative_id);
-        $meta['macro_status'] = Ticket::getAllMacroStatus();
-        $meta['deployments'] = Release::getAllReleases($initiative_id);
-        $meta['prd_macro_status'] = Ticket::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_PRD;
         $meta['ticket_count'] = $tickets->count();
         $meta['ticket_sum'] = $tickets->sum('estimation_time');
+        $meta['filter_has_value'] = $hasValue;
 
         return ApiHelper::response('false', __('messages.ticket.fetched'), $tickets, 200, $meta);
     }
