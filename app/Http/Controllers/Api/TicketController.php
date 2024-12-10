@@ -441,7 +441,17 @@ class TicketController extends Controller
         if (!$initiative) {
             return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
         }
-        $ticket = Ticket::with('functionality', 'actions')->find($ticket_id);
+        $ticket = Ticket::with([
+            'functionality' => function ($q) {
+                $q->select(
+                    'id',
+                    'display_name',
+                );
+            },
+            'actions' => function ($q) {
+                $q->select('id', 'ticket_id', 'action', 'status', 'user_id');
+            }
+        ])->find($ticket_id);
         if (!$ticket) {
             return ApiHelper::response($status, __('messages.ticket.not_found'), [], 404);
         }
