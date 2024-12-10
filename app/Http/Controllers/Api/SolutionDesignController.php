@@ -48,7 +48,7 @@ class SolutionDesignController extends Controller
             'section_id',
             'name',
             'description',
-            DB::RAW('CASE WHEN include_in_solution_design = 1 THEN "true" ELSE "false" END AS include_in_solution_design'),
+            DB::RAW('CASE WHEN include_in_solution_design = 1 THEN true ELSE false END AS include_in_solution_design'),
         )->find($request->get('id'));
         if (!$functionality) {
             return ApiHelper::response(false, __('messages.solution_design.functionality.functionality_not_exist'), '', 404);

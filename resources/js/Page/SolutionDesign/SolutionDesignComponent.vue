@@ -433,6 +433,7 @@ export default {
                     }
                     const { content: { functionalityData } } = await SolutionDesignService.getSectionFunctionality(passData);
                     this.functionalityFormData = functionalityData;
+                    this.functionalityFormData.include_in_solution_design = functionalityData.include_in_solution_design == 1 ?? false;
                     this.selectedFunctionalityId = functionalityData.id;
                     this.activeSectionId = null;
                     await this.setLoading(false);

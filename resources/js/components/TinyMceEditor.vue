@@ -59,6 +59,55 @@ export default defineComponent({
                 },
                 toolbar:
                     'undo redo | blocks | bold italic underline strikethrough forecolor backcolor | align bullist numlist | lineheight outdent indent | table',
+                paste_data_images: true,
+                // setup: (editor) => {
+                //     editor.on('PastePreProcess', (event) => {
+                //         const clipboardData = event.content;
+                //         if (clipboardData.includes('<img')) {
+                //             event.preventDefault();
+                //             event.stopImmediatePropagation();
+                //         }
+                //     });
+
+                //     editor.on('Paste', async (event) => {
+                //         if (event.clipboardData) {
+                //             const items = event.clipboardData.items;
+                //             for (const item of items) {
+                //                 if (item.type.startsWith('image/')) {
+                //                     const file = item.getAsFile();
+                //                     const compressedDataUrl = await this.compressImage(file);
+
+                //                     editor.insertContent(`<img src="${compressedDataUrl}" />`);
+
+                //                     event.preventDefault();
+                //                     event.stopImmediatePropagation();
+                //                     return;
+                //                 }
+                //             }
+                //         }
+                //     });
+
+                //     editor.on('Drop', async (event) => {
+                //         const files = event.dataTransfer?.files;
+                //         if (files) {
+                //             for (const file of files) {
+                //                 if (file.type.startsWith('image/')) {
+                //                     const compressedDataUrl = await this.compressImage(file);
+
+                //                     editor.insertContent(`<img src="${compressedDataUrl}" />`);
+
+                //                     event.preventDefault();
+                //                     event.stopImmediatePropagation();
+                //                     return;
+                //                 }
+                //             }
+                //         }
+                //     });
+
+                //     editor.on('dragstart dragover drop', (event) => {
+                //         event.preventDefault();
+                //     });
+                // },
             };
         },
     },
@@ -78,6 +127,33 @@ export default defineComponent({
         },
         update() {
             this.$emit('input', this.content);
+        },
+        async compressImage(file: File): Promise<string> {
+            const img = new Image();
+            const reader = new FileReader();
+
+            const dataUrl = await new Promise<string>((resolve) => {
+                reader.onload = (event) => resolve(event.target?.result as string);
+                reader.readAsDataURL(file);
+            });
+
+            img.src = dataUrl;
+
+            await new Promise<void>((resolve) => {
+                img.onload = () => resolve();
+            });
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d')!;
+            const maxWidth = 800;
+            const scaleFactor = maxWidth / img.width;
+
+            canvas.width = maxWidth;
+            canvas.height = img.height * scaleFactor;
+
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            return canvas.toDataURL('image/jpeg', 0.75); // 75% quality
         },
     },
 });
