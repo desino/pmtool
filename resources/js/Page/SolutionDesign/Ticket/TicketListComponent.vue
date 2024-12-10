@@ -256,7 +256,7 @@
                                     :title="$t('ticket_details.time_booking')">
                                     <i class="bi bi-clock-history"></i>
                                 </a>
-                                <a v-if="user?.is_admin && task.is_show_delete_but" class="text-danger"
+                                <a v-if="user?.is_admin && task.is_show_delete_btn" class="text-danger"
                                     href="javascript:"
                                     @click.stop="showConfirmation('deleteTicket', deleteTicket, task)"
                                     data-bs-toggle="tooltip" :title="$t('ticket_details.delete_text')"

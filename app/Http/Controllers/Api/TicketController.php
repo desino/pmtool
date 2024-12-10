@@ -409,7 +409,7 @@ class TicketController extends Controller
             })
             ->get()->each(function ($ticket) {
                 $ticketDoneActions = $ticket->actions->where('status', TicketAction::getStatusDone());
-                $ticket->is_show_delete_but = Auth::user()->is_admin && $ticket->timeBookings->count() == 0 && $ticketDoneActions->count() == 0 && $ticket->moved_back_to_dev_action_count == 0 ?? false;
+                $ticket->is_show_delete_btn = Auth::user()->is_admin && $ticket->timeBookings->count() == 0 && $ticketDoneActions->count() == 0 && $ticket->moved_back_to_dev_action_count == 0 ?? false;
             });
         $meta['task_type'] = Ticket::getAllTypes();
         $meta['functionalities'] = Functionality::whereHas('section', function ($query) use ($initiative_id) {
@@ -1108,9 +1108,9 @@ class TicketController extends Controller
         }
 
         $ticketDoneActions = $ticket->actions->where('status', TicketAction::getStatusDone());
-        $ticket->is_show_delete_but = Auth::user()->is_admin && $ticket->timeBookings->count() == 0 && $ticketDoneActions->count() == 0 && $ticket->moved_back_to_dev_action_count == 0 ?? false;
+        $ticket->is_show_delete_btn = Auth::user()->is_admin && $ticket->timeBookings->count() == 0 && $ticketDoneActions->count() == 0 && $ticket->moved_back_to_dev_action_count == 0 ?? false;
 
-        if (!$ticket->is_show_delete_but) {
+        if (!$ticket->is_show_delete_btn) {
             return ApiHelper::response($status, __('messages.ticket.delete_ticket_not_allowed_because_time_bookings_exist_or_any_action_already_done_dev_count_not_zero'), '', 400);
         }
 

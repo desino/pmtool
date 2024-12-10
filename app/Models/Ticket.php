@@ -26,7 +26,6 @@ class Ticket extends Model
         'is_disable_action_user',
         'is_show_pre_action_but',
         'is_allow_dev_estimation_time',
-        // 'is_show_delete_but',
     ];
 
     public const TYPE_CHANGE_REQUEST = 1;
