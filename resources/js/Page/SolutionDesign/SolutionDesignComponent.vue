@@ -48,7 +48,7 @@
                                         <div v-if="errors.section_name" class="invalid-feedback ms-4">
                                             <span v-for="(error, index) in errors.section_name" :key="index">{{
                                                 error
-                                                }}</span>
+                                            }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -141,7 +141,7 @@
                         <div class="mb-3">
                             <label class="form-label fw-bold">{{
                                 $t('solution_design.functionality_form.name')
-                                }} <strong class="text-danger">*</strong>
+                            }} <strong class="text-danger">*</strong>
                             </label>
                             <input v-model="functionalityFormData.name" :class="{ 'is-invalid': errors.name }"
                                 class="form-control" placeholder="Enter value" type="text">
@@ -154,13 +154,13 @@
                         <div class="mb-3">
                             <label class="form-label fw-bold">{{
                                 $t('solution_design.functionality_form.section_name_select_box')
-                                }} <strong class="text-danger">*</strong>
+                            }} <strong class="text-danger">*</strong>
                             </label>
                             <select v-model="functionalityFormData.section_id" aria-label="Default select example"
                                 class="form-select" :class="{ 'is-invalid': errors.section_id }">
                                 <option value="">{{
                                     $t('solution_design.functionality_form.section_name_select_box_placeholder')
-                                    }}
+                                }}
                                 </option>
                                 <option v-for="section in sectionsWithFunctionalities" :key="section.id"
                                     :value="section.id">
@@ -176,16 +176,21 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">{{
                         $t('solution_design.functionality_form.description')
-                        }}</label>
+                    }}</label>
                     <TinyMceEditor v-model="functionalityFormData.description" />
                 </div>
                 <div class="mb-3">
                     <div class="form-check">
-                        <input class="form-check-input" v-model="functionalityFormData.include_in_solution_design"
-                            type="checkbox" id="include_in_solution_design">
+                        <input class="form-check-input" :class="{ 'is-invalid': errors.include_in_solution_design }"
+                            v-model="functionalityFormData.include_in_solution_design" type="checkbox"
+                            id="include_in_solution_design">
                         <label class="form-check-label fw-bold" for="include_in_solution_design">
                             {{ $t('solution_design.functionality_form.include_in_solution_design_text') }}
                         </label>
+                        <div v-if="errors.include_in_solution_design" class="invalid-feedback">
+                            <span v-for="(error, index) in errors.include_in_solution_design" :key="index">{{ error
+                                }}</span>
+                        </div>
                     </div>
                 </div>
                 <div class="mb-3 d-flex gap-3" v-if="!functionalityFormData.functionality_id">
@@ -433,6 +438,7 @@ export default {
                     }
                     const { content: { functionalityData } } = await SolutionDesignService.getSectionFunctionality(passData);
                     this.functionalityFormData = functionalityData;
+                    this.functionalityFormData.include_in_solution_design = functionalityData.include_in_solution_design == 1 ?? false;
                     this.selectedFunctionalityId = functionalityData.id;
                     this.activeSectionId = null;
                     await this.setLoading(false);
