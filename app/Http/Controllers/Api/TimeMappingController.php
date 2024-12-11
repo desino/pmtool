@@ -67,8 +67,14 @@ class TimeMappingController extends Controller
 
     public function getInitialDataForTimeMappings(Request $request)
     {
-        $initiatives = Initiative::get();
-        $users = User::get();
+        $initiatives = Initiative::select(
+            'id',
+            'name'
+        )->get();
+        $users = User::select(
+            'id',
+            'name'
+        )->get();
         $retData = [
             'initiatives' => $initiatives,
             'users' => $users
@@ -78,7 +84,7 @@ class TimeMappingController extends Controller
 
     public function getProjectListForTimeMappings(Request $request)
     {
-        $projectList = Project::where('initiative_id', $request->initiative_id)->get();
+        $projectList = Project::select('id', 'name')->where('initiative_id', $request->initiative_id)->get();
         return ApiHelper::response(true, '', $projectList, 200);
     }
 

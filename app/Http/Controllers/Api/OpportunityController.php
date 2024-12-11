@@ -143,7 +143,7 @@ class OpportunityController extends Controller
 
     public function getEditOpportunityData(Request $request)
     {
-        $clientList = User::all();
+        $clientList = User::select('id', 'name')->get();
         $retData = [
             'clients' => $clientList,
             'initiative_server_type' => InitiativeEnvironment::getServerTypeAll(),

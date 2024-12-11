@@ -50,7 +50,10 @@ class InitiativeService
 
     public static function getInitiativesForHeaderSelectBox($request)
     {
-        return Initiative::with('client')
+        return Initiative::select('id', 'name', 'client_id')
+            ->with(['client' => function ($query) {
+                $query->select('id', 'name');
+            }])
             ->status([Initiative::getStatusOpportunity(), Initiative::getStatusOngoing(), Initiative::getStatusClosed()])
             ->orderBy('id', 'desc')->get();
     }

@@ -24,9 +24,21 @@ class ActivityLogsController extends Controller
         $logging = Logging::select('*')
             ->with([
                 'ticket' => function ($query) {
-                    $query->select('id', 'name', 'initiative_id', 'composed_name');
+                    $query->select('id', 'name', 'initiative_id', 'composed_name')
+                        ->with([
+                            'initiative' => function ($query) {
+                                $query->select('id', 'name', 'client_id')
+                                    ->with([
+                                        'client' => function ($query) {
+                                            $query->select('id', 'name');
+                                        }
+                                    ]);
+                            }
+                        ]);
                 },
-                'createdBy'
+                'createdBy' => function ($query) {
+                    $query->select('id', 'name');
+                }
             ])
             ->when(!empty($filters['initiative_id']), function ($query) use ($filters) {
                 $query->whereHas('ticket.initiative', function ($query) use ($filters) {
