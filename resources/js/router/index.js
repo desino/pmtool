@@ -31,13 +31,13 @@ router.beforeEach((to, from, next) => {
 
     if (routesWithInitiativeId.includes(to.name)) {
         let initiativeId = to.params.initiative_id ?? to.params.id;
+        //     OpportunityService.getOpportunity(initiativeId)
+        //         .then(response => {
+        //             if (response && response.content) {
+        //                 store.commit("setCurrentInitiative", response.content);
+        //             }
+        //         });        
 
-        OpportunityService.getOpportunity(initiativeId)
-            .then(response => {
-                if (response && response.content) {
-                    store.commit("setCurrentInitiative", response.content);
-                }
-            });
     }
 
     // Update document title based on route meta

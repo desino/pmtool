@@ -80,6 +80,10 @@ export default new Vuex.Store({
         },
         setHeaderData(state, data) {
             state.headerData = data;
+        },
+
+        setAllInitiatives(state, initiatives) {
+            state.allInitiatives = initiatives;
         }
     },
     actions: {
@@ -97,7 +101,10 @@ export default new Vuex.Store({
         },
         setHeaderData({ commit }, data) {
             commit('setHeaderData', data);
-        }
+        },
+        setAllInitiatives({ commit }, data) {
+            commit('setAllInitiatives', data);
+        },
     },
     getters: {
         serverError: state => state.serverError,
@@ -108,7 +115,8 @@ export default new Vuex.Store({
         currentInitiative: state => state.currentInitiative,
         passedData: state => state.passedData,
         permissionMessage: state => state.permissionMessageObj,
-        headerData: state => state.headerData
+        headerData: state => state.headerData,
+        allInitiatives: state => state.allInitiatives
     },
 });
 
