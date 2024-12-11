@@ -162,11 +162,16 @@
                 </div>
                 <div class="mb-3">
                     <div class="form-check">
-                        <input class="form-check-input" v-model="functionalityFormData.include_in_solution_design"
-                            type="checkbox" id="include_in_solution_design">
+                        <input class="form-check-input" :class="{ 'is-invalid': errors.include_in_solution_design }"
+                            v-model="functionalityFormData.include_in_solution_design" type="checkbox"
+                            id="include_in_solution_design">
                         <label class="form-check-label fw-bold" for="include_in_solution_design">
                             {{ $t('solution_design.functionality_form.include_in_solution_design_text') }}
                         </label>
+                        <div v-if="errors.include_in_solution_design" class="invalid-feedback">
+                            <span v-for="(error, index) in errors.include_in_solution_design" :key="index">{{ error
+                                }}</span>
+                        </div>
                     </div>
                 </div>
                 <div class="mb-3 d-flex gap-3" v-if="!functionalityFormData.functionality_id">
