@@ -45,7 +45,7 @@ class DeploymentCenterController extends Controller
 
         $status = true;
         $retTickets = collect([]);
-        $tickets = Ticket::select('*')
+        $tickets = Ticket::select('id', 'initiative_id', 'name', 'composed_name')
             ->with([
                 'actions' => function ($q) {
                     $q->select('ticket_id', 'user_id', 'action');
@@ -77,9 +77,17 @@ class DeploymentCenterController extends Controller
         if ($isAllowToShowTickets) {
             $retTickets = $tickets;
         }
+        $initiativeData = array(
+            'id' => $initiative->id,
+            'name' => $initiative->name,
+        );
+        $retTickets = $retTickets->transform(function ($ticket) {
+            $ticket->makeHidden(['actions',  'initiative']);
+            return $ticket;
+        });
         $data = [
             'tickets' => $retTickets,
-            'initiative' => $initiative,
+            'initiative' => $initiativeData,
             'isAllowProcess' => $initiative->technical_owner_id == Auth::id() || Auth::user()->is_admin ?? false,
         ];
         return ApiHelper::response($status, '', $data, 200);
@@ -132,7 +140,7 @@ class DeploymentCenterController extends Controller
 
         $status = true;
         $retTickets = collect([]);
-        $tickets = Ticket::select('*')
+        $tickets = Ticket::select('id', 'initiative_id', 'name', 'composed_name')
             ->with([
                 'actions' => function ($q) {
                     $q->select('ticket_id', 'user_id', 'action');
@@ -164,9 +172,17 @@ class DeploymentCenterController extends Controller
         if ($isAllowToShowTickets) {
             $retTickets = $tickets;
         }
+        $initiativeData = array(
+            'id' => $initiative->id,
+            'name' => $initiative->name,
+        );
+        $retTickets = $retTickets->transform(function ($ticket) {
+            $ticket->makeHidden(['actions',  'initiative']);
+            return $ticket;
+        });
         $data = [
             'tickets' => $retTickets,
-            'initiative' => $initiative,
+            'initiative' => $initiativeData,
             'isAllowProcess' => $initiative->technical_owner_id == Auth::id() || Auth::user()->is_admin ?? false,
         ];
         return ApiHelper::response($status, '', $data, 200);
@@ -221,6 +237,7 @@ class DeploymentCenterController extends Controller
         $retTickets = collect([]);
         $releaseTickets = ReleaseTicket::with([
             'ticket' => function ($q) {
+                $q->select('id', 'initiative_id', 'name', 'composed_name');
                 $q->with(
                     [
                         'actions',
@@ -260,10 +277,18 @@ class DeploymentCenterController extends Controller
                 $retTickets = $releaseTickets;
             }
         }
+        $initiativeData = array(
+            'id' => $initiative->id,
+            'name' => $initiative->name,
+        );
+        $retTickets->transform(function ($releaseTicket) {
+            $releaseTicket->ticket->makeHidden(['actions', 'initiative']);
+            return $releaseTicket;
+        });
         $data = [
             'tickets' => $retTickets,
             'release' => $initiative->unprocessedRelease,
-            'initiative' => $initiative,
+            'initiative' => $initiativeData,
             'isAllowProcess' => $initiative->technical_owner_id == Auth::id() || Auth::user()->is_admin ?? false,
         ];
         return ApiHelper::response($status, '', $data, 200);

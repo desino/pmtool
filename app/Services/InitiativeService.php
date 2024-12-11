@@ -89,6 +89,7 @@ class InitiativeService
             ->get()
             ->each(function ($initiative) use ($retTestDeploymentInitiative) {
                 if ($initiative->technical_owner_id == Auth::id() || Auth::user()->is_admin) {
+                    $initiative->makeHidden('tickets');
                     $retTestDeploymentInitiative->push($initiative);
                 } else {
                     $isAllowToShowTickets = false;
@@ -101,6 +102,7 @@ class InitiativeService
                         }
                     }
                     if ($isAllowToShowTickets) {
+                        $initiative->makeHidden('tickets');
                         $retTestDeploymentInitiative->push($initiative);
                     }
                 }
@@ -134,6 +136,7 @@ class InitiativeService
             ->get()
             ->each(function ($initiative) use ($retAcceptanceDeploymentInitiative) {
                 if ($initiative->technical_owner_id == Auth::id() || Auth::user()->is_admin) {
+                    $initiative->makeHidden('tickets');
                     $retAcceptanceDeploymentInitiative->push($initiative);
                 } else {
                     $isAllowToShowTickets = false;
@@ -146,6 +149,7 @@ class InitiativeService
                         }
                     }
                     if ($isAllowToShowTickets) {
+                        $initiative->makeHidden('tickets');
                         $retAcceptanceDeploymentInitiative->push($initiative);
                     }
                 }
@@ -183,6 +187,7 @@ class InitiativeService
             ->having('tickets_count', '>', 0)
             ->get()->each(function ($initiative) use ($retProductionDeploymentInitiative) {
                 if ($initiative->technical_owner_id == Auth::id() || Auth::user()->is_admin) {
+                    $initiative->makeHidden('tickets');
                     $retProductionDeploymentInitiative->push($initiative);
                 } else {
                     $isAllowToShowTickets = false;
@@ -195,6 +200,7 @@ class InitiativeService
                         }
                     }
                     if ($isAllowToShowTickets) {
+                        $initiative->makeHidden('tickets');
                         $retProductionDeploymentInitiative->push($initiative);
                     }
                 }
