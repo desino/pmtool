@@ -21,12 +21,6 @@ class Ticket extends Model
         'display_created_at',
         'display_created_by',
         'asana_task_link',
-        'is_show_mark_as_done_but',
-        'is_enable_mark_as_done_but',
-        'is_disable_action_user',
-        'is_show_pre_action_but',
-        'is_allow_dev_estimation_time',
-        'is_show_delete_but',
     ];
 
     public const TYPE_CHANGE_REQUEST = 1;
@@ -184,62 +178,48 @@ class Ticket extends Model
         );
     }
 
-    protected function getIsShowMarkAsDoneButAttribute()
+    public static function isShowMarkAsDoneBtn($initiative_id, $initiative, $macro_status, $currentAction)
     {
-
-        if ($this->initiative_id) {
-            if (($this->initiative->functional_owner_id == Auth::id() || $this->currentAction?->user_id == Auth::id()) && $this->macro_status != self::MACRO_STATUS_DONE) {
+        if ($initiative_id) {
+            if (($initiative->functional_owner_id == Auth::id() || $currentAction?->user_id == Auth::id()) && $macro_status != self::MACRO_STATUS_DONE) {
                 return true;
             }
         }
         return false;
-        // return $this->initiative_id ? $this->initiative->functional_owner_id == Auth::id() || $this->currentAction?->user_id == Auth::id() ?? false : false;
     }
 
-    protected function getIsAllowDevEstimationTimeAttribute()
+    public static function isAllowDevEstimationTime($currentAction)
     {
-        return $this->currentAction && $this->currentAction->user_id == Auth::id() && $this->currentAction->action == TicketAction::getActionClarifyAndEstimate() ? true : false;
+        return $currentAction && $currentAction->user_id == Auth::id() && $currentAction->action == TicketAction::getActionClarifyAndEstimate() ? true : false;
     }
 
-    protected function getIsShowDeleteButAttribute()
+    public static function isEnableMarkAsDoneBtn($status)
     {
-        $ticketDoneActions = $this->actions->where('status', TicketAction::getStatusDone());
-        return Auth::user()->is_admin && $this->timeBookings->count() == 0 && $ticketDoneActions->count() == 0 && $this->moved_back_to_dev_action_count == 0 ?? false;
+        return $status == Self::getStatusOngoing() ?? false;
+    }
+    public static function isDisableActionUser($initiative_id, $initiative)
+    {
+        return $initiative_id ? $initiative->functional_owner_id == Auth::id() || $initiative->technical_owner_id == Auth::id() ?? false : false;
     }
 
-    protected function getIsEnableMarkAsDoneButAttribute()
-    {
-        return $this->status == Self::getStatusOngoing() ?? false;
-    }
-    protected function getIsDisableActionUserAttribute()
-    {
-        return $this->initiative_id ? $this->initiative->functional_owner_id == Auth::id() || $this->initiative->technical_owner_id == Auth::id() ?? false : false;
-    }
-
-    /*************  ✨ Codeium Command ⭐  *************/
-    /**
-     * current action owner or functional owner allow only show pre action button
-     * @return bool
-     */
-    /******  ee11988b-c4ca-43c4-88ed-b4c3367d4fbe  *******/
-    protected function getIsShowPreActionButAttribute()
+    public static function isShowPreActionBtn($previousAction, $macro_status, $currentAction, $initiative_id, $initiative)
     {
         if (
-            $this->previousAction &&
-            $this->macro_status != Self::MACRO_STATUS_DONE &&
+            $previousAction &&
+            $macro_status != Self::MACRO_STATUS_DONE &&
             (
-                ($this->currentAction && $this->currentAction->user_id == Auth::id()) &&
+                ($currentAction && $currentAction->user_id == Auth::id()) &&
                 (
-                    $this->macro_status == Self::MACRO_STATUS_CLARIFY_AND_ESTIMATE ||
-                    $this->macro_status == Self::MACRO_STATUS_DEVELOP_WAIT_FOR_CLIENT ||
-                    $this->macro_status == Self::MACRO_STATUS_DEVELOP ||
-                    $this->macro_status == Self::MACRO_STATUS_TEST_WAIT_FOR_DEPLOYMENT_TO_TEST ||
-                    $this->macro_status == Self::MACRO_STATUS_TEST ||
-                    $this->macro_status == Self::MACRO_STATUS_VALIDATE_WAITING_FOR_DEPLOYMENT_TO_ACC ||
-                    $this->macro_status == Self::MACRO_STATUS_VALIDATE ||
-                    $this->macro_status == Self::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_PRD
+                    $macro_status == Self::MACRO_STATUS_CLARIFY_AND_ESTIMATE ||
+                    $macro_status == Self::MACRO_STATUS_DEVELOP_WAIT_FOR_CLIENT ||
+                    $macro_status == Self::MACRO_STATUS_DEVELOP ||
+                    $macro_status == Self::MACRO_STATUS_TEST_WAIT_FOR_DEPLOYMENT_TO_TEST ||
+                    $macro_status == Self::MACRO_STATUS_TEST ||
+                    $macro_status == Self::MACRO_STATUS_VALIDATE_WAITING_FOR_DEPLOYMENT_TO_ACC ||
+                    $macro_status == Self::MACRO_STATUS_VALIDATE ||
+                    $macro_status == Self::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_PRD
                 ) ||
-                ($this->initiative_id && $this->initiative->functional_owner_id == Auth::id())
+                ($initiative_id && $initiative->functional_owner_id == Auth::id())
             )
         ) {
             return true;
@@ -251,7 +231,7 @@ class Ticket extends Model
 
     public function createdBy()
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class, 'created_by')->select(['id', 'name']);
     }
 
     public function functionality(): BelongsTo
@@ -291,7 +271,9 @@ class Ticket extends Model
     public function currentAction()
     {
         return $this->hasOne(TicketAction::class)
-            ->with('user')
+            ->with(['user' => function ($query) {
+                $query->select(['id', 'name']);
+            }])
             ->where('status', '!=', TicketAction::getStatusDone())
             ->orderBy('action')->latest();
     }

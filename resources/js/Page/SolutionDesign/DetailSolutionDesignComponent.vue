@@ -1,6 +1,5 @@
 <template>
     <GlobalMessage v-if="showMessage" />
-    {{ currentInitiative?.name }}
     <div class="app-content row position-relative">
         <div class="col-md-4 border-end border-bottom sticky top-0 d-none d-lg-block">
             <div class="input-group sticky-top pt-3 pb-1 bg-white">

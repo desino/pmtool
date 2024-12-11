@@ -32,7 +32,11 @@ class SolutionDesignController extends Controller
             return ApiHelper::response(false, __('messages.solution_design.section.initiative_not_exist'), '', 404);
         }
         $getSectionsWithFunctionalities = SolutionDesignService::getSectionsWithFunctionalities($request);
-        $meta_data['initiative'] = $initiative;
+        $initiativeData = array(
+            'id' => $initiative->id,
+            'name' => $initiative->name,
+        );
+        $meta_data['initiative'] = $initiativeData;
         return ApiHelper::response(true, '', $getSectionsWithFunctionalities, 200, $meta_data);
     }
 
@@ -48,7 +52,7 @@ class SolutionDesignController extends Controller
             'section_id',
             'name',
             'description',
-            DB::RAW('CASE WHEN include_in_solution_design = 1 THEN "true" ELSE "false" END AS include_in_solution_design'),
+            DB::RAW('CASE WHEN include_in_solution_design = 1 THEN true ELSE false END AS include_in_solution_design'),
         )->find($request->get('id'));
         if (!$functionality) {
             return ApiHelper::response(false, __('messages.solution_design.functionality.functionality_not_exist'), '', 404);
@@ -72,7 +76,12 @@ class SolutionDesignController extends Controller
             return ApiHelper::response(false, __('messages.solution_design.section.initiative_not_exist'), '', 404);
         }
         $getSectionsWithFunctionalities = SolutionDesignService::solutionDesignRead($request);
-        $meta_data['initiative'] = $initiative;
+
+        $initiativeData = array(
+            'id' => $initiative->id,
+            'name' => $initiative->name,
+        );
+        $meta_data['initiative'] = $initiativeData;
         return ApiHelper::response(true, '', $getSectionsWithFunctionalities, 200, $meta_data);
     }
     public function downloadList(Request $request)

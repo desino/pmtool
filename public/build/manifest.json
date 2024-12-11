@@ -14,7 +14,7 @@
   },
   "resources/js/app.js": {
     "file": "assets/app-BNZkEI_l.js",
-    "name": "app",
+   "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "css": [

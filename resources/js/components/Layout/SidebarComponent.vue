@@ -114,15 +114,15 @@
                     <ul class="list-group border">
                         <li class="list-group-item bg-desino text-white border-desino fw-bold border-bottom">{{
                             $t('header.menu.initiative_links') }}</li>
-                        <li v-if="initiativeData?.share_point_url" class="list-group-item border-0">
-                            <a v-if="initiativeData?.share_point_url" :href="initiativeData?.share_point_url"
+                        <li v-if="currentInitiative?.share_point_url" class="list-group-item border-0">
+                            <a v-if="currentInitiative?.share_point_url" :href="currentInitiative?.share_point_url"
                                 target="_blank" class="btn-link" style="text-decoration: none;">
                                 <i class="bi bi-folder-symlink"></i>
                                 {{ $t('header.menu.initiative.share_point_url') }}
                             </a>
                         </li>
-                        <li class="list-group-item border-0" v-if="initiativeData?.initiative_environments"
-                            v-for="environment in initiativeData?.initiative_environments">
+                        <li class="list-group-item border-0" v-if="currentInitiative?.initiative_environments"
+                            v-for="environment in currentInitiative?.initiative_environments">
                             <a :href="environment.url" target="_blank" style="text-decoration: none;" class="btn-link">
                                 <i class="bi bi-hdd-rack-fill"></i>
                                 {{ environment.name }}

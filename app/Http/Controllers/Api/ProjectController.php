@@ -70,8 +70,12 @@ class ProjectController extends Controller
         $responseData = [
             'projects' => $parsedProjects,
         ];
+        $initiativeData = array(
+            'id' => $initiative->id,
+            'name' => $initiative->name,
+        );
         $meta_data = [
-            'initiative' => $initiative
+            'initiative' => $initiativeData
         ];
         return ApiHelper::response(true, __('messages.project.get_list_success'), $responseData, 200, $meta_data);
     }

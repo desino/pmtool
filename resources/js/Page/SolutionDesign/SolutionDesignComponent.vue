@@ -1,23 +1,4 @@
 <template>
-    <!-- <div class="app-content-header pb-0">
-        <div class="container-fluid">
-            <div class="row w-100">
-                <div class="col-sm-6">
-                    <h3 class="m-0 mb-3">{{ $t('solution_design.page_title') }} - {{ initiativeData.name }}
-                        <span>
-                            <router-link :to="{ name: 'solution-design.detail', params: { id: initiativeData.id } }">
-                                <i class="bi bi-link-45deg"></i>
-                            </router-link>
-                            <router-link :to="{ name: 'solution-design.download', params: { id: initiativeData.id } }">
-                                <i class="bi bi-file-earmark-pdf"></i>
-                            </router-link>
-                        </span>
-                    </h3>
-                </div>
-            </div>
-        </div>
-    </div> -->
-
     <GlobalMessage v-if="showMessage" />
 
     <div class="app-content mt-3 row">
