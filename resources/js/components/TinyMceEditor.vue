@@ -32,7 +32,9 @@ export default defineComponent({
                 height: 650,
                 width: '100%',
                 menubar: false,
-                contextmenu: 'paste | link image inserttable | cell row column deletetable',
+                // contextmenu: 'paste | link image inserttable | cell row column deletetable',
+                browser_spellcheck: true,
+                contextmenu: false,
                 extended_valid_elements: 'img[!src|border:0|alt|title|width|height|style]a[name|href|target|title|onclick]',
                 plugins: [
                     'advlist',
@@ -60,54 +62,54 @@ export default defineComponent({
                 toolbar:
                     'undo redo | blocks | bold italic underline strikethrough forecolor backcolor | align bullist numlist | lineheight outdent indent | table',
                 paste_data_images: true,
-                // setup: (editor) => {
-                //     editor.on('PastePreProcess', (event) => {
-                //         const clipboardData = event.content;
-                //         if (clipboardData.includes('<img')) {
-                //             event.preventDefault();
-                //             event.stopImmediatePropagation();
-                //         }
-                //     });
+                setup: (editor) => {
+                    editor.on('PastePreProcess', (event) => {
+                        const clipboardData = event.content;
+                        if (clipboardData.includes('<img')) {
+                            event.preventDefault();
+                            event.stopImmediatePropagation();
+                        }
+                    });
 
-                //     editor.on('Paste', async (event) => {
-                //         if (event.clipboardData) {
-                //             const items = event.clipboardData.items;
-                //             for (const item of items) {
-                //                 if (item.type.startsWith('image/')) {
-                //                     const file = item.getAsFile();
-                //                     const compressedDataUrl = await this.compressImage(file);
+                    editor.on('Paste', async (event) => {
+                        if (event.clipboardData) {
+                            const items = event.clipboardData.items;
+                            for (const item of items) {
+                                if (item.type.startsWith('image/')) {
+                                    const file = item.getAsFile();
+                                    const compressedDataUrl = await this.compressImage(file);
 
-                //                     editor.insertContent(`<img src="${compressedDataUrl}" />`);
+                                    editor.insertContent(`<img src="${compressedDataUrl}" />`);
 
-                //                     event.preventDefault();
-                //                     event.stopImmediatePropagation();
-                //                     return;
-                //                 }
-                //             }
-                //         }
-                //     });
+                                    event.preventDefault();
+                                    event.stopImmediatePropagation();
+                                    return;
+                                }
+                            }
+                        }
+                    });
 
-                //     editor.on('Drop', async (event) => {
-                //         const files = event.dataTransfer?.files;
-                //         if (files) {
-                //             for (const file of files) {
-                //                 if (file.type.startsWith('image/')) {
-                //                     const compressedDataUrl = await this.compressImage(file);
+                    editor.on('Drop', async (event) => {
+                        const files = event.dataTransfer?.files;
+                        if (files) {
+                            for (const file of files) {
+                                if (file.type.startsWith('image/')) {
+                                    const compressedDataUrl = await this.compressImage(file);
 
-                //                     editor.insertContent(`<img src="${compressedDataUrl}" />`);
+                                    editor.insertContent(`<img src="${compressedDataUrl}" />`);
 
-                //                     event.preventDefault();
-                //                     event.stopImmediatePropagation();
-                //                     return;
-                //                 }
-                //             }
-                //         }
-                //     });
+                                    event.preventDefault();
+                                    event.stopImmediatePropagation();
+                                    return;
+                                }
+                            }
+                        }
+                    });
 
-                //     editor.on('dragstart dragover drop', (event) => {
-                //         event.preventDefault();
-                //     });
-                // },
+                    editor.on('dragstart dragover drop', (event) => {
+                        event.preventDefault();
+                    });
+                },
             };
         },
     },
