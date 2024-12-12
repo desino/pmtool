@@ -75,7 +75,8 @@
                     </div>
                 </li>
                 <li v-if="activityLogs.length > 0" v-for="(activityLog, index) in activityLogs" :key="index"
-                    class="border list-group-item p-1 list-group-item-action border-top-0">
+                    class="border list-group-item p-1 list-group-item-action border-top-0"
+                    :role="isShowRoleButton(activityLog)" @click="redirectTicketDetailPage(activityLog)">
                     <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
                         <div class="col-12 col-md-6 col-lg-4" data-bs-toggle="tooltip" data-bs-placement="bottom"
                             :title="getTooltipTitle(activityLog)">
@@ -227,6 +228,16 @@ export default {
                 return this.$t('activity_logs.tooltip_title_delete_ticket');
             }
             return;
+        },
+        isShowRoleButton(activityLog) {
+            if (activityLog?.ticket?.initiative?.name == undefined && activityLog?.ticket?.ticket_composed_name == undefined) {
+                return;
+            }
+            return 'button';
+        },
+        redirectTicketDetailPage(activityLog) {
+            const ticketDetailRoute = this.$router.resolve({ name: 'task.detail', params: { initiative_id: activityLog?.ticket?.initiative?.id, ticket_id: activityLog?.ticket?.id } });
+            window.open(ticketDetailRoute.href, '_blank');
         },
         handleError(error) {
             if (error.type === 'validation') {

@@ -59,7 +59,6 @@ class ActivityLogsController extends Controller
                 });
             })
             ->when(!empty($filters['activity_type']), function ($query) use ($filters) {
-                // $query->where('activity_type', $filters['activity_type']['id']);
                 $query->whereIn('activity_type', array_column($filters['activity_type'], 'id'));
             })
             ->when(!empty($filters['activity_detail']), function ($query) use ($filters) {
