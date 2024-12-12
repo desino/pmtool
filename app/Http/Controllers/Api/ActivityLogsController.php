@@ -45,6 +45,15 @@ class ActivityLogsController extends Controller
                     $query->select('id', 'name');
                 }
             ])
+            ->when(!empty($filters['ticket_name']), function ($query) use ($filters) {
+                // $query->where('ticket_composed_name', 'like', '%' . $filters['ticket_name'] . '%');
+                $query->where(function ($query) use ($filters) {
+                    $query->whereHas('ticket', function ($query) use ($filters) {
+                        $query->where('composed_name', $filters['ticket_name']);
+                    })
+                        ->orWhere(DB::raw('JSON_UNQUOTE(JSON_EXTRACT(meta_data, "$.ticket_composed_name"))'), 'like', '%' . $filters['ticket_name'] . '%');
+                });
+            })
             ->when(!empty($filters['initiative_id']), function ($query) use ($filters) {
                 $query->whereHas('ticket.initiative', function ($query) use ($filters) {
                     $query->where('initiatives.id', $filters['initiative_id']['id']);

@@ -5,6 +5,12 @@
             <div class="row g-1 w-100 align-items-center">
                 <div class="col-12 col-md-12 col-lg-3">
                     <div class="w-100 p-1">
+                        <input v-model="filter.ticket_name" :placeholder="$t('activity_logs.filter.ticket_name')"
+                            class="form-control" type="text" @keyup="getActivityLogsData">
+                    </div>
+                </div>
+                <div class="col-12 col-md-12 col-lg-3">
+                    <div class="w-100 p-1">
                         <multiselect v-model="filter.initiative_id" :multiple="false" :options="initiatives"
                             :searchable="true" select-label="" deselect-label="" label="client_initiative_name"
                             :placeholder="$t('activity_logs.filter.initiative_placeholder')" track-by="id"
@@ -69,10 +75,10 @@
                     </div>
                 </li>
                 <li v-if="activityLogs.length > 0" v-for="(activityLog, index) in activityLogs" :key="index"
-                    class="border list-group-item p-1 list-group-item-action border-top-0"
-                    :class="backgroundClass(activityLog)">
+                    class="border list-group-item p-1 list-group-item-action border-top-0">
                     <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
-                        <div class="col-12 col-md-6 col-lg-4">
+                        <div class="col-12 col-md-6 col-lg-4" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            :title="getTooltipTitle(activityLog)">
                             <small class="badge bg-secondary">{{ activityLog?.ticket?.initiative?.name ??
                                 activityLog?.ticket_initiative_name }}</small>
                             {{ activityLog?.ticket?.composed_name ?? activityLog?.ticket_composed_name }}
@@ -118,6 +124,7 @@ import messageService from '../../services/messageService';
 import store from '../../store';
 import { mapActions, mapGetters } from 'vuex';
 import Multiselect from "vue-multiselect";
+import { Tooltip } from 'bootstrap';
 
 export default {
     name: 'ActivityLogsComponent',
@@ -129,6 +136,7 @@ export default {
     data() {
         return {
             filter: {
+                ticket_name: "",
                 initiative_id: "",
                 activity_type: "",
                 activity_detail: "",
@@ -189,6 +197,7 @@ export default {
                 this.currentPage = current_page;
                 this.totalPages = last_page;
                 await this.setLoading(false);
+                this.initializeTooltips();
             } catch (error) {
                 this.handleError(error);
             }
@@ -207,12 +216,17 @@ export default {
                 this.filter.initiative_id = this.initiatives.find(initiative => initiative.id == initiativeId);
             }
         },
-        backgroundClass(activityLog) {
-            if (activityLog?.ticket?.initiative?.name == undefined && activityLog?.ticket?.composed_name == undefined) {
-                console.log('activityLog :: ', activityLog);
-                return 'bg-danger-subtle';
+        initializeTooltips() {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            tooltipTriggerList.forEach((tooltipTriggerEl) => {
+                new Tooltip(tooltipTriggerEl);
+            });
+        },
+        getTooltipTitle(activityLog) {
+            if (activityLog?.ticket?.initiative?.name == undefined && activityLog?.ticket?.ticket_composed_name == undefined) {
+                return this.$t('activity_logs.tooltip_title_delete_ticket');
             }
-            return '';
+            return;
         },
         handleError(error) {
             if (error.type === 'validation') {
@@ -229,15 +243,7 @@ export default {
     },
     mounted() {
         this.clearMessages();
-        // this.getInitiativeDataForActivityLogs();
-        // setTimeout(() => {
-        //     this.setInitiativeIdForFilter();
-        //     this.getActivityLogsData();
-        // }, 1000);
         this.fetchData();
-        // this.$nextTick(() => {
-        //     console.log('sdfdfsf :: ',);
-        // });
         const setHeaderData = {
             page_title: this.$t('activity_logs.page_title'),
         }
