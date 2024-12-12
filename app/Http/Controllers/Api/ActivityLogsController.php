@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Services\InitiativeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ActivityLogsController extends Controller
 {
@@ -21,7 +22,11 @@ class ActivityLogsController extends Controller
         }
         $filters = $request->get('filters');
 
-        $logging = Logging::select('*')
+        $logging = Logging::select(
+            '*',
+            DB::raw('JSON_UNQUOTE(JSON_EXTRACT(meta_data, "$.ticket_composed_name")) AS ticket_composed_name'),
+            DB::raw('JSON_UNQUOTE(JSON_EXTRACT(meta_data, "$.initiative_name")) AS ticket_initiative_name')
+        )
             ->with([
                 'ticket' => function ($query) {
                     $query->select('id', 'name', 'initiative_id', 'composed_name')

@@ -1183,10 +1183,10 @@ class TicketController extends Controller
             return ApiHelper::response($status, __('messages.ticket.delete_ticket_not_allowed_because_time_bookings_exist_or_any_action_already_done_dev_count_not_zero'), '', 400);
         }
 
-        $task = $this->asanaService->deleteTask($ticket->asana_task_id);
-        if ($task['error_status']) {
-            return ApiHelper::response($status, __('messages.asana.delete_ticket.delete_error'), '', 400);
-        }
+        // $task = $this->asanaService->deleteTask($ticket->asana_task_id);
+        // if ($task['error_status']) {
+        //     return ApiHelper::response($status, __('messages.asana.delete_ticket.delete_error'), '', 400);
+        // }
 
         $status = true;
         $message = __('messages.ticket.delete_ticket_success');
@@ -1194,6 +1194,7 @@ class TicketController extends Controller
         DB::beginTransaction();
         try {
             $ticket->delete();
+            TicketService::storeLogging($ticket, Logging::ACTIVITY_TYPE_DELETE);
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();

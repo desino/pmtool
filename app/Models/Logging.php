@@ -20,6 +20,7 @@ class Logging extends Model
     public const ACTIVITY_TYPE_MARKED_AS_DONE = 1;
     public const ACTIVITY_TYPE_MOVED_BACK_TO = 2;
     public const ACTIVITY_TYPE_DEPLOYMENT = 3;
+    public const ACTIVITY_TYPE_DELETE = 4;
 
     public const ACTIVITY_DETAIL_DETAIL = 1;
     public const ACTIVITY_DETAIL_CLARIFY_ESTIMATE = 2;
@@ -28,6 +29,7 @@ class Logging extends Model
     public const ACTIVITY_DETAIL_VALIDATE = 5;
     public const ACTIVITY_DETAIL_DONE = 6;
     public const ACTIVITY_DETAIL_ACC = 7;
+    public const ACTIVITY_DETAIL_DELETED = 8;
 
     public static function getAllActivityTypes()
     {
@@ -35,6 +37,7 @@ class Logging extends Model
             ['id' => self::ACTIVITY_TYPE_MARKED_AS_DONE, 'name' => __('logging_activity_type.marked_as_done')],
             ['id' => self::ACTIVITY_TYPE_MOVED_BACK_TO, 'name' => __('logging_activity_type.moved_back_to')],
             ['id' => self::ACTIVITY_TYPE_DEPLOYMENT, 'name' => __('logging_activity_type.deployment')],
+            ['id' => self::ACTIVITY_TYPE_DELETE, 'name' => __('logging_activity_type.delete')],
         ];
     }
 
@@ -48,6 +51,7 @@ class Logging extends Model
             ['id' => self::ACTIVITY_DETAIL_VALIDATE, 'name' => __('logging_activity_detail.validate'), 'color' => 'color-macro-status-validate'],
             ['id' => self::ACTIVITY_DETAIL_DONE, 'name' => __('logging_activity_detail.done'), 'color' => 'color-macro-status-done'],
             ['id' => self::ACTIVITY_DETAIL_ACC, 'name' => __('logging_activity_detail.acc'), 'color' => 'color-activity-log-deploy-acc'],
+            ['id' => self::ACTIVITY_DETAIL_DELETED, 'name' => __('logging_activity_detail.deleted'), 'color' => 'color-activity-log-deleted'],
         ];
     }
 

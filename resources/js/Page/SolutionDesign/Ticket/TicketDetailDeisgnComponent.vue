@@ -187,7 +187,7 @@
                             <div v-if="errors.description" class="text-danger mt-2">
                                 <span v-for="(error, index) in errors.description" :key="index">{{
                                     error
-                                }}</span>
+                                    }}</span>
                             </div>
                             <button class="btn w-100 btn-desino text-white fw-bold m-2 rounded"
                                 @click="updateTaskDescription">
@@ -314,7 +314,7 @@
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">{{
                                         $t('ticket_details_input_dev_estimation_time')
-                                    }} <strong class="text-danger">*</strong>
+                                        }} <strong class="text-danger">*</strong>
                                     </label>
                                     <input v-model="estimatedHoursFormData.dev_estimation_time"
                                         :class="{ 'is-invalid': errors.dev_estimation_time }" class="form-control"
@@ -525,7 +525,6 @@ export default {
                     'ticket_id': this.localTicketId
                 }
                 const response = await ticketService.saveTaskDescription(data);
-                this.setData(response.content);
                 showToast(response.message, 'success');
                 this.setLoading(false);
             } catch (error) {

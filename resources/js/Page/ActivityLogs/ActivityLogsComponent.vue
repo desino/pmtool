@@ -69,12 +69,13 @@
                     </div>
                 </li>
                 <li v-if="activityLogs.length > 0" v-for="(activityLog, index) in activityLogs" :key="index"
-                    class="border list-group-item p-1 list-group-item-action border-top-0">
+                    class="border list-group-item p-1 list-group-item-action border-top-0"
+                    :class="backgroundClass(activityLog)">
                     <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
                         <div class="col-12 col-md-6 col-lg-4">
-                            <small class="badge bg-secondary">{{ activityLog?.ticket?.initiative?.name }}</small>
-                            {{ activityLog?.ticket?.composed_name }}
-                            <!-- {{ activityLog?.ticket?.initiative?.client_initiative_name }} -->
+                            <small class="badge bg-secondary">{{ activityLog?.ticket?.initiative?.name ??
+                                activityLog?.ticket_initiative_name }}</small>
+                            {{ activityLog?.ticket?.composed_name ?? activityLog?.ticket_composed_name }}
                         </div>
                         <div class="offset-1 col-5 offset-md-0 col-md-3 col-lg-2">
                             {{ activityLog?.display_activity_type?.name }}
@@ -205,6 +206,13 @@ export default {
                 initiativeId = this.$route.query.initiative_id;
                 this.filter.initiative_id = this.initiatives.find(initiative => initiative.id == initiativeId);
             }
+        },
+        backgroundClass(activityLog) {
+            if (activityLog?.ticket?.initiative?.name == undefined && activityLog?.ticket?.composed_name == undefined) {
+                console.log('activityLog :: ', activityLog);
+                return 'bg-danger-subtle';
+            }
+            return '';
         },
         handleError(error) {
             if (error.type === 'validation') {

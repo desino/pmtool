@@ -425,6 +425,11 @@ class TicketService
 
     public static function storeLogging($ticket, $activityType, $action = null)
     {
+        $metaData = [
+            'ticket_composed_name' => $ticket->composed_name,
+            'initiative_name' => $ticket->initiative->name,
+            'description' => "",
+        ];
         if ($activityType == Logging::ACTIVITY_TYPE_MARKED_AS_DONE || $activityType == Logging::ACTIVITY_TYPE_MOVED_BACK_TO) {
             $allActivityDetails = array_column(Logging::getAllActivityDetails(), 'id');
             $actionId = "";
@@ -434,11 +439,15 @@ class TicketService
             $activityDetail = Arr::exists($allActivityDetails, $actionId) ? $actionId : Logging::ACTIVITY_DETAIL_DONE;
         } else if ($activityType == Logging::ACTIVITY_TYPE_DEPLOYMENT) {
             $activityDetail = Logging::ACTIVITY_DETAIL_ACC;
+        } else if ($activityType == Logging::ACTIVITY_TYPE_DELETE) {
+            $activityDetail = Logging::ACTIVITY_DETAIL_DELETED;
+            $metaData['description'] = $ticket->description;
         }
         $insertData = [
             'ticket_id' => $ticket->id,
             'activity_type' => $activityType,
             'activity_detail' => $activityDetail,
+            'meta_data' => json_encode($metaData),
         ];
         Logging::create($insertData);
     }
