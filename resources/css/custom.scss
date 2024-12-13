@@ -335,6 +335,12 @@
     overflow-y: auto;
 }
 
+.max-h-ticket-comment {
+    max-height: 525px;
+    min-height: 525px;
+    overflow-y: auto;
+}
+
 .optimize-image img {
     width: 100% !important;
 }

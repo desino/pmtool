@@ -181,21 +181,28 @@
             <div id="ticketdetail-tabContent" class="tab-content border border-top-0 p-2">
                 <div id="ticketdetail_description_tab" aria-labelledby="ticketdetail_description_tab"
                     class="tab-pane fade active show" role="tabpanel">
-                    <div class="w-100">
-                        <div v-if="this.user?.is_admin">
-                            <TinyMceEditor v-model="taskDescriptionForm.description" />
-                            <div v-if="errors.description" class="text-danger mt-2">
-                                <span v-for="(error, index) in errors.description" :key="index">{{
-                                    error
-                                    }}</span>
+                    <div class="row g-1 w-100">
+                        <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+                            <div v-if="this.user?.is_admin">
+                                <TinyMceEditor v-model="taskDescriptionForm.description" />
+                                <div v-if="errors.description" class="text-danger mt-2">
+                                    <span v-for="(error, index) in errors.description" :key="index">{{
+                                        error
+                                        }}</span>
+                                </div>
+                                <button class="btn w-100 btn-desino text-white fw-bold m-2 rounded"
+                                    @click="updateTaskDescription">
+                                    {{ $t('ticket_details.task_description_save_but_text') }}
+                                </button>
                             </div>
-                            <button class="btn w-100 btn-desino text-white fw-bold m-2 rounded"
-                                @click="updateTaskDescription">
-                                {{ $t('ticket_details.task_description_save_but_text') }}
-                            </button>
+                            <div v-else>
+                                <div v-html="ticketData.description"></div>
+                            </div>
                         </div>
-                        <div v-else>
-                            <div v-html="ticketData.description"></div>
+                        <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+                            <div v-if="this.user && isPassCommentData">
+                                <CommentComponent :ticketData="ticketData" :users="users" />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -361,6 +368,7 @@ import testCaseService from "./../../../services/TestCaseService.js";
 import eventBus from "./../../../eventBus.js";
 import TimeBookingForTicketDetailComponent from './TimeBookingForTicketDetailComponent.vue';
 import store from '../../../store/index.js';
+import CommentComponent from './Comment/CommentComponent.vue';
 
 export default {
     name: 'SolutionDesignComponent',
@@ -370,7 +378,8 @@ export default {
         TinyMceEditor,
         GlobalMessage,
         Multiselect,
-        TimeBookingForTicketDetailComponent
+        TimeBookingForTicketDetailComponent,
+        CommentComponent
     },
     props: ['initiative_id', 'ticket_id'],
     data() {
@@ -443,6 +452,7 @@ export default {
             modalTitle: '',
             modalMessage: '',
             modalConfirmCallback: null,
+            isPassCommentData: false,
             errors: {},
             showMessage: true,
         };
@@ -492,6 +502,7 @@ export default {
                     this.is_allow_case_add_test_section = response.meta_data.is_allow_case_add_test_section;
                     this.is_allow_case_update_test_section = response.meta_data.is_allow_case_update_test_section;
                     this.previous_actions = response.meta_data?.actions.filter(action => action?.action < this.currentAction?.action);
+                    this.isPassCommentData = true;
                 }
                 this.setLoading(false);
             } catch (error) {
@@ -835,12 +846,12 @@ export default {
             }
         },
     },
-    mounted() {
+    async mounted() {
         const setHeaderData = {
             page_title: "",
         }
         store.commit("setHeaderData", setHeaderData);
-        this.fetchTicketData(this.localTicketId);
+        await this.fetchTicketData(this.localTicketId);
         eventBus.$on('refreshTicketDetail', this.refreshTicketDetail);
         eventBus.$emit('selectHeaderInitiativeId', this.localInitiativeId);
         this.initializeTooltips();

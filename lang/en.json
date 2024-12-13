@@ -316,6 +316,7 @@
     "messages.ticket.test_case_delete_not_allowed": "You are not allowed to delete test cases.",
     "messages.test_case.not_found": "Test case not found.",
     "messages.test_case.delete_success": "Test case deleted successfully.",
+    "messages.comment.store_success": "Comment created successfully.",
     "login_title": "Login",
     "login_page_title": "Login",
     "login_input_email": "Email",
@@ -878,5 +879,10 @@
     "activity_logs.filter.ticket_name": "Search by name",
     "initiative_overview_list.hours_text": " hrs",
     "confirmation_popup.default_title": "Confirm Action",
-    "confirmation_popup.default_message": "Are you sure you want to perform this action?"
+    "confirmation_popup.default_message": "Are you sure you want to perform this action?",
+    "comment.comment_type.normal": "Normal",
+    "comment.comment_type.previous_action": "Previous Action",
+    "comment.comment_title": "Comment",
+    "comment.comment_save_but_text": "Save",
+    "comment.comment_tagged_users_placeholder": "Tagged Users"
 }

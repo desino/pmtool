@@ -15,6 +15,7 @@ use App\Models\ReleaseTicket;
 use App\Models\Section;
 use App\Models\Ticket;
 use App\Models\TicketAction;
+use App\Models\TicketComment;
 use App\Models\TimeBooking;
 use App\Observers\ClientObserver;
 use App\Observers\FunctionalityObserver;
@@ -28,6 +29,7 @@ use App\Observers\ReleaseObserver;
 use App\Observers\ReleaseTicketObserver;
 use App\Observers\SectionObserver;
 use App\Observers\TicketActionObserver;
+use App\Observers\TicketCommentObserver;
 use App\Observers\TicketObserver;
 use App\Observers\TimeBookingObserver;
 use Illuminate\Support\Facades\DB;
@@ -68,6 +70,7 @@ class AppServiceProvider extends ServiceProvider
         PlanningAssignment::observe(PlanningAssignmentObserver::class);
         Planning::observe(PlanningObserver::class);
         Logging::observe(LoggingObserver::class);
+        TicketComment::observe(TicketCommentObserver::class);
         Event::listen(
             SocialiteWasCalled::class,
             GraphExtendSocialite::class . '@handle',
