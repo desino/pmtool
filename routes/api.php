@@ -116,6 +116,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::controller(TicketCommentController::class)->prefix('{ticket_id}/comment')->group(function () {
                 Route::get('/', 'index');
                 Route::post('/store', 'store');
+                Route::post('/delete', 'delete');
             });
         });
 

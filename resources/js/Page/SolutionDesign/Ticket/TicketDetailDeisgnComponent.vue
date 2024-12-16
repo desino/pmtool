@@ -181,16 +181,16 @@
             <div id="ticketdetail-tabContent" class="tab-content border border-top-0 p-2">
                 <div id="ticketdetail_description_tab" aria-labelledby="ticketdetail_description_tab"
                     class="tab-pane fade active show" role="tabpanel">
-                    <div class="row g-1 w-100">
+                    <div class="row g-2 w-100">
                         <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
                             <div v-if="this.user?.is_admin">
                                 <TinyMceEditor v-model="taskDescriptionForm.description" />
                                 <div v-if="errors.description" class="text-danger mt-2">
                                     <span v-for="(error, index) in errors.description" :key="index">{{
                                         error
-                                        }}</span>
+                                    }}</span>
                                 </div>
-                                <button class="btn w-100 btn-desino text-white fw-bold m-2 rounded"
+                                <button class="btn w-100 btn-desino text-white fw-bold rounded my-2"
                                     @click="updateTaskDescription">
                                     {{ $t('ticket_details.task_description_save_but_text') }}
                                 </button>
@@ -321,7 +321,7 @@
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">{{
                                         $t('ticket_details_input_dev_estimation_time')
-                                        }} <strong class="text-danger">*</strong>
+                                    }} <strong class="text-danger">*</strong>
                                     </label>
                                     <input v-model="estimatedHoursFormData.dev_estimation_time"
                                         :class="{ 'is-invalid': errors.dev_estimation_time }" class="form-control"

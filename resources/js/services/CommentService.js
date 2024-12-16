@@ -10,6 +10,7 @@ const defaultPath = `${APP_VARIABLES.DEFAULT_API_PATH}/solution-design/:initiati
 const endpoints = {
     index: `${defaultPath}`,
     store: `${defaultPath}/store`,
+    delete: `${defaultPath}/delete`
 }
 
 const CommentService = {
@@ -25,6 +26,15 @@ const CommentService = {
     async store(data) {
         try {
             const endpoint = endpoints.store.replace(':initiative_id', data.initiative_id).replace(':ticket_id', data.ticket_id);
+            const response = await axiosRequest.post(endpoint, data);
+            return response.data;
+        } catch (error) {
+            throw handleError(error);
+        }
+    },
+    async delete(initiative_id, ticket_id, data) {
+        try {
+            const endpoint = endpoints.delete.replace(':initiative_id', initiative_id).replace(':ticket_id', ticket_id);
             const response = await axiosRequest.post(endpoint, data);
             return response.data;
         } catch (error) {

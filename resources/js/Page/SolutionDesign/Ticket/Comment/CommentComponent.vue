@@ -4,23 +4,57 @@
             <div class="card-header border-0 fw-bold bg-desino text-white small">
                 {{ $t('comment.comment_title') }}
             </div>
-            <div class="card-body max-h-ticket-comment">
+            <div class="card-body max-h-ticket-comment px-0">
                 <div class="w-100 mb-3">
-                    <button v-if="hasMore" @click="getComments(previousPage)" class="btn btn-primary btn-sm">
-                        Load Previous
-                    </button>
-                    <ul class="list-group list-group-flush mb-3 mt-2">
-                        <li v-if="comments.length > 0" v-for="(comment, index) in comments" :key="index"
-                            class="border list-group-item p-1 list-group-item-action ">
-                            <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
-                                <div v-html="comment.comment"></div>
-                                {{ comment.id }}
-                            </div>
-                        </li>
-                    </ul>
+                    <div class="w-100 text-center">
+                        <button v-if="hasMore" @click="getComments()" class="btn btn-info text-white btn-sm border-0">
+                            <i class="bi bi-clock-history"></i>
+                        </button>
+                    </div>
+                    <div class="w-100">
+                        <ul class="list-group list-group-flush mb-3 mt-2">
+                            <li v-if="comments.length > 0" v-for="(comment, index) in comments" :key="index"
+                                class="border list-group-item p-1 list-group-item-action border-top-0 border-start-0 border-end-0">
+                                <div class="row g-1 w-100 align-items-center"
+                                    :class="{ 'bg-warning-subtle': checkTagUser(comment) }">
+                                    <div class="col-12">
+                                        <div class="row g-1 w-100 align-items-center">
+                                            <div class="col-10">
+                                                <div class="badge bg-secondary text-white" style="font-size: 0.5rem;">
+                                                    {{ comment.display_updated_at ?? comment.display_created_at }}
+                                                </div>
+                                                <div class="fw-bold text-primary">
+                                                    {{ comment.updated_user_name ?? comment.created_user_name }}
+                                                </div>
+                                            </div>
+                                            <div class="col-2 text-end" v-if="comment.user_id == user.id">
+                                                <a href="javascript:" data-bs-toggle="tooltip"
+                                                    data-bs-placement="bottom"
+                                                    :title="$t('comment.edit_comment_but_text')" role="button"
+                                                    class="btn-link me-2">
+                                                    <i class="bi bi-pencil text-primary"></i>
+                                                </a>
+                                                <a href="javascript:" data-bs-toggle="tooltip"
+                                                    data-bs-placement="bottom"
+                                                    :title="$t('comment.delete_comment_but_text')"
+                                                    @click.stop="showConfirmation('deleteComment', deleteComment, comment)"
+                                                    role="button" class="btn-link">
+                                                    <i class="bi bi-x-lg text-danger"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <p v-html="comment.comment">
+                                        </p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-            <div class="card-footer">
+            <div class="card-footer bg-transparent">
                 <div class="row g-1 w-100">
                     <div class="col-12">
                         <TinyMceEditor v-model="formData.comment" :init="{
@@ -33,7 +67,7 @@
                             <span v-for="(error, index) in errors.comment" :key="index">{{ error }}</span>
                         </div>
                     </div>
-                    <div class="col-12">
+                    <div class="col-12 mb-3">
                         <multiselect :multiple="true" v-model="formData.tagged_users"
                             :class="{ 'is-invalid': errors.tagged_users }" :options="users"
                             :placeholder="$t('comment.comment_tagged_users_placeholder')" label="name" track-by="id">
@@ -42,8 +76,6 @@
                             <span v-for="(error, index) in errors.tagged_users" :key="index">{{ error }}</span>
                         </div>
                     </div>
-                </div>
-                <div class="row g-1 w-100 mt-2">
                     <div class="col-6">
                         <button type="button" @click="saveComment" class="btn btn-desino w-100 border-0">{{
                             $t('comment.comment_save_but_text') }}</button>
@@ -56,6 +88,8 @@
                 </div>
             </div>
         </div>
+        <ConfirmationModal ref="dynamicConfirmationModal" :title="modalTitle" :message="modalMessage"
+            @confirm="modalConfirmCallback" />
     </div>
 </template>
 
@@ -64,14 +98,15 @@ import TinyMceEditor from '@/components/TinyMceEditor.vue';
 import Multiselect from 'vue-multiselect';
 import messageService from '../../../../services/messageService';
 import CommentService from '../../../../services/CommentService';
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import showToast from '../../../../utils/toasts';
+import { Modal, Tooltip } from 'bootstrap';
 
 export default {
     name: "CommentComponent",
     components: {
         TinyMceEditor,
-        Multiselect
+        Multiselect,
     },
     props: {
         ticketData: Object,
@@ -87,25 +122,36 @@ export default {
                 tagged_users: [],
             },
             comments: [],
+            firstComment: {},
             latestComment: {},
-            previousPage: 0,
+            modalTitle: "",
+            modalMessage: "",
+            modalConfirmCallback: null,
             hasMore: true,
             errors: {},
         };
     },
+    computed: {
+        ...mapGetters(['user']),
+    },
     methods: {
         ...mapActions(['setLoading']),
-        async getComments(page = 1) {
+        async getComments() {
             try {
                 this.setLoading(true);
                 const passData = {
-                    page: page,
+                    first_comment_id: this.firstComment?.id,
                 };
-                const { content: { data, current_page, last_page } } = await CommentService.index(this.ticketData.initiative_id, this.ticketData.id, passData);
-                this.comments = [...data, ...this.comments].sort((a, b) => a.id - b.id);
-                this.previousPage = current_page + 1;
-                this.hasMore = page < last_page;
-                this.setLoading(false);
+                const { content } = await CommentService.index(this.ticketData.initiative_id, this.ticketData.id, passData);
+                this.comments = [...content, ...this.comments].sort((a, b) => a.id - b.id);
+                this.comments = this.comments.map(comment => ({
+                    ...comment,
+                    is_edit_comment: false
+                }));
+                this.firstComment = this.comments.length > 0 ? this.comments[0] : 0;
+                this.hasMore = content.length > 0;
+                await this.setLoading(false);
+                this.initializeTooltips();
             } catch (error) {
                 this.handleError(error);
             }
@@ -118,20 +164,55 @@ export default {
                 this.formData.ticket_id = this.ticketData.id;
                 const { content: { comment }, message } = await CommentService.store(this.formData);
                 this.latestComment = comment;
-                // this.comments = [...this.comments, ...data];
-                // this.comments.unshift(comment);
-                this.comments.push(comment);
+                this.comments = [comment, ...this.comments.filter(c => c.id !== comment.id)].sort((a, b) => a.id - b.id);
                 showToast(message, 'success');
                 await this.setLoading(false);
                 this.resetForm();
-                console.log('this.comments :: ', this.comments);
             } catch (error) {
                 this.handleError(error);
             }
         },
+        checkTagUser(comment) {
+            if (this.user?.id == comment.user_id) {
+                const valuesArray = comment.tagged_users.split(',').map(str => parseInt(str.trim()));
+                const valueExists = valuesArray.includes(this.user?.id);
+                return valueExists;
+            }
+            return false;
+        },
+        async deleteComment(comment) {
+            try {
+                this.clearMessages();
+                this.setLoading(true);
+                const passData = {
+                    id: comment?.id,
+                };
+                const { content } = await CommentService.delete(this.ticketData.initiative_id, this.ticketData.id, passData);
+                await this.setLoading(false);
+                this.comments = this.comments.filter(item => item.id !== comment?.id);
+            } catch (error) {
+                this.handleError(error);
+            }
+        },
+        showConfirmation(modalType, callback, callbackParam, index = null, event = null) {
+            if (modalType === 'deleteComment') {
+                this.modalTitle = this.$t('comment.delete.conformation_popup_title');
+                this.modalMessage = this.$t('comment.delete.conformation_popup_text');
+            }
+
+            this.modalConfirmCallback = () => callback(callbackParam, modalType, index, event);
+
+            this.$refs.dynamicConfirmationModal.showModal();
+        },
         resetForm() {
             this.formData.comment = '';
             this.formData.tagged_users = [];
+        },
+        initializeTooltips() {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            tooltipTriggerList.forEach((tooltipTriggerEl) => {
+                new Tooltip(tooltipTriggerEl);
+            });
         },
         clearMessages() {
             this.errors = {};
