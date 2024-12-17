@@ -32,6 +32,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class TicketController extends Controller
 {
@@ -332,7 +333,25 @@ class TicketController extends Controller
                 },
                 'timeBookings' => function ($q) {
                     $q->select('id', 'ticket_id', 'booked_date');
-                }
+                },
+                'latestComment' => function ($q) {
+                    $q->select(
+                        'ticket_comments.id',
+                        'ticket_comments.ticket_id',
+                        'ticket_comments.comment',
+                        'ticket_comments.created_at',
+                        'ticket_comments.updated_at',
+                        'ticket_comments.created_by',
+                        'ticket_comments.updated_by',
+                        'ticket_comments.tagged_users',
+                        'created_user.name AS created_user_name',
+                        'updated_user.name AS updated_user_name',
+                        DB::RAW('IF (ticket_comments.updated_by , ticket_comments.updated_by, ticket_comments.created_by) AS user_id'),
+                        DB::RAW('IF (ticket_comments.updated_by , updated_user.name, created_user.name) AS created_updated_user_name'),
+                    )
+                        ->leftJoin('users AS created_user', 'created_user.id', 'ticket_comments.created_by')
+                        ->leftJoin('users AS updated_user', 'updated_user.id', 'ticket_comments.updated_by');
+                },
             ])
             ->withCount([
                 'actions',
@@ -409,6 +428,9 @@ class TicketController extends Controller
             ->get()->each(function ($ticket) {
                 $ticketDoneActions = $ticket->actions->where('status', TicketAction::getStatusDone());
                 $ticket->is_show_delete_btn = Auth::user()->is_admin && $ticket->timeBookings->count() == 0 && $ticketDoneActions->count() == 0 && $ticket->moved_back_to_dev_action_count == 0 ?? false;
+                if ($ticket->latestComment) {
+                    $ticket->latestComment->comment = Str::limit(strip_tags(strip_tags($ticket->latestComment->comment)), 120, '...');
+                }
             });
 
         $hasValue = false;

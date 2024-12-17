@@ -10,6 +10,7 @@ use App\Services\InitiativeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class MyTicketController extends Controller
 {
@@ -44,7 +45,25 @@ class MyTicketController extends Controller
                 },
                 'functionality' => function ($q) {
                     $q->select('id', 'name', 'display_name');
-                }
+                },
+                'latestComment' => function ($q) {
+                    $q->select(
+                        'ticket_comments.id',
+                        'ticket_comments.ticket_id',
+                        'ticket_comments.comment',
+                        'ticket_comments.created_at',
+                        'ticket_comments.updated_at',
+                        'ticket_comments.created_by',
+                        'ticket_comments.updated_by',
+                        'ticket_comments.tagged_users',
+                        'created_user.name AS created_user_name',
+                        'updated_user.name AS updated_user_name',
+                        DB::RAW('IF (ticket_comments.updated_by , ticket_comments.updated_by, ticket_comments.created_by) AS user_id'),
+                        DB::RAW('IF (ticket_comments.updated_by , updated_user.name, created_user.name) AS created_updated_user_name'),
+                    )
+                        ->leftJoin('users AS created_user', 'created_user.id', 'ticket_comments.created_by')
+                        ->leftJoin('users AS updated_user', 'updated_user.id', 'ticket_comments.updated_by');
+                },
             ])
 
             ->where('tickets.initiative_id', $initiative_id)
@@ -72,7 +91,11 @@ class MyTicketController extends Controller
             })
             ->groupBy('tickets.id', 'tickets.initiative_id', 'tickets.name', 'tickets.functionality_id', 'tickets.composed_name', 'tickets.asana_task_id', 'tickets.macro_status')
             ->orderBy('tickets.id')
-            ->get();
+            ->get()->each(function ($ticket) {
+                if ($ticket->latestComment) {
+                    $ticket->latestComment->comment = Str::limit(strip_tags(strip_tags($ticket->latestComment->comment)), 120, '...');
+                }
+            });
         // ->paginate(10);
         $meta['task_type'] = Ticket::getAllTypes();
         $initiativeData = array(

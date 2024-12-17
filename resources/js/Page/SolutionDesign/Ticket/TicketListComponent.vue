@@ -642,7 +642,24 @@ export default {
         tooltipContentForTicketName(task) {
             const createdAtLabel = this.$t('ticket.list.row_hover_tooltip_created_at_text');
             const createdByLabel = this.$t('ticket.list.row_hover_tooltip_created_by_text');
-            return `<strong>${createdAtLabel}</strong>${task.display_created_at}<br><strong>${createdByLabel}</strong>${task.display_created_by}`;
+            const commentLabel = this.$t('ticket.list.row_hover_tooltip_comment_text');
+            const commentedAtLabel = this.$t('ticket.list.row_hover_tooltip_commented_at_text');
+
+            let commentHtml = "";
+            if (task?.latest_comment?.comment != null) {
+                const comment = task?.latest_comment?.comment;
+                const userName = task?.latest_comment?.created_updated_user_name;
+                const createdAt = task?.latest_comment?.display_updated_at ?? task?.latest_comment?.display_created_at;
+                commentHtml = `<strong class='small'>${commentLabel}</strong> <span class="badge bg-secondary d-block-inline text-wrap fst-italic"> ${userName}</span> : <span class="fst-italic">${comment}</span> <strong class='small fst-italic'>${commentedAtLabel}</strong> <span class="badge bg-secondary d-block-inline text-wrap fst-italic">${createdAt}</span>`;
+            }
+            return `<div class='row w-100 g-1 align-items-center small'>
+                        <div class='col-12 text-start'>
+                            <strong class='small'>${createdByLabel}</strong> <span>${task.display_created_by}</span> <strong class='small'>${createdAtLabel}</strong> <span>${task.display_created_at}</span>
+                        </div>
+                        <div class='col-12 text-start'>
+                            ${commentHtml}
+                        </div>
+                    </div>`;
         },
         copyToClipboard(task) {
             this.copyLink = `${window.location.origin}/solution-design/${this.initiative_id}/ticket-detail/${task.id}`;

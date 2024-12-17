@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class AllTicketsWithoutInitiativeController extends Controller
 {
@@ -20,7 +21,7 @@ class AllTicketsWithoutInitiativeController extends Controller
     {
         $filters = $request->get('filters');
 
-        $tickets = Ticket::select(
+        $ticketsQuery = Ticket::select(
             'id',
             'name',
             'type',
@@ -47,7 +48,25 @@ class AllTicketsWithoutInitiativeController extends Controller
                 },
                 'initiative' => function ($query) {
                     $query->select('id', 'name');
-                }
+                },
+                'latestComment' => function ($q) {
+                    $q->select(
+                        'ticket_comments.id',
+                        'ticket_comments.ticket_id',
+                        'ticket_comments.comment',
+                        'ticket_comments.created_at',
+                        'ticket_comments.updated_at',
+                        'ticket_comments.created_by',
+                        'ticket_comments.updated_by',
+                        'ticket_comments.tagged_users',
+                        'created_user.name AS created_user_name',
+                        'updated_user.name AS updated_user_name',
+                        DB::RAW('IF (ticket_comments.updated_by , ticket_comments.updated_by, ticket_comments.created_by) AS user_id'),
+                        DB::RAW('IF (ticket_comments.updated_by , updated_user.name, created_user.name) AS created_updated_user_name'),
+                    )
+                        ->leftJoin('users AS created_user', 'created_user.id', 'ticket_comments.created_by')
+                        ->leftJoin('users AS updated_user', 'updated_user.id', 'ticket_comments.updated_by');
+                },
             ])
             ->where('macro_status', '!=', Ticket::MACRO_STATUS_DONE)
             ->when(!empty($filters['action_owner']) != '', function (Builder $query) use ($filters) {
@@ -77,7 +96,21 @@ class AllTicketsWithoutInitiativeController extends Controller
                 $query->where('is_priority', 1);
             })
             ->paginate(30);
-        return ApiHelper::response(true, '', $tickets, 200);
+        $tickets = $ticketsQuery->map(function ($ticket) {
+            if ($ticket->latestComment) {
+                $ticket->latestComment->comment = isset($ticket->latestComment->comment)
+                    ? Str::limit(strip_tags($ticket->latestComment->comment), 120, '...')
+                    : null;
+            }
+            return $ticket;
+        });
+
+        $retData = [
+            'data' => $tickets,
+            'current_page' => $ticketsQuery->currentPage(),
+            'last_page' => $ticketsQuery->lastPage(),
+        ];
+        return ApiHelper::response(true, '', $retData, 200);
     }
 
     public function getInitialData(Request $request)

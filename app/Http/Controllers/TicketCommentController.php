@@ -180,6 +180,7 @@ class TicketCommentController extends Controller
             'created_user.name AS created_user_name',
             'updated_user.name AS updated_user_name',
             DB::RAW('IF (ticket_comments.updated_by , ticket_comments.updated_by, ticket_comments.created_by) AS user_id'),
+            DB::RAW('IF (ticket_comments.updated_by , updated_user.name, created_user.name) AS created_updated_user_name'),
         )
             ->leftJoin('users AS created_user', 'created_user.id', 'ticket_comments.created_by')
             ->leftJoin('users AS updated_user', 'updated_user.id', 'ticket_comments.updated_by');
