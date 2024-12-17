@@ -415,10 +415,6 @@ export default {
             });
         },
         tooltipContentForTicketName(ticket) {
-            // const createdAtLabel = this.$t('ticket.list.row_hover_tooltip_created_at_text');
-            // const createdByLabel = this.$t('ticket.list.row_hover_tooltip_created_by_text');
-            // return `<strong>${createdAtLabel}</strong>${ticket.display_created_at}<br><strong>${createdByLabel}</strong>${ticket.display_created_by}`;
-
             const createdAtLabel = this.$t('ticket.list.row_hover_tooltip_created_at_text');
             const createdByLabel = this.$t('ticket.list.row_hover_tooltip_created_by_text');
             const commentLabel = this.$t('ticket.list.row_hover_tooltip_comment_text');
