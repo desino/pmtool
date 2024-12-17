@@ -55,11 +55,9 @@ class TicketCommentController extends Controller
             return ApiHelper::response($status, __('messages.ticket.not_found'), '', 400);
         }
 
-        $taggedUsers = [];
         $userIds = "";
         if (!empty($request->post('tagged_users'))) {
-            $taggedUsers = array_column($request->post('tagged_users'), 'id');
-            $userIds = implode(',', $taggedUsers);
+            $userIds = implode(',', $request->post('tagged_users'));
         }
         $insertData = [
             'initiative_id' => $initiative_id,
@@ -75,6 +73,56 @@ class TicketCommentController extends Controller
         DB::beginTransaction();
         try {
             $ticketComment = TicketComment::create($insertData);
+            $ticketComment = $this->selectDataForListAndCreatedUpdated()->where('ticket_comments.id', $ticketComment->id)->first();
+            $retData['comment'] = $ticketComment;
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            $status = false;
+            $message = __('messages.something_went_wrong');
+            $statusCode = 500;
+            logger()->error($e);
+        }
+        return ApiHelper::response($status, $message, $retData, $statusCode);
+    }
+
+    public function update(TicketCommentRequest $request, $initiative_id, $ticket_id)
+    {
+
+        $status = false;
+        $initiative = InitiativeService::getInitiative($request, $initiative_id);
+        if (!$initiative) {
+            return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
+        }
+
+        $ticket = Ticket::find($ticket_id);
+        if (!$ticket) {
+            return ApiHelper::response($status, __('messages.ticket.not_found'), '', 400);
+        }
+
+        $ticketComment = TicketComment::find($request->get('id'));
+        if (!$ticketComment) {
+            return ApiHelper::response($status, __('messages.comment.not_found'), '', 400);
+        }
+
+        $userIds = "";
+        if (!empty($request->post('tagged_users'))) {
+            $userIds = implode(',', $request->post('tagged_users'));
+        }
+
+        $updateData = [
+            'initiative_id' => $initiative_id,
+            'ticket_id' => $ticket_id,
+            'type' => $request->post('type'),
+            'comment' => $request->post('comment'),
+            'tagged_users' => $userIds,
+        ];
+        $status = true;
+        $message = __('messages.comment.store_success');
+        $statusCode = 200;
+        DB::beginTransaction();
+        try {
+            $ticketComment->update($updateData);
             $ticketComment = $this->selectDataForListAndCreatedUpdated()->where('ticket_comments.id', $ticketComment->id)->first();
             $retData['comment'] = $ticketComment;
             DB::commit();

@@ -31,7 +31,7 @@
                                                 <a href="javascript:" data-bs-toggle="tooltip"
                                                     data-bs-placement="bottom"
                                                     :title="$t('comment.edit_comment_but_text')" role="button"
-                                                    class="btn-link me-2">
+                                                    class="btn-link me-2" @click.stop="editComment(comment)">
                                                     <i class="bi bi-pencil text-primary"></i>
                                                 </a>
                                                 <a href="javascript:" data-bs-toggle="tooltip"
@@ -44,9 +44,47 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-12">
-                                        <p v-html="comment.comment">
+                                    <div class="col-12 optimize-image img">
+                                        <p v-if="!comment.is_edit_comment" v-html="comment.comment">
                                         </p>
+                                    </div>
+                                    <div class="col-12" v-if="comment.is_edit_comment">
+                                        <div class="row g-1 w-100">
+                                            <div class="col-12">
+                                                <TinyMceEditor v-model="editForm.comment" :init="{
+                                                    height: 175,
+                                                    menubar: '',
+                                                    plugins: [],
+                                                    toolbar: [],
+                                                }" />
+                                                <div v-if="errors.comment" class="text-danger mt-2">
+                                                    <span v-for="(error, index) in errors.comment" :key="index">{{
+                                                        error }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <multiselect :multiple="true" v-model="editTaggedUsers"
+                                                    :class="{ 'is-invalid': errors.tagged_users }" :options="users"
+                                                    :placeholder="$t('comment.comment_tagged_users_placeholder')"
+                                                    label="name" track-by="id">
+                                                </multiselect>
+                                                <div v-if="errors.tagged_users" class="text-danger mt-2">
+                                                    <span v-for="(error, index) in errors.tagged_users" :key="index">{{
+                                                        error }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <button type="button" @click="updateComment"
+                                                    class="btn btn-desino w-100 border-0">{{
+                                                        $t('comment.comment_update_but_text') }}</button>
+                                            </div>
+                                            <div class="col-6">
+                                                <button type="button" class="btn btn-danger w-100 border-0"
+                                                    @click="closeEditForm(comment)">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </li>
@@ -68,7 +106,7 @@
                         </div>
                     </div>
                     <div class="col-12 mb-3">
-                        <multiselect :multiple="true" v-model="formData.tagged_users"
+                        <multiselect :multiple="true" v-model="formTaggedUsers"
                             :class="{ 'is-invalid': errors.tagged_users }" :options="users"
                             :placeholder="$t('comment.comment_tagged_users_placeholder')" label="name" track-by="id">
                         </multiselect>
@@ -81,7 +119,7 @@
                             $t('comment.comment_save_but_text') }}</button>
                     </div>
                     <div class="col-6">
-                        <button type="button" class="btn btn-danger w-100 border-0" data-bs-dismiss="modal">
+                        <button type="button" class="btn btn-danger w-100 border-0" @click="resetForm">
                             <i class="bi bi-x-lg"></i>
                         </button>
                     </div>
@@ -121,6 +159,14 @@ export default {
                 comment: '',
                 tagged_users: [],
             },
+            editForm: {
+                id: '',
+                initiative_id: '',
+                ticket_id: '',
+                type: 1,
+                comment: '',
+                tagged_users: [],
+            },
             comments: [],
             firstComment: {},
             latestComment: {},
@@ -133,6 +179,26 @@ export default {
     },
     computed: {
         ...mapGetters(['user']),
+        formTaggedUsers: {
+            get() {
+                return this.formData.tagged_users.map(id =>
+                    this.users.find(user => user.id === id)
+                ).filter(user => user);
+            },
+            set(value) {
+                this.formData.tagged_users = value.map(user => user.id);
+            }
+        },
+        editTaggedUsers: {
+            get() {
+                return this.editForm.tagged_users.map(id =>
+                    this.users.find(user => user.id === id)
+                ).filter(user => user);
+            },
+            set(value) {
+                this.editForm.tagged_users = value.map(user => user.id);
+            }
+        }
     },
     methods: {
         ...mapActions(['setLoading']),
@@ -194,6 +260,23 @@ export default {
                 this.handleError(error);
             }
         },
+        editComment(comment) {
+            this.comments.forEach(c => c.is_edit_comment = false);
+            this.editFormReset();
+            comment.is_edit_comment = true;
+            let taggedUserIds = [];
+            if (comment?.tagged_users != '') {
+                taggedUserIds = comment.tagged_users.split(',').map(str => parseInt(str.trim()));
+            }
+            this.editForm = {
+                id: comment.id,
+                initiative_id: this.ticketData.initiative_id,
+                ticket_id: this.ticketData.id,
+                type: 1,
+                comment: comment.comment,
+                tagged_users: taggedUserIds,
+            };
+        },
         showConfirmation(modalType, callback, callbackParam, index = null, event = null) {
             if (modalType === 'deleteComment') {
                 this.modalTitle = this.$t('comment.delete.conformation_popup_title');
@@ -204,9 +287,29 @@ export default {
 
             this.$refs.dynamicConfirmationModal.showModal();
         },
+        closeEditForm(comment) {
+            this.editFormReset();
+            comment.is_edit_comment = false;
+        },
         resetForm() {
             this.formData.comment = '';
-            this.formData.tagged_users = [];
+            this.formTaggedUsers = [];
+        },
+        async updateComment() {
+            try {
+                this.setLoading(true);
+                const { content: { comment }, message } = await CommentService.update(this.editForm.initiative_id, this.editForm.ticket_id, this.editForm);
+                this.comments = this.comments.map(c => c.id === comment.id ? comment : c);
+                showToast(message, 'success');
+                await this.setLoading(false);
+                this.resetForm();
+            } catch (error) {
+                this.handleError(error);
+            }
+        },
+        editFormReset() {
+            this.editForm.comment = '';
+            this.editTaggedUsers = [];
         },
         initializeTooltips() {
             const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');

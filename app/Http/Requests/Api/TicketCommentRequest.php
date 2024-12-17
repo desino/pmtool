@@ -25,6 +25,7 @@ class TicketCommentRequest extends FormRequest
         return [
             'comment' => 'required|string',
             'tagged_users' => 'array',
+            'tagged_users.*' => 'exists:users,id',
         ];
     }
 }

@@ -317,6 +317,7 @@
     "messages.test_case.not_found": "Test case not found.",
     "messages.test_case.delete_success": "Test case deleted successfully.",
     "messages.comment.store_success": "Comment created successfully.",
+    "messages.comment.not_found": "Comment not found.",
     "login_title": "Login",
     "login_page_title": "Login",
     "login_input_email": "Email",
@@ -888,5 +889,6 @@
     "comment.edit_comment_but_text": "Edit",
     "comment.delete_comment_but_text": "Delete",
     "comment.delete.conformation_popup_title": "Delete Comment",
-    "comment.delete.conformation_popup_text": "Are you sure you want to delete this comment?"
+    "comment.delete.conformation_popup_text": "Are you sure you want to delete this comment?",
+    "comment.comment_update_but_text": "Update"
 }
