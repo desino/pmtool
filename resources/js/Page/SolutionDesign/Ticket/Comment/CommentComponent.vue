@@ -308,7 +308,10 @@ export default {
             }
         },
         appendPreviousActionComment(comment) {
-            this.comments = [comment, ...this.comments.filter(c => c.id !== comment.id)].sort((a, b) => a.id - b.id);
+            // this.comments = [...this.comments,comment];
+            // this.comments = [comment, ...this.comments.filter(c => c.id !== comment.id)].sort((a, b) => a.id - b.id);
+
+            this.comments.push(comment);
         },
         editFormReset() {
             this.editForm.comment = '';

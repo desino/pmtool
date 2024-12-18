@@ -22,10 +22,18 @@ class TicketCommentRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $appendRules = [
             'comment' => 'required|string',
+        ];
+        if (isset($this->comment_type)) {
+            $appendRules = [
+                'comment' => 'nullable|string',
+            ];
+        }
+        return [
+            // 'comment' => 'required|string',
             'tagged_users' => 'array',
             'tagged_users.*' => 'exists:users,id',
-        ];
+        ] + $appendRules;
     }
 }

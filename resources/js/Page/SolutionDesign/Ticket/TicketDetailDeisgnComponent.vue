@@ -188,7 +188,7 @@
                                 <div v-if="errors.description" class="text-danger mt-2">
                                     <span v-for="(error, index) in errors.description" :key="index">{{
                                         error
-                                    }}</span>
+                                        }}</span>
                                 </div>
                                 <button class="btn w-100 btn-desino text-white fw-bold rounded my-2"
                                     @click="updateTaskDescription">
@@ -321,7 +321,7 @@
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">{{
                                         $t('ticket_details_input_dev_estimation_time')
-                                    }} <strong class="text-danger">*</strong>
+                                        }} <strong class="text-danger">*</strong>
                                     </label>
                                     <input v-model="estimatedHoursFormData.dev_estimation_time"
                                         :class="{ 'is-invalid': errors.dev_estimation_time }" class="form-control"
@@ -706,13 +706,14 @@ export default {
         },
         async changePreviousActionStatus(passData, previousActionComment) {
             try {
-                // console.log('previousActionComment :: ', previousActionComment);
                 await this.setLoading(true);
                 const { message } = await ticketService.changePreviousActionStatus(passData);
                 showToast(message, 'success');
                 await this.setLoading(false);
                 this.fetchTicketData(this.localTicketId);
-                this.$refs.commentComponent.appendPreviousActionComment(previousActionComment);
+                if (previousActionComment != '') {
+                    this.$refs.commentComponent.appendPreviousActionComment(previousActionComment);
+                }
             } catch (error) {
                 this.handleError(error);
             }

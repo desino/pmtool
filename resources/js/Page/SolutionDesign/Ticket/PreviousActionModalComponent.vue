@@ -97,6 +97,7 @@ export default {
                 type: 2,
                 comment: '',
                 tagged_users: [],
+                comment_type: 'previous_action',
             },
             previousActionFormData: {},
             errors: {},
@@ -118,19 +119,20 @@ export default {
     methods: {
         ...mapActions(['setLoading']),
         async confirm() {
-            // console.log('this.ticketData :: ', this.ticketData);
-            // this.$emit('confirm', this.previousActionFormData);
-
+            let storedComment = "";
             this.clearMessages();
             try {
-                this.setLoading(true);
-                this.formData.initiative_id = this.ticketData.initiative_id;
-                this.formData.ticket_id = this.ticketData.id;
-                const { content: { comment }, message } = await CommentService.store(this.formData);
-                await this.setLoading(false);
-                // showToast(message, 'success');
-                this.resetForm();
-                this.$emit('confirm', this.previousActionFormData, comment);
+                if (this.formData.comment != '') {
+                    this.setLoading(true);
+                    this.formData.initiative_id = this.ticketData.initiative_id;
+                    this.formData.ticket_id = this.ticketData.id;
+                    const { content: { comment }, message } = await CommentService.store(this.formData);
+                    await this.setLoading(false);
+                    // showToast(message, 'success');
+                    this.resetForm();
+                    storedComment = comment;
+                }
+                this.$emit('confirm', this.previousActionFormData, storedComment);
                 this.hideModal();
             } catch (error) {
                 this.handleError(error);

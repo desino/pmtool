@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Helper\ApiHelper;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\TicketCommentRequest;
-use App\Models\Initiative;
 use App\Models\Ticket;
 use App\Models\TicketComment;
 use App\Services\InitiativeService;

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('ticket_id');
             $table->integer('type');
-            $table->longText('comment');
+            $table->longText('comment')->nullable();
             $table->string('tagged_users')->nullable();
             $table->bigInteger('created_by');
             $table->bigInteger('updated_by')->nullable();
