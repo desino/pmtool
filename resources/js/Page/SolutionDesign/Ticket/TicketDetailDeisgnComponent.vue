@@ -126,17 +126,17 @@
                             </button>
                             <ul class="dropdown-menu">
                                 <li v-for="action in previous_actions" :key="action.id">
-                                    <!-- <a class="dropdown-item"
+                                    <a class="dropdown-item"
                                         :class="{ 'active': action.action == selected_previous_action_id }"
                                         href="javascript:void(0)" @click="handlePreviousActionStatus(action)">
                                         {{ action.action_name }}
-                                    </a> -->
-                                    <a class="dropdown-item"
+                                    </a>
+                                    <!-- <a class="dropdown-item"
                                         :class="{ 'active': action.action == selected_previous_action_id }"
                                         href="javascript:void(0)"
                                         @click="showConfirmation('handlePreviousActionStatus', handlePreviousActionStatus, action)">
                                         {{ action.action_name }}
-                                    </a>
+                                    </a> -->
                                 </li>
                             </ul>
                         </div>
@@ -201,7 +201,7 @@
                         </div>
                         <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
                             <div v-if="this.user && isPassCommentData">
-                                <CommentComponent :ticketData="ticketData" :users="users" />
+                                <CommentComponent ref="commentComponent" :ticketData="ticketData" :users="users" />
                             </div>
                         </div>
                     </div>
@@ -348,6 +348,8 @@
     </div>
     <ConfirmationModal ref="dynamicConfirmationModal" :title="modalTitle" :message="modalMessage"
         @confirm="modalConfirmCallback" />
+    <PreviousActionModalComponent ref="previousActionModal" :ticketData="ticketData" :users="users" :title="modalTitle"
+        :message="modalMessage" @confirm="changePreviousActionStatus" />
     <span id="copyableLink" style="cursor: pointer; text-decoration: underline; color: blue; display: none">
         <a v-bind:href="copyLink">{{ copyLabel }}</a>
     </span>
@@ -369,6 +371,7 @@ import eventBus from "./../../../eventBus.js";
 import TimeBookingForTicketDetailComponent from './TimeBookingForTicketDetailComponent.vue';
 import store from '../../../store/index.js';
 import CommentComponent from './Comment/CommentComponent.vue';
+import PreviousActionModalComponent from './PreviousActionModalComponent.vue';
 
 export default {
     name: 'SolutionDesignComponent',
@@ -379,7 +382,8 @@ export default {
         GlobalMessage,
         Multiselect,
         TimeBookingForTicketDetailComponent,
-        CommentComponent
+        CommentComponent,
+        PreviousActionModalComponent
     },
     props: ['initiative_id', 'ticket_id'],
     data() {
@@ -655,6 +659,11 @@ export default {
                 return false;
             }
 
+            this.modalTitle = this.$t('ticket_detail.confirm_alert.current_action_change_status_title');
+            this.modalMessage = this.$t('ticket_detail.confirm_alert.current_previous_action_status_text', {
+                'PREVIOUS_ACTION_NAME': `<span class='badge bg-secondary'>${action?.action_name}</span>`
+            });
+
             this.selected_previous_action_id = action.action;
 
             this.previousActionFormData = {
@@ -668,7 +677,9 @@ export default {
                 previous_action_id: this.selected_previous_action_id,
                 action_text: 'previous_action',
             }
-            this.changePreviousActionStatus(this.previousActionFormData);
+
+            this.$refs.previousActionModal.showModal(this.previousActionFormData);
+            // this.changePreviousActionStatus(this.previousActionFormData);
         },
         async changeActionUser(passData) {
             try {
@@ -693,13 +704,15 @@ export default {
                 this.handleError(error);
             }
         },
-        async changePreviousActionStatus(passData) {
+        async changePreviousActionStatus(passData, previousActionComment) {
             try {
+                // console.log('previousActionComment :: ', previousActionComment);
                 await this.setLoading(true);
                 const { message } = await ticketService.changePreviousActionStatus(passData);
                 showToast(message, 'success');
                 await this.setLoading(false);
                 this.fetchTicketData(this.localTicketId);
+                this.$refs.commentComponent.appendPreviousActionComment(previousActionComment);
             } catch (error) {
                 this.handleError(error);
             }

@@ -126,8 +126,8 @@
                 </div>
             </div>
         </div>
-        <ConfirmationModal ref="dynamicConfirmationModal" :title="modalTitle" :message="modalMessage"
-            @confirm="modalConfirmCallback" />
+        <ConfirmationModal ref="dynamicConfirmationModal" :modalId="'dynamicConfirmationForCommentModal'"
+            :title="modalTitle" :message="modalMessage" @confirm="modalConfirmCallback" />
     </div>
 </template>
 
@@ -306,6 +306,9 @@ export default {
             } catch (error) {
                 this.handleError(error);
             }
+        },
+        appendPreviousActionComment(comment) {
+            this.comments = [comment, ...this.comments.filter(c => c.id !== comment.id)].sort((a, b) => a.id - b.id);
         },
         editFormReset() {
             this.editForm.comment = '';
