@@ -1,6 +1,9 @@
 <template>
-    <editor ref="htmlEditorRef" v-model="content" :init="config" @change="update" @init="loaded" @keyup="update"
-        @redo="update" @undo="update" style="height: config.height;" />
+    <!-- <editor ref="htmlEditorRef" v-model="content" :init="config" @change="update" @init="loaded" @keyup="update"
+        @redo="update" @undo="update" style="height: config.height;" /> -->
+
+    <editor ref="htmlEditorRef" v-model="content" :init="mergedConfig" @change="update" @init="loaded" @keyup="update"
+        @redo="update" @undo="update" style="height: mergedConfig.height;" />
 </template>
 
 <script lang="ts">
@@ -14,6 +17,10 @@ export default defineComponent({
             type: String,
             required: false,
             default: '',
+        },
+        init: {
+            type: Object,
+            default: () => ({}),
         },
     },
     components: {
@@ -110,6 +117,12 @@ export default defineComponent({
                         event.preventDefault();
                     });
                 },
+            };
+        },
+        mergedConfig() {
+            return {
+                ...this.config,
+                ...this.init,
             };
         },
     },

@@ -43,7 +43,8 @@
                                         </div>
                                     </div>
                                     <div class="col-12 optimize-image img">
-                                        <span class="actual_comment w-100 d-block" v-if="!comment.is_edit_comment" v-html="comment.comment"></span>
+                                        <span class="actual_comment w-100 d-block" v-if="!comment.is_edit_comment"
+                                            v-html="comment.comment"></span>
                                     </div>
                                     <div class="col-12" v-if="comment.is_edit_comment">
                                         <div class="row g-1 w-100 align-items-center">
@@ -71,7 +72,9 @@
                                                 </div>
                                             </div>
                                             <div class="col-2">
-                                                <button type="button" @click="updateComment" class="btn btn-desino w-100 border-0"><i class="bi bi-floppy"></i></button>
+                                                <button type="button" @click="updateComment"
+                                                    class="btn btn-desino w-100 border-0"><i
+                                                        class="bi bi-floppy"></i></button>
                                             </div>
                                             <div class="col-2">
                                                 <button type="button" class="btn btn-danger w-100 border-0"
@@ -91,10 +94,10 @@
                 <div class="row g-1 w-100 align-items-center">
                     <div class="col-12">
                         <TinyMceEditor v-model="formData.comment" :init="{
-                            height : 250,
-                            menubar: '',
-                            plugins: [],
-                            toolbar: false,
+                            height: 250,
+                            // menubar: '',
+                            // plugins: [],
+                            // toolbar: false,
                         }" />
                         <div v-if="errors.comment" class="text-danger mt-2">
                             <span v-for="(error, index) in errors.comment" :key="index">{{ error }}</span>
@@ -110,7 +113,8 @@
                         </div>
                     </div>
                     <div class="col-4">
-                        <button type="button" @click="saveComment" class="btn btn-desino w-100 border-0"><i class="bi bi-floppy"></i></button>
+                        <button type="button" @click="saveComment" class="btn btn-desino w-100 border-0"><i
+                                class="bi bi-floppy"></i></button>
                     </div>
                 </div>
             </div>
@@ -332,5 +336,8 @@ export default {
 };
 </script>
 <style>
-#ticketCommentsSection .tox-editor-header, .tox-statusbar {  display: none !important;}
+#ticketCommentsSection .tox-editor-header,
+.tox-statusbar {
+    display: none !important;
+}
 </style>

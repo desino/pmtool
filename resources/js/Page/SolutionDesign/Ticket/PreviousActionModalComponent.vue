@@ -17,7 +17,7 @@
                             <TinyMceEditor v-model="formData.comment" :init="{
                                 height: 175,
                                 menubar: '',
-                                plugins: [],
+                                // plugins: [],
                                 toolbar: [],
                             }" />
                             <div v-if="errors.comment" class="text-danger mt-2">
@@ -139,6 +139,7 @@ export default {
             }
         },
         showModal(previousActionFormData) {
+            this.resetForm();
             this.previousActionFormData = previousActionFormData;
             const modal = new Modal(document.getElementById('previousActionModal'), {
                 backdrop: 'static',
