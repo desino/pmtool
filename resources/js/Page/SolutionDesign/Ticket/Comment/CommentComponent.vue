@@ -1,68 +1,65 @@
 <template>
-    <div>
+    <div id="ticketCommentsSection">
         <div class="card">
-            <div class="card-header border-0 fw-bold bg-desino text-white small">
-                {{ $t('comment.comment_title') }}
-            </div>
-            <div class="card-body max-h-ticket-comment px-0">
+            <div class="card-body ps-2 pe-0 pt-2 pb-0">
                 <div class="w-100 mb-3">
                     <div class="w-100 text-center">
                         <button v-if="hasMore" @click="getComments()" class="btn btn-info text-white btn-sm border-0">
                             <i class="bi bi-clock-history"></i>
                         </button>
                     </div>
-                    <div class="w-100">
+                    <div class="w-100 max-h-ticket-comment">
                         <ul class="list-group list-group-flush mb-3 mt-2">
                             <li v-if="comments.length > 0" v-for="(comment, index) in comments" :key="index"
-                                class="border list-group-item p-1 list-group-item-action border-top-0 border-start-0 border-end-0">
+                                class="border list-group-item p-1 list-group-item-action border-top-0 border-start-0 border-end-0"
+                                :class="{ 'border-bottom-0': index == comments.length - 1 }">
                                 <div class="row g-1 w-100 align-items-center"
                                     :class="{ 'bg-warning-subtle': checkTagUser(comment) }">
                                     <div class="col-12">
                                         <div class="row g-1 w-100 align-items-center">
                                             <div class="col-10">
-                                                <div class="badge bg-secondary text-white" style="font-size: 0.5rem;">
-                                                    {{ comment.display_updated_at ?? comment.display_created_at }}
-                                                </div>
-                                                <div class="fw-bold text-primary">
+                                                <span class="fw-bold text-primary small">
                                                     {{ comment.updated_user_name ?? comment.created_user_name }}
-                                                </div>
+                                                </span>
+                                                <span class="fw-bold text-secondary ms-2" style="font-size: 0.6rem;">
+                                                    {{ comment.display_updated_at ?? comment.display_created_at }}
+                                                </span>
                                             </div>
                                             <div class="col-2 text-end" v-if="comment.user_id == user.id">
                                                 <a href="javascript:" data-bs-toggle="tooltip"
                                                     data-bs-placement="bottom"
                                                     :title="$t('comment.edit_comment_but_text')" role="button"
-                                                    class="btn-link me-2" @click.stop="editComment(comment)">
-                                                    <i class="bi bi-pencil text-primary"></i>
+                                                    class="btn-link me-1" @click.stop="editComment(comment)">
+                                                    <i class="bi bi-pencil-fill text-primary"></i>
                                                 </a>
                                                 <a href="javascript:" data-bs-toggle="tooltip"
                                                     data-bs-placement="bottom"
                                                     :title="$t('comment.delete_comment_but_text')"
                                                     @click.stop="showConfirmation('deleteComment', deleteComment, comment)"
                                                     role="button" class="btn-link">
-                                                    <i class="bi bi-x-lg text-danger"></i>
+                                                    <i class="bi bi-trash3-fill text-danger"></i>
                                                 </a>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-12 optimize-image img">
-                                        <p v-if="!comment.is_edit_comment" v-html="comment.comment">
-                                        </p>
+                                        <span class="actual_comment w-100 d-block" v-if="!comment.is_edit_comment" v-html="comment.comment"></span>
                                     </div>
                                     <div class="col-12" v-if="comment.is_edit_comment">
-                                        <div class="row g-1 w-100">
+                                        <div class="row g-1 w-100 align-items-center">
                                             <div class="col-12">
                                                 <TinyMceEditor v-model="editForm.comment" :init="{
                                                     height: 175,
                                                     menubar: '',
                                                     plugins: [],
-                                                    toolbar: [],
+                                                    toolbar: false,
                                                 }" />
                                                 <div v-if="errors.comment" class="text-danger mt-2">
                                                     <span v-for="(error, index) in errors.comment" :key="index">{{
                                                         error }}</span>
                                                 </div>
                                             </div>
-                                            <div class="col-12 mb-3">
+                                            <div class="col-8">
                                                 <multiselect :multiple="true" v-model="editTaggedUsers"
                                                     :class="{ 'is-invalid': errors.tagged_users }" :options="users"
                                                     :placeholder="$t('comment.comment_tagged_users_placeholder')"
@@ -73,12 +70,10 @@
                                                         error }}</span>
                                                 </div>
                                             </div>
-                                            <div class="col-6">
-                                                <button type="button" @click="updateComment"
-                                                    class="btn btn-desino w-100 border-0">{{
-                                                        $t('comment.comment_update_but_text') }}</button>
+                                            <div class="col-2">
+                                                <button type="button" @click="updateComment" class="btn btn-desino w-100 border-0"><i class="bi bi-floppy"></i></button>
                                             </div>
-                                            <div class="col-6">
+                                            <div class="col-2">
                                                 <button type="button" class="btn btn-danger w-100 border-0"
                                                     @click="closeEditForm(comment)">
                                                     <i class="bi bi-x-lg"></i>
@@ -92,20 +87,20 @@
                     </div>
                 </div>
             </div>
-            <div class="card-footer bg-transparent">
-                <div class="row g-1 w-100">
+            <div class="card-footer bg-transparent p-2">
+                <div class="row g-1 w-100 align-items-center">
                     <div class="col-12">
                         <TinyMceEditor v-model="formData.comment" :init="{
-                            height: 175,
+                            height : 250,
                             menubar: '',
                             plugins: [],
-                            toolbar: [],
+                            toolbar: false,
                         }" />
                         <div v-if="errors.comment" class="text-danger mt-2">
                             <span v-for="(error, index) in errors.comment" :key="index">{{ error }}</span>
                         </div>
                     </div>
-                    <div class="col-12 mb-3">
+                    <div class="col-8">
                         <multiselect :multiple="true" v-model="formTaggedUsers"
                             :class="{ 'is-invalid': errors.tagged_users }" :options="users"
                             :placeholder="$t('comment.comment_tagged_users_placeholder')" label="name" track-by="id">
@@ -114,14 +109,8 @@
                             <span v-for="(error, index) in errors.tagged_users" :key="index">{{ error }}</span>
                         </div>
                     </div>
-                    <div class="col-6">
-                        <button type="button" @click="saveComment" class="btn btn-desino w-100 border-0">{{
-                            $t('comment.comment_save_but_text') }}</button>
-                    </div>
-                    <div class="col-6">
-                        <button type="button" class="btn btn-danger w-100 border-0" @click="resetForm">
-                            <i class="bi bi-x-lg"></i>
-                        </button>
+                    <div class="col-4">
+                        <button type="button" @click="saveComment" class="btn btn-desino w-100 border-0"><i class="bi bi-floppy"></i></button>
                     </div>
                 </div>
             </div>
@@ -342,3 +331,6 @@ export default {
     }
 };
 </script>
+<style>
+#ticketCommentsSection .tox-editor-header, .tox-statusbar {  display: none !important;}
+</style>

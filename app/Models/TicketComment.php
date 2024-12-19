@@ -31,13 +31,13 @@ class TicketComment extends Model
     protected function displayCreatedAt(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->created_at ? $this->created_at->format('d/m/Y H:i:s A') : '',
+            get: fn() => $this->created_at ? $this->created_at->format('M j, Y \a\t g:ia') : '',
         );
     }
     protected function displayUpdatedAt(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->updated_at ? $this->updated_at->format('d/m/Y H:i:s A') : null,
+            get: fn() => $this->updated_at ? $this->updated_at->format('M j, Y \a\t g:ia') : null,
         );
     }
 }
