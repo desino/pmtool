@@ -50,7 +50,7 @@ class InitiativeService
 
     public static function getInitiativesForHeaderSelectBox($request)
     {
-        return Initiative::select('id', 'name', 'client_id', 'status', 'share_point_url')
+        return Initiative::select('id', 'name', 'client_id', 'status', 'share_point_url', 'technical_owner_id')
             ->with([
                 'client' => function ($query) {
                     $query->select('id', 'name');

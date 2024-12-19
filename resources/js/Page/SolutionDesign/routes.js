@@ -154,8 +154,14 @@ export default [
         beforeEnter: (to, from, next) => {
             watchEffect(() => {
                 const loggedInUser = store.getters.user;
-                if (loggedInUser) {
-                    if (!loggedInUser?.is_admin) {
+                const currentInitiative = store.getters.currentInitiative;
+                setTimeout(() => {
+                    console.log('loggedInUser :: ', loggedInUser);
+                    console.log('currentInitiative :: ', currentInitiative);
+
+                }, 100)
+                if (loggedInUser && Object.keys(currentInitiative).length > 0) {
+                    if (!loggedInUser?.is_admin && currentInitiative.technical_owner_id != loggedInUser?.id) {
                         const passedData = {
                             'type': 'danger',
                             'message': i18n.global.t('solution_design.you_dont_have_permission_to_access_this_page')

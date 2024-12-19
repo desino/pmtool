@@ -98,7 +98,8 @@
                                             {{ $t('header.menu.bulk_create_tickets') }}
                                         </router-link>
                                     </li>
-                                    <li class="nav-item" v-if="currentInitiative?.id && user?.is_admin">
+                                    <li class="nav-item"
+                                        v-if="currentInitiative?.id && (currentInitiative?.technical_owner_id === user?.id || user?.is_admin)">
                                         <router-link class="nav-link text-dark"
                                             :class="{ 'bg-opacity-25 bg-primary': isActive('deployments') }"
                                             :to="{ name: 'deployments', params: { id: currentInitiative?.id } }">
