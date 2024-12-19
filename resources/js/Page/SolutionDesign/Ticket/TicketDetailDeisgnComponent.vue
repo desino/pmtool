@@ -57,7 +57,7 @@
         </div>
     </div>
     <GlobalMessage v-if="showMessage" />
-    <div class="app-content border border-start-0 border-end-0 py-2">
+    <div class="app-content border-bottom pb-1">
         <div class="row g-1 w-100">
             <div class="col-12 col-md-3 col-lg-3 col-xl-3 text-center mb-2 mb-md-0">
                 <div class="card shadow-none h-100 border-0" :class="ticketData.macro_status_label?.color">
@@ -145,44 +145,47 @@
             </div>
         </div>
     </div>
-    <div class="app-content mt-2">
+    <div class="app-content pt-1">
         <div class="col-md-12">
-            <ul id="ticketdetail-tab" class="nav nav-tabs" role="tablist">
-                <li class="nav-item">
-                    <a id="ticket_detail_tab" aria-controls="ticket_detail_tab" aria-selected="true"
-                        class="nav-link border active" data-bs-toggle="pill" href="#ticketdetail_description_tab"
-                        role="tab">{{ $t('ticket_details.task_description') }}</a>
-                </li>
-                <li class="nav-item">
-                    <a id="ticket_detail_tab" aria-controls="ticket_detail_tab" aria-selected="false"
-                        class="nav-link border" data-bs-toggle="pill" href="#ticketdetail_feature_tab" role="tab">{{
-                            $t('ticket_details.task_details') }}</a>
-                </li>
-                <li class="nav-item">
-                    <a id="test_cases_tab" aria-controls="test_cases_tab" aria-selected="false" class="nav-link border"
-                        data-bs-toggle="pill" href="#ticketdetail_testcase_tab" role="tab">{{
-                            $t('ticket_details.test_cases')
-                        }}</a>
-                </li>
-                <li class="nav-item">
-                    <a id="ticket_detail_tab" aria-controls="ticket_detail_tab" aria-selected="false"
-                        class="nav-link border" data-bs-toggle="pill" href="#ticketdetail_releasenotes_tab"
-                        role="tab">{{
-                            $t('ticket_details.client_release_notes')
-                        }}</a>
-                </li>
-                <li class="nav-item" v-if="ticketData.is_allow_dev_estimation_time">
-                    <a id="test_cases_tab" aria-controls="test_cases_tab" aria-selected="false" class="nav-link border"
-                        data-bs-toggle="pill" href="#ticketdetail_estimated_hours_tab" role="tab">{{
-                            $t('ticket_details.estimated_hours')
-                        }}</a>
-                </li>
-            </ul>
-            <div id="ticketdetail-tabContent" class="tab-content border border-top-0 p-2">
+            <div class="w-100">
+                <div class="row g-1 w-100 nav">
+                    <div class="col-6 col-md-3 col-lg-2">
+                        <a id="ticket_detail_tab" aria-controls="ticket_detail_tab" aria-selected="true"
+                            class="btn btn-outline-desino active w-100 h-100 align-content-center" data-bs-toggle="pill" href="#ticketdetail_description_tab" role="tab">
+                            {{ $t('ticket_details.task_description') }}
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-3 col-lg-2">
+                        <a id="ticket_detail_tab" aria-controls="ticket_detail_tab" aria-selected="false"
+                            class="btn btn-outline-desino w-100 h-100 align-content-center" data-bs-toggle="pill" href="#ticketdetail_feature_tab" role="tab">
+                            {{ $t('ticket_details.task_details') }}
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-3 col-lg-2">
+                        <a id="test_cases_tab" aria-controls="test_cases_tab" aria-selected="false" 
+                            class="btn btn-outline-desino w-100 h-100 align-content-center" data-bs-toggle="pill" href="#ticketdetail_testcase_tab" role="tab">
+                            {{ $t('ticket_details.test_cases') }}
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-3 col-lg-2">
+                        <a id="ticket_detail_tab" aria-controls="ticket_detail_tab" aria-selected="false"
+                            class="btn btn-outline-desino w-100 h-100 align-content-center" data-bs-toggle="pill" href="#ticketdetail_releasenotes_tab" role="tab">
+                            {{ $t('ticket_details.client_release_notes') }}
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-3 col-lg-2" v-if="ticketData.is_allow_dev_estimation_time">
+                        <a id="test_cases_tab" aria-controls="test_cases_tab" aria-selected="false" 
+                            class="btn btn-outline-desino w-100 h-100 align-content-center" data-bs-toggle="pill" href="#ticketdetail_estimated_hours_tab" role="tab">
+                            {{ $t('ticket_details.estimated_hours') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div id="ticketdetail-tabContent" class="tab-content pt-2 px-0 pb-0">
                 <div id="ticketdetail_description_tab" aria-labelledby="ticketdetail_description_tab"
                     class="tab-pane fade active show" role="tabpanel">
                     <div class="row g-2 w-100">
-                        <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+                        <div class="col-xl-8 col-lg-7 col-12">
                             <div v-if="this.user?.is_admin">
                                 <TinyMceEditor v-model="taskDescriptionForm.description" />
                                 <div v-if="errors.description" class="text-danger mt-2">
@@ -199,7 +202,7 @@
                                 <div v-html="ticketData.description"></div>
                             </div>
                         </div>
-                        <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+                        <div class="col-xl-4 col-lg-5 col-12">
                             <div v-if="this.user && isPassCommentData">
                                 <CommentComponent ref="commentComponent" :ticketData="ticketData" :users="users" />
                             </div>
