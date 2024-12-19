@@ -1,7 +1,4 @@
 <template>
-    <!-- <editor ref="htmlEditorRef" v-model="content" :init="config" @change="update" @init="loaded" @keyup="update"
-        @redo="update" @undo="update" style="height: config.height;" /> -->
-
     <editor ref="htmlEditorRef" v-model="content" :init="mergedConfig" @change="update" @init="loaded" @keyup="update"
         @redo="update" @undo="update" style="height: mergedConfig.height;" />
 </template>
