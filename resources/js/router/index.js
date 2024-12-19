@@ -13,6 +13,8 @@ const router = createRouter({
     ]
 });
 
+let lastRoute = null;
+
 router.beforeEach((to, from, next) => {
     let isAuthenticated = store.getters.isAuthenticated;
 
@@ -29,16 +31,17 @@ router.beforeEach((to, from, next) => {
     // ];
     const routesWithInitiativeId = APP_VARIABLES.ROUTES_NAME_WITH_INITIATIVE_ID;
 
-    if (routesWithInitiativeId.includes(to.name)) {
+    if (routesWithInitiativeId.includes(to.name) && lastRoute == undefined) {
         let initiativeId = to.params.initiative_id ?? to.params.id;
-        //     OpportunityService.getOpportunity(initiativeId)
-        //         .then(response => {
-        //             if (response && response.content) {
-        //                 store.commit("setCurrentInitiative", response.content);
-        //             }
-        //         });        
+        OpportunityService.getOpportunity(initiativeId)
+            .then(response => {
+                if (response && response.content) {
+                    store.commit("setCurrentInitiative", response.content);
+                }
+            });
 
     }
+    lastRoute = to;
 
     // Update document title based on route meta
     document.title = APP_VARIABLES.APP_NAME + ' | ' + to.meta.title;

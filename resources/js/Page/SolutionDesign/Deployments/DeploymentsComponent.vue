@@ -69,7 +69,7 @@
                             <i v-if="deployment?.status" class="bi bi-check-circle-fill text-success"></i>
                         </div>
                         <div class="col-lg-2 col-md-6 col-6 text-end">
-                            <router-link
+                            <router-link v-if="user?.is_admin"
                                 :to="{ name: 'tasks', params: { id: deployment?.initiative_id }, query: { deployment_id: deployment?.id } }"
                                 class="text-success me-2">
                                 <i class="bi bi-box-arrow-up-right fw-bold"></i>
@@ -137,6 +137,9 @@ export default {
             errors: {},
             showMessage: true
         }
+    },
+    computed: {
+        ...mapGetters(['user', 'currentInitiative']),
     },
     methods: {
         ...mapActions(['setLoading']),
