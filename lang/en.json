@@ -511,6 +511,7 @@
     "ticket.list.row_hover_tooltip_created_by_text": "Created by ",
     "ticket.list.row_hover_tooltip_comment_text": "Comment by",
     "ticket.list.row_hover_tooltip_commented_at_text": "at",
+    "ticket.list.row_hover_tooltip_release_note_text": "Release Note",
     "ticket_details.delete_text": "Delete",
     "ticket.list.column.action.asana_task_link_text": "Asana Task Link",
     "ticket.list.column_action": "Actions",

@@ -286,6 +286,7 @@ class TicketController extends Controller
             'moved_back_to_dev_action_count',
             DB::RAW('IF(dev_estimation_time > 0, dev_estimation_time,initial_estimation_development_time) as estimation_time'),
             DB::RAW('IF(macro_status = ' . Ticket::MACRO_STATUS_DONE . ', true,false) as is_ticket_done'),
+            DB::RAW('IF(release_note IS NOT NULL, true, false) as is_release_note')
         )
             ->with([
                 'project' => function ($q) {

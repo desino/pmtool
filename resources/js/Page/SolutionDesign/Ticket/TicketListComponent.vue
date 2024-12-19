@@ -644,6 +644,11 @@ export default {
             const createdByLabel = this.$t('ticket.list.row_hover_tooltip_created_by_text');
             const commentLabel = this.$t('ticket.list.row_hover_tooltip_comment_text');
             const commentedAtLabel = this.$t('ticket.list.row_hover_tooltip_commented_at_text');
+            const releaseNoteLabel = this.$t('ticket.list.row_hover_tooltip_release_note_text');
+            let releaseNoteBadgeClass = "bg-danger";
+            if (task.is_release_note) {
+                releaseNoteBadgeClass = "bg-success";
+            }
 
             let commentHtml = "";
             if (task?.latest_comment?.comment != null) {
@@ -658,6 +663,9 @@ export default {
                         </div>
                         <div class='col-12 text-start'>
                             ${commentHtml}
+                        </div>
+                        <div class='col-12 text-start'>
+                            <span class='badge ${releaseNoteBadgeClass} d-block-inline text-wrap fst-italic'>${releaseNoteLabel}</span>
                         </div>
                     </div>`;
         },
