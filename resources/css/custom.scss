@@ -121,7 +121,7 @@
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
 
-.multiselect__tags::-webkit-input-placeholder {
+.multiselect-filter-custom-border .multiselect__tags {
     border-color: $desino !important;
     border-width: 2px !important;
 }

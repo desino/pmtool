@@ -10,7 +10,8 @@
                             @keyup="fetchAllTasks">
                     </div>
                     <div class="w-100 p-1">
-                        <multiselect v-model="filter.macro_status" ref="multiselect" :multiple="true"
+                        <multiselect :class="{ 'multiselect-filter-custom-border': filter.macro_status.length > 0 }"
+                            v-model="filter.macro_status" ref="multiselect" :multiple="true"
                             :options="filterMacroStatus" :searchable="true" deselect-label="" label="name"
                             :placeholder="$t('ticket.filter.macro_status_placeholder')" track-by="id"
                             @select="fetchAllTasks" @Remove="fetchAllTasks">
@@ -33,7 +34,8 @@
                         </select>
                     </div>
                     <div class="w-100 p-1">
-                        <multiselect class="" v-model="filter.functionalities" ref="multiselect" :multiple="true"
+                        <multiselect :class="{ 'multiselect-filter-custom-border': filter.functionalities.length > 0 }"
+                            v-model="filter.functionalities" ref="multiselect" :multiple="true"
                             :options="functionalities" :searchable="true" deselect-label="" label="display_name"
                             :placeholder="$t('ticket.filter.functionalities_placeholder')" track-by="id"
                             @select="fetchAllTasks" @Remove="fetchAllTasks">
@@ -73,7 +75,8 @@
                         </select>
                     </div>
                     <div class="w-100 p-1">
-                        <multiselect v-model="filter.projects" :multiple="true" :options="projects" :searchable="true"
+                        <multiselect :class="{ 'multiselect-filter-custom-border': filter.projects.length > 0 }"
+                            v-model="filter.projects" :multiple="true" :options="projects" :searchable="true"
                             deselect-label="" label="name" :placeholder="$t('ticket.filter.projects_placeholder')"
                             track-by="id" @select="fetchAllTasks" @Remove="fetchAllTasks">
                         </multiselect>
@@ -767,4 +770,9 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<!-- <style scoped>
+::v-deep(.multiselect__tags) {
+    border-color: var(--desino-color, #000) !important;
+    border-width: 2px !important;
+}
+</style> -->

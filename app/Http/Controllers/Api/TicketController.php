@@ -459,6 +459,7 @@ class TicketController extends Controller
         $initiativeData = array(
             'id' => $initiative->id,
             'name' => $initiative->name,
+            'functional_owner_id' => $initiative->functional_owner_id,
         );
         $meta['initiative'] = $initiativeData;
         $meta['ticket_count'] = $tickets->count();
