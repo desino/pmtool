@@ -23,8 +23,8 @@ class DeploymentCenterController extends Controller
     public function index(Request $request)
     {
         $productionDeploymentInitiative = InitiativeService::getInitiativeWithProductionDeploymentTickets();
-        $testDeploymentInitiative = InitiativeService::getInitiativeWithTestDeploymentTickets();
         $acceptanceDeploymentInitiative = InitiativeService::getInitiativeWithAcceptanceDeploymentTickets();
+        $testDeploymentInitiative = InitiativeService::getInitiativeWithTestDeploymentTickets();
         $data = [
             'productionDeploymentInitiatives' => $productionDeploymentInitiative,
             'testDeploymentInitiatives' => $testDeploymentInitiative,

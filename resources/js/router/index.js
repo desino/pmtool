@@ -31,7 +31,7 @@ router.beforeEach((to, from, next) => {
     // ];
     const routesWithInitiativeId = APP_VARIABLES.ROUTES_NAME_WITH_INITIATIVE_ID;
 
-    if (routesWithInitiativeId.includes(to.name) && lastRoute == undefined) {
+    if (routesWithInitiativeId.includes(to.name) && (lastRoute == undefined || to.params.initiative_id || to.params.id)) {
         let initiativeId = to.params.initiative_id ?? to.params.id;
         OpportunityService.getOpportunity(initiativeId)
             .then(response => {
