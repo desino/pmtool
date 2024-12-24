@@ -49,12 +49,7 @@
                                     <div class="col-12" v-if="comment.is_edit_comment">
                                         <div class="row g-1 w-100 align-items-center">
                                             <div class="col-12">
-                                                <TinyMceEditor v-model="editForm.comment" :init="{
-                                                    height: 175,
-                                                    menubar: '',
-                                                    plugins: [],
-                                                    toolbar: false,
-                                                }" />
+                                                <TinyMceEditor v-model="editForm.comment" :init="{height: 175,}" />
                                                 <div v-if="errors.comment" class="text-danger mt-2">
                                                     <span v-for="(error, index) in errors.comment" :key="index">{{
                                                         error }}</span>
@@ -93,12 +88,7 @@
             <div class="card-footer bg-transparent p-2">
                 <div class="row g-1 w-100 align-items-center">
                     <div class="col-12">
-                        <TinyMceEditor v-model="formData.comment" :init="{
-                            height: 250,
-                            // menubar: '',
-                            // plugins: [],
-                            // toolbar: false,
-                        }" />
+                        <TinyMceEditor v-model="formData.comment" :init="{height: 250,}" />
                         <div v-if="errors.comment" class="text-danger mt-2">
                             <span v-for="(error, index) in errors.comment" :key="index">{{ error }}</span>
                         </div>
@@ -336,8 +326,5 @@ export default {
 };
 </script>
 <style>
-#ticketCommentsSection .tox-editor-header,
-.tox-statusbar {
-    display: none !important;
-}
+#ticketCommentsSection .tox-editor-header, .tox-statusbar {display: none !important;}
 </style>
