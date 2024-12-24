@@ -6,7 +6,8 @@
                 <div class="col-12 col-md-12 col-lg-3">
                     <div class="w-100 p-1">
                         <input v-model="filter.task_name" :placeholder="$t('ticket.filter.task_name')"
-                            class="form-control" type="text" @keyup="fetchAllTasks">
+                            class="form-control" :class="{ 'border-desino border-2': filter.task_name }" type="text"
+                            @keyup="fetchAllTasks">
                     </div>
                     <div class="w-100 p-1">
                         <multiselect v-model="filter.macro_status" ref="multiselect" :multiple="true"
@@ -24,14 +25,15 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-3">
                     <div class="w-100 p-1">
-                        <select v-model="filter.task_type" class="form-select" @change="fetchAllTasks">
+                        <select v-model="filter.task_type" class="form-select" @change="fetchAllTasks"
+                            :class="{ 'border-desino border-2': filter.task_type }">
                             <option value="">{{ $t('ticket.filter.task_type_placeholder') }}</option>
                             <option v-for="type in filterTaskTypes" :key="type.id" :value="type.id">{{ type.name }}
                             </option>
                         </select>
                     </div>
                     <div class="w-100 p-1">
-                        <multiselect v-model="filter.functionalities" ref="multiselect" :multiple="true"
+                        <multiselect class="" v-model="filter.functionalities" ref="multiselect" :multiple="true"
                             :options="functionalities" :searchable="true" deselect-label="" label="display_name"
                             :placeholder="$t('ticket.filter.functionalities_placeholder')" track-by="id"
                             @select="fetchAllTasks" @Remove="fetchAllTasks">
@@ -40,7 +42,8 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-3">
                     <div class="w-100 p-1">
-                        <select v-model="filter.action_owner" class="form-select" @change="fetchAllTasks">
+                        <select v-model="filter.action_owner" class="form-select" @change="fetchAllTasks"
+                            :class="{ 'border-desino border-2': filter.action_owner }">
                             <option value="">{{ $t('ticket.filter.action_owner_placeholder') }}</option>
                             <option v-for="actionOwner in actionOwners" :key="actionOwner.id" :value="actionOwner.id">{{
                                 actionOwner.name }}
@@ -48,7 +51,8 @@
                         </select>
                     </div>
                     <div class="w-100 p-1">
-                        <select v-model="filter.next_action_owner" class="form-select" @change="fetchAllTasks">
+                        <select v-model="filter.next_action_owner" class="form-select" @change="fetchAllTasks"
+                            :class="{ 'border-desino border-2': filter.next_action_owner }">
                             <option value="">{{ $t('ticket.filter.next_action_owner_placeholder') }}</option>
                             <option v-for="nextActionOwner in nextActionOwners" :key="nextActionOwner.id"
                                 :value="nextActionOwner.id">{{
@@ -59,7 +63,8 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-3">
                     <div class="w-100 p-1">
-                        <select v-model="filter.deployment_id" class="form-select" @change="fetchAllTasks">
+                        <select v-model="filter.deployment_id" class="form-select" @change="fetchAllTasks"
+                            :class="{ 'border-desino border-2': filter.deployment_id }">
                             <option value="">{{ $t('ticket.filter.deployments_placeholder') }}</option>
                             <option v-for="deployment in filterDeployments" :key="deployment.id" :value="deployment.id">
                                 {{
@@ -761,3 +766,5 @@ export default {
     },
 }
 </script>
+
+<style scoped></style>
