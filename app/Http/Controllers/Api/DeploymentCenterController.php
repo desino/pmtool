@@ -95,7 +95,6 @@ class DeploymentCenterController extends Controller
 
     public function submitTestDeploymentTicket(Request $request, $initiativeId)
     {
-
         $status = false;
         $request->merge(['initiative_id' => $initiativeId]);
         $initiative = InitiativeService::getInitiative($request, $initiativeId);
@@ -107,12 +106,19 @@ class DeploymentCenterController extends Controller
             return ApiHelper::response($status, __('messages.home.deployment_center.test_deployment.no_permission'), '', 400);
         }
 
+        $tickets = Ticket::whereIn('id', $request->input('ticketIds'))->get();
+        $filteredTickets = $tickets->filter(function ($ticket) {
+            return $ticket->status != Ticket::getStatusReadyForTest() || $ticket->macro_status != Ticket::MACRO_STATUS_TEST_WAIT_FOR_DEPLOYMENT_TO_TEST;
+        });
+        if ($filteredTickets->count() > 0) {
+            return ApiHelper::response($status, __('messages.home.deployment_center.test_deployment.not_allow_process_ticket'), '', 400);
+        }
+
         DB::beginTransaction();
         $status = true;
         $message = __('message.home.deployment_center.test_deployment.update_status_success');
         $statusCode = 200;
         try {
-            $tickets = Ticket::whereIn('id', $request->input('ticketIds'))->get();
             foreach ($tickets as $ticket) {
                 $ticket->status = Ticket::getStatusOngoing();
                 $ticket->save();
@@ -201,12 +207,19 @@ class DeploymentCenterController extends Controller
             return ApiHelper::response($status, __('messages.home.deployment_center.acceptance_deployment.no_permission'), '', 400);
         }
 
+        $tickets = Ticket::whereIn('id', $request->input('ticketIds'))->get();
+        $filteredTickets = $tickets->filter(function ($ticket) {
+            return $ticket->status != Ticket::getStatusReadyForACC() || $ticket->macro_status != Ticket::MACRO_STATUS_VALIDATE_WAITING_FOR_DEPLOYMENT_TO_ACC;
+        });
+        if ($filteredTickets->count() > 0) {
+            return ApiHelper::response($status, __('messages.home.deployment_center.acceptance_deployment.not_allow_process_ticket'), '', 400);
+        }
+
         $status = true;
         $message = __('message.home.deployment_center.test_deployment.update_status_success');
         $statusCode = 200;
         DB::beginTransaction();
         try {
-            $tickets = Ticket::whereIn('id', $request->input('ticketIds'))->get();
             foreach ($tickets as $ticket) {
                 $ticket->status = Ticket::getStatusOngoing();
                 $ticket->save();
@@ -312,13 +325,20 @@ class DeploymentCenterController extends Controller
             return ApiHelper::response($status, __('messages.home.deployment_center.production_deployment.no_permission'), '', 400);
         }
 
+        $tickets = Ticket::whereIn('id', $request->input('ticketIds'))->get();
+        $filteredTickets = $tickets->filter(function ($ticket) {
+            return $ticket->status != Ticket::getStatusReadyForPRD() || $ticket->macro_status != Ticket::MACRO_STATUS_READY_FOR_DEPLOYMENT_TO_PRD;
+        });
+        if ($filteredTickets->count() > 0) {
+            return ApiHelper::response($status, __('messages.home.deployment_center.production_deployment.not_allow_process_ticket'), '', 400);
+        }
+
         $status = true;
         $message = __('message.home.deployment_center.production_deployment.update_status_success');
         $statusCode = 200;
         DB::beginTransaction();
         try {
 
-            $tickets = Ticket::whereIn('id', $request->input('ticketIds'))->get();
             foreach ($tickets as $ticket) {
                 $ticket->status = Ticket::getStatusDone();
                 $ticket->save();
