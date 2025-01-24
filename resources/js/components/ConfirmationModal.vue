@@ -1,6 +1,5 @@
 <template>
-    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" :id="modalId" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
         <!-- modal-dialog-centered -->
         <div class="modal-dialog modal-lg">
             <div class="modal-content border-0">
@@ -37,6 +36,10 @@
 import { Modal } from 'bootstrap';
 export default {
     props: {
+        modalId: {
+            type: String,
+            default: 'confirmationModal',
+        },
         title: {
             type: String,
             default: 'Confirm Action',
@@ -59,7 +62,7 @@ export default {
             this.hideModal(this.isConfirmed);
         },
         showModal() {
-            const modal = new Modal(document.getElementById('confirmationModal'), {
+            const modal = new Modal(document.getElementById(this.modalId), {
                 backdrop: 'static',
                 keyboard: true,
             });
@@ -69,7 +72,7 @@ export default {
             if (!isConfirmed) {
                 this.isConfirmed = false;
             }
-            const modal = Modal.getInstance(document.getElementById('confirmationModal'));
+            const modal = Modal.getInstance(document.getElementById(this.modalId));
             modal.hide();
         },
     },

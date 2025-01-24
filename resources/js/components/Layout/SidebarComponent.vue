@@ -45,20 +45,12 @@
                                     <li class="nav-item" v-if="currentInitiative?.id">
                                         <router-link class="nav-link text-dark"
                                             :class="{ 'bg-opacity-25 bg-primary': isActive('solution-design.detail') }"
-                                            :to="{ name: 'solution-design.detail', params: { id: currentInitiative?.id } }">
+                                            :to="{ name: 'solution-design.detail', params: { id: currentInitiative?.id } }"
+                                            @click.native="handleRouteReload('solution-design.detail', { id: currentInitiative?.id })">
                                             <i class="bi bi-file-pdf-fill"></i>
                                             {{ $t('header.menu.solution_design_detail') }}
                                         </router-link>
                                     </li>
-                                    <!-- <li class="nav-item"
-                                        v-if="currentInitiative?.id && (user?.is_admin || initiativeData?.functional_owner_id === user?.id || initiativeData?.technical_owner_id === user?.id)">
-                                        <router-link class="nav-link text-dark"
-                                            :class="{ 'bg-opacity-25 bg-primary': isActive('solution-design.download') }"
-                                            :to="{ name: 'solution-design.download', params: { id: currentInitiative?.id } }">
-                                            <i class="bi bi-file-pdf-fill mx-2"></i>
-                                            {{ $t('header.menu.solution_design_pdf') }}
-                                        </router-link>
-                                    </li> -->
                                     <li class="nav-item" v-if="user?.is_admin && currentInitiative?.id">
                                         <a class="nav-link text-dark" href="javascript:"
                                             @click="showEditOpportunityModal">
@@ -69,7 +61,8 @@
                                     <li class="nav-item" v-if="currentInitiative?.id && user?.is_admin">
                                         <router-link class="nav-link text-dark"
                                             :class="{ 'bg-opacity-25 bg-primary': isActive('tasks') || (isActive('task.detail') && user?.is_admin) }"
-                                            :to="{ name: 'tasks', params: { id: currentInitiative?.id } }">
+                                            :to="{ name: 'tasks', params: { id: currentInitiative?.id } }"
+                                            @click.native="handleRouteReload('tasks', { id: currentInitiative?.id })">
                                             <i class="bi bi-card-checklist"></i>
                                             {{ $t('header.menu.all_ticket') }}
                                         </router-link>
@@ -77,7 +70,8 @@
                                     <li class="nav-item" v-if="currentInitiative?.id">
                                         <router-link class="nav-link text-dark"
                                             :class="{ 'bg-opacity-25 bg-primary': isActive('my-tickets') || (isActive('task.detail') && !user?.is_admin) }"
-                                            :to="{ name: 'my-tickets', params: { id: currentInitiative?.id } }">
+                                            :to="{ name: 'my-tickets', params: { id: currentInitiative?.id } }"
+                                            @click.native="handleRouteReload('my-tickets', { id: currentInitiative?.id })">
                                             <i class="bi bi-card-checklist"></i>
                                             {{ $t('header.menu.my_ticket') }}
                                         </router-link>
@@ -85,7 +79,8 @@
                                     <li class="nav-item" v-if="currentInitiative?.id && user?.is_admin">
                                         <router-link class="nav-link text-dark"
                                             :class="{ 'bg-opacity-25 bg-primary': isActive('projects') }"
-                                            :to="{ name: 'projects', params: { id: currentInitiative?.id } }">
+                                            :to="{ name: 'projects', params: { id: currentInitiative?.id } }"
+                                            @click.native="handleRouteReload('projects', { id: currentInitiative?.id })">
                                             <i class="bi bi-boxes"></i>
                                             {{ $t('header.menu.projects') }}
                                         </router-link>
@@ -93,15 +88,18 @@
                                     <li class="nav-item" v-if="currentInitiative?.id && user?.is_admin">
                                         <router-link class="nav-link text-dark"
                                             :class="{ 'bg-opacity-25 bg-primary': isActive('bulk-create-tickets') }"
-                                            :to="{ name: 'bulk-create-tickets', params: { id: currentInitiative?.id } }">
+                                            :to="{ name: 'bulk-create-tickets', params: { id: currentInitiative?.id } }"
+                                            @click.native="handleRouteReload('bulk-create-tickets', { id: currentInitiative?.id })">
                                             <i class="bi bi-ticket"></i>
                                             {{ $t('header.menu.bulk_create_tickets') }}
                                         </router-link>
                                     </li>
-                                    <li class="nav-item" v-if="currentInitiative?.id && user?.is_admin">
+                                    <li class="nav-item"
+                                        v-if="currentInitiative?.id && (currentInitiative?.technical_owner_id === user?.id || user?.is_admin)">
                                         <router-link class="nav-link text-dark"
                                             :class="{ 'bg-opacity-25 bg-primary': isActive('deployments') }"
-                                            :to="{ name: 'deployments', params: { id: currentInitiative?.id } }">
+                                            :to="{ name: 'deployments', params: { id: currentInitiative?.id } }"
+                                            @click.native="handleRouteReload('deployments', { id: currentInitiative?.id })">
                                             <i class="bi bi-card-list"></i>
                                             {{ $t('header.menu.deployments') }}
                                         </router-link>
@@ -112,8 +110,9 @@
                     </div>
                     <hr>
                     <ul class="list-group border">
-                        <li class="list-group-item bg-desino text-white border-desino fw-bold border-bottom">{{
-                            $t('header.menu.initiative_links') }}</li>
+                        <li class="list-group-item bg-desino text-white border-desino fw-bold border-bottom">
+                            {{ $t('header.menu.initiative_links') }}
+                        </li>
                         <li v-if="currentInitiative?.share_point_url" class="list-group-item border-0">
                             <a v-if="currentInitiative?.share_point_url" :href="currentInitiative?.share_point_url"
                                 target="_blank" class="btn-link" style="text-decoration: none;">
@@ -139,24 +138,23 @@
                 <nav class="">
                     <ul class="nav sidebar-menu flex-column">
                         <li class="nav-item" v-if="user?.is_admin">
-                            <a class="nav-link text-dark" href="javascript:" @click="showCreateClientModal"><i
-                                    class="bi bi-people mx-2"></i> {{
-                                        $t('header.menu.create_client')
-                                    }} </a>
+                            <a class="nav-link text-dark" href="javascript:" @click="showCreateClientModal">
+                                <i class="bi bi-people mx-2"></i>
+                                {{ $t('header.menu.create_client') }}
+                            </a>
                         </li>
                         <li class="nav-item" v-if="user?.is_admin">
-                            <a class="nav-link text-dark" href="javascript:" @click="showCreateInitiativeModal"><i
-                                    class="bi bi-gear mx-2"></i> {{
-                                        $t('header.menu.create_initiative')
-                                    }}</a>
+                            <a class="nav-link text-dark" href="javascript:" @click="showCreateInitiativeModal">
+                                <i class="bi bi-gear mx-2"></i>
+                                {{ $t('header.menu.create_initiative') }}
+                            </a>
                         </li>
                         <li class="nav-item" v-if="user?.is_admin">
                             <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('opportunities') }"
                                 :to="{ name: 'opportunities' }" class="nav-link text-dark"
-                                @click="unselectHeaderInitiative"><i class="bi bi-list mx-2"></i>
-                                {{
-                                    $t('header.menu.opportunities')
-                                }}
+                                @click="unselectHeaderInitiative" @click.native="handleRouteReload('opportunities')">
+                                <i class="bi bi-list mx-2"></i>
+                                {{ $t('header.menu.opportunities') }}
                             </router-link>
                         </li>
                         <li class="nav-item" v-if="user?.is_admin">
@@ -165,30 +163,26 @@
                         <li class="nav-item">
                             <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('time-booking.booking') }"
                                 :to="{ name: 'time-booking.booking' }" class="nav-link text-dark"
-                                @click="unselectHeaderInitiative">
+                                @click="unselectHeaderInitiative"
+                                @click.native="handleRouteReload('time-booking.booking')">
                                 <i class="bi bi-clock-history mx-2"></i>
-                                {{
-                                    $t('header.menu.time_booking')
-                                }}
+                                {{ $t('header.menu.time_booking') }}
                             </router-link>
                         </li>
                         <li class="nav-item" v-if="user?.is_admin">
                             <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('planning') }"
-                                :to="{ name: 'planning' }" class="nav-link text-dark" @click="unselectHeaderInitiative">
+                                :to="{ name: 'planning' }" class="nav-link text-dark" @click="unselectHeaderInitiative"
+                                @click.native="handleRouteReload('planning')">
                                 <i class="bi bi-calendar-week mx-2"></i>
-                                {{
-                                    $t('header.menu.planning')
-                                }}
+                                {{ $t('header.menu.planning') }}
                             </router-link>
                         </li>
                         <li class="nav-item" v-if="user?.is_admin">
                             <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('time-mapping') }"
                                 :to="{ name: 'time-mapping' }" class="nav-link text-dark"
-                                @click="unselectHeaderInitiative">
+                                @click="unselectHeaderInitiative" @click.native="handleRouteReload('time-mapping')">
                                 <i class="bi bi-clock-history mx-2"></i>
-                                {{
-                                    $t('header.menu.time_mapping')
-                                }}
+                                {{ $t('header.menu.time_mapping') }}
                             </router-link>
                         </li>
                         <li class="nav-item" v-if="user?.is_admin">
@@ -198,37 +192,34 @@
                             <router-link
                                 :class="{ 'bg-opacity-25 bg-primary': isActive('all-ticket-without-initiative') }"
                                 :to="{ name: 'all-ticket-without-initiative' }" class="nav-link text-dark"
-                                @click="unselectHeaderInitiative">
+                                @click="unselectHeaderInitiative"
+                                @click.native="handleRouteReload('all-ticket-without-initiative')">
                                 <i class="bi bi-card-checklist mx-2"></i>
-                                {{
-                                    $t('header.menu.all_ticket_without_initiative')
-                                }}
+                                {{ $t('header.menu.all_ticket_without_initiative') }}
                             </router-link>
                         </li>
                         <li class="nav-item" v-if="user?.is_admin">
                             <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('developer-workload') }"
                                 :to="{ name: 'developer-workload' }" class="nav-link text-dark"
-                                @click="unselectHeaderInitiative">
+                                @click="unselectHeaderInitiative"
+                                @click.native="handleRouteReload('developer-workload')">
                                 <i class="bi bi-stack mx-2"></i>
-                                {{
-                                    $t('header.menu.developer_workload')
-                                }}
+                                {{ $t('header.menu.developer_workload') }}
                             </router-link>
                         </li>
                         <li class="nav-item" v-if="user?.is_admin">
                             <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('initiative-overview') }"
                                 :to="{ name: 'initiative-overview' }" class="nav-link text-dark"
-                                @click="unselectHeaderInitiative">
+                                @click="unselectHeaderInitiative"
+                                @click.native="handleRouteReload('initiative-overview')">
                                 <i class="bi bi-hourglass mx-2"></i>
-                                {{
-                                    $t('header.menu.initiatives_overview')
-                                }}
+                                {{ $t('header.menu.initiatives_overview') }}
                             </router-link>
                         </li>
                         <li class="nav-item" v-if="user?.is_admin">
                             <router-link :class="{ 'bg-opacity-25 bg-primary': isActive('activity-logs') }"
                                 :to="{ name: 'activity-logs' }" class="nav-link text-dark"
-                                @click="unselectHeaderInitiative">
+                                @click="unselectHeaderInitiative" @click.native="handleRouteReload('activity-logs')">
                                 <i class="bi bi-activity mx-2"></i>
                                 {{ $t('header.menu.activity_logs') }}
                             </router-link>
@@ -350,7 +341,9 @@ export default {
         },
         showSolutionDesign() {
             if (this.sidebar_selected_initiative_id) {
-                this.$router.push({ name: 'solution-design', params: { id: this.sidebar_selected_initiative_id } });
+                this.$router.replace({ path: '/temp-reload', replace: true }).then(() => {
+                    this.$router.push({ name: 'solution-design', params: { id: this.sidebar_selected_initiative_id } });
+                });
             }
         },
         unselectHeaderInitiative() {
@@ -371,6 +364,11 @@ export default {
                 this.initiativeData = response.content;
                 store.commit("setCurrentInitiative", response.content);
             }
+        },
+        handleRouteReload(routeName, params = {}) {
+            this.$router.replace({ path: '/temp-reload', replace: true }).then(() => {
+                this.$router.push({ name: routeName, params });
+            });
         },
     },
     mounted() {

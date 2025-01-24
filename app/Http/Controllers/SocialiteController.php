@@ -36,6 +36,17 @@ class SocialiteController extends Controller
             return redirect('/login');
         }
 
+        $user = User::where('email', $remoteUser->getEmail())->first();
+        if (!$user) {
+            Session::put('message_class', 'danger');
+            Session::put('callback_message', __('messages.auth.user_not_found_in_office365'));
+            return redirect('/login');
+        } else if ($user && $user->status == 0) {
+            Session::put('message_class', 'danger');
+            Session::put('callback_message', __('messages.auth.user_is_not_active_in_office365'));
+            return redirect('/login');
+        }
+
         $user = User::firstOrCreate([
             'email' => $remoteUser->getEmail(),
         ], [

@@ -32,6 +32,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class TicketController extends Controller
 {
@@ -285,6 +286,7 @@ class TicketController extends Controller
             'moved_back_to_dev_action_count',
             DB::RAW('IF(dev_estimation_time > 0, dev_estimation_time,initial_estimation_development_time) as estimation_time'),
             DB::RAW('IF(macro_status = ' . Ticket::MACRO_STATUS_DONE . ', true,false) as is_ticket_done'),
+            DB::RAW('IF(release_note IS NOT NULL, true, false) as is_release_note')
         )
             ->with([
                 'project' => function ($q) {
@@ -332,7 +334,25 @@ class TicketController extends Controller
                 },
                 'timeBookings' => function ($q) {
                     $q->select('id', 'ticket_id', 'booked_date');
-                }
+                },
+                'latestComment' => function ($q) {
+                    $q->select(
+                        'ticket_comments.id',
+                        'ticket_comments.ticket_id',
+                        'ticket_comments.comment',
+                        'ticket_comments.created_at',
+                        'ticket_comments.updated_at',
+                        'ticket_comments.created_by',
+                        'ticket_comments.updated_by',
+                        'ticket_comments.tagged_users',
+                        'created_user.name AS created_user_name',
+                        'updated_user.name AS updated_user_name',
+                        DB::RAW('IF (ticket_comments.updated_by , ticket_comments.updated_by, ticket_comments.created_by) AS user_id'),
+                        DB::RAW('IF (ticket_comments.updated_by , updated_user.name, created_user.name) AS created_updated_user_name'),
+                    )
+                        ->leftJoin('users AS created_user', 'created_user.id', 'ticket_comments.created_by')
+                        ->leftJoin('users AS updated_user', 'updated_user.id', 'ticket_comments.updated_by');
+                },
             ])
             ->withCount([
                 'actions',
@@ -409,6 +429,9 @@ class TicketController extends Controller
             ->get()->each(function ($ticket) {
                 $ticketDoneActions = $ticket->actions->where('status', TicketAction::getStatusDone());
                 $ticket->is_show_delete_btn = Auth::user()->is_admin && $ticket->timeBookings->count() == 0 && $ticketDoneActions->count() == 0 && $ticket->moved_back_to_dev_action_count == 0 ?? false;
+                if ($ticket->latestComment) {
+                    $ticket->latestComment->comment = Str::limit(strip_tags(strip_tags($ticket->latestComment->comment)), 120, '...');
+                }
             });
 
         $hasValue = false;
@@ -436,6 +459,7 @@ class TicketController extends Controller
         $initiativeData = array(
             'id' => $initiative->id,
             'name' => $initiative->name,
+            'functional_owner_id' => $initiative->functional_owner_id,
         );
         $meta['initiative'] = $initiativeData;
         $meta['ticket_count'] = $tickets->count();
@@ -1183,10 +1207,10 @@ class TicketController extends Controller
             return ApiHelper::response($status, __('messages.ticket.delete_ticket_not_allowed_because_time_bookings_exist_or_any_action_already_done_dev_count_not_zero'), '', 400);
         }
 
-        $task = $this->asanaService->deleteTask($ticket->asana_task_id);
-        if ($task['error_status']) {
-            return ApiHelper::response($status, __('messages.asana.delete_ticket.delete_error'), '', 400);
-        }
+        // $task = $this->asanaService->deleteTask($ticket->asana_task_id);
+        // if ($task['error_status']) {
+        //     return ApiHelper::response($status, __('messages.asana.delete_ticket.delete_error'), '', 400);
+        // }
 
         $status = true;
         $message = __('messages.ticket.delete_ticket_success');
@@ -1194,6 +1218,7 @@ class TicketController extends Controller
         DB::beginTransaction();
         try {
             $ticket->delete();
+            TicketService::storeLogging($ticket, Logging::ACTIVITY_TYPE_DELETE);
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();

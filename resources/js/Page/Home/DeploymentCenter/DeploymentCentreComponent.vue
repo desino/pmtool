@@ -15,7 +15,7 @@
                             @click="openProductionDeploymentModal(productionDeployment)" role="button">
                             <div class="row g-1 w-100 align-items-center">
                                 <div class="col-9">
-                                    {{ productionDeployment?.client?.name }} -
+                                    {{ productionDeployment?.client_name }} -
                                     {{ productionDeployment?.name }}
                                 </div>
                                 <div class="col-3 text-end">
@@ -79,7 +79,7 @@
                             @click="openTestDeploymentModal(testDeployment)" role="button">
                             <div class="row g-1 w-100 align-items-center">
                                 <div class="col-9">
-                                    {{ testDeployment?.client?.name }} - {{ testDeployment?.name }}
+                                    {{ testDeployment?.client_initiative_name }}
                                 </div>
                                 <div class="col-3 text-end">
                                     <span class="badge bg-desino">{{ testDeployment?.tickets_count }}

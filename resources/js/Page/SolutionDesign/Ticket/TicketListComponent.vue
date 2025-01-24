@@ -6,10 +6,12 @@
                 <div class="col-12 col-md-12 col-lg-3">
                     <div class="w-100 p-1">
                         <input v-model="filter.task_name" :placeholder="$t('ticket.filter.task_name')"
-                            class="form-control" type="text" @keyup="fetchAllTasks">
+                            class="form-control" :class="{ 'border-desino border-2': filter.task_name }" type="text"
+                            @keyup="fetchAllTasks">
                     </div>
                     <div class="w-100 p-1">
-                        <multiselect v-model="filter.macro_status" ref="multiselect" :multiple="true"
+                        <multiselect :class="{ 'multiselect-filter-custom-border': filter.macro_status.length > 0 }"
+                            v-model="filter.macro_status" ref="multiselect" :multiple="true"
                             :options="filterMacroStatus" :searchable="true" deselect-label="" label="name"
                             :placeholder="$t('ticket.filter.macro_status_placeholder')" track-by="id"
                             @select="fetchAllTasks" @Remove="fetchAllTasks">
@@ -24,14 +26,16 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-3">
                     <div class="w-100 p-1">
-                        <select v-model="filter.task_type" class="form-select" @change="fetchAllTasks">
+                        <select v-model="filter.task_type" class="form-select" @change="fetchAllTasks"
+                            :class="{ 'border-desino border-2': filter.task_type }">
                             <option value="">{{ $t('ticket.filter.task_type_placeholder') }}</option>
                             <option v-for="type in filterTaskTypes" :key="type.id" :value="type.id">{{ type.name }}
                             </option>
                         </select>
                     </div>
                     <div class="w-100 p-1">
-                        <multiselect v-model="filter.functionalities" ref="multiselect" :multiple="true"
+                        <multiselect :class="{ 'multiselect-filter-custom-border': filter.functionalities.length > 0 }"
+                            v-model="filter.functionalities" ref="multiselect" :multiple="true"
                             :options="functionalities" :searchable="true" deselect-label="" label="display_name"
                             :placeholder="$t('ticket.filter.functionalities_placeholder')" track-by="id"
                             @select="fetchAllTasks" @Remove="fetchAllTasks">
@@ -40,7 +44,8 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-3">
                     <div class="w-100 p-1">
-                        <select v-model="filter.action_owner" class="form-select" @change="fetchAllTasks">
+                        <select v-model="filter.action_owner" class="form-select" @change="fetchAllTasks"
+                            :class="{ 'border-desino border-2': filter.action_owner }">
                             <option value="">{{ $t('ticket.filter.action_owner_placeholder') }}</option>
                             <option v-for="actionOwner in actionOwners" :key="actionOwner.id" :value="actionOwner.id">{{
                                 actionOwner.name }}
@@ -48,7 +53,8 @@
                         </select>
                     </div>
                     <div class="w-100 p-1">
-                        <select v-model="filter.next_action_owner" class="form-select" @change="fetchAllTasks">
+                        <select v-model="filter.next_action_owner" class="form-select" @change="fetchAllTasks"
+                            :class="{ 'border-desino border-2': filter.next_action_owner }">
                             <option value="">{{ $t('ticket.filter.next_action_owner_placeholder') }}</option>
                             <option v-for="nextActionOwner in nextActionOwners" :key="nextActionOwner.id"
                                 :value="nextActionOwner.id">{{
@@ -59,7 +65,8 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-3">
                     <div class="w-100 p-1">
-                        <select v-model="filter.deployment_id" class="form-select" @change="fetchAllTasks">
+                        <select v-model="filter.deployment_id" class="form-select" @change="fetchAllTasks"
+                            :class="{ 'border-desino border-2': filter.deployment_id }">
                             <option value="">{{ $t('ticket.filter.deployments_placeholder') }}</option>
                             <option v-for="deployment in filterDeployments" :key="deployment.id" :value="deployment.id">
                                 {{
@@ -68,7 +75,8 @@
                         </select>
                     </div>
                     <div class="w-100 p-1">
-                        <multiselect v-model="filter.projects" :multiple="true" :options="projects" :searchable="true"
+                        <multiselect :class="{ 'multiselect-filter-custom-border': filter.projects.length > 0 }"
+                            v-model="filter.projects" :multiple="true" :options="projects" :searchable="true"
                             deselect-label="" label="name" :placeholder="$t('ticket.filter.projects_placeholder')"
                             track-by="id" @select="fetchAllTasks" @Remove="fetchAllTasks">
                         </multiselect>
@@ -642,7 +650,32 @@ export default {
         tooltipContentForTicketName(task) {
             const createdAtLabel = this.$t('ticket.list.row_hover_tooltip_created_at_text');
             const createdByLabel = this.$t('ticket.list.row_hover_tooltip_created_by_text');
-            return `<strong>${createdAtLabel}</strong>${task.display_created_at}<br><strong>${createdByLabel}</strong>${task.display_created_by}`;
+            const commentLabel = this.$t('ticket.list.row_hover_tooltip_comment_text');
+            const commentedAtLabel = this.$t('ticket.list.row_hover_tooltip_commented_at_text');
+            const releaseNoteLabel = this.$t('ticket.list.row_hover_tooltip_release_note_text');
+            let releaseNoteBadgeClass = "bg-danger";
+            if (task.is_release_note) {
+                releaseNoteBadgeClass = "bg-success";
+            }
+
+            let commentHtml = "";
+            if (task?.latest_comment?.comment != null) {
+                const comment = task?.latest_comment?.comment;
+                const userName = task?.latest_comment?.created_updated_user_name;
+                const createdAt = task?.latest_comment?.display_updated_at ?? task?.latest_comment?.display_created_at;
+                commentHtml = `<strong class='small'>${commentLabel}</strong> <span class="badge bg-secondary d-block-inline text-wrap fst-italic"> ${userName}</span> : <span class="fst-italic">${comment}</span> <strong class='small fst-italic'>${commentedAtLabel}</strong> <span class="badge bg-secondary d-block-inline text-wrap fst-italic">${createdAt}</span>`;
+            }
+            return `<div class='row w-100 g-1 align-items-center small'>
+                        <div class='col-12 text-start'>
+                            <strong class='small'>${createdByLabel}</strong> <span>${task.display_created_by}</span> <strong class='small'>${createdAtLabel}</strong> <span>${task.display_created_at}</span>
+                        </div>
+                        <div class='col-12 text-start'>
+                            ${commentHtml}
+                        </div>
+                        <div class='col-12 text-start'>
+                            <span class='badge ${releaseNoteBadgeClass} d-block-inline text-wrap fst-italic'>${releaseNoteLabel}</span>
+                        </div>
+                    </div>`;
         },
         copyToClipboard(task) {
             this.copyLink = `${window.location.origin}/solution-design/${this.initiative_id}/ticket-detail/${task.id}`;
@@ -736,3 +769,10 @@ export default {
     },
 }
 </script>
+
+<!-- <style scoped>
+::v-deep(.multiselect__tags) {
+    border-color: var(--desino-color, #000) !important;
+    border-width: 2px !important;
+}
+</style> -->

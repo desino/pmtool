@@ -10,11 +10,12 @@
                     <div class="row w-100">
                     </div>
 
-                    <div class="row g-1 w-100 align-items-center">
+                    <!-- <div class="row g-1 w-100 align-items-center"> -->
+                    <div class="row g-1 w-100">
                         <div class="col-12 col-md-6 col-lg-6 mb-3">
                             <label class="form-label fw-bold">{{
                                 $t('edit_opportunity_modal_select_client_name')
-                            }} <strong class="text-danger">*</strong></label>
+                                }} <strong class="text-danger">*</strong></label>
                             <input type="text" v-model="formData.client_name" disabled
                                 :class="{ 'is-invalid': errors.client_name }" class="form-control">
                             <div v-if="errors.client_name" class="invalid-feedback">
@@ -135,7 +136,7 @@
                                 <div v-if="errors.share_point_url" class="invalid-feedback">
                                     <span v-for="(error, index) in errors.share_point_url" :key="index">{{
                                         error
-                                    }}</span>
+                                        }}</span>
                                 </div>
                             </div>
                         </div>
@@ -168,7 +169,7 @@
                                                     :class="{ 'is-invalid': errors.type }" class="form-select">
                                                     <option value="">{{
                                                         $t('edit_opportunity_modal_input_environment_server_type_placeholder')
-                                                    }}
+                                                        }}
                                                     </option>
                                                     <option v-for="serverType in serverTypes" :key="serverType.id"
                                                         :value="serverType.id">{{
@@ -178,7 +179,7 @@
                                                 <div v-if="errors.type" class="invalid-feedback">
                                                     <span v-for="(error, index) in errors.type" :key="index">{{
                                                         error
-                                                    }}</span>
+                                                        }}</span>
                                                 </div>
                                             </div>
                                             <div class="col-6 col-md-6 col-lg-8 col-xl-3">
@@ -286,6 +287,7 @@ export default {
             users: [],
             pdfTemplates: [],
             serverTypes: [],
+            oldOpportunity: {},
             errors: {},
             showMessage: true
         };
@@ -295,6 +297,19 @@ export default {
         getEditOpportunityFormData(opportunity) {
             this.setLoading(true);
             this.clearMessages();
+            this.oldOpportunity = opportunity;
+            this.setFormData(opportunity);
+
+            if (document.getElementById('editInitiativeModal') != null) {
+                this.modalTitle = this.$t('edit_initiative_modal_title')
+            }
+            if (document.getElementById('editOpportunityModal') != null) {
+                this.modalTitle = this.$t('edit_opportunity_modal_title')
+            }
+            this.getEditOpportunityData();
+            this.setLoading(false);
+        },
+        setFormData(opportunity) {
             this.formData.id = opportunity.id;
             this.formData.client_id = opportunity.client_id;
             this.formData.name = opportunity.name;
@@ -306,7 +321,7 @@ export default {
             this.formData.functional_owner_id = opportunity.functional_owner_id ?? '';
             this.formData.technical_owner_id = opportunity.technical_owner_id ?? '';
             this.formData.quality_owner_id = opportunity.quality_owner_id ?? '';
-            let opportunityEnvironments = opportunity.initiative_environments;
+            let opportunityEnvironments = JSON.parse(JSON.stringify(opportunity.initiative_environments));
             opportunityEnvironments.forEach((environment) => {
                 environment.desino_managed_fl = environment.desino_managed_fl == 1 ?? false;
                 environment.type = environment.type != null ? environment.type : '';
@@ -318,15 +333,6 @@ export default {
                 url: '',
                 desino_managed_fl: false,
             }] : opportunityEnvironments;
-
-            if (document.getElementById('editInitiativeModal') != null) {
-                this.modalTitle = this.$t('edit_initiative_modal_title')
-            }
-            if (document.getElementById('editOpportunityModal') != null) {
-                this.modalTitle = this.$t('edit_opportunity_modal_title')
-            }
-            this.getEditOpportunityData();
-            this.setLoading(false);
         },
         async updateOpportunity() {
             this.clearMessages();
@@ -345,6 +351,7 @@ export default {
                 }
                 this.setLoading(false);
             } catch (error) {
+                this.setFormData(this.oldOpportunity);
                 this.handleError(error);
             }
         },

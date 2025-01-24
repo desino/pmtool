@@ -6,7 +6,8 @@
     max-height: 100%;
     overflow-x: hidden !important;
 }
-#sidebar_scrolling_section{
+
+#sidebar_scrolling_section {
     overflow: auto;
     overflow-y: auto;
     overflow-x: hidden;
@@ -93,9 +94,10 @@
     color: $white !important;
 }
 
-.multiselect__select{
+.multiselect__select {
     width: 30px !important;
 }
+
 // .multiselect {
 //     height: 38px !important;
 // }
@@ -117,6 +119,11 @@
     border: var(--bs-border-width) solid var(--bs-border-color);
     border-radius: var(--bs-border-radius);
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.multiselect-filter-custom-border .multiselect__tags {
+    border-color: $desino !important;
+    border-width: 2px !important;
 }
 
 .multiselect__placeholder {
@@ -333,8 +340,14 @@
     overflow-y: auto;
 }
 
+.max-h-ticket-comment {
+    max-height: 349px;
+    min-height: 349px;
+    overflow-y: auto;
+}
+
 .optimize-image img {
-    width: 100% !important;
+    max-width: 100% !important;
 }
 
 .color-macro-status-detail-ticket {
@@ -380,4 +393,8 @@
 .color-activity-log-deploy-acc {
     background-color: transparent;
     color: black;
+}
+
+.color-activity-log-deleted {
+    background-color: #dc3545;
 }

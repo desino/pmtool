@@ -228,6 +228,10 @@ class Ticket extends Model
         }
     }
 
+    public function latestComment()
+    {
+        return $this->hasOne(TicketComment::class)->orderBy('id', 'desc')->limit(1);
+    }
 
     public function createdBy()
     {

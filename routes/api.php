@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\RestApiController;
 use App\Http\Controllers\Api\SolutionDesignController;
 use App\Http\Controllers\Api\TestCaseController;
+use App\Http\Controllers\Api\TicketCommentController;
 use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\TimeBookingController;
 use App\Http\Controllers\Api\TimeMappingController;
@@ -110,6 +111,13 @@ Route::middleware('auth:sanctum')->group(function () {
                 Route::post('/update/{test_case_id}', 'update');
                 Route::get('/show/{test_case_id}', 'show');
                 Route::post('/delete-test-case/{test_case_id}', 'deleteTestCase');
+            });
+
+            Route::controller(TicketCommentController::class)->prefix('{ticket_id}/comment')->group(function () {
+                Route::get('/', 'index');
+                Route::post('/store', 'store');
+                Route::post('/delete', 'delete');
+                Route::post('/update', 'update');
             });
         });
 

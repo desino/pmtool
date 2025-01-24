@@ -57,7 +57,7 @@
         </div>
     </div>
     <GlobalMessage v-if="showMessage" />
-    <div class="app-content border border-start-0 border-end-0 py-2">
+    <div class="app-content border-bottom pb-1">
         <div class="row g-1 w-100">
             <div class="col-12 col-md-3 col-lg-3 col-xl-3 text-center mb-2 mb-md-0">
                 <div class="card shadow-none h-100 border-0" :class="ticketData.macro_status_label?.color">
@@ -126,17 +126,17 @@
                             </button>
                             <ul class="dropdown-menu">
                                 <li v-for="action in previous_actions" :key="action.id">
-                                    <!-- <a class="dropdown-item"
+                                    <a class="dropdown-item"
                                         :class="{ 'active': action.action == selected_previous_action_id }"
                                         href="javascript:void(0)" @click="handlePreviousActionStatus(action)">
                                         {{ action.action_name }}
-                                    </a> -->
-                                    <a class="dropdown-item"
+                                    </a>
+                                    <!-- <a class="dropdown-item"
                                         :class="{ 'active': action.action == selected_previous_action_id }"
                                         href="javascript:void(0)"
                                         @click="showConfirmation('handlePreviousActionStatus', handlePreviousActionStatus, action)">
                                         {{ action.action_name }}
-                                    </a>
+                                    </a> -->
                                 </li>
                             </ul>
                         </div>
@@ -145,57 +145,67 @@
             </div>
         </div>
     </div>
-    <div class="app-content mt-2">
+    <div class="app-content pt-1">
         <div class="col-md-12">
-            <ul id="ticketdetail-tab" class="nav nav-tabs" role="tablist">
-                <li class="nav-item">
-                    <a id="ticket_detail_tab" aria-controls="ticket_detail_tab" aria-selected="true"
-                        class="nav-link border active" data-bs-toggle="pill" href="#ticketdetail_description_tab"
-                        role="tab">{{ $t('ticket_details.task_description') }}</a>
-                </li>
-                <li class="nav-item">
-                    <a id="ticket_detail_tab" aria-controls="ticket_detail_tab" aria-selected="false"
-                        class="nav-link border" data-bs-toggle="pill" href="#ticketdetail_feature_tab" role="tab">{{
-                            $t('ticket_details.task_details') }}</a>
-                </li>
-                <li class="nav-item">
-                    <a id="test_cases_tab" aria-controls="test_cases_tab" aria-selected="false" class="nav-link border"
-                        data-bs-toggle="pill" href="#ticketdetail_testcase_tab" role="tab">{{
-                            $t('ticket_details.test_cases')
-                        }}</a>
-                </li>
-                <li class="nav-item">
-                    <a id="ticket_detail_tab" aria-controls="ticket_detail_tab" aria-selected="false"
-                        class="nav-link border" data-bs-toggle="pill" href="#ticketdetail_releasenotes_tab"
-                        role="tab">{{
-                            $t('ticket_details.client_release_notes')
-                        }}</a>
-                </li>
-                <li class="nav-item" v-if="ticketData.is_allow_dev_estimation_time">
-                    <a id="test_cases_tab" aria-controls="test_cases_tab" aria-selected="false" class="nav-link border"
-                        data-bs-toggle="pill" href="#ticketdetail_estimated_hours_tab" role="tab">{{
-                            $t('ticket_details.estimated_hours')
-                        }}</a>
-                </li>
-            </ul>
-            <div id="ticketdetail-tabContent" class="tab-content border border-top-0 p-2">
+            <div class="w-100">
+                <div class="row g-1 w-100 nav">
+                    <div class="col-6 col-md-3 col-lg-2">
+                        <a id="ticket_detail_tab" aria-controls="ticket_detail_tab" aria-selected="true"
+                            class="btn btn-outline-desino active w-100 h-100 align-content-center" data-bs-toggle="pill" href="#ticketdetail_description_tab" role="tab">
+                            {{ $t('ticket_details.task_description') }}
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-3 col-lg-2">
+                        <a id="ticket_detail_tab" aria-controls="ticket_detail_tab" aria-selected="false"
+                            class="btn btn-outline-desino w-100 h-100 align-content-center" data-bs-toggle="pill" href="#ticketdetail_feature_tab" role="tab">
+                            {{ $t('ticket_details.task_details') }}
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-3 col-lg-2">
+                        <a id="test_cases_tab" aria-controls="test_cases_tab" aria-selected="false" 
+                            class="btn btn-outline-desino w-100 h-100 align-content-center" data-bs-toggle="pill" href="#ticketdetail_testcase_tab" role="tab">
+                            {{ $t('ticket_details.test_cases') }}
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-3 col-lg-2">
+                        <a id="ticket_detail_tab" aria-controls="ticket_detail_tab" aria-selected="false"
+                            class="btn btn-outline-desino w-100 h-100 align-content-center" data-bs-toggle="pill" href="#ticketdetail_releasenotes_tab" role="tab">
+                            {{ $t('ticket_details.client_release_notes') }}
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-3 col-lg-2" v-if="ticketData.is_allow_dev_estimation_time">
+                        <a id="test_cases_tab" aria-controls="test_cases_tab" aria-selected="false" 
+                            class="btn btn-outline-desino w-100 h-100 align-content-center" data-bs-toggle="pill" href="#ticketdetail_estimated_hours_tab" role="tab">
+                            {{ $t('ticket_details.estimated_hours') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div id="ticketdetail-tabContent" class="tab-content pt-2 px-0 pb-0">
                 <div id="ticketdetail_description_tab" aria-labelledby="ticketdetail_description_tab"
                     class="tab-pane fade active show" role="tabpanel">
-                    <div class="w-100">
-                        <div v-if="this.user?.is_admin">
-                            <TinyMceEditor v-model="taskDescriptionForm.description" />
-                            <div v-if="errors.description" class="text-danger mt-2">
-                                <span v-for="(error, index) in errors.description" :key="index">{{
-                                    error
-                                }}</span>
+                    <div class="row g-2 w-100">
+                        <div class="col-xl-8 col-lg-7 col-12">
+                            <div v-if="this.user?.is_admin">
+                                <TinyMceEditor v-model="taskDescriptionForm.description" />
+                                <div v-if="errors.description" class="text-danger mt-2">
+                                    <span v-for="(error, index) in errors.description" :key="index">{{
+                                        error
+                                        }}</span>
+                                </div>
+                                <button class="btn w-100 btn-desino text-white fw-bold rounded my-2"
+                                    @click="updateTaskDescription">
+                                    {{ $t('ticket_details.task_description_save_but_text') }}
+                                </button>
                             </div>
-                            <button class="btn w-100 btn-desino text-white fw-bold m-2 rounded"
-                                @click="updateTaskDescription">
-                                {{ $t('ticket_details.task_description_save_but_text') }}
-                            </button>
+                            <div v-else>
+                                <div v-html="ticketData.description"></div>
+                            </div>
                         </div>
-                        <div v-else>
-                            <div v-html="ticketData.description"></div>
+                        <div class="col-xl-4 col-lg-5 col-12">
+                            <div v-if="this.user && isPassCommentData">
+                                <CommentComponent ref="commentComponent" :ticketData="ticketData" :users="users" />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -314,7 +324,7 @@
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">{{
                                         $t('ticket_details_input_dev_estimation_time')
-                                    }} <strong class="text-danger">*</strong>
+                                        }} <strong class="text-danger">*</strong>
                                     </label>
                                     <input v-model="estimatedHoursFormData.dev_estimation_time"
                                         :class="{ 'is-invalid': errors.dev_estimation_time }" class="form-control"
@@ -341,6 +351,8 @@
     </div>
     <ConfirmationModal ref="dynamicConfirmationModal" :title="modalTitle" :message="modalMessage"
         @confirm="modalConfirmCallback" />
+    <PreviousActionModalComponent ref="previousActionModal" :ticketData="ticketData" :users="users" :title="modalTitle"
+        :message="modalMessage" @confirm="changePreviousActionStatus" />
     <span id="copyableLink" style="cursor: pointer; text-decoration: underline; color: blue; display: none">
         <a v-bind:href="copyLink">{{ copyLabel }}</a>
     </span>
@@ -361,6 +373,8 @@ import testCaseService from "./../../../services/TestCaseService.js";
 import eventBus from "./../../../eventBus.js";
 import TimeBookingForTicketDetailComponent from './TimeBookingForTicketDetailComponent.vue';
 import store from '../../../store/index.js';
+import CommentComponent from './Comment/CommentComponent.vue';
+import PreviousActionModalComponent from './PreviousActionModalComponent.vue';
 
 export default {
     name: 'SolutionDesignComponent',
@@ -370,7 +384,9 @@ export default {
         TinyMceEditor,
         GlobalMessage,
         Multiselect,
-        TimeBookingForTicketDetailComponent
+        TimeBookingForTicketDetailComponent,
+        CommentComponent,
+        PreviousActionModalComponent
     },
     props: ['initiative_id', 'ticket_id'],
     data() {
@@ -443,6 +459,7 @@ export default {
             modalTitle: '',
             modalMessage: '',
             modalConfirmCallback: null,
+            isPassCommentData: false,
             errors: {},
             showMessage: true,
         };
@@ -492,6 +509,7 @@ export default {
                     this.is_allow_case_add_test_section = response.meta_data.is_allow_case_add_test_section;
                     this.is_allow_case_update_test_section = response.meta_data.is_allow_case_update_test_section;
                     this.previous_actions = response.meta_data?.actions.filter(action => action?.action < this.currentAction?.action);
+                    this.isPassCommentData = true;
                 }
                 this.setLoading(false);
             } catch (error) {
@@ -525,7 +543,6 @@ export default {
                     'ticket_id': this.localTicketId
                 }
                 const response = await ticketService.saveTaskDescription(data);
-                this.setData(response.content);
                 showToast(response.message, 'success');
                 this.setLoading(false);
             } catch (error) {
@@ -645,6 +662,11 @@ export default {
                 return false;
             }
 
+            this.modalTitle = this.$t('ticket_detail.confirm_alert.current_action_change_status_title');
+            this.modalMessage = this.$t('ticket_detail.confirm_alert.current_previous_action_status_text', {
+                'PREVIOUS_ACTION_NAME': `<span class='badge bg-secondary'>${action?.action_name}</span>`
+            });
+
             this.selected_previous_action_id = action.action;
 
             this.previousActionFormData = {
@@ -658,7 +680,9 @@ export default {
                 previous_action_id: this.selected_previous_action_id,
                 action_text: 'previous_action',
             }
-            this.changePreviousActionStatus(this.previousActionFormData);
+
+            this.$refs.previousActionModal.showModal(this.previousActionFormData);
+            // this.changePreviousActionStatus(this.previousActionFormData);
         },
         async changeActionUser(passData) {
             try {
@@ -683,13 +707,16 @@ export default {
                 this.handleError(error);
             }
         },
-        async changePreviousActionStatus(passData) {
+        async changePreviousActionStatus(passData, previousActionComment) {
             try {
                 await this.setLoading(true);
                 const { message } = await ticketService.changePreviousActionStatus(passData);
                 showToast(message, 'success');
                 await this.setLoading(false);
                 this.fetchTicketData(this.localTicketId);
+                if (previousActionComment != '') {
+                    this.$refs.commentComponent.appendPreviousActionComment(previousActionComment);
+                }
             } catch (error) {
                 this.handleError(error);
             }
@@ -836,12 +863,12 @@ export default {
             }
         },
     },
-    mounted() {
+    async mounted() {
         const setHeaderData = {
             page_title: "",
         }
         store.commit("setHeaderData", setHeaderData);
-        this.fetchTicketData(this.localTicketId);
+        await this.fetchTicketData(this.localTicketId);
         eventBus.$on('refreshTicketDetail', this.refreshTicketDetail);
         eventBus.$emit('selectHeaderInitiativeId', this.localInitiativeId);
         this.initializeTooltips();

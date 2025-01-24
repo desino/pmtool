@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use App\Services\MytcpdfService;
 use App\Services\ReleaseNotePdfService;
 use App\Services\TestCasePdfService;
+use Illuminate\Support\Facades\Auth;
 
 class DeploymentController extends Controller
 {
@@ -20,10 +21,18 @@ class DeploymentController extends Controller
     public function index(Request $request, $initiative_id)
     {
         $status = false;
+
         $initiative = InitiativeService::getInitiative($request, $initiative_id);
         if (!$initiative) {
             return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 404);
         }
+
+        $authUser = Auth::user();
+        if (!$authUser->is_admin && $initiative->technical_owner_id != $authUser->id) {
+            return ApiHelper::response(false, __('messages.deployment.dont_have_permission'), null, 500);
+        }
+
+
         $filters = $request->filters;
         $release = Release::select(
             'id',
@@ -85,6 +94,11 @@ class DeploymentController extends Controller
         $initiative = InitiativeService::getInitiative($request);
         if (!$initiative) {
             return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
+        }
+
+        $authUser = Auth::user();
+        if (!$authUser->is_admin && $initiative->technical_owner_id != $authUser->id) {
+            return ApiHelper::response(false, __('messages.deployment.dont_have_permission'), null, 500);
         }
 
         $release = Release::select(
@@ -187,6 +201,11 @@ class DeploymentController extends Controller
         $initiative = InitiativeService::getInitiative($request);
         if (!$initiative) {
             return ApiHelper::response($status, __('messages.solution_design.section.initiative_not_exist'), '', 400);
+        }
+
+        $authUser = Auth::user();
+        if (!$authUser->is_admin && $initiative->technical_owner_id != $authUser->id) {
+            return ApiHelper::response(false, __('messages.deployment.dont_have_permission'), null, 500);
         }
 
         $release = Release::select(

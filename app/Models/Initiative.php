@@ -12,6 +12,7 @@ class Initiative extends Model
 
     protected $guarded = ['id'];
     protected $appends = ['client_initiative_name', 'creation_date'];
+    // protected $hidden = ['tickets'];
 
     public const STATUS_OPPORTUNITY = 1;
     public const STATUS_ONGOING = 2;

@@ -61,7 +61,6 @@ const SolutionDesignService = {
     },
     async saveTaskDescription(data) {
         try {
-            console.log('data :: ', data);
             const endpoint = endpoints.saveTaskDescription.replace(':initiative_id', data.initiative_id).replace(':ticket_id', data.ticket_id);
             const response = await axiosRequest.post(endpoint, data);
             return response.data;
