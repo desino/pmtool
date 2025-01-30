@@ -4,7 +4,7 @@
         <div class="w-100 mb-3">
             <ul class="list-group list-group-flush mb-3 mt-2">
                 <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
-                    <div class="row g-1 w-100 align-items-center">
+                    <div class="row g-1 align-items-center">
                         <div class="col-xl-5 col-lg-4 col-md-6 col-6 fw-bold small ">
                             {{ $t('initiative_overview_list.name_text') }}
                         </div>
@@ -29,8 +29,8 @@
                     </div>
                 </li>
                 <li v-if="initiatives.length > 0" v-for="(initiative, index) in initiatives" :key="index"
-                    class="border list-group-item p-1 list-group-item-action border-top-0">
-                    <div class="row g-1 w-100 align-items-center"  style="min-height: 48px;" role="button"
+                    class="list-group-item p-1 list-group-item-action">
+                    <div class="row g-1 align-items-center"  style="min-height: 48px;" role="button"
                         @click="redirectInitiativeTicketsPage(initiative)">
                         <div class="col-xl-5 col-lg-4 col-md-6 col-6 ">
                             {{ initiative.client_initiative_name }}
@@ -72,7 +72,7 @@
                     </div>
                 </li>
                 <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
-                    <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
+                    <div class="row g-1 align-items-center" style="min-height: 48px;">
                         <div class="col-12 fw-bold fst-italic text-center">
                             {{ $t('initiative_overview_list.no_initiative_overview_found_text') }}
                         </div>

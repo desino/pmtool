@@ -1,8 +1,8 @@
 <template>
     <div class="app-content mt-3">
         <GlobalMessage v-if="showMessage" />
-        <div class="row w-100 g-4">
-            <div class="col-12 col-lg-6">
+        <div class="row g-2">
+            <div class="col-12 col-lg-6 border-end">
                 <DeploymentCentreComponent />
             </div>
             <div class="col-12 col-lg-6">

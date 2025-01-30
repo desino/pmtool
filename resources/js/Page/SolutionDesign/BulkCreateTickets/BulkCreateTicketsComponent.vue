@@ -4,7 +4,7 @@
         <form>
             <ul class="list-group list-group-flush mb-3 mt-2">
                 <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
-                    <div class="row w-100 align-items-center">
+                    <div class="row g-1 align-items-center">
                         <div class="col-md-4 fw-bold small">
                             {{ $t('bulk_create_tickets.functionalities_text') }}
                         </div>
@@ -18,13 +18,13 @@
                 </li>
                 <li v-if="sectionsWithFunctionalities.length > 0"
                     v-for="(section, section_index) in sectionsWithFunctionalities" :key="section_index"
-                    class="border list-group-item p-1 list-group-item-action border-top-0">
+                    class="list-group-item p-1 list-group-item-action">
                     <span class="fw-bold">{{ section.display_name }}</span>
                     <ul class="list-group list-group-flush my-2">
                         <li v-if="section.functionalities.length > 0"
                             v-for="(functionality, index) in section.functionalities" :key="index"
                             class="border list-group-item list-group-item-action border-top-0 border-start-0 border-end-0">
-                            <div class="row g-1 w-100 align-items-center">
+                            <div class="row g-1 align-items-center">
                                 <div class="col-12 col-md-4">
                                     {{ functionality.display_name }}
                                 </div>
@@ -53,7 +53,7 @@
                     </ul>
                 </li>
                 <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
-                    <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
+                    <div class="row g-1 align-items-center" style="min-height: 48px;">
                         <div class="col-12 fw-bold fst-italic text-center">
                             {{ $t('bulk_create_tickets.list.not_record_found') }}
                         </div>

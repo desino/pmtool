@@ -239,24 +239,6 @@
     color: white !important;
 }
 
-//////
-#timeBookingPageSection .list-group {
-    margin-bottom: 0;
-}
-
-#timeBookingPageSection .list-group-item {
-    border: 1px solid #dee2e6;
-}
-
-/* Adjust flex properties to ensure uniformity in appearance */
-#timeBookingPageSection .list-group-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    /* Allow wrapping for small screens */
-}
-
 #timeBookingPageSection .outer {
     position: relative
 }

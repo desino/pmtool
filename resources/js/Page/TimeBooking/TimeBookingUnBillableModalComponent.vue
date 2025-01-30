@@ -67,14 +67,14 @@
                         </div>
                     </div>
                 </form>
-                <div class="mb-3 p-3 shadow">
+                <div class="p-3 shadow">
                     <button type="button" class="btn btn-sm btn-danger border-0"
                         :disabled="selectedTimeBookings.length === 0" @click="handleDeleteSelectAllTimeBookings">
                         <i class="bi bi-trash3"></i> {{ $t('time_booking_un_billable.modal_delete_but_text') }}
                     </button>
                     <ul class="list-group list-group-flush mb-3 mt-2">
                         <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
-                            <div class="row w-100 align-items-center">
+                            <div class="row g-1 align-items-center">
                                 <div class="col-2">
                                     <div class="row g-0 h-100 align-items-center">
                                         <div class="col-auto me-1" style="width:20px">
@@ -97,9 +97,9 @@
                                 </div>
                             </div>
                         </li>
-                        <li class="border list-group-item p-1 list-group-item-action border-top-0"
+                        <li class="list-group-item p-1 list-group-item-action"
                             v-if="timeBookings.length > 0" v-for="timeBooking in timeBookings">
-                            <div class="row w-100 align-items-center">
+                            <div class="row g-1 align-items-center">
                                 <div class="col-2">
                                     <div class="row g-0 h-100 align-items-center">
                                         <div class="col-auto me-1" style="width:20px">
@@ -126,9 +126,9 @@
                                 </div>
                             </div>
                         </li>
-                        <li class="border list-group-item p-1 list-group-item-action border-top-0"
+                        <li class="list-group-item p-1 list-group-item-action"
                             v-if="totalTimeBookingHours > 0">
-                            <div class="row g-1 w-100 align-items-center">
+                            <div class="row g-1 align-items-center">
                                 <div class="col-2 fw-bold">
                                     {{ $t('time_booking_un_billable.modal.list_table.footer_total_text') }}: {{
                                         totalTimeBookingHours }}
@@ -150,8 +150,8 @@
                     </ul>
                 </div>
             </div>
-            <div class="modal-footer border-0 p-0 justify-content-center">
-                <div class="row w-100 g-1">
+            <div class="modal-footer border-0 p-0 d-block">
+                <div class="row g-1">
                     <div class="col-12 col-md-12 col-lg-12">
                         <button class="btn btn-danger w-100 border-0" data-bs-dismiss="modal" type="button">
                             <i class="bi bi-x-lg"></i>
@@ -358,7 +358,7 @@ export default {
                 <div class="text-center w-100">
                     <a href="javascript:void(0)" class="btn btn-desino w-100 border-0 my-1" id="yesDeleteTimeBookingUnBillableButton_${index}" data-index="${index}">
                         <i class="bi bi-check-lg"></i>
-                    </a>                    
+                    </a>
                 </div>`;
         },
         clearMessages() {

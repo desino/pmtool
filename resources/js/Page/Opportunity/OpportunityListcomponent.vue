@@ -2,7 +2,7 @@
     <GlobalMessage v-if="showMessage" />
     <div class="app-content mt-3">
         <div class="w-100 mb-3">
-            <div class="row g-0 w-100 align-items-center">
+            <div class="row g-1 align-items-center">
                 <div class="col-12 col-md-3">
                     <div class="w-100 p-1">
                         <input v-model="filter.initiative_name"
@@ -48,7 +48,7 @@
         <div class="w-100 mb-3">
             <ul class="list-group list-group-flush mb-3 mt-2">
                 <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
-                    <div class="row w-100 align-items-center">
+                    <div class="row g-1 align-items-center">
                         <div class="col-xl-4 col-lg-4 col-md-4 col-5 fw-bold small">
                             {{ $t('opportunity_list_table.client_th_text') }}
                         </div>
@@ -66,10 +66,10 @@
                         </div>
                     </div>
                 </li>
-                <li class="border list-group-item p-1 list-group-item-action border-top-0"
+                <li class="list-group-item p-1 list-group-item-action"
                     v-for="opportunity in opportunities" v-if="opportunities.length > 0" :key="opportunity.id"
                     role="button" @click="redirectSolutionDesignPage(opportunity)">
-                    <div class="row w-100 align-items-center" style="min-height: 48px;">
+                    <div class="row g-1 align-items-center" style="min-height: 48px;">
                         <div class="col-xl-4 col-lg-4 col-md-4 col-5">{{ opportunity.client.name }}</div>
                         <div class="col-xl-3 col-lg-3 col-md-3 col-5">{{ opportunity.name }}</div>
                         <div class="col-xl-3 col-lg-2 col-md-2 col-2 text-end text-md-start">
@@ -96,8 +96,8 @@
                     </div>
                 </li>
                 <li v-if="opportunities.length > 0"
-                    class="border list-group-item p-1 list-group-item-action border-top-0">
-                    <div class="row w-100 align-items-center" style="min-height: 48px;">
+                    class="list-group-item p-1 list-group-item-action border-bottom">
+                    <div class="row g-1 align-items-center" style="min-height: 48px;">
                         <div class="col-xl-7 col-lg-8 col-md-8 col-10"></div>
                         <div class="col-xl-3 col-lg-2 col-md-2 col-2 fw-bold">
                             <span class="badge rounded-3 bg-success-subtle text-success mb-0">
@@ -109,7 +109,7 @@
                     </div>
                 </li>
                 <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
-                    <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
+                    <div class="row g-1 align-items-center" style="min-height: 48px;">
                         <div class="col-12 fw-bold fst-italic text-center">
                             {{ $t('opportunity_list_table.opportunities_not_found_text') }}
                         </div>

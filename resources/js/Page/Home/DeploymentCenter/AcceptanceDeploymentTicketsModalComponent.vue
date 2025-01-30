@@ -8,27 +8,27 @@
                 </div>
                 <div class="modal-body">
                     <GlobalMessage v-if="showMessage" scope="modal" />
-                    <ul class="list-group mb-3 mt-2">
+                    <ul class="list-group list-group-flush mb-3 mt-2">
                         <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
-                            <div class="row g-1 w-100 align-items-center">
+                            <div class="row g-1 align-items-center">
                                 <div class="col-md-1" v-if="ticketList.length > 0">
                                     <input class="form-check-input" type="checkbox" id="chk_all_tickets"
                                         v-model="isChkAllAcceptanceDeploymentTickets"
                                         @change="handleSelectAllAcceptanceDeploymentTickets">
                                 </div>
-                                <div class="col-md-8">
+                                <div class="col-md-8 fw-bold small">
                                     {{ $t('home.deployment_center.acceptance_deployment.ticket_modal.li.name.text') }}
                                 </div>
-                                <div class="col-md-3 text-end">
+                                <div class="col-md-3 fw-bold small text-end">
                                     {{
                                         $t('home.deployment_center.acceptance_deployment.ticket_modal.li.develop_by.text')
                                     }}
                                 </div>
                             </div>
                         </li>
-                        <li class="border list-group-item p-1 list-group-item-action border-top-0"
+                        <li class="list-group-item p-1 list-group-item-action"
                             v-if="ticketList.length > 0" v-for="ticket in ticketList" :key="ticket.id">
-                            <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
+                            <div class="row g-1 align-items-center" style="min-height: 48px;">
                                 <div class="col-md-1">
                                     <input class="form-check-input" type="checkbox"
                                         :id="'chk_acceptance_deployment_ticket_' + ticket.id" v-model="ticket.isChecked"
@@ -48,7 +48,7 @@
                             </div>
                         </li>
                         <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
-                            <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
+                            <div class="row g-1 align-items-center" style="min-height: 48px;">
                                 <div class="col-12 fw-bold fst-italic text-center">
                                     {{ $t('home.deployment_center.acceptance_deployment.ticket_modal.no_tickets.text')
                                     }}
@@ -57,9 +57,9 @@
                         </li>
                     </ul>
                 </div>
-                <div class="modal-footer border-0 p-0 justify-content-center">
-                    <div class="row g-1 w-100 align-items-center">
-                        <div class="col-4 col-md-6 col-lg-6">
+                <div class="modal-footer border-0 p-0 d-block">
+                    <div class="row g-1 align-items-center">
+                        <div class="col-6 col-md-6 col-lg-6">
                             <button type="button" ref="popoverBtn" data-bs-toggle="popover"
                                 :title="$t('home.deployment_center.acceptance_deployment.ticket_modal.submit.alert.text')"
                                 v-bind:data-bs-content="popoverContent" class="btn btn-desino w-100 border-0"
@@ -67,7 +67,7 @@
                                     $t('home.deployment_center.acceptance_deployment.ticket_modal.submit_but.text')
                                 }}</button>
                         </div>
-                        <div class="col-4 col-md-6 col-lg-6">
+                        <div class="col-6 col-md-6 col-lg-6">
                             <button type="button" class="btn btn-danger w-100 border-0" data-bs-dismiss="modal">
                                 <i class="bi bi-x-lg"></i>
                             </button>
@@ -106,7 +106,7 @@ export default {
             <div class="text-center w-100">
                 <a href="javascript:void(0)" id="yesAccDeploymentButton" class="btn btn-desino w-100 border-0 my-1">
                     <i class="bi bi-check-lg"></i>
-                </a>                          
+                </a>
             </div>`,
         };
     },

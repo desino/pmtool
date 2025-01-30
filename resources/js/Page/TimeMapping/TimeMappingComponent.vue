@@ -1,17 +1,8 @@
 <template>
-    <!-- <div class="app-content-header">
-        <div class="container-fluid">
-            <div class="row w-100">
-                <div class="col-sm-6">
-                    <h3 class="m-0">{{ $t('time_mapping.page_title') }}</h3>
-                </div>
-            </div>
-        </div>
-    </div> -->
     <GlobalMessage v-if="showMessage" />
     <div class="app-content mt-3">
         <div class="w-100 mb-3">
-            <div class="row g-1 w-100 align-items-center">
+            <div class="row g-1 align-items-center">
                 <div class="col-md-2">
                     <select v-model="filter.initiative_id" class="form-select"
                         @change="getProjectListAndTimeMappings($event)">
@@ -54,9 +45,9 @@
             </div>
         </div>
         <div class="w-100 mb-3">
-            <div class="row g-1 w-100 align-items-center">
+            <div class="row g-1 align-items-center">
                 <div class="col-md-2">
-                    <button class="btn btn-desino" type="button"
+                    <button class="btn btn-desino w-100" type="button"
                         :disabled="!selectedTimeBookings.length > 0 || filter.initiative_id == ''"
                         @click="bulkAssignProjectForTimeMappings">
                         {{ $t('time_mapping.list.button.bulk_assign_project') }}
@@ -67,7 +58,7 @@
         <div class="w-100 mb-3">
             <ul class="list-group list-group-flush mb-3 mt-2">
                 <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
-                    <div class="row g-1 w-100 align-items-center">
+                    <div class="row g-1 align-items-center">
                         <div class="col-lg-2 col-md-6 col-6 fw-bold small">
                             <input class="form-check-input mx-1" type="checkbox" v-model="isChkAllTimeBookings"
                                 @change="handleSelectAllTimeBookings">
@@ -91,8 +82,8 @@
                     </div>
                 </li>
                 <li v-if="timeMappingList.length > 0" v-for="(timeMapping, index) in timeMappingList" :key="index"
-                    class="border list-group-item p-1 list-group-item-action border-top-0">
-                    <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
+                    class="list-group-item p-1 list-group-item-action">
+                    <div class="row g-1 align-items-center" style="min-height: 48px;">
                         <div class="col-lg-2 col-md-6 col-6">
                             <input class="form-check-input" type="checkbox" :id="'chk_ticket_' + timeMapping.id"
                                 v-model="timeMapping.isChecked" @change="handleSelectTimeBookings(timeMapping)"
@@ -118,7 +109,7 @@
                     </div>
                 </li>
                 <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
-                    <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
+                    <div class="row g-1 align-items-center" style="min-height: 48px;">
                         <div class="col-12 fw-bold fst-italic text-center">
                             {{ $t('time_mapping.list_table.no_data_text') }}
                         </div>

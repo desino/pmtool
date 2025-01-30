@@ -1,10 +1,10 @@
 <template>
-    <div class="card">
+    <div class="card border-0">
         <div class="card-header bg-desino text-white text-center fw-bold fs-4">
             {{ $t('home.deployment_center.title') }}
         </div>
-        <div class="card-body">
-            <div class="card mb-3">
+        <div class="card-body px-0">
+            <div class="card border-0 mb-3">
                 <div class="bg-desino card-header fw-bold px-0 py-2 text-center text-white border-0">
                     {{ $t('home.deployment_center.production_deployment.title') }}
                 </div>
@@ -13,7 +13,7 @@
                         <li class="list-group-item list-group-item-action" v-if="productionDeployments.length > 0"
                             v-for="productionDeployment in productionDeployments" :key="productionDeployment.id"
                             @click="openProductionDeploymentModal(productionDeployment)" role="button">
-                            <div class="row g-1 w-100 align-items-center">
+                            <div class="row g-1 align-items-center">
                                 <div class="col-9">
                                     {{ productionDeployment?.client_name }} -
                                     {{ productionDeployment?.name }}
@@ -36,7 +36,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="card mb-3">
+            <div class="card border-0 mb-3">
                 <div class="bg-desino card-header fw-bold px-0 py-2 text-center text-white border-0">
                     {{ $t('home.deployment_center.acceptance_deployment.title') }}
                 </div>
@@ -45,7 +45,7 @@
                         <li class="list-group-item list-group-item-action" v-if="acceptanceDeployments.length > 0"
                             v-for="acceptanceDeployment in acceptanceDeployments" :key="acceptanceDeployment.id"
                             @click="openAcceptanceDeploymentModal(acceptanceDeployment)" role="button">
-                            <div class="row g-1 w-100 align-items-center">
+                            <div class="row g-1 align-items-center">
                                 <div class="col-9">
                                     {{ acceptanceDeployment?.client?.name }} -
                                     {{ acceptanceDeployment?.name }}
@@ -68,7 +68,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="card">
+            <div class="card border-0">
                 <div class="bg-desino card-header fw-bold px-0 py-2 text-center text-white border-0">
                     {{ $t('home.deployment_center.test_deployment.title') }}
                 </div>
@@ -77,7 +77,7 @@
                         <li class="list-group-item list-group-item-action" v-if="testDeployments.length > 0"
                             v-for="testDeployment in testDeployments" :key="testDeployment.id"
                             @click="openTestDeploymentModal(testDeployment)" role="button">
-                            <div class="row g-1 w-100 align-items-center">
+                            <div class="row g-1 align-items-center">
                                 <div class="col-9">
                                     {{ testDeployment?.client_initiative_name }}
                                 </div>

@@ -14,7 +14,7 @@
                 </div>
                 <form @submit.prevent="storeTimeBooking">
                     <div class="mb-3 p-3 shadow">
-                        <div class="row g-1 w-100 align-items-top">
+                        <div class="row g-1 align-items-top">
                             <div class="col-4">
                                 <div class="mb-3">
                                     <input type="text" v-model="formData.hours" :class="{ 'is-invalid': errors.hours }"
@@ -53,7 +53,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row g-1 w-100 align-items-top">
+                        <div class="row g-1 align-items-top">
                             <div class="col-6">
                                 <button type="submit" class="btn btn-desino w-100 border-0"
                                     @click="handleSubmitButtonClickForTimeBooking('create')">{{
@@ -68,88 +68,92 @@
                     </div>
                 </form>
 
-                <div class="mb-3 p-3 shadow">
-                    <button type="button" class="btn btn-sm btn-danger border-0"
-                        :disabled="selectedTimeBookings.length === 0" @click="handleDeleteSelectAllTimeBookings">
-                        <i class="bi bi-trash3"></i> {{ $t('time_booking.modal_delete_but_text') }}
-                    </button>
-                    <ul class="list-group list-group-flush mb-3 mt-2">
-                        <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
-                            <div class="row g-1 w-100 align-items-center">
-                                <div class="col-3">
-                                    <div class="row g-0 h-100 align-items-center">
-                                        <div class="col-auto me-1" style="width:20px">
-                                            <input class="form-check-input" type="checkbox"
-                                                v-model="isChkAllTimeBookings" @change="handleSelectAllTimeBookings">
-                                        </div>
-                                        <div class="col-auto fw-bold small" style="width: calc(100% - 40px)">
-                                            {{ $t('time_booking.modal.list_table.hours') }}
+                <div class="p-3 shadow">
+                    <div class="w-100">
+                        <button type="button" class="btn btn-sm btn-danger border-0"
+                            :disabled="selectedTimeBookings.length === 0" @click="handleDeleteSelectAllTimeBookings">
+                            <i class="bi bi-trash3"></i> {{ $t('time_booking.modal_delete_but_text') }}
+                        </button>
+                    </div>
+                    <div class="w-100">
+                        <ul class="list-group list-group-flush mb-3 mt-2">
+                            <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
+                                <div class="row g-1 align-items-center">
+                                    <div class="col-3">
+                                        <div class="row g-0 h-100 align-items-center">
+                                            <div class="col-auto me-1" style="width:20px">
+                                                <input class="form-check-input" type="checkbox"
+                                                       v-model="isChkAllTimeBookings" @change="handleSelectAllTimeBookings">
+                                            </div>
+                                            <div class="col-auto fw-bold small" style="width: calc(100% - 40px)">
+                                                {{ $t('time_booking.modal.list_table.hours') }}
+                                            </div>
                                         </div>
                                     </div>
+                                    <div class="col-7 fw-bold small">
+                                        {{ $t('time_booking.modal.list_table.comments') }}
+                                    </div>
+                                    <div class="col-2 fw-bold small text-end">
+                                        {{ $t('time_booking.modal.list_table.action') }}
+                                    </div>
                                 </div>
-                                <div class="col-7 fw-bold small">
-                                    {{ $t('time_booking.modal.list_table.comments') }}
-                                </div>
-                                <div class="col-2 fw-bold small text-end">
-                                    {{ $t('time_booking.modal.list_table.action') }}
-                                </div>
-                            </div>
-                        </li>
-                        <li class="border list-group-item p-1 list-group-item-action border-top-0"
-                            v-if="timeBookings.length > 0" v-for="(timeBooking, index) in timeBookings">
-                            <div class="row g-1 w-100 align-items-center" style="min-height: 45px;">
-                                <div class="col-3">
-                                    <div class="row g-0 h-100 align-items-center">
-                                        <div class="col-auto me-1" style="width:20px">
-                                            <input v-model="timeBooking.is_checked" class="form-check-input"
-                                                type="checkbox" @change="handleSelectAllTimeBooking(timeBooking)">
-                                        </div>
-                                        <div class="col-auto" style="width: calc(100% - 40px)">
+                            </li>
+                            <li class="list-group-item p-1 list-group-item-action"
+                                v-if="timeBookings.length > 0" v-for="(timeBooking, index) in timeBookings">
+                                <div class="row g-1 align-items-center" style="min-height: 45px;">
+                                    <div class="col-3">
+                                        <div class="row g-0 h-100 align-items-center">
+                                            <div class="col-auto me-1" style="width:20px">
+                                                <input v-model="timeBooking.is_checked" class="form-check-input"
+                                                       type="checkbox" @change="handleSelectAllTimeBooking(timeBooking)">
+                                            </div>
+                                            <div class="col-auto" style="width: calc(100% - 40px)">
                                             <span class="badge rounded-3 bg-success-subtle text-success mb-0">
                                                 {{ timeBooking.hours }} hrs
                                             </span>
+                                            </div>
                                         </div>
                                     </div>
+                                    <div class="col-7">
+                                        {{ timeBooking.comments }}
+                                    </div>
+                                    <div class="col-2 text-end">
+                                        <a ref="deletePopoverBtns" data-bs-toggle="popover" data-bs-trigger="focus"
+                                           :title="$t('time_booking.modal.list_table.action_delete_text')"
+                                           class="text-danger me-2" href="javascript:">
+                                            <i class="bi bi-trash3"></i>
+                                        </a>
+                                    </div>
                                 </div>
-                                <div class="col-7">
-                                    {{ timeBooking.comments }}
-                                </div>
-                                <div class="col-2 text-end">
-                                    <a ref="deletePopoverBtns" data-bs-toggle="popover" data-bs-trigger="focus"
-                                        :title="$t('time_booking.modal.list_table.action_delete_text')"
-                                        class="text-danger me-2" href="javascript:">
-                                        <i class="bi bi-trash3"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="border list-group-item p-1 list-group-item-action border-top-0"
-                            v-if="totalTimeBookingHours > 0">
-                            <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
-                                <div class="col-3 fw-bold">
-                                    {{ $t('time_booking.modal.list_table.footer_total_text') }}:
-                                    <span class="badge rounded-3 bg-success-subtle text-success mb-0">
+                            </li>
+                            <li class="list-group-item p-1 list-group-item-action"
+                                v-if="totalTimeBookingHours > 0">
+                                <div class="row g-1 align-items-center" style="min-height: 48px;">
+                                    <div class="col-3 fw-bold">
+                                        {{ $t('time_booking.modal.list_table.footer_total_text') }}:
+                                        <span class="badge rounded-3 bg-success-subtle text-success mb-0">
                                         {{ totalTimeBookingHours }} hrs
                                     </span>
+                                    </div>
+                                    <div class="col-7 fw-bold">
+                                    </div>
+                                    <div class="col-2">
+                                    </div>
                                 </div>
-                                <div class="col-7 fw-bold">
+                            </li>
+                            <li v-if="timeBookings.length === 0" class="list-group-item px-0 py-1 list-group-item-action">
+                                <div class="row g-1 align-items-center" style="min-height: 48px;">
+                                    <div class="col-12 fw-bold fst-italic text-center">
+                                        {{ $t('time_booking.modal.list_table.no_data_text') }}
+                                    </div>
                                 </div>
-                                <div class="col-2">
-                                </div>
-                            </div>
-                        </li>
-                        <li v-if="timeBookings.length === 0" class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
-                            <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
-                                <div class="col-12 fw-bold fst-italic text-center">
-                                    {{ $t('time_booking.modal.list_table.no_data_text') }}
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-            <div class="modal-footer border-0 p-0 justify-content-center">
-                <div class="row g-1 w-100 align-items-center">
+            <div class="modal-footer border-0 p-0 d-block">
+                <div class="row g-1 align-items-center">
                     <div class="col-12">
                         <button class="btn btn-danger w-100 border-0" data-bs-dismiss="modal" type="button">
                             <i class="bi bi-x-lg"></i>
@@ -354,7 +358,7 @@ export default {
                 <div class="text-center w-100">
                     <a href="javascript:void(0)" class="btn btn-desino w-100 border-0 my-1" id="yesDeleteTimeBookingButton_${index}" data-index="${index}">
                         <i class="bi bi-check-lg"></i>
-                    </a>                    
+                    </a>
                 </div>`;
         },
         handleError(error) {

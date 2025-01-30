@@ -10,8 +10,7 @@
                     <div class="row w-100">
                     </div>
 
-                    <!-- <div class="row g-1 w-100 align-items-center"> -->
-                    <div class="row g-1 w-100">
+                    <div class="row g-1">
                         <div class="col-12 col-md-6 col-lg-6 mb-3">
                             <label class="form-label fw-bold">{{
                                 $t('edit_opportunity_modal_select_client_name')
@@ -151,7 +150,7 @@
                                 <ul class="list-group list-group-flush">
                                     <li class="border-0 list-group-item py-3 px-1"
                                         v-for="(environment, index) in formData.environments" :key="index">
-                                        <div class="row g-1 w-100 align-items-center">
+                                        <div class="row g-1 align-items-center">
                                             <div class="col-12">
                                                 <div class="form-check">
                                                     <input class="form-check-input"
@@ -228,8 +227,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer border-0 p-0 justify-content-center">
-                    <div class="row w-100 g-1">
+                <div class="modal-footer border-0 p-0 d-block">
+                    <div class="row g-1 align-items-center">
                         <div class="col-6">
                             <button type="submit" class="btn btn-desino w-100 border-0">{{
                                 $t('edit_opportunity_modal_submit_but_text') }}</button>
