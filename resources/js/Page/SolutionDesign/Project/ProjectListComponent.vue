@@ -1,7 +1,7 @@
 <template>
     <GlobalMessage v-if="showMessage" />
     <div class="app-content my-3">
-        <div class="row g-1 w-100 align-items-center mb-3">
+        <div class="row g-1 align-items-center mb-3">
             <div class="col-12 col-md-3 col-lg-3">
                 <div class="w-100 p-1">
                     <div class="form-check form-check-inline">
@@ -21,7 +21,7 @@
         <div class="w-100 mb-3">
             <ul class="list-group list-group-flush mb-3 mt-2">
                 <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
-                    <div class="row g-1 w-100 align-items-center">
+                    <div class="row g-1 align-items-center">
                         <div class="col-lg-5 col-md-6 col-6 fw-bold small">
                             {{ $t('project.list.name_th_text') }}
                         </div>
@@ -36,9 +36,9 @@
                         </div>
                     </div>
                 </li>
-                <li class="border list-group-item p-1 list-group-item-action border-top-0" v-if="projects.length > 0"
+                <li class="list-group-item p-1 list-group-item-action" v-if="projects.length > 0"
                     v-for="project in projects">
-                    <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
+                    <div class="row g-1 align-items-center" style="min-height: 48px;">
                         <div class="col-lg-5 col-md-6 col-6">
                             {{ project.name }}
                         </div>
@@ -62,7 +62,7 @@
                     </div>
                 </li>
                 <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
-                    <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
+                    <div class="row g-1 align-items-center" style="min-height: 48px;">
                         <div class="col-12 fw-bold fst-italic text-center">
                             {{ $t('project.list.projects_not_found_text') }}
                         </div>

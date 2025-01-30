@@ -8,9 +8,9 @@
                 </div>
                 <div class="modal-body">
                     <GlobalMessage v-if="showMessage" scope="modal" />
-                    <ul class="list-group mb-3 mt-2">
+                    <ul class="list-group list-group-flush mb-3 mt-2">
                         <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
-                            <div class="row g-1 w-100 align-items-center">
+                            <div class="row g-1 align-items-center">
                                 <div class="col-1 col-md-1" v-if="ticketList.length > 0">
                                     <input class="form-check-input" type="checkbox"
                                         v-model="isChkAllTestDeploymentTickets"
@@ -24,9 +24,9 @@
                                 </div>
                             </div>
                         </li>
-                        <li class="border list-group-item p-1 list-group-item-action border-top-0"
+                        <li class="list-group-item p-1 list-group-item-action"
                             v-if="ticketList.length > 0" v-for="ticket in ticketList" :key="ticket.id">
-                            <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
+                            <div class="row g-1 align-items-center" style="min-height: 48px;">
                                 <div class="col-1 col-md-1">
                                     <input class="form-check-input" type="checkbox"
                                         :id="'chk_test_deployment_ticket_' + ticket.id" v-model="ticket.isChecked"
@@ -46,7 +46,7 @@
                             </div>
                         </li>
                         <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
-                            <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
+                            <div class="row g-1 align-items-center" style="min-height: 48px;">
                                 <div class="col-12 fw-bold fst-italic text-center">
                                     {{ $t('home.deployment_center.test_deployment.ticket_modal.no_tickets.text') }}
                                 </div>
@@ -54,8 +54,8 @@
                         </li>
                     </ul>
                 </div>
-                <div class="modal-footer border-0 p-0 justify-content-center">
-                    <div class="row w-100 g-1 align-items-center">
+                <div class="modal-footer border-0 p-0 d-block">
+                    <div class="row g-1 align-items-center">
                         <div class="col-6">
                             <button type="button" ref="popoverBtn" data-bs-toggle="popover"
                                 :title="$t('home.deployment_center.test_deployment.ticket_modal.submit.alert.text')"

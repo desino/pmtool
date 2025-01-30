@@ -1,5 +1,5 @@
 <template>
-    <div class="card">
+    <div class="card border-0">
         <div class="card-header bg-desino text-white text-center fw-bold fs-4">
             {{ $t('home.my_actions.title') }}
         </div>
@@ -8,7 +8,7 @@
                 <li v-if="initiatives.length > 0" v-for="initiative in initiatives" :key="initiative.id"
                     class="list-group-item list-group-item-action" role="button" @click="openMyTickets(initiative)"
                     :class="{ 'list-group-item-warning': initiative?.is_priority_tickets_count > 0 }">
-                    <div class="row g-1 w-100 align-items-center">
+                    <div class="row g-1 align-items-center">
                         <div class="col-9 fw-bold">
                             {{ initiative?.client_name }} -
                             {{ initiative.name }}

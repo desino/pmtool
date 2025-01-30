@@ -13,7 +13,7 @@
                         <button type="button" class="btn-close" aria-label="Close" @click="hideErrorMessage"></button>
                         {{ showErrorMessage }}
                     </div>
-                    <div class="row w-100">
+                    <div class="row">
                         <div class="col-6 mb-3">
                             <select v-model="formData.initiative_id" :class="{ 'is-invalid': errors.initiative_id }"
                                 class="form-select" @change="fetchTickets">
@@ -43,7 +43,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row w-100">
+                    <div class="row">
                         <div class="col-2 mb-3">
                             <input type="text" v-model="formData.hours" :class="{ 'is-invalid': errors.hours }"
                                 class="form-control"
@@ -66,8 +66,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer border-0 p-0 justify-content-center">
-                    <div class="row w-100 g-1">
+                <div class="modal-footer border-0 p-0 d-block">
+                    <div class="row g-1 align-items-center">
                         <div class="col-12 col-md-12 col-lg-4">
                             <button type="submit" class="btn btn-desino w-100"
                                 @click="handleSubmitButtonClickForNewInitiativeOrTicket('create')">{{

@@ -11,12 +11,12 @@
                     <div class="w-100 max-h-ticket-comment">
                         <ul class="list-group list-group-flush mb-3 mt-2">
                             <li v-if="comments.length > 0" v-for="(comment, index) in comments" :key="index"
-                                class="border list-group-item p-1 list-group-item-action border-top-0 border-start-0 border-end-0"
+                                class="list-group-item p-1 list-group-item-action"
                                 :class="{ 'border-bottom-0': index == comments.length - 1 }">
-                                <div class="row g-1 w-100 align-items-center"
+                                <div class="row g-1 align-items-center"
                                     :class="{ 'bg-warning-subtle': checkTagUser(comment) }">
                                     <div class="col-12">
-                                        <div class="row g-1 w-100 align-items-center">
+                                        <div class="row g-1 align-items-center">
                                             <div class="col-10">
                                                 <span class="fw-bold text-primary small">
                                                     {{ comment.updated_user_name ?? comment.created_user_name }}
@@ -47,7 +47,7 @@
                                             v-html="comment.comment"></span>
                                     </div>
                                     <div class="col-12" v-if="comment.is_edit_comment">
-                                        <div class="row g-1 w-100 align-items-center">
+                                        <div class="row g-1 align-items-center">
                                             <div class="col-12">
                                                 <TinyMceEditor v-model="editForm.comment" :init="{height: 175,}" />
                                                 <div v-if="errors.comment" class="text-danger mt-2">
@@ -85,8 +85,8 @@
                     </div>
                 </div>
             </div>
-            <div class="card-footer bg-transparent p-2">
-                <div class="row g-1 w-100 align-items-center">
+            <div class="card-footer bg-transparent p-2 d-block">
+                <div class="row g-1 align-items-center">
                     <div class="col-12">
                         <TinyMceEditor v-model="formData.comment" :init="{height: 250,}" />
                         <div v-if="errors.comment" class="text-danger mt-2">

@@ -4,7 +4,7 @@
         <div class="w-100 mb-3">
             <ul class="list-group list-group-flush mb-3 mt-2">
                 <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
-                    <div class="row g-1 w-100 align-items-center">
+                    <div class="row g-1 align-items-center">
                         <div class="col-3 fw-bold small">
                             {{ $t('developer_workload_table.resource_th_text') }}
                         </div>
@@ -20,8 +20,8 @@
                     </div>
                 </li>
                 <li v-for="(developerWorkload, index) in developerWorkloads" v-if="developerWorkloads.length > 0"
-                    :key="developerWorkload.id" class="border list-group-item p-1 list-group-item-action border-top-0">
-                    <div class="row w-100 align-items-center" style="min-height: 48px;">
+                    :key="developerWorkload.id" class="list-group-item p-1 list-group-item-action">
+                    <div class="row g-1 align-items-center" style="min-height: 48px;">
                         <div class="col-3">
                             <router-link
                                 :to="{ name: 'all-ticket-without-initiative', query: { user_id: developerWorkload?.user_id } }"
@@ -62,7 +62,7 @@
                     </div>
                 </li>
                 <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
-                    <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
+                    <div class="row g-1 align-items-center" style="min-height: 48px;">
                         <div class="col-12 fw-bold fst-italic text-center">
                             {{ $t('developer_workload_table.no_developer_workload_found_text') }}
                         </div>

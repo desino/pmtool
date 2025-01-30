@@ -1,8 +1,8 @@
 <template>
     <div class="app-content-header py-1 px-0">
-        <div class="row g-1 w-100">
+        <div class="row g-1">
             <div class="col-6 col-md-9">
-                <div class="row g-0 w-100">
+                <div class="row g-0">
                     <div class="col-1">
                         <span>
                             <input id="btn-check" v-model="showTicketDropdown" autocomplete="off" class="btn-check"
@@ -58,7 +58,7 @@
     </div>
     <GlobalMessage v-if="showMessage" />
     <div class="app-content border-bottom pb-1">
-        <div class="row g-1 w-100">
+        <div class="row g-1">
             <div class="col-12 col-md-3 col-lg-3 col-xl-3 text-center mb-2 mb-md-0">
                 <div class="card shadow-none h-100 border-0" :class="ticketData.macro_status_label?.color">
                     <div class="card-body border-0 bg-transparent p-0 align-content-center">
@@ -148,7 +148,7 @@
     <div class="app-content pt-1">
         <div class="col-md-12">
             <div class="w-100">
-                <div class="row g-1 w-100 nav">
+                <div class="row g-1 nav">
                     <div class="col-6 col-md-3 col-lg-2">
                         <a id="ticket_detail_tab" aria-controls="ticket_detail_tab" aria-selected="true"
                             class="btn btn-outline-desino active w-100 h-100 align-content-center" data-bs-toggle="pill" href="#ticketdetail_description_tab" role="tab">
@@ -162,7 +162,7 @@
                         </a>
                     </div>
                     <div class="col-6 col-md-3 col-lg-2">
-                        <a id="test_cases_tab" aria-controls="test_cases_tab" aria-selected="false" 
+                        <a id="test_cases_tab" aria-controls="test_cases_tab" aria-selected="false"
                             class="btn btn-outline-desino w-100 h-100 align-content-center" data-bs-toggle="pill" href="#ticketdetail_testcase_tab" role="tab">
                             {{ $t('ticket_details.test_cases') }}
                         </a>
@@ -174,7 +174,7 @@
                         </a>
                     </div>
                     <div class="col-6 col-md-3 col-lg-2" v-if="ticketData.is_allow_dev_estimation_time">
-                        <a id="test_cases_tab" aria-controls="test_cases_tab" aria-selected="false" 
+                        <a id="test_cases_tab" aria-controls="test_cases_tab" aria-selected="false"
                             class="btn btn-outline-desino w-100 h-100 align-content-center" data-bs-toggle="pill" href="#ticketdetail_estimated_hours_tab" role="tab">
                             {{ $t('ticket_details.estimated_hours') }}
                         </a>
@@ -184,7 +184,7 @@
             <div id="ticketdetail-tabContent" class="tab-content pt-2 px-0 pb-0">
                 <div id="ticketdetail_description_tab" aria-labelledby="ticketdetail_description_tab"
                     class="tab-pane fade active show" role="tabpanel">
-                    <div class="row g-2 w-100">
+                    <div class="row g-2">
                         <div class="col-xl-8 col-lg-7 col-12">
                             <div v-if="this.user?.is_admin">
                                 <TinyMceEditor v-model="taskDescriptionForm.description" />

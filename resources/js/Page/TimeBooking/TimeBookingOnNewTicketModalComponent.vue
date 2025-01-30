@@ -13,7 +13,7 @@
                         <button type="button" class="btn-close" aria-label="Close" @click="hideErrorMessage"></button>
                         {{ showErrorMessage }}
                     </div>
-                    <div class="row w-100">
+                    <div class="row">
                         <div class="col-6 mb-3">
                             <select v-model="formData.ticket_id" :class="{ 'is-invalid': errors.ticket_id }"
                                 class="form-select">
@@ -38,7 +38,7 @@
                             </small>
                         </div>
                     </div>
-                    <div class="row w-100">
+                    <div class="row">
                         <div class="col-12 mb-3">
                             <textarea class="form-control" rows="3" v-model="formData.comments"
                                 :class="{ 'is-invalid': errors.comments }"
@@ -51,8 +51,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer border-0 p-0 justify-content-center">
-                    <div class="row w-100 g-1">
+                <div class="modal-footer border-0 p-0 d-block">
+                    <div class="row g-1 align-items-center">
                         <div class="col-12 col-md-12 col-lg-4">
                             <button type="submit" class="btn btn-desino w-100"
                                 @click="handleSubmitButtonClickForNewTicket('create')">{{

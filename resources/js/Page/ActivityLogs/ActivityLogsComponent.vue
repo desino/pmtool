@@ -2,7 +2,7 @@
     <GlobalMessage v-if="showMessage" />
     <div class="app-content mt-3">
         <div class="w-100 mb-3">
-            <div class="row g-1 w-100 align-items-center">
+            <div class="row g-1 align-items-center">
                 <div class="col-12 col-md-12 col-lg-3">
                     <div class="w-100 p-1">
                         <input v-model="filter.ticket_name" :placeholder="$t('activity_logs.filter.ticket_name')"
@@ -56,7 +56,7 @@
         <div class="w-100 mb-3">
             <ul class="list-group list-group-flush mb-3 mt-2">
                 <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
-                    <div class="row g-1 w-100 align-items-center">
+                    <div class="row g-1 align-items-center">
                         <div class="col-lg-4 col-md-6 col-8 fw-bold small ">
                             {{ $t('activity_logs_list.name_text') }}
                         </div>
@@ -75,9 +75,9 @@
                     </div>
                 </li>
                 <li v-if="activityLogs.length > 0" v-for="(activityLog, index) in activityLogs" :key="index"
-                    class="border list-group-item p-1 list-group-item-action border-top-0"
+                    class="list-group-item p-1 list-group-item-action"
                     :role="isShowRoleButton(activityLog)" @click="redirectTicketDetailPage(activityLog)">
-                    <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
+                    <div class="row g-1 align-items-center" style="min-height: 48px;">
                         <div class="col-12 col-md-6 col-lg-4" data-bs-toggle="tooltip" data-bs-placement="bottom"
                             :title="getTooltipTitle(activityLog)">
                             <small class="badge bg-secondary">{{ activityLog?.ticket?.initiative?.name ??
@@ -104,7 +104,7 @@
                     </div>
                 </li>
                 <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
-                    <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
+                    <div class="row g-1 align-items-center" style="min-height: 48px;">
                         <div class="col-12 fw-bold fst-italic text-center">
                             {{ $t('activity_logs_list.no_activity_logs_found_text') }}
                         </div>

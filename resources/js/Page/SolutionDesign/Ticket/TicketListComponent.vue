@@ -2,7 +2,7 @@
     <GlobalMessage v-if="showMessage" />
     <div class="app-content mt-3">
         <div class="w-100 mb-3">
-            <div class="row g-1 w-100 align-items-center">
+            <div class="row g-1 align-items-center">
                 <div class="col-12 col-md-12 col-lg-3">
                     <div class="w-100 p-1">
                         <input v-model="filter.task_name" :placeholder="$t('ticket.filter.task_name')"
@@ -96,7 +96,7 @@
             </div>
         </div>
         <div class="w-100 mb-3">
-            <div class="row g-1 w-100 align-items-center">
+            <div class="row g-1 align-items-center">
                 <div class="col-12 col-md-12 col-lg-4">
                     <div class="w-100 p-1">
                         <button class="btn btn-desino  w-100" :disabled="selectedTasks.length === 0" type="button"
@@ -144,7 +144,7 @@
         <div class="w-100 mb-3">
             <ul class="list-group list-group-flush mb-3 mt-2">
                 <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
-                    <div class="row g-1 w-100 align-items-center">
+                    <div class="row g-1 align-items-center">
                         <div class="col-12 col-md-6 col-lg-6 col-xl-5">
                             <div class="row g-0 h-100 align-items-center">
                                 <div class="col-auto me-1" style="width:10px"></div>
@@ -175,10 +175,10 @@
                     </div>
                 </li>
                 <li v-for="(task, index) in tasks" v-if="tasks.length > 0" :key="task.id"
-                    class="border list-group-item p-1 list-group-item-action border-top-0" role="button"
+                    class="list-group-item p-1 list-group-item-action" role="button"
                     :class="backgroundClass(task) + ' ' + (index > 0 ? 'border-top-0' : '')"
                     @click="redirectTaskDetailPage(task)">
-                    <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
+                    <div class="row g-1 align-items-center" style="min-height: 48px;">
                         <div class="col-12 col-md-6 col-lg-6 col-xl-5">
                             <div class="row g-0 h-100 align-items-center">
                                 <div class="col-auto me-1" style="width:10px">
@@ -276,7 +276,7 @@
                     </div>
                 </li>
                 <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
-                    <div class="row g-1 w-100 align-items-center" style="min-height: 48px;">
+                    <div class="row g-1 align-items-center" style="min-height: 48px;">
                         <div class="col-12 fw-bold fst-italic text-center">
                             {{ $t('ticket.list.not_ticket') }}
                         </div>
@@ -665,7 +665,7 @@ export default {
                 const createdAt = task?.latest_comment?.display_updated_at ?? task?.latest_comment?.display_created_at;
                 commentHtml = `<strong class='small'>${commentLabel}</strong> <span class="badge bg-secondary d-block-inline text-wrap fst-italic"> ${userName}</span> : <span class="fst-italic">${comment}</span> <strong class='small fst-italic'>${commentedAtLabel}</strong> <span class="badge bg-secondary d-block-inline text-wrap fst-italic">${createdAt}</span>`;
             }
-            return `<div class='row w-100 g-1 align-items-center small'>
+            return `<div class='row g-1 align-items-center small'>
                         <div class='col-12 text-start'>
                             <strong class='small'>${createdByLabel}</strong> <span>${task.display_created_by}</span> <strong class='small'>${createdAtLabel}</strong> <span>${task.display_created_at}</span>
                         </div>
