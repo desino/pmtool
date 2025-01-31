@@ -17,7 +17,7 @@
                         <label class="form-label fw-bold">{{
                             $t('task_details.update_observations_input_name') }} <strong
                                 class="text-danger">*</strong></label>
-                        <TinyMceEditor v-model="formData.observations" :class="{ 'is-invalid': errors.observations }" />
+                        <TinyMceEditor v-model="formData.observations" :class="{ 'is-invalid': errors.observations }" :init="{height: 250,}"/>
                         <div v-if="errors.observations" class="invalid-feedback">
                             <span v-for="(error, index) in errors.observations" :key="index">{{ error }}</span>
                         </div>

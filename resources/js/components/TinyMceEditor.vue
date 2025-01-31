@@ -66,6 +66,7 @@ export default defineComponent({
                 toolbar:
                     'undo redo | blocks | bold italic underline strikethrough forecolor backcolor | align bullist numlist | lineheight outdent indent | table',
                 paste_data_images: true,
+                newline_behavior : 'linebreak',
                 setup: (editor) => {
                     editor.on('PastePreProcess', (event) => {
                         const clipboardData = event.content;

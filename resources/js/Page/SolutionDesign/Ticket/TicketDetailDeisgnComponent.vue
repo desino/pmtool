@@ -225,71 +225,57 @@
                     role="tabpanel">
                     <div class="w-100">
                         <div class="w-100">
-                            <button class="btn btn-desino border-0" @click="showTestCaseModal"
-                                v-if="is_allow_case_add_test_section"> <i class="bi bi-plus-lg"></i> {{
-                                    $t('ticket_detail_test_case_add_test_section_but_text') }}
-                            </button>
-                        </div>
-                        <div class="w-100 mt-3" v-if="test_cases?.length > 0">
-                            <div class="row g-2 align-items-center w-100">
-                                <div class="col-12 col-lg-6" v-for="(test_case, index) in test_cases" :key="index">
-                                    <div class="card">
-                                        <div class="card-header bg-secondary text-white border border-secondary p-2">
-                                            <span class="fw-bold me-2">Test {{ index + 1 }}</span>
-                                            <span v-if="test_case.status !== -1" class="badge rounded-pill"
+                            <div class="row g-1">
+                                <div class="col-12">
+                                    <button class="btn btn-desino border-0" @click="showTestCaseModal"
+                                            v-if="is_allow_case_add_test_section"> <i class="bi bi-plus-lg"></i> {{
+                                            $t('ticket_detail_test_case_add_test_section_but_text') }}
+                                    </button>
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-4" v-if="test_cases?.length > 0" v-for="(test_case, index) in test_cases" :key="index">
+                                    <div class="card h-100">
+                                        <div class="card-header bg-transparent border-0 p-2">
+                                            <span class="fw-bold me-2">Test Case {{ index + 1 }}</span>
+                                            <span v-if="test_case.status !== -1" class="badge"
                                                 :class="test_case.status === 1 ? 'bg-success' : 'bg-danger'">
                                                 {{ test_case.status === 1 ? 'success' : 'failed' }}
                                             </span>
                                         </div>
-                                        <div class="card-body max-h-250 optimize-image p-2">
+                                        <div class="card-body test-case-cardbody optimize-image px-2 pb-2 pt-0">
                                             <div class="w-100 mb-2">
-                                                <span class="badge bg-desino text-white rounded fw-bold p-2">
-                                                    {{ $t('ticket_detail_test_case_section_expected_behaviour') }}
-                                                </span>
-                                                <div class="p-2" v-html="test_case.expected_behaviour"></div>
+                                                <div class="" v-html="test_case.expected_behaviour"></div>
                                             </div>
                                             <div class="w-100" v-if="test_case.observations">
-                                                <span class="badge bg-desino text-white rounded fw-bold p-2">
+                                                <span class="small text-desino fw-bold text-decoration-underline py-2">
                                                     {{ $t('ticket_detail_test_case_section_actual_behaviour') }}
                                                 </span>
-                                                <div class="p-2" v-html="test_case.observations">
-                                                </div>
+                                                <div v-html="test_case.observations"></div>
                                             </div>
                                         </div>
-                                        <div class="card-footer p-2">
-                                            <div class="row g-1 align-items-center w-100">
-                                                <div class="col-4" v-if="is_allow_case_update_test_section">
-                                                    <button class="btn btn-success btn-sm w-100 border-0"
-                                                        :disabled="test_case.status === 1"
-                                                        @click="handleTestCaseAction(test_case.id, 'success')">
-                                                        <i class="bi-check-lg text-white"></i>
-                                                    </button>
-                                                </div>
-                                                <div class="col-4" v-if="is_allow_case_update_test_section">
-                                                    <button
-                                                        :disabled="test_case.status !== 1 && test_case.status !== -1"
-                                                        class="btn btn-danger btn-sm w-100 border-0"
-                                                        @click="handleTestCaseAction(test_case.id, 'failed')">
-                                                        <i class="bi-x-lg text-white"></i>
-                                                    </button>
-                                                </div>
-                                                <div class="col-4">
-                                                    <button :disabled="!is_allow_case_add_test_section"
-                                                        class="btn btn-dark btn-sm w-100 border-0"
-                                                        @click="showConfirmation('deleteTestCase', deleteTestCase, test_case.id)">
-                                                        <i class="bi bi-trash3"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
+                                        <div class="card-footer border-0 bg-transparent p-2 d-block">
+                                            <button class="btn btn-success btn-sm border-0" v-if="is_allow_case_update_test_section"
+                                                :disabled="test_case.status === 1"
+                                                @click="handleTestCaseAction(test_case.id, 'success')">
+                                                <i class="bi-check-lg text-white"></i>
+                                            </button>
+                                            <button
+                                                :disabled="test_case.status !== 1 && test_case.status !== -1" v-if="is_allow_case_update_test_section"
+                                                class="btn btn-danger btn-sm border-0"
+                                                @click="handleTestCaseAction(test_case.id, 'failed')">
+                                                <i class="bi-x-lg text-white"></i>
+                                            </button>
+                                            <button :disabled="!is_allow_case_add_test_section"
+                                                class="btn btn-dark btn-sm border-0"
+                                                @click="showConfirmation('deleteTestCase', deleteTestCase, test_case.id)">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
+                                <div v-else class="col-12 text-center fw-bold fst-italic">
+                                    {{ $t('ticket_detail_test_case_section_no_test_case') }}
+                                </div>
                             </div>
-                        </div>
-                        <div v-else class="w-100 mt-3 text-center">
-                            <span class="fw-bold fst-italic">
-                                {{ $t('ticket_detail_test_case_section_no_test_case') }}
-                            </span>
                         </div>
                         <div id="createTestCaseModal" aria-hidden="true" aria-labelledby="createTestCaseModalLabel"
                             class="modal fade" tabindex="-1">

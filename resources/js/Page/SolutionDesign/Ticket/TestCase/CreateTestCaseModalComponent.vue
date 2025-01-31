@@ -13,7 +13,7 @@
                         <label class="form-label fw-bold">{{ $t('task_details.create_testcase_input_name') }}
                             <strong class="text-danger">*</strong></label>
                         <TinyMceEditor v-model="formData.expected_behaviour"
-                            :class="{ 'is-invalid': errors.expected_behaviour }" />
+                            :class="{ 'is-invalid': errors.expected_behaviour }" :init="{height: 250,}"/>
                         <div v-if="errors.expected_behaviour" class="invalid-feedback">
                             <span v-for="(error, index) in errors.expected_behaviour" :key="index">{{ error }}</span>
                         </div>
