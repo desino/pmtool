@@ -9,18 +9,14 @@
                 </div>
                 <div class="modal-body">
                     <GlobalMessage v-if="showMessage" scope="modal" />
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">{{ $t('task_details.create_testcase_input_name') }}
-                            <strong class="text-danger">*</strong></label>
-                        <TinyMceEditor v-model="formData.expected_behaviour"
-                            :class="{ 'is-invalid': errors.expected_behaviour }" :init="{height: 250,}"/>
-                        <div v-if="errors.expected_behaviour" class="invalid-feedback">
-                            <span v-for="(error, index) in errors.expected_behaviour" :key="index">{{ error }}</span>
-                        </div>
+                    <TinyMceEditor v-model="formData.expected_behaviour"
+                        :class="{ 'is-invalid': errors.expected_behaviour }" :init="{height: 250,}"/>
+                    <div v-if="errors.expected_behaviour" class="invalid-feedback">
+                        <span v-for="(error, index) in errors.expected_behaviour" :key="index">{{ error }}</span>
                     </div>
                 </div>
-                <div class="modal-footer border-0 p-0 justify-content-center">
-                    <div class="row w-100 g-1 align-items-center">
+                <div class="modal-footer border-0 p-0 d-block">
+                    <div class="row g-1">
                         <div class="col-6">
                             <button class="btn btn-desino w-100 border-0" type="submit">
                                 {{ $t('task_detail.create_testcase_submit_btn_text') }}
