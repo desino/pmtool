@@ -1,12 +1,12 @@
 <template>
     <div class="card border-0">
-        <div class="card-header bg-desino text-white text-center fw-bold fs-4">
+        <div class="card-header bg-desino text-white text-center fw-bold fs-4 p-2">
             {{ $t('home.my_actions.title') }}
         </div>
         <div class="card-body px-0 py-1">
             <ul class="list-group list-group-flush">
                 <li v-if="initiatives.length > 0" v-for="initiative in initiatives" :key="initiative.id"
-                    class="list-group-item list-group-item-action" role="button" @click="openMyTickets(initiative)"
+                    class="list-group-item p-1" role="button" @click="openMyTickets(initiative)"
                     :class="{ 'list-group-item-warning': initiative?.is_priority_tickets_count > 0 }">
                     <div class="row g-1 align-items-center">
                         <div class="col-9 fw-bold">
@@ -23,7 +23,7 @@
                         </div>
                     </div>
                 </li>
-                <li v-else class="list-group-item">
+                <li v-else class="list-group-item p-1">
                     <div class="w-100 fst-italic small text-secondary">
                         {{ $t('home.my_actions.no_tickets.text') }}
                     </div>

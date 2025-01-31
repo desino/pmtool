@@ -34,7 +34,7 @@
                                         :id="'chk_acceptance_deployment_ticket_' + ticket.id" v-model="ticket.isChecked"
                                         @change="handleSelectAcceptanceDeploymentTicket(ticket)">
                                 </div>
-                                <div class="col-md-8" :for="'chk_acceptance_deployment_ticket_' + ticket.id">
+                                <div class="col-md-9" :for="'chk_acceptance_deployment_ticket_' + ticket.id">
                                     {{ ticket?.composed_name }}
                                     <router-link target="_blank"
                                         :to="{ name: 'task.detail', params: { initiative_id: ticket.initiative_id, ticket_id: ticket.id } }"
