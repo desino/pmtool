@@ -1,16 +1,16 @@
 <template>
     <div class="card border-0">
-        <div class="card-header bg-desino text-white text-center fw-bold fs-4">
+        <div class="card-header bg-desino text-white text-center fw-bold fs-4 p-2">
             {{ $t('home.deployment_center.title') }}
         </div>
         <div class="card-body px-0">
             <div class="card border-0 mb-3">
-                <div class="bg-desino card-header fw-bold px-0 py-2 text-center text-white border-0">
+                <div class="bg-desino card-header fw-bold p-1 text-center text-white border-0">
                     {{ $t('home.deployment_center.production_deployment.title') }}
                 </div>
                 <div class="card-body px-0 py-1">
                     <ul class="list-group list-group-flush w-100">
-                        <li class="list-group-item list-group-item-action" v-if="productionDeployments.length > 0"
+                        <li class="list-group-item list-group-item-action p-1" v-if="productionDeployments.length > 0"
                             v-for="productionDeployment in productionDeployments" :key="productionDeployment.id"
                             @click="openProductionDeploymentModal(productionDeployment)" role="button">
                             <div class="row g-1 align-items-center">
@@ -28,7 +28,7 @@
                                 </div>
                             </div>
                         </li>
-                        <li v-else class="list-group-item">
+                        <li v-else class="list-group-item p-1">
                             <div class="w-100 fst-italic small text-secondary">
                                 {{ $t('home.deployment_center.production_deployment.record_does_not_exist') }}
                             </div>
@@ -37,12 +37,12 @@
                 </div>
             </div>
             <div class="card border-0 mb-3">
-                <div class="bg-desino card-header fw-bold px-0 py-2 text-center text-white border-0">
+                <div class="bg-desino card-header fw-bold p-1 text-center text-white border-0">
                     {{ $t('home.deployment_center.acceptance_deployment.title') }}
                 </div>
                 <div class="card-body px-0 py-1">
                     <ul class="list-group list-group-flush w-100">
-                        <li class="list-group-item list-group-item-action" v-if="acceptanceDeployments.length > 0"
+                        <li class="list-group-item list-group-item-action p-1" v-if="acceptanceDeployments.length > 0"
                             v-for="acceptanceDeployment in acceptanceDeployments" :key="acceptanceDeployment.id"
                             @click="openAcceptanceDeploymentModal(acceptanceDeployment)" role="button">
                             <div class="row g-1 align-items-center">
@@ -60,7 +60,7 @@
                                 </div>
                             </div>
                         </li>
-                        <li v-else class="list-group-item">
+                        <li v-else class="list-group-item p-1">
                             <div class="w-100 fst-italic small text-secondary">
                                 {{ $t('home.deployment_center.acceptance_deployment.record_does_not_exist') }}
                             </div>
@@ -69,12 +69,12 @@
                 </div>
             </div>
             <div class="card border-0">
-                <div class="bg-desino card-header fw-bold px-0 py-2 text-center text-white border-0">
+                <div class="bg-desino card-header fw-bold p-1 text-center text-white border-0">
                     {{ $t('home.deployment_center.test_deployment.title') }}
                 </div>
                 <div class="card-body px-0 py-1">
                     <ul class="list-group list-group-flush w-100">
-                        <li class="list-group-item list-group-item-action" v-if="testDeployments.length > 0"
+                        <li class="list-group-item list-group-item-action p-1" v-if="testDeployments.length > 0"
                             v-for="testDeployment in testDeployments" :key="testDeployment.id"
                             @click="openTestDeploymentModal(testDeployment)" role="button">
                             <div class="row g-1 align-items-center">
@@ -90,7 +90,7 @@
                                 </div>
                             </div>
                         </li>
-                        <li v-else class="list-group-item">
+                        <li v-else class="list-group-item p-1">
                             <div class="w-100 fst-italic small text-secondary">
                                 {{ $t('home.deployment_center.test_deployment.record_does_not_exist') }}
                             </div>
