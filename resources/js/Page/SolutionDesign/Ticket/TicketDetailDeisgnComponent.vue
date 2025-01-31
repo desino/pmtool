@@ -253,14 +253,14 @@
                                             </div>
                                         </div>
                                         <div class="card-footer border-0 bg-transparent p-2 d-block">
-                                            <button class="btn btn-success btn-sm border-0" v-if="is_allow_case_update_test_section"
+                                            <button class="btn btn-success btn-sm border-0 me-1" v-if="is_allow_case_update_test_section"
                                                 :disabled="test_case.status === 1"
                                                 @click="handleTestCaseAction(test_case.id, 'success')">
                                                 <i class="bi-check-lg text-white"></i>
                                             </button>
                                             <button
                                                 :disabled="test_case.status !== 1 && test_case.status !== -1" v-if="is_allow_case_update_test_section"
-                                                class="btn btn-danger btn-sm border-0"
+                                                class="btn btn-danger btn-sm border-0 me-1"
                                                 @click="handleTestCaseAction(test_case.id, 'failed')">
                                                 <i class="bi-x-lg text-white"></i>
                                             </button>

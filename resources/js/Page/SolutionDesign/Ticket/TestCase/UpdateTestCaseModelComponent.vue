@@ -10,10 +10,8 @@
                 </div>
                 <div class="modal-body">
                     <GlobalMessage v-if="showMessage" scope="modal" />
-                    <label>Test Case </label>
-                    <p class="text-muted" v-html="testCase"></p>
-                    <hr>
-                    <div class="mb-3">
+                    <div class="text-muted mb-0 border-bottom" v-html="testCase"></div>
+                    <div class="w-100">
                         <label class="form-label fw-bold">{{
                             $t('task_details.update_observations_input_name') }} <strong
                                 class="text-danger">*</strong></label>
@@ -23,8 +21,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer border-0 p-0 justify-content-center">
-                    <div class="row w-100 g-1">
+                <div class="modal-footer border-0 p-0 d-block">
+                    <div class="row g-1">
                         <div class="col-6 col-md-6 col-lg-6">
                             <button class="btn btn-desino w-100 border-0" type="submit">
                                 {{ $t('task_detail.update_testcase_submit_btn_text') }}

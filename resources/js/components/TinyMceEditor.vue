@@ -64,9 +64,12 @@ export default defineComponent({
                     toolbar_mode: 'wrap',
                 },
                 toolbar:
-                    'undo redo | blocks | bold italic underline strikethrough forecolor backcolor | align bullist numlist | lineheight outdent indent | table',
+                    'undo redo | blocks| link | bold italic underline strikethrough forecolor backcolor | align bullist numlist | lineheight outdent indent | table',
                 paste_data_images: true,
                 newline_behavior : 'linebreak',
+                link_target_list : [
+                    { text: 'New window', value: '_blank' }
+                ],
                 setup: (editor) => {
                     editor.on('PastePreProcess', (event) => {
                         const clipboardData = event.content;
