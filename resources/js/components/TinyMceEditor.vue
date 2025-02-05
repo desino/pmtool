@@ -66,7 +66,7 @@ export default defineComponent({
                 toolbar:
                     'undo redo | blocks| link | bold italic underline strikethrough forecolor backcolor | align bullist numlist | lineheight outdent indent | table',
                 paste_data_images: true,
-                newline_behavior : 'linebreak',
+                content_style: "p { margin: 0; padding: 0; }",
                 link_target_list : [
                     { text: 'New window', value: '_blank' }
                 ],
