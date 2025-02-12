@@ -11,10 +11,10 @@
                     <ul class="list-group list-group-flush mb-3 mt-2">
                         <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
                             <div class="row g-1 align-items-center">
-                                <div class="col-md-9 fw-bold small">
+                                <div class="col-9 fw-bold small">
                                     {{ $t('home.deployment_center.production_deployment.ticket_modal.li.name.text') }}
                                 </div>
-                                <div class="col-md-3 fw-bold small text-end">
+                                <div class="col-3 fw-bold small text-end">
                                     {{
                                         $t('home.deployment_center.production_deployment.ticket_modal.li.develop_by.text')
                                     }}
@@ -24,7 +24,7 @@
                         <li class="list-group-item p-1 list-group-item-action" v-if="ticketList.length > 0"
                             v-for="ticket in ticketList" :key="ticket.id">
                             <div class="row g-1 align-items-center" style="min-height: 48px;">
-                                <div class="col-md-9" :for="'chk_production_deployment_ticket_' + ticket.ticket.id">
+                                <div class="col-9" :for="'chk_production_deployment_ticket_' + ticket.ticket.id">
                                     {{ ticket?.ticket.composed_name }}
                                     <router-link target="_blank"
                                         :to="{ name: 'task.detail', params: { initiative_id: ticket?.ticket.initiative_id, ticket_id: ticket?.ticket.id } }"
@@ -32,7 +32,7 @@
                                         <i class="bi bi-link-45deg"></i>
                                     </router-link>
                                 </div>
-                                <div class="col-md-3 text-end" :for="'chk_test_deployment_ticket_' + ticket.id">
+                                <div class="col-3 text-end" :for="'chk_test_deployment_ticket_' + ticket.id">
                                     {{ ticket?.ticket?.develop_action?.user?.name }}
                                 </div>
                             </div>

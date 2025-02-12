@@ -9,7 +9,7 @@
                     class="list-group-item p-1" role="button" @click="openMyTickets(initiative)"
                     :class="{ 'list-group-item-warning': initiative?.is_priority_tickets_count > 0 }">
                     <div class="row g-1 align-items-center">
-                        <div class="col-9 fw-bold">
+                        <div class="col-9">
                             {{ initiative?.client_name }} -
                             {{ initiative.name }}
                         </div>

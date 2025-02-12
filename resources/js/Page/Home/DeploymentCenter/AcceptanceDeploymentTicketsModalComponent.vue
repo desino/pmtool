@@ -11,15 +11,15 @@
                     <ul class="list-group list-group-flush mb-3 mt-2">
                         <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
                             <div class="row g-1 align-items-center">
-                                <div class="col-md-1" v-if="ticketList.length > 0">
+                                <div class="col-1" v-if="ticketList.length > 0">
                                     <input class="form-check-input" type="checkbox" id="chk_all_tickets"
                                         v-model="isChkAllAcceptanceDeploymentTickets"
                                         @change="handleSelectAllAcceptanceDeploymentTickets">
                                 </div>
-                                <div class="col-md-8 fw-bold small">
+                                <div class="col-8 fw-bold small">
                                     {{ $t('home.deployment_center.acceptance_deployment.ticket_modal.li.name.text') }}
                                 </div>
-                                <div class="col-md-3 fw-bold small text-end">
+                                <div class="col-3 fw-bold small text-end">
                                     {{
                                         $t('home.deployment_center.acceptance_deployment.ticket_modal.li.develop_by.text')
                                     }}
@@ -29,20 +29,20 @@
                         <li class="list-group-item p-1 list-group-item-action"
                             v-if="ticketList.length > 0" v-for="ticket in ticketList" :key="ticket.id">
                             <div class="row g-1 align-items-center" style="min-height: 48px;">
-                                <div class="col-md-1">
+                                <div class="col-1">
                                     <input class="form-check-input" type="checkbox"
                                         :id="'chk_acceptance_deployment_ticket_' + ticket.id" v-model="ticket.isChecked"
                                         @change="handleSelectAcceptanceDeploymentTicket(ticket)">
                                 </div>
-                                <div class="col-md-9" :for="'chk_acceptance_deployment_ticket_' + ticket.id">
+                                <div class="col-8" :for="'chk_acceptance_deployment_ticket_' + ticket.id">
                                     {{ ticket?.composed_name }}
                                     <router-link target="_blank"
                                         :to="{ name: 'task.detail', params: { initiative_id: ticket.initiative_id, ticket_id: ticket.id } }"
                                         class="ms-2">
                                         <i class="bi bi-link-45deg"></i>
                                     </router-link>
-                                </div>
-                                <div class="col-md-3 text-end" :for="'chk_test_deployment_ticket_' + ticket.id">
+                                </div> 
+                                <div class="col-3 text-end" :for="'chk_test_deployment_ticket_' + ticket.id">
                                     {{ ticket?.develop_action?.user?.name }}
                                 </div>
                             </div>
@@ -59,7 +59,7 @@
                 </div>
                 <div class="modal-footer border-0 p-0 d-block">
                     <div class="row g-1 align-items-center">
-                        <div class="col-6 col-md-6 col-lg-6">
+                        <div class="col-6">
                             <button type="button" ref="popoverBtn" data-bs-toggle="popover"
                                 :title="$t('home.deployment_center.acceptance_deployment.ticket_modal.submit.alert.text')"
                                 v-bind:data-bs-content="popoverContent" class="btn btn-desino w-100 border-0"
@@ -67,7 +67,7 @@
                                     $t('home.deployment_center.acceptance_deployment.ticket_modal.submit_but.text')
                                 }}</button>
                         </div>
-                        <div class="col-6 col-md-6 col-lg-6">
+                        <div class="col-6">
                             <button type="button" class="btn btn-danger w-100 border-0" data-bs-dismiss="modal">
                                 <i class="bi bi-x-lg"></i>
                             </button>
