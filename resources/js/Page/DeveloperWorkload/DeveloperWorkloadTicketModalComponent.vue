@@ -15,23 +15,23 @@
                     {{ $t('developer_workload_ticket_all_modal_title') }}
                 </h5>
             </div>
-            <div class="modal-body">
+            <div class="modal-body py-0">
                 <GlobalMessage v-if="showMessage" scope="modal" />
-                <ul class="list-group">
-                    <li class="list-group-item fw-bold bg-desino text-white">
-                        <div class="row w-100">
-                            <div class="col-md-9">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item px-1 border-0 border-5 border-bottom border-desino fw-bold">
+                        <div class="row g-1 align-items-center">
+                            <div class="col-9 col-lg-10">
                                 {{ $t('developer_workload.ticket_modal.li.name.text') }}
                             </div>
-                            <div class="col-md-3 text-end">
+                            <div class="col-3 col-lg-2 text-end">
                                 {{ $t('developer_workload.ticket_modal.li.current_owner.text') }}
                             </div>
                         </div>
                     </li>
-                    <li class="list-group-item list-group-item-action" v-if="ticketList.length > 0"
+                    <li class="list-group-item p-1 list-group-item-action" v-if="ticketList.length > 0"
                         v-for="ticket in ticketList" :key="ticket.id">
-                        <div class="row w-100">
-                            <div class="col-md-9">
+                        <div class="row g-1 align-items-center" style="min-height: 48px;">
+                            <div class="col-9 col-lg-10">
                                 {{ ticket?.composed_name }}
                                 <router-link target="_blank"
                                     :to="{ name: 'task.detail', params: { initiative_id: ticket?.initiative_id, ticket_id: ticket?.id } }"
@@ -39,24 +39,23 @@
                                     <i class="bi bi-link-45deg"></i>
                                 </router-link>
                             </div>
-                            <div class="col-md-3 text-end">
+                            <div class="col-3 col-lg-2 text-end">
                                 {{ ticket?.current_action?.user?.name }}
                             </div>
                         </div>
                     </li>
-                    <li v-else class="list-group-item list-group-item-action fw-bold">
-                        <div class="row w-100">
-                            <div class="col-md-12 text-center">
-                                {{ $t('developer_workload.ticket_modal.no_tickets.text')
-                                }}
+                    <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
+                        <div class="row g-1 align-items-center" style="min-height: 48px;">
+                            <div class="col-12 fw-bold fst-italic text-center">
+                                {{ $t('developer_workload.ticket_modal.no_tickets.text') }}
                             </div>
                         </div>
                     </li>
                 </ul>
             </div>
-            <div class="modal-footer border-0 p-0 justify-content-center">
-                <div class="row w-100 g-1">
-                    <div class="col-4 col-md-6 col-lg-12">
+            <div class="modal-footer border-0 p-0 d-block">
+                <div class="row g-1 align-items-center">
+                    <div class="col-12">
                         <button type="button" class="btn btn-danger w-100 border-0" data-bs-dismiss="modal">
                             <i class="bi bi-x-lg"></i>
                         </button>

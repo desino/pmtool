@@ -1,70 +1,68 @@
 <template>
-    <div class="modal-dialog modal-lg">
-        <form>
-            <div class="modal-content border-0">
-                <div class="modal-header modal-header text-white bg-desino border-0 py-2 justify-content-center">
-                    <h5 class="modal-title" id="productionDeploymentTicketsModalLabel"
-                        v-html="formattedModalTitlePRDDeployment()"></h5>
-                </div>
-                <div class="modal-body">
-                    <GlobalMessage v-if="showMessage" scope="modal" />
-                    <ul class="list-group list-group-flush mb-3 mt-2">
-                        <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
-                            <div class="row g-1 align-items-center">
-                                <div class="col-9 fw-bold small">
-                                    {{ $t('home.deployment_center.production_deployment.ticket_modal.li.name.text') }}
-                                </div>
-                                <div class="col-3 fw-bold small text-end">
-                                    {{
-                                        $t('home.deployment_center.production_deployment.ticket_modal.li.develop_by.text')
-                                    }}
-                                </div>
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content border-0">
+            <div class="modal-header modal-header text-white bg-desino border-0 py-2 justify-content-center">
+                <h5 class="modal-title" id="productionDeploymentTicketsModalLabel"
+                    v-html="formattedModalTitlePRDDeployment()"></h5>
+            </div>
+            <div class="modal-body py-0">
+                <GlobalMessage v-if="showMessage" scope="modal" />
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item px-1 border-0 border-5 border-bottom border-desino fw-bold">
+                        <div class="row g-1 align-items-center">
+                            <div class="col-9 col-lg-10">
+                                {{ $t('home.deployment_center.production_deployment.ticket_modal.li.name.text') }}
                             </div>
-                        </li>
-                        <li class="list-group-item p-1 list-group-item-action" v-if="ticketList.length > 0"
-                            v-for="ticket in ticketList" :key="ticket.id">
-                            <div class="row g-1 align-items-center" style="min-height: 48px;">
-                                <div class="col-9" :for="'chk_production_deployment_ticket_' + ticket.ticket.id">
-                                    {{ ticket?.ticket.composed_name }}
-                                    <router-link target="_blank"
-                                        :to="{ name: 'task.detail', params: { initiative_id: ticket?.ticket.initiative_id, ticket_id: ticket?.ticket.id } }"
-                                        class="ms-2">
-                                        <i class="bi bi-link-45deg"></i>
-                                    </router-link>
-                                </div>
-                                <div class="col-3 text-end" :for="'chk_test_deployment_ticket_' + ticket.id">
-                                    {{ ticket?.ticket?.develop_action?.user?.name }}
-                                </div>
+                            <div class="col-3 col-lg-2 text-end">
+                                {{
+                                    $t('home.deployment_center.production_deployment.ticket_modal.li.develop_by.text')
+                                }}
                             </div>
-                        </li>
-                        <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
-                            <div class="row g-1 align-items-center" style="min-height: 48px;">
-                                <div class="col-12 fw-bold fst-italic text-center">
-                                    {{ $t('home.deployment_center.production_deployment.ticket_modal.no_tickets.text') }}
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <div class="modal-footer border-0 p-0 d-block">
-                    <div class="row g-1 align-items-center">
-                        <div class="col-6 col-md-6 col-lg-6">
-                            <button type="button" ref="popoverBtn" data-bs-toggle="popover"
-                                :title="$t('home.deployment_center.production_deployment.ticket_modal.submit.alert.text')"
-                                v-bind:data-bs-content="popoverContent" :disabled="!isAllowProcess"
-                                class="btn btn-desino w-100 border-0">{{
-                                    $t('home.deployment_center.production_deployment.ticket_modal.submit_but.text')
-                                }}</button>
                         </div>
-                        <div class="col-6 col-md-6 col-lg-6">
-                            <button type="button" class="btn btn-danger w-100 border-0" data-bs-dismiss="modal">
-                                <i class="bi bi-x-lg"></i>
-                            </button>
+                    </li>
+                    <li class="list-group-item p-1 list-group-item-action" v-if="ticketList.length > 0"
+                        v-for="ticket in ticketList" :key="ticket.id">
+                        <div class="row g-1 align-items-center" style="min-height: 48px;">
+                            <div class="col-9 col-lg-10" :for="'chk_production_deployment_ticket_' + ticket.ticket.id">
+                                {{ ticket?.ticket.composed_name }}
+                                <router-link target="_blank"
+                                    :to="{ name: 'task.detail', params: { initiative_id: ticket?.ticket.initiative_id, ticket_id: ticket?.ticket.id } }"
+                                    class="ms-2">
+                                    <i class="bi bi-link-45deg"></i>
+                                </router-link>
+                            </div>
+                            <div class="col-3 col-lg-2 text-end" :for="'chk_test_deployment_ticket_' + ticket.id">
+                                {{ ticket?.ticket?.develop_action?.user?.name }}
+                            </div>
                         </div>
+                    </li>
+                    <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
+                        <div class="row g-1 align-items-center" style="min-height: 48px;">
+                            <div class="col-12 fw-bold fst-italic text-center">
+                                {{ $t('home.deployment_center.production_deployment.ticket_modal.no_tickets.text') }}
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="modal-footer border-0 p-0 d-block">
+                <div class="row g-1 align-items-center">
+                    <div class="col-6 col-md-6 col-lg-6">
+                        <button type="button" ref="popoverBtn" data-bs-toggle="popover"
+                            :title="$t('home.deployment_center.production_deployment.ticket_modal.submit.alert.text')"
+                            v-bind:data-bs-content="popoverContent" :disabled="!isAllowProcess"
+                            class="btn btn-desino w-100 border-0">{{
+                                $t('home.deployment_center.production_deployment.ticket_modal.submit_but.text')
+                            }}</button>
+                    </div>
+                    <div class="col-6 col-md-6 col-lg-6">
+                        <button type="button" class="btn btn-danger w-100 border-0" data-bs-dismiss="modal">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
 </template>
 

@@ -474,7 +474,7 @@
     "initiative.status.ongoing": "Ongoing",
     "initiative.status.closed": "Closed",
     "initiative.status.lost": "Lost",
-    "header.initiative_list.placeholder": "Please select",
+    "header.initiative_list.placeholder": "Select Initiative",
     "home.breadcrumb": "Home",
     "header.menu.home": "Home",
     "header.menu.create_client": "Create Client",

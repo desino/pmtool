@@ -1,7 +1,7 @@
 <template>
     <div id="ticketCommentsSection">
-        <div class="card">
-            <div class="card-body ps-2 pe-0 pt-2 pb-0">
+        <div class="card border-0">
+            <div class="card-body px-0 pt-2 pb-0">
                 <div class="w-100 mb-3">
                     <div class="w-100 text-center">
                         <button v-if="hasMore" @click="getComments()" class="btn btn-info text-white btn-sm border-0">
@@ -9,7 +9,7 @@
                         </button>
                     </div>
                     <div class="w-100 max-h-ticket-comment">
-                        <ul class="list-group list-group-flush mb-3 mt-2">
+                        <ul class="list-group list-group-flush m-0">
                             <li v-if="comments.length > 0" v-for="(comment, index) in comments" :key="index"
                                 class="list-group-item p-1 list-group-item-action"
                                 :class="{ 'border-bottom-0': index == comments.length - 1 }">
@@ -85,7 +85,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card-footer bg-transparent p-2 d-block">
+            <div class="card-footer bg-transparent border-0 p-0 d-block">
                 <div class="row g-1 align-items-center">
                     <div class="col-12">
                         <TinyMceEditor v-model="formData.comment" :init="{height: 250,}" />

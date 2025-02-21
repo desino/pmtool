@@ -1,77 +1,82 @@
 <template>
-    <div class="modal-dialog modal-lg">
-        <form>
-            <div class="modal-content border-0">
-                <div class="modal-header text-white bg-desino border-0 py-2 justify-content-center">
-                    <h5 class="modal-title" id="testDeploymentTicketsModalLabel"
-                        v-html="formattedModalTitleTestDeployment()"></h5>
-                </div>
-                <div class="modal-body">
-                    <GlobalMessage v-if="showMessage" scope="modal" />
-                    <ul class="list-group list-group-flush mb-3 mt-2">
-                        <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
-                            <div class="row g-1 align-items-center">
-                                <div class="col-1" v-if="ticketList.length > 0">
-                                    <input class="form-check-input" type="checkbox"
-                                        v-model="isChkAllTestDeploymentTickets"
-                                        @change="handleSelectAllTestDeploymentTickets">
-                                </div>
-                                <div class="col-8 fw-bold small">
-                                    {{ $t('home.deployment_center.test_deployment.ticket_modal.li.name.text') }}
-                                </div>
-                                <div class="col-3 fw-bold small text-end">
-                                    {{ $t('home.deployment_center.test_deployment.ticket_modal.li.develop_by.text') }}
-                                </div>
-                            </div>
-                        </li>
-                        <li class="list-group-item p-1 list-group-item-action"
-                            v-if="ticketList.length > 0" v-for="ticket in ticketList" :key="ticket.id">
-                            <div class="row g-1 align-items-center" style="min-height: 48px;">
-                                <div class="col-1">
-                                    <input class="form-check-input" type="checkbox"
-                                        :id="'chk_test_deployment_ticket_' + ticket.id" v-model="ticket.isChecked"
-                                        @change="handleSelectTestDeploymentTicket(ticket)">
-                                </div>
-                                <div class="col-8" :for="'chk_test_deployment_ticket_' + ticket.id">
-                                    {{ ticket?.composed_name }}
-                                    <router-link target="_blank"
-                                        :to="{ name: 'task.detail', params: { initiative_id: ticket.initiative_id, ticket_id: ticket.id } }"
-                                        class="ms-2">
-                                        <i class="bi bi-link-45deg"></i>
-                                    </router-link>
-                                </div>
-                                <div class="col-3 text-end" :for="'chk_test_deployment_ticket_' + ticket.id">
-                                    {{ ticket?.develop_action?.user?.name }}
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content border-0">
+            <div class="modal-header text-white bg-desino border-0 py-2 justify-content-center">
+                <h5 class="modal-title" id="testDeploymentTicketsModalLabel"
+                    v-html="formattedModalTitleTestDeployment()"></h5>
+            </div>
+            <div class="modal-body py-0">
+                <GlobalMessage v-if="showMessage" scope="modal" />
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item px-1 border-0 border-5 border-bottom border-desino fw-bold">
+                        <div class="row g-1 align-items-center">
+                            <div class="col-9 col-lg-10">
+                                <div class="row g-0 h-100 align-items-center">
+                                    <div class="col-auto me-1" v-if="ticketList.length > 0" style="width:20px">
+                                        <input class="form-check-input" type="checkbox"
+                                            v-model="isChkAllTestDeploymentTickets"
+                                            @change="handleSelectAllTestDeploymentTickets">
+                                    </div>
+                                    <div class="col-auto" style="width: calc(100% - 25px)">
+                                        {{ $t('home.deployment_center.test_deployment.ticket_modal.li.name.text') }}
+                                    </div>
                                 </div>
                             </div>
-                        </li>
-                        <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
-                            <div class="row g-1 align-items-center" style="min-height: 48px;">
-                                <div class="col-12 fw-bold fst-italic text-center">
-                                    {{ $t('home.deployment_center.test_deployment.ticket_modal.no_tickets.text') }}
-                                </div>
+                            <div class="col-3 col-lg-2 text-end">
+                                {{ $t('home.deployment_center.test_deployment.ticket_modal.li.develop_by.text') }}
                             </div>
-                        </li>
-                    </ul>
-                </div>
-                <div class="modal-footer border-0 p-0 d-block">
-                    <div class="row g-1 align-items-center">
-                        <div class="col-6">
-                            <button type="button" ref="popoverBtn" data-bs-toggle="popover"
-                                :title="$t('home.deployment_center.test_deployment.ticket_modal.submit.alert.text')"
-                                v-bind:data-bs-content="popoverContent" class="btn btn-desino w-100 border-0"
-                                :disabled="selectedTestDeploymentTickets.length > 0 && isAllowProcess ? false : true">{{
-                                    $t('home.deployment_center.test_deployment.ticket_modal.submit_but.text') }}</button>
                         </div>
-                        <div class="col-6">
-                            <button type="button" class="btn btn-danger w-100 border-0" data-bs-dismiss="modal">
-                                <i class="bi bi-x-lg"></i>
-                            </button>
+                    </li>
+                    <li class="list-group-item p-1 list-group-item-action" v-if="ticketList.length > 0" v-for="ticket in ticketList" :key="ticket.id">
+                        <div class="row g-1 align-items-center" style="min-height: 48px;">
+                            <div class="col-9 col-lg-10" :for="'chk_test_deployment_ticket_' + ticket.id">
+                                <div class="row g-0 h-100 align-items-center">
+                                    <div class="col-auto me-1" style="width:20px">
+                                        <input class="form-check-input" type="checkbox"
+                                            :id="'chk_test_deployment_ticket_' + ticket.id" v-model="ticket.isChecked"
+                                            @change="handleSelectTestDeploymentTicket(ticket)">
+                                    </div>
+                                    <div class="col-auto" style="width: calc(100% - 25px)">
+                                        {{ ticket?.composed_name }}
+                                        <router-link target="_blank"
+                                            :to="{ name: 'task.detail', params: { initiative_id: ticket.initiative_id, ticket_id: ticket.id } }"
+                                            class="ms-2">
+                                            <i class="bi bi-link-45deg"></i>
+                                        </router-link>
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class="col-3 col-lg-2 text-end" :for="'chk_test_deployment_ticket_' + ticket.id">
+                                {{ ticket?.develop_action?.user?.name }}
+                            </div>
                         </div>
+                    </li>
+                    <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
+                        <div class="row g-1 align-items-center" style="min-height: 48px;">
+                            <div class="col-12 fw-bold fst-italic text-center">
+                                {{ $t('home.deployment_center.test_deployment.ticket_modal.no_tickets.text') }}
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="modal-footer border-0 p-0 d-block">
+                <div class="row g-1 align-items-center">
+                    <div class="col-6">
+                        <button type="button" ref="popoverBtn" data-bs-toggle="popover"
+                            :title="$t('home.deployment_center.test_deployment.ticket_modal.submit.alert.text')"
+                            v-bind:data-bs-content="popoverContent" class="btn btn-desino w-100 border-0"
+                            :disabled="selectedTestDeploymentTickets.length > 0 && isAllowProcess ? false : true">{{
+                                $t('home.deployment_center.test_deployment.ticket_modal.submit_but.text') }}</button>
+                    </div>
+                    <div class="col-6">
+                        <button type="button" class="btn btn-danger w-100 border-0" data-bs-dismiss="modal">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
 </template>
 

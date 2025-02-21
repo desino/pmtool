@@ -1,7 +1,7 @@
 <template>
     <GlobalMessage v-if="showMessage" />
 
-    <div class="app-content mt-3 row">
+    <div class="app-content row">
         <div class="col-md-4 border-end">
             <div class="input-group my-3">
                 <input v-model="solutionDesignFilters.name" type="text" class="form-control" placeholder="Search"

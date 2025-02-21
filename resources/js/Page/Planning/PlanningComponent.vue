@@ -1,6 +1,6 @@
 <template>
     <GlobalMessage v-if="showMessage" />
-    <div class="app-content mt-3" id="planningPageSection">
+    <div class="app-content" id="planningPageSection">
         <div class="w-100">
             <div class="scrolling outer">
                 <div class="inner">
