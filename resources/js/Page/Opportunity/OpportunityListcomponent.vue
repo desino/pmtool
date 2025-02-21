@@ -108,9 +108,9 @@
                         <div class="col-xl-1 col-lg-2 col-md-2 d-none d-md-block"></div>
                     </div>
                 </li>
-                <li v-else class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
+                <li v-else class="list-group-item p-1">
                     <div class="row g-1 align-items-center" style="min-height: 48px;">
-                        <div class="col-12 fw-bold fst-italic text-center">
+                        <div class="col-12 fst-italic small text-secondary text-center">
                             {{ $t('opportunity_list_table.opportunities_not_found_text') }}
                         </div>
                     </div>
