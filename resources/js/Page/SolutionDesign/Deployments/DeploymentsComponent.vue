@@ -1,6 +1,6 @@
 <template>
     <GlobalMessage />
-    <div class="app-content mt-3">
+    <div class="app-content">
         <div class="w-100 mb-3">
             <div class="row g-0 align-items-center">
                 <div class="col-12 col-md-4">

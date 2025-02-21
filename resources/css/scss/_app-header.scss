@@ -6,7 +6,7 @@
   z-index: $lte-zindex-app-header;
   grid-area: #{$lte-prefix}app-header;
   max-width: 100vw;
-  border-bottom: $lte-app-header-bottom-border;
+  //border-bottom: $lte-app-header-bottom-border;
   @include transition($lte-transition-speed $lte-transition-fn);
 
   .nav-link {

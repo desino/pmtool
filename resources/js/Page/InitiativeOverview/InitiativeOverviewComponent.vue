@@ -1,6 +1,6 @@
 <template>
     <GlobalMessage v-if="showMessage" />
-    <div class="app-content mt-3">
+    <div class="app-content">
         <div class="w-100 mb-3">
             <ul class="list-group list-group-flush mb-3 mt-2">
                 <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">

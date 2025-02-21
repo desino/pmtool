@@ -385,3 +385,15 @@
 .color-activity-log-deleted {
     background-color: #dc3545;
 }
+#sidebar_initiative_selection .multiselect__tags .multiselect__single{
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-bottom: 0 !important;
+}
+#sidebar_initiative_selection .multiselect__content-wrapper ul.multiselect__content .multiselect__option{
+    padding: 5px !important;
+}
+#sidebar_initiative_selection .multiselect__content-wrapper ul.multiselect__content .custom-option{
+    font-size: 0.85rem;
+    font-weight: bold;
+}

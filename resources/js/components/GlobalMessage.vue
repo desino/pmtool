@@ -1,6 +1,6 @@
 <!-- src/components/GlobalMessage.vue -->
 <template>
-    <div v-if="state.message" :class="['alert m-4', alertClass]">
+    <div v-if="state.message" :class="['alert', alertClass]">
         <button type="button" class="btn-close" aria-label="Close" @click="clearMessage"></button>
         {{ state.message }}
     </div>

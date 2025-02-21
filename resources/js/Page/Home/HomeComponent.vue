@@ -1,5 +1,5 @@
 <template>
-    <div class="app-content mt-3">
+    <div class="app-content">
         <GlobalMessage v-if="showMessage" />
         <div class="row g-2">
             <div class="col-12 col-lg-6 border-end">

@@ -1,6 +1,6 @@
 <template>
     <GlobalMessage v-if="showMessage" />
-    <div class="app-content mt-3" id="timeBookingPageSection">
+    <div class="app-content" id="timeBookingPageSection">
         <div class="row">
             <div class="col-md-3" v-if="user?.is_admin">
                 <select v-model="filter.user_id" class="form-select" @change="getTimeBookingData()">
