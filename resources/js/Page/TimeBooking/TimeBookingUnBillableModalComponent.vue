@@ -141,10 +141,11 @@
                                 </div>
                             </div>
                         </li>
-                        <li v-if="timeBookings.length === 0"
-                            class="border border-top-0 list-group-item px-0 py-1 list-group-item-action">
-                            <div class="fw-bold fst-italic text-center w-100">
-                                {{ $t('time_booking_un_billable.modal.list_table.no_data_text') }}
+                        <li v-if="timeBookings.length === 0" class="list-group-item p-1">
+                            <div class="row g-1 align-items-center" style="min-height: 48px;">
+                                <div class="col-12 fst-italic small text-secondary text-center">
+                                    {{ $t('time_booking_un_billable.modal.list_table.no_data_text') }}
+                                </div>
                             </div>
                         </li>
                     </ul>

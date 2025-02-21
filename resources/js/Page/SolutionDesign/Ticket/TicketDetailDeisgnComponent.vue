@@ -57,7 +57,7 @@
         </div>
     </div>
     <GlobalMessage v-if="showMessage" />
-    <div class="app-content border-bottom pb-1">
+    <div class="app-content pb-3">
         <div class="row g-1">
             <div class="col-12 col-md-3 col-lg-3 col-xl-3 text-center mb-2 mb-md-0">
                 <div class="card shadow-none h-100 border-0" :class="ticketData.macro_status_label?.color">
@@ -145,37 +145,37 @@
             </div>
         </div>
     </div>
-    <div class="app-content pt-1">
+    <div class="app-content">
         <div class="col-md-12">
             <div class="w-100">
-                <div class="row g-1 nav">
-                    <div class="col-6 col-md-3 col-lg-2">
-                        <a id="ticket_detail_tab" aria-controls="ticket_detail_tab" aria-selected="true"
-                            class="btn btn-outline-desino active w-100 h-100 align-content-center" data-bs-toggle="pill" href="#ticketdetail_description_tab" role="tab">
+                <div class="row g-0 nav" id="ticketdetail_tabs_nav">
+                    <div class="col-6 col-md-3 col-lg-2 ticket_detail_tab_link_column">
+                        <a id="ticketdetail_description_tab_link" aria-controls="ticketdetail_description_tab" aria-selected="true"
+                            class="active ticket_detail_tab_link w-100 h-100 d-block text-decoration-none py-2 fw-bold text-center align-content-center" data-bs-toggle="pill" href="#ticketdetail_description_tab" role="tab">
                             {{ $t('ticket_details.task_description') }}
                         </a>
                     </div>
-                    <div class="col-6 col-md-3 col-lg-2">
-                        <a id="ticket_detail_tab" aria-controls="ticket_detail_tab" aria-selected="false"
-                            class="btn btn-outline-desino w-100 h-100 align-content-center" data-bs-toggle="pill" href="#ticketdetail_feature_tab" role="tab">
+                    <div class="col-6 col-md-3 col-lg-2 ticket_detail_tab_link_column">
+                        <a id="ticketdetail_feature_tab_link" aria-controls="ticketdetail_feature_tab" aria-selected="false"
+                            class="ticket_detail_tab_link w-100 h-100 d-block text-decoration-none py-2 fw-bold text-center align-content-center" data-bs-toggle="pill" href="#ticketdetail_feature_tab" role="tab">
                             {{ $t('ticket_details.task_details') }}
                         </a>
                     </div>
-                    <div class="col-6 col-md-3 col-lg-2">
-                        <a id="test_cases_tab" aria-controls="test_cases_tab" aria-selected="false"
-                            class="btn btn-outline-desino w-100 h-100 align-content-center" data-bs-toggle="pill" href="#ticketdetail_testcase_tab" role="tab">
+                    <div class="col-6 col-md-3 col-lg-2 ticket_detail_tab_link_column">
+                        <a id="ticketdetail_testcase_tab_link" aria-controls="ticketdetail_testcase_tab" aria-selected="false"
+                            class="ticket_detail_tab_link w-100 h-100 d-block text-decoration-none py-2 fw-bold text-center align-content-center" data-bs-toggle="pill" href="#ticketdetail_testcase_tab" role="tab">
                             {{ $t('ticket_details.test_cases') }}
                         </a>
                     </div>
-                    <div class="col-6 col-md-3 col-lg-2">
-                        <a id="ticket_detail_tab" aria-controls="ticket_detail_tab" aria-selected="false"
-                            class="btn btn-outline-desino w-100 h-100 align-content-center" data-bs-toggle="pill" href="#ticketdetail_releasenotes_tab" role="tab">
+                    <div class="col-6 col-md-3 col-lg-2 ticket_detail_tab_link_column">
+                        <a id="ticketdetail_releasenotes_tab_link" aria-controls="ticketdetail_releasenotes_tab" aria-selected="false"
+                            class="ticket_detail_tab_link w-100 h-100 d-block text-decoration-none py-2 fw-bold text-center align-content-center" data-bs-toggle="pill" href="#ticketdetail_releasenotes_tab" role="tab">
                             {{ $t('ticket_details.client_release_notes') }}
                         </a>
                     </div>
-                    <div class="col-6 col-md-3 col-lg-2" v-if="ticketData.is_allow_dev_estimation_time">
-                        <a id="test_cases_tab" aria-controls="test_cases_tab" aria-selected="false"
-                            class="btn btn-outline-desino w-100 h-100 align-content-center" data-bs-toggle="pill" href="#ticketdetail_estimated_hours_tab" role="tab">
+                    <div class="col-6 col-md-3 col-lg-2 ticket_detail_tab_link_column" v-if="ticketData.is_allow_dev_estimation_time">
+                        <a id="ticketdetail_estimated_hours_tab_link" aria-controls="ticketdetail_estimated_hours_tab" aria-selected="false"
+                            class="ticket_detail_tab_link w-100 h-100 d-block text-decoration-none py-2 fw-bold text-center align-content-center" data-bs-toggle="pill" href="#ticketdetail_estimated_hours_tab" role="tab">
                             {{ $t('ticket_details.estimated_hours') }}
                         </a>
                     </div>
@@ -861,3 +861,20 @@ export default {
     }
 }
 </script>
+<style>
+    #ticketdetail_tabs_nav .ticket_detail_tab_link{
+        border-bottom: 1px solid var(--bs-desino);
+        transition: border 0.3s ease;
+    }
+    #ticketdetail_tabs_nav .ticket_detail_tab_link.active, #ticketdetail_tabs_nav .ticket_detail_tab_link:hover{
+        border-bottom: 8px solid var(--bs-desino);
+    }
+    /* .ticket_detail_tab_link_column:has(.ticket_detail_tab_link){
+        border-bottom: 1px solid var(--bs-desino);
+        transition: border 0.3s ease, transform 0.3s ease;
+    }
+    .ticket_detail_tab_link_column:has(.ticket_detail_tab_link.active, .ticket_detail_tab_link:hover){
+        border-bottom: 8px solid var(--bs-desino);
+        transform: scale(1.05);
+    }*/
+</style>
