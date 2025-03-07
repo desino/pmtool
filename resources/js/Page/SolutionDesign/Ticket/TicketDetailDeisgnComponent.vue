@@ -57,7 +57,7 @@
         </div>
     </div>
     <GlobalMessage v-if="showMessage" />
-    <div class="app-content pb-3">
+    <div id="ticket_detail_info_section" class="app-content pb-3">
         <div class="row g-1">
             <div class="col-12 col-md-3 col-lg-3 col-xl-3 text-center mb-2 mb-md-0">
                 <div class="card shadow-none h-100 border-0" :class="ticketData.macro_status_label?.color">
@@ -146,46 +146,46 @@
         </div>
     </div>
     <div class="app-content">
-        <div class="col-md-12">
-            <div class="w-100">
-                <div class="row g-0 nav" id="ticketdetail_tabs_nav">
-                    <div class="col-6 col-md-3 col-lg-2 ticket_detail_tab_link_column">
-                        <a id="ticketdetail_description_tab_link" aria-controls="ticketdetail_description_tab" aria-selected="true"
-                            class="active ticket_detail_tab_link w-100 h-100 d-block text-decoration-none py-2 fw-bold text-center align-content-center" data-bs-toggle="pill" href="#ticketdetail_description_tab" role="tab">
-                            {{ $t('ticket_details.task_description') }}
-                        </a>
-                    </div>
-                    <div class="col-6 col-md-3 col-lg-2 ticket_detail_tab_link_column">
-                        <a id="ticketdetail_feature_tab_link" aria-controls="ticketdetail_feature_tab" aria-selected="false"
-                            class="ticket_detail_tab_link w-100 h-100 d-block text-decoration-none py-2 fw-bold text-center align-content-center" data-bs-toggle="pill" href="#ticketdetail_feature_tab" role="tab">
-                            {{ $t('ticket_details.task_details') }}
-                        </a>
-                    </div>
-                    <div class="col-6 col-md-3 col-lg-2 ticket_detail_tab_link_column">
-                        <a id="ticketdetail_testcase_tab_link" aria-controls="ticketdetail_testcase_tab" aria-selected="false"
-                            class="ticket_detail_tab_link w-100 h-100 d-block text-decoration-none py-2 fw-bold text-center align-content-center" data-bs-toggle="pill" href="#ticketdetail_testcase_tab" role="tab">
-                            {{ $t('ticket_details.test_cases') }}
-                        </a>
-                    </div>
-                    <div class="col-6 col-md-3 col-lg-2 ticket_detail_tab_link_column">
-                        <a id="ticketdetail_releasenotes_tab_link" aria-controls="ticketdetail_releasenotes_tab" aria-selected="false"
-                            class="ticket_detail_tab_link w-100 h-100 d-block text-decoration-none py-2 fw-bold text-center align-content-center" data-bs-toggle="pill" href="#ticketdetail_releasenotes_tab" role="tab">
-                            {{ $t('ticket_details.client_release_notes') }}
-                        </a>
-                    </div>
-                    <div class="col-6 col-md-3 col-lg-2 ticket_detail_tab_link_column" v-if="ticketData.is_allow_dev_estimation_time">
-                        <a id="ticketdetail_estimated_hours_tab_link" aria-controls="ticketdetail_estimated_hours_tab" aria-selected="false"
-                            class="ticket_detail_tab_link w-100 h-100 d-block text-decoration-none py-2 fw-bold text-center align-content-center" data-bs-toggle="pill" href="#ticketdetail_estimated_hours_tab" role="tab">
-                            {{ $t('ticket_details.estimated_hours') }}
-                        </a>
+        <div class="row g-1">
+            <div class="col-12 col-md-12 col-lg-8">
+                <div class="w-100">
+                    <div class="row g-0 nav" id="ticketdetail_tabs_nav">
+                        <div class="col ticket_detail_tab_link_column">
+                            <a id="ticketdetail_description_tab_link" aria-controls="ticketdetail_description_tab" aria-selected="true"
+                                class="active ticket_detail_tab_link w-100 h-100 d-block text-decoration-none py-2 fw-bold text-center align-content-center" data-bs-toggle="pill" href="#ticketdetail_description_tab" role="tab">
+                                {{ $t('ticket_details.task_description') }}
+                            </a>
+                        </div>
+                        <div class="col ticket_detail_tab_link_column">
+                            <a id="ticketdetail_feature_tab_link" aria-controls="ticketdetail_feature_tab" aria-selected="false"
+                                class="ticket_detail_tab_link w-100 h-100 d-block text-decoration-none py-2 fw-bold text-center align-content-center" data-bs-toggle="pill" href="#ticketdetail_feature_tab" role="tab">
+                                {{ $t('ticket_details.task_details') }}
+                            </a>
+                        </div>
+                        <div class="col ticket_detail_tab_link_column">
+                            <a id="ticketdetail_testcase_tab_link" aria-controls="ticketdetail_testcase_tab" aria-selected="false"
+                                class="ticket_detail_tab_link w-100 h-100 d-block text-decoration-none py-2 fw-bold text-center align-content-center" data-bs-toggle="pill" href="#ticketdetail_testcase_tab" role="tab">
+                                {{ $t('ticket_details.test_cases') }}
+                            </a>
+                        </div>
+                        <div class="col ticket_detail_tab_link_column">
+                            <a id="ticketdetail_releasenotes_tab_link" aria-controls="ticketdetail_releasenotes_tab" aria-selected="false"
+                                class="ticket_detail_tab_link w-100 h-100 d-block text-decoration-none py-2 fw-bold text-center align-content-center" data-bs-toggle="pill" href="#ticketdetail_releasenotes_tab" role="tab">
+                                {{ $t('ticket_details.client_release_notes') }}
+                            </a>
+                        </div>
+                        <div class="col ticket_detail_tab_link_column" v-if="ticketData.is_allow_dev_estimation_time">
+                            <a id="ticketdetail_estimated_hours_tab_link" aria-controls="ticketdetail_estimated_hours_tab" aria-selected="false"
+                                class="ticket_detail_tab_link w-100 h-100 d-block text-decoration-none py-2 fw-bold text-center align-content-center" data-bs-toggle="pill" href="#ticketdetail_estimated_hours_tab" role="tab">
+                                {{ $t('ticket_details.estimated_hours') }}
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div id="ticketdetail-tabContent" class="tab-content pt-2 px-0 pb-0">
-                <div id="ticketdetail_description_tab" aria-labelledby="ticketdetail_description_tab"
-                    class="tab-pane fade active show" role="tabpanel">
-                    <div class="row g-2">
-                        <div class="col-xl-8 col-lg-7 col-12">
+                <div id="ticketdetail-tabContent" class="tab-content pt-2 px-0 pb-0">
+                    <div id="ticketdetail_description_tab" aria-labelledby="ticketdetail_description_tab"
+                        class="tab-pane fade active show" role="tabpanel">
+                        <div class="w-100">
                             <div v-if="this.user?.is_admin">
                                 <TinyMceEditor v-model="taskDescriptionForm.description" />
                                 <div v-if="errors.description" class="text-danger mt-2">
@@ -202,131 +202,131 @@
                                 <div v-html="ticketData.description"></div>
                             </div>
                         </div>
-                        <div class="col-xl-4 col-lg-5 col-12">
-                            <div v-if="this.user && isPassCommentData">
-                                <CommentComponent ref="commentComponent" :ticketData="ticketData" :users="users" />
+                    </div>
+                    <div id="ticketdetail_feature_tab" aria-labelledby="ticketdetail_feature_tab" class="tab-pane fade"
+                        role="tabpanel">
+                        <div class="w-100">
+                            <div class="bg-desino text-white rounded fw-bold p-2 w-100">
+                                <span v-if="ticketData.display_functionality_name">
+                                    {{ ticketData.display_functionality_name }}
+                                </span>
+                                <span v-else>&nbsp;</span>
+                            </div>
+                            <div class="w-100 py-3" v-html="ticketData.functionality_description"></div>
+                        </div>
+                    </div>
+                    <div id="ticketdetail_testcase_tab" aria-labelledby="ticketdetail_testcase_tab" class="tab-pane fade"
+                        role="tabpanel">
+                        <div class="w-100">
+                            <div class="w-100">
+                                <div class="row g-1">
+                                    <div class="col-12">
+                                        <button class="btn btn-desino border-0" @click="showTestCaseModal"
+                                                v-if="is_allow_case_add_test_section"> <i class="bi bi-plus-lg"></i> {{
+                                                $t('ticket_detail_test_case_add_test_section_but_text') }}
+                                        </button>
+                                    </div>
+                                    <div class="col-12 col-md-6 col-lg-4" v-if="test_cases?.length > 0" v-for="(test_case, index) in test_cases" :key="index">
+                                        <div class="card h-100">
+                                            <div class="card-header bg-transparent border-0 p-2">
+                                                <span class="fw-bold me-2">Test Case {{ index + 1 }}</span>
+                                                <span v-if="test_case.status !== -1" class="badge"
+                                                    :class="test_case.status === 1 ? 'bg-success' : 'bg-danger'">
+                                                    {{ test_case.status === 1 ? 'success' : 'failed' }}
+                                                </span>
+                                            </div>
+                                            <div class="card-body test-case-cardbody optimize-image px-2 pb-2 pt-0">
+                                                <div class="w-100 mb-2">
+                                                    <div class="" v-html="test_case.expected_behaviour"></div>
+                                                </div>
+                                                <div class="w-100" v-if="test_case.observations">
+                                                    <span class="small text-desino fw-bold text-decoration-underline py-2">
+                                                        {{ $t('ticket_detail_test_case_section_actual_behaviour') }}
+                                                    </span>
+                                                    <div v-html="test_case.observations"></div>
+                                                </div>
+                                            </div>
+                                            <div class="card-footer border-0 bg-transparent p-2 d-block">
+                                                <button class="btn btn-success btn-sm border-0 me-1" v-if="is_allow_case_update_test_section"
+                                                    :disabled="test_case.status === 1"
+                                                    @click="handleTestCaseAction(test_case.id, 'success')">
+                                                    <i class="bi-check-lg text-white"></i>
+                                                </button>
+                                                <button
+                                                    :disabled="test_case.status !== 1 && test_case.status !== -1" v-if="is_allow_case_update_test_section"
+                                                    class="btn btn-danger btn-sm border-0 me-1"
+                                                    @click="handleTestCaseAction(test_case.id, 'failed')">
+                                                    <i class="bi-x-lg text-white"></i>
+                                                </button>
+                                                <button :disabled="!is_allow_case_add_test_section"
+                                                    class="btn btn-dark btn-sm border-0"
+                                                    @click="showConfirmation('deleteTestCase', deleteTestCase, test_case.id)">
+                                                    <i class="bi bi-trash3"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div v-else class="col-12 text-center fw-bold fst-italic">
+                                        {{ $t('ticket_detail_test_case_section_no_test_case') }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="createTestCaseModal" aria-hidden="true" aria-labelledby="createTestCaseModalLabel"
+                                class="modal fade" tabindex="-1">
+                                <CreateTestCaseModalComponent ref="createTestCaseModalComponent"
+                                    @stored-testcase="updateTestCaseList" :ticket_id="selectedTask"
+                                    :initiative_id="localInitiativeId" />
+                            </div>
+                            <div id="updateTestCaseModal" aria-hidden="true" aria-labelledby="updateTestCaseModalLabel"
+                                class="modal fade" tabindex="-1">
+                                <UpdateTestCaseModalComponent ref="updateTestCaseModalComponent" :ticket_id="selectedTask"
+                                    :initiative_id="localInitiativeId" @stored-testcase="updateTestCaseList" />
                             </div>
                         </div>
                     </div>
-                </div>
-                <div id="ticketdetail_feature_tab" aria-labelledby="ticketdetail_feature_tab" class="tab-pane fade"
-                    role="tabpanel">
-                    <div class="w-100">
-                        <div class="bg-desino text-white rounded fw-bold p-2 w-100">
-                            <span v-if="ticketData.display_functionality_name">
-                                {{ ticketData.display_functionality_name }}
-                            </span>
-                            <span v-else>&nbsp;</span>
-                        </div>
-                        <div class="w-100 py-3" v-html="ticketData.functionality_description"></div>
-                    </div>
-                </div>
-                <div id="ticketdetail_testcase_tab" aria-labelledby="ticketdetail_testcase_tab" class="tab-pane fade"
-                    role="tabpanel">
-                    <div class="w-100">
+                    <div id="ticketdetail_releasenotes_tab" aria-labelledby="ticketdetail_releasenotes_tab"
+                        class="tab-pane fade" role="tabpanel">
                         <div class="w-100">
-                            <div class="row g-1">
-                                <div class="col-12">
-                                    <button class="btn btn-desino border-0" @click="showTestCaseModal"
-                                            v-if="is_allow_case_add_test_section"> <i class="bi bi-plus-lg"></i> {{
-                                            $t('ticket_detail_test_case_add_test_section_but_text') }}
-                                    </button>
-                                </div>
-                                <div class="col-12 col-md-6 col-lg-4" v-if="test_cases?.length > 0" v-for="(test_case, index) in test_cases" :key="index">
-                                    <div class="card h-100">
-                                        <div class="card-header bg-transparent border-0 p-2">
-                                            <span class="fw-bold me-2">Test Case {{ index + 1 }}</span>
-                                            <span v-if="test_case.status !== -1" class="badge"
-                                                :class="test_case.status === 1 ? 'bg-success' : 'bg-danger'">
-                                                {{ test_case.status === 1 ? 'success' : 'failed' }}
+                            <TinyMceEditor v-model="releaseNoteForm.release_note" />
+                            <div v-if="errors.release_note" class="text-danger mt-2">
+                                <span v-for="(error, index) in errors.release_note" :key="index">{{ error }}</span>
+                            </div>
+                            <button class="btn w-100 btn-desino text-white fw-bold rounded my-2" @click="updateReleaseNote">
+                                {{ $t('ticket_details.update') }}
+                            </button>
+                        </div>
+                    </div>
+                    <div id="ticketdetail_estimated_hours_tab" aria-labelledby="ticketdetail_estimated_hours_tab"
+                        class="tab-pane fade" role="tabpanel" v-if="ticketData.is_allow_dev_estimation_time">
+                        <div class="card mt-2 col-md-5">
+                            <div class="card-body">
+                                <form @submit.prevent="updateTicketDetailEstimatedHours">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">{{
+                                            $t('ticket_details_input_dev_estimation_time')
+                                            }} <strong class="text-danger">*</strong>
+                                        </label>
+                                        <input v-model="estimatedHoursFormData.dev_estimation_time"
+                                            :class="{ 'is-invalid': errors.dev_estimation_time }" class="form-control"
+                                            type="text">
+                                        <div v-if="errors.dev_estimation_time" class="invalid-feedback">
+                                            <span v-for="(error, index) in errors.dev_estimation_time" :key="index">
+                                                {{ error }} <br>
                                             </span>
                                         </div>
-                                        <div class="card-body test-case-cardbody optimize-image px-2 pb-2 pt-0">
-                                            <div class="w-100 mb-2">
-                                                <div class="" v-html="test_case.expected_behaviour"></div>
-                                            </div>
-                                            <div class="w-100" v-if="test_case.observations">
-                                                <span class="small text-desino fw-bold text-decoration-underline py-2">
-                                                    {{ $t('ticket_detail_test_case_section_actual_behaviour') }}
-                                                </span>
-                                                <div v-html="test_case.observations"></div>
-                                            </div>
-                                        </div>
-                                        <div class="card-footer border-0 bg-transparent p-2 d-block">
-                                            <button class="btn btn-success btn-sm border-0 me-1" v-if="is_allow_case_update_test_section"
-                                                :disabled="test_case.status === 1"
-                                                @click="handleTestCaseAction(test_case.id, 'success')">
-                                                <i class="bi-check-lg text-white"></i>
-                                            </button>
-                                            <button
-                                                :disabled="test_case.status !== 1 && test_case.status !== -1" v-if="is_allow_case_update_test_section"
-                                                class="btn btn-danger btn-sm border-0 me-1"
-                                                @click="handleTestCaseAction(test_case.id, 'failed')">
-                                                <i class="bi-x-lg text-white"></i>
-                                            </button>
-                                            <button :disabled="!is_allow_case_add_test_section"
-                                                class="btn btn-dark btn-sm border-0"
-                                                @click="showConfirmation('deleteTestCase', deleteTestCase, test_case.id)">
-                                                <i class="bi bi-trash3"></i>
-                                            </button>
-                                        </div>
                                     </div>
-                                </div>
-                                <div v-else class="col-12 text-center fw-bold fst-italic">
-                                    {{ $t('ticket_detail_test_case_section_no_test_case') }}
-                                </div>
+                                    <button type="submit" class="btn w-100 btn-desino fw-bold m-2 rounded">
+                                        {{ $t('ticket_details.estimated_hours.update_but_text') }}
+                                    </button>
+                                </form>
                             </div>
                         </div>
-                        <div id="createTestCaseModal" aria-hidden="true" aria-labelledby="createTestCaseModalLabel"
-                            class="modal fade" tabindex="-1">
-                            <CreateTestCaseModalComponent ref="createTestCaseModalComponent"
-                                @stored-testcase="updateTestCaseList" :ticket_id="selectedTask"
-                                :initiative_id="localInitiativeId" />
-                        </div>
-                        <div id="updateTestCaseModal" aria-hidden="true" aria-labelledby="updateTestCaseModalLabel"
-                            class="modal fade" tabindex="-1">
-                            <UpdateTestCaseModalComponent ref="updateTestCaseModalComponent" :ticket_id="selectedTask"
-                                :initiative_id="localInitiativeId" @stored-testcase="updateTestCaseList" />
-                        </div>
                     </div>
                 </div>
-                <div id="ticketdetail_releasenotes_tab" aria-labelledby="ticketdetail_releasenotes_tab"
-                    class="tab-pane fade" role="tabpanel">
-                    <div class="w-100">
-                        <TinyMceEditor v-model="releaseNoteForm.release_note" />
-                        <div v-if="errors.release_note" class="text-danger mt-2">
-                            <span v-for="(error, index) in errors.release_note" :key="index">{{ error }}</span>
-                        </div>
-                        <button class="btn w-100 btn-desino text-white fw-bold m-2 rounded" @click="updateReleaseNote">
-                            {{ $t('ticket_details.update') }}
-                        </button>
-                    </div>
-                </div>
-                <div id="ticketdetail_estimated_hours_tab" aria-labelledby="ticketdetail_estimated_hours_tab"
-                    class="tab-pane fade" role="tabpanel" v-if="ticketData.is_allow_dev_estimation_time">
-                    <div class="card mt-2 col-md-5">
-                        <div class="card-body">
-                            <form @submit.prevent="updateTicketDetailEstimatedHours">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">{{
-                                        $t('ticket_details_input_dev_estimation_time')
-                                        }} <strong class="text-danger">*</strong>
-                                    </label>
-                                    <input v-model="estimatedHoursFormData.dev_estimation_time"
-                                        :class="{ 'is-invalid': errors.dev_estimation_time }" class="form-control"
-                                        type="text">
-                                    <div v-if="errors.dev_estimation_time" class="invalid-feedback">
-                                        <span v-for="(error, index) in errors.dev_estimation_time" :key="index">
-                                            {{ error }} <br>
-                                        </span>
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn w-100 btn-desino fw-bold m-2 rounded">
-                                    {{ $t('ticket_details.estimated_hours.update_but_text') }}
-                                </button>
-                            </form>
-                        </div>
-                    </div>
+            </div>
+            <div class="col-12 col-md-12 col-lg-4">
+                <div v-if="this.user && isPassCommentData">
+                    <CommentComponent ref="commentComponent" :ticketData="ticketData" :users="users" />
                 </div>
             </div>
         </div>
