@@ -1,83 +1,100 @@
 <template>
     <div id="ticketCommentsSection">
         <div class="card border-0">
-            <div class="card-body px-0 pt-2 pb-0">
-                <div class="w-100 mb-3">
-                    <div class="w-100 text-center">
-                        <button v-if="hasMore" @click="getComments()" class="btn btn-info text-white btn-sm border-0">
+            <div class="card-header px-0 py-2 border-0 border-5 border-bottom border-desino">
+                <div class="row g-1">
+                    <div class="col-11 fw-bold text-center">
+                        Comments
+                    </div>
+                    <div class="col text-end">
+                        <button v-if="hasMore" @click="getComments()" class="btn btn-desino btn-sm border-0">
                             <i class="bi bi-clock-history"></i>
                         </button>
                     </div>
+                </div>
+            </div>
+            <div class="card-body px-0 pt-2 pb-0 border-start bg-light">
+                <div class="w-100 mb-3">
                     <div class="w-100 max-h-ticket-comment">
                         <ul class="list-group list-group-flush m-0">
                             <li v-if="comments.length > 0" v-for="(comment, index) in comments" :key="index"
-                                class="list-group-item p-1 list-group-item-action"
-                                :class="{ 'border-bottom-0': index == comments.length - 1 }">
-                                <div class="row g-1 align-items-center"
-                                    :class="{ 'bg-warning-subtle': checkTagUser(comment) }">
+                                class="list-group-item p-1 list-group-item-action" :class="{ 'border-bottom-0': index == comments.length - 1 }">
+                                <div class="row g-1 align-items-center" :class="{ 'bg-warning-subtle': checkTagUser(comment) }">
                                     <div class="col-12">
                                         <div class="row g-1 align-items-center">
-                                            <div class="col-10">
-                                                <span class="fw-bold text-primary small">
+                                            <div class="col-11">
+                                                <span class="fw-bold text-dark small">
+                                                    <img class="user-image rounded-circle shadow" :src="'/images/profile_photos/'+comment.created_updated_user_email+'.png'" width="32px"/>
                                                     {{ comment.updated_user_name ?? comment.created_user_name }}
                                                 </span>
                                                 <span class="fw-bold text-secondary ms-2" style="font-size: 0.6rem;">
                                                     {{ comment.display_updated_at ?? comment.display_created_at }}
                                                 </span>
                                             </div>
-                                            <div class="col-2 text-end" v-if="comment.user_id == user.id">
-                                                <a href="javascript:" data-bs-toggle="tooltip"
-                                                    data-bs-placement="bottom"
-                                                    :title="$t('comment.edit_comment_but_text')" role="button"
-                                                    class="btn-link me-1" @click.stop="editComment(comment)">
-                                                    <i class="bi bi-pencil-fill text-primary"></i>
-                                                </a>
-                                                <a href="javascript:" data-bs-toggle="tooltip"
-                                                    data-bs-placement="bottom"
-                                                    :title="$t('comment.delete_comment_but_text')"
-                                                    @click.stop="showConfirmation('deleteComment', deleteComment, comment)"
-                                                    role="button" class="btn-link">
-                                                    <i class="bi bi-trash3-fill text-danger"></i>
-                                                </a>
+                                            <div class="col-1 text-end" v-if="comment.user_id == user.id">
+                                                <div class="dropdown">
+                                                    <button class="btn btn-outline-secondary border-0 btn-sm dropdown-toggle dropdown-toggle-split" type="button" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                                                    <ul class="dropdown-menu">
+                                                        <li class="small">
+                                                            <a class="dropdown-item small" role="button" href="javascript:" @click.stop="editComment(comment)">
+                                                                {{ $t('comment.edit_comment_but_text') }}
+                                                            </a>
+                                                        </li>
+                                                        <li class="small">
+                                                            <a role="button" class="dropdown-item fw-bold text-danger" href="javascript:" 
+                                                                @click.stop="showConfirmation('deleteComment', deleteComment, comment)" >
+                                                                {{ $t('comment.delete_comment_but_text') }}
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-12 optimize-image img">
-                                        <span class="actual_comment w-100 d-block" v-if="!comment.is_edit_comment"
-                                            v-html="comment.comment"></span>
+                                        <span class="actual_comment w-100 d-block" v-if="!comment.is_edit_comment" v-html="comment.comment" style="padding-left: 32px;"></span>
                                     </div>
                                     <div class="col-12" v-if="comment.is_edit_comment">
                                         <div class="row g-1 align-items-center">
                                             <div class="col-12">
                                                 <TinyMceEditor v-model="editForm.comment" :init="{height: 175,}" />
                                                 <div v-if="errors.comment" class="text-danger mt-2">
-                                                    <span v-for="(error, index) in errors.comment" :key="index">{{
-                                                        error }}</span>
+                                                    <span v-for="(error, index) in errors.comment" :key="index">
+                                                        {{ error }}
+                                                    </span>
                                                 </div>
                                             </div>
-                                            <div class="col-8">
+                                            <div class="col-10">
                                                 <multiselect :multiple="true" v-model="editTaggedUsers"
                                                     :class="{ 'is-invalid': errors.tagged_users }" :options="users"
                                                     :placeholder="$t('comment.comment_tagged_users_placeholder')"
                                                     label="name" track-by="id">
                                                 </multiselect>
                                                 <div v-if="errors.tagged_users" class="text-danger mt-2">
-                                                    <span v-for="(error, index) in errors.tagged_users" :key="index">{{
-                                                        error }}</span>
+                                                    <span v-for="(error, index) in errors.tagged_users" :key="index">
+                                                        {{ error }}
+                                                    </span>
                                                 </div>
                                             </div>
-                                            <div class="col-2">
-                                                <button type="button" @click="updateComment"
-                                                    class="btn btn-desino w-100 border-0"><i
-                                                        class="bi bi-floppy"></i></button>
-                                            </div>
-                                            <div class="col-2">
+                                            <div class="col-1">
                                                 <button type="button" class="btn btn-danger w-100 border-0"
                                                     @click="closeEditForm(comment)">
                                                     <i class="bi bi-x-lg"></i>
                                                 </button>
                                             </div>
+                                            <div class="col-1">
+                                                <button type="button" @click="updateComment" class="btn btn-desino w-100 border-0">
+                                                    <i class="bi bi-send"></i>
+                                                </button>
+                                            </div>
                                         </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li v-else class="list-group-item p-1 bg-transparent">
+                                <div class="row g-1 align-items-center" style="min-height: 48px;">
+                                    <div class="col-12 fst-italic small text-secondary text-center">
+                                        {{ $t('No comments') }}
                                     </div>
                                 </div>
                             </li>
@@ -88,12 +105,12 @@
             <div class="card-footer bg-transparent border-0 p-0 d-block">
                 <div class="row g-1 align-items-center">
                     <div class="col-12">
-                        <TinyMceEditor v-model="formData.comment" :init="{height: 250,}" />
+                        <TinyMceEditor v-model="formData.comment" :init="{height: 150, placeholder: 'Add a comment...',}" />
                         <div v-if="errors.comment" class="text-danger mt-2">
                             <span v-for="(error, index) in errors.comment" :key="index">{{ error }}</span>
                         </div>
                     </div>
-                    <div class="col-8">
+                    <div class="col-11">
                         <multiselect :multiple="true" v-model="formTaggedUsers"
                             :class="{ 'is-invalid': errors.tagged_users }" :options="users"
                             :placeholder="$t('comment.comment_tagged_users_placeholder')" label="name" track-by="id">
@@ -102,9 +119,10 @@
                             <span v-for="(error, index) in errors.tagged_users" :key="index">{{ error }}</span>
                         </div>
                     </div>
-                    <div class="col-4">
-                        <button type="button" @click="saveComment" class="btn btn-desino w-100 border-0"><i
-                                class="bi bi-floppy"></i></button>
+                    <div class="col-1">
+                        <button type="button" @click="saveComment" class="btn btn-desino w-100 border-0">
+                            <i class="bi bi-send"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -326,5 +344,8 @@ export default {
 };
 </script>
 <style>
+#ticketdetail_feature_tab img{max-width: 100%;max-height: max-content;}
 #ticketCommentsSection .tox-editor-header, .tox-statusbar {display: none !important;}
+.tox-tinymce{border-radius: unset !important;border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)!important;}
+.tox.tox-edit-focus .tox-edit-area::before{opacity: 0 !important;}
 </style>
