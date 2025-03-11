@@ -88,7 +88,9 @@ class TicketCommentController extends Controller
         }
 
         if ($statusCode == 200 && count($request->post('tagged_users', [])) > 0) {
-            $recipientUsers = User::whereIn('id', $request->post('tagged_users'))->get();
+            $recipientUsers = User::whereIn('id', $request->post('tagged_users'))
+                ->whereNotNull('teams_webhook_url')
+                ->get();
             $actionByUser   = Auth::user();
             $actionData     = (object) [
                 'text'          => $ticketComment->comment,
@@ -150,7 +152,9 @@ class TicketCommentController extends Controller
         }
 
         if ($statusCode == 200 && count($request->post('tagged_users', [])) > 0) {
-            $recipientUsers = User::whereIn('id', $request->post('tagged_users'))->get();
+            $recipientUsers = User::whereIn('id', $request->post('tagged_users'))
+                ->whereNotNull('teams_webhook_url')
+                ->get();
             $actionByUser   = Auth::user();
             $actionData     = (object) [
                 'text'          => $ticketComment->comment,
