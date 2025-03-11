@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Helper\ApiHelper;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\TicketCommentRequest;
-use App\Models\Ticket;
-use App\Models\TicketComment;
-use App\Services\InitiativeService;
 use Exception;
+use App\Models\User;
+use App\Models\Ticket;
+use App\Helper\ApiHelper;
 use Illuminate\Http\Request;
+use App\Models\TicketComment;
 use Illuminate\Support\Facades\DB;
+use App\Services\InitiativeService;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Services\MicrosoftTeamsService;
+use App\Http\Requests\Api\TicketCommentRequest;
 
 class TicketCommentController extends Controller
 {
@@ -83,6 +86,20 @@ class TicketCommentController extends Controller
             $statusCode = 500;
             logger()->error($e);
         }
+
+        if ($statusCode == 200 && count($request->post('tagged_users', [])) > 0) {
+            $recipientUsers = User::whereIn('id', $request->post('tagged_users'))
+                ->whereNotNull('teams_webhook_url')
+                ->get();
+            $actionByUser   = Auth::user();
+            $actionData     = (object) [
+                'text'          => $ticketComment->comment,
+                'actionElement' => 'comment',
+                'actionType'    => 'add',
+            ];
+            MicrosoftTeamsService::sendNotification(ticket: $ticket, actionByUser: $actionByUser, actionData: $actionData, recipientUsers: $recipientUsers);
+        }
+
         return ApiHelper::response($status, $message, $retData, $statusCode);
     }
 
@@ -132,6 +149,19 @@ class TicketCommentController extends Controller
             $message = __('messages.something_went_wrong');
             $statusCode = 500;
             logger()->error($e);
+        }
+
+        if ($statusCode == 200 && count($request->post('tagged_users', [])) > 0) {
+            $recipientUsers = User::whereIn('id', $request->post('tagged_users'))
+                ->whereNotNull('teams_webhook_url')
+                ->get();
+            $actionByUser   = Auth::user();
+            $actionData     = (object) [
+                'text'          => $ticketComment->comment,
+                'actionElement' => 'comment',
+                'actionType'    => 'edit',
+            ];
+            MicrosoftTeamsService::sendNotification(ticket: $ticket, actionByUser: $actionByUser, actionData: $actionData, recipientUsers: $recipientUsers);
         }
         return ApiHelper::response($status, $message, $retData, $statusCode);
     }
