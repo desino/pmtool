@@ -11,11 +11,11 @@
                             {{ headerData.page_title }}
                         </span>
                         <router-link class="me-2" v-if="headerData?.is_solution_design_detail_path"
-                            :to="{ name: 'solution-design.detail', params: { id: headerData.initiative_id } }">
+                                     :to="{ name: 'solution-design.detail', params: { id: headerData.initiative_id } }">
                             <i class="bi bi-link-45deg"></i>
                         </router-link>
                         <router-link class="me-2" v-if="headerData?.is_solution_design_download"
-                            :to="{ name: 'solution-design.download', params: { id: headerData.initiative_id } }">
+                                     :to="{ name: 'solution-design.download', params: { id: headerData.initiative_id } }">
                             <i class="bi bi-file-earmark-pdf"></i>
                         </router-link>
                     </h3>
@@ -32,7 +32,7 @@
 
 <script>
 import AuthService from './../../services/AuthService.js';
-import { mapGetters } from 'vuex';
+import {mapGetters} from 'vuex';
 
 export default {
     data() {
@@ -48,12 +48,17 @@ export default {
             AuthService.logout();
         },
         toggleSidebar() {
+            console.log("toggling sidebar:: inside header component");
+    
             const body = document.querySelector('body');
             body.classList.toggle('sidebar-collapse');
             body.classList.toggle('sidebar-open');
         },
         handleResize() {
             const body = document.querySelector('body');
+             console.log("toggling sidebar:: inside handle sizer");
+             console.log(window.innerWidth > this.sidebarBreakpoint);
+   
             if (window.innerWidth > this.sidebarBreakpoint) {
                 body.classList.add('sidebar-open');
                 body.classList.remove('sidebar-collapse');
@@ -66,10 +71,12 @@ export default {
         },
     },
     mounted() {
+        console.log("mounted");
         this.handleResize();
         window.addEventListener('resize', this.handleResize);
     },
     beforeDestroy() {
+          console.log("destroyed");
         window.removeEventListener('resize', this.handleResize);
     },
 }

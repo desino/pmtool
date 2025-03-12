@@ -341,6 +341,7 @@ export default {
             eventBus.$emit('unselectHeaderInitiativeId');
         },
         collapseSidebar() {
+            console.log("collapse sidebar inside sidebar");
             document.body.classList.remove('sidebar-open');
             document.body.classList.add('sidebar-collapse');
             this.$emit('collapse');
