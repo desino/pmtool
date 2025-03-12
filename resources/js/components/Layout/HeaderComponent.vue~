@@ -48,6 +48,8 @@ export default {
             AuthService.logout();
         },
         toggleSidebar() {
+            console.log("toggling sidebar:: inside header component");
+    
             const body = document.querySelector('body');
             body.classList.toggle('sidebar-collapse');
             body.classList.toggle('sidebar-open');
@@ -56,7 +58,7 @@ export default {
             const body = document.querySelector('body');
              console.log("toggling sidebar:: inside handle sizer");
              console.log(window.innerWidth > this.sidebarBreakpoint);
-
+   
             if (window.innerWidth > this.sidebarBreakpoint) {
                 body.classList.add('sidebar-open');
                 body.classList.remove('sidebar-collapse');

@@ -21,7 +21,7 @@
                 <div id="sidebar_initiative_selection" class="px-1">
                     <HeaderInitiativeDropBoxComponent />
                 </div>
-                <div class="sidebar_initiative_menus"
+                <div class="sidebar_initiative_menus" 
                     v-if="isActive('solution-design') || isActive('tasks') || isActive('my-tickets') || isActive('task.detail') || isActive('projects') || isActive('solution-design.detail') || isActive('solution-design.download') || isActive('bulk-create-tickets') || isActive('deployments')">
                     <div class="" id="sidebar_initiative_menus_pages">
                         <nav class="">
@@ -341,6 +341,7 @@ export default {
             eventBus.$emit('unselectHeaderInitiativeId');
         },
         collapseSidebar() {
+            console.log("collapse sidebar inside sidebar");
             document.body.classList.remove('sidebar-open');
             document.body.classList.add('sidebar-collapse');
             this.$emit('collapse');
