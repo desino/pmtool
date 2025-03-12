@@ -54,9 +54,6 @@ export default {
         },
         handleResize() {
             const body = document.querySelector('body');
-             console.log("toggling sidebar:: inside handle sizer");
-             console.log(window.innerWidth > this.sidebarBreakpoint);
-
             if (window.innerWidth > this.sidebarBreakpoint) {
                 body.classList.add('sidebar-open');
                 body.classList.remove('sidebar-collapse');
@@ -69,13 +66,7 @@ export default {
         },
     },
     mounted() {
-        console.log("mounted");
         this.handleResize();
-        window.addEventListener('resize', this.handleResize);
-    },
-    beforeDestroy() {
-          console.log("destroyed");
-        window.removeEventListener('resize', this.handleResize);
     },
 }
 </script>
