@@ -21,12 +21,12 @@
     color: $white !important;
 }
 
-.nav-item > .nav-link.active {
+.nav-item>.nav-link.active {
     background-color: $desino !important;
     color: white !important;
 }
 
-.nav-item.menu-open > .nav-link.active {
+.nav-item.menu-open>.nav-link.active {
     background-color: $white !important;
     color: $dark !important;
 }

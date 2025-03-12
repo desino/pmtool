@@ -11,11 +11,11 @@
                             {{ headerData.page_title }}
                         </span>
                         <router-link class="me-2" v-if="headerData?.is_solution_design_detail_path"
-                            :to="{ name: 'solution-design.detail', params: { id: headerData.initiative_id } }">
+                                     :to="{ name: 'solution-design.detail', params: { id: headerData.initiative_id } }">
                             <i class="bi bi-link-45deg"></i>
                         </router-link>
                         <router-link class="me-2" v-if="headerData?.is_solution_design_download"
-                            :to="{ name: 'solution-design.download', params: { id: headerData.initiative_id } }">
+                                     :to="{ name: 'solution-design.download', params: { id: headerData.initiative_id } }">
                             <i class="bi bi-file-earmark-pdf"></i>
                         </router-link>
                     </h3>
@@ -32,7 +32,7 @@
 
 <script>
 import AuthService from './../../services/AuthService.js';
-import { mapGetters } from 'vuex';
+import {mapGetters} from 'vuex';
 
 export default {
     data() {
@@ -67,10 +67,6 @@ export default {
     },
     mounted() {
         this.handleResize();
-        window.addEventListener('resize', this.handleResize);
-    },
-    beforeDestroy() {
-        window.removeEventListener('resize', this.handleResize);
     },
 }
 </script>

@@ -346,6 +346,7 @@ export default {
         },
         sidebarSelectHeaderInitiativeId(id) {
             this.sidebar_selected_initiative_id = id;
+            // this.getInitiativeData();
         },
         async getInitiativeData() {
             if (this.sidebar_selected_initiative_id) {
