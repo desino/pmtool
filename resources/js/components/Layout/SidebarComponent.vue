@@ -343,11 +343,9 @@ export default {
         collapseSidebar() {
             document.body.classList.remove('sidebar-open');
             document.body.classList.add('sidebar-collapse');
-            this.$emit('collapse');
         },
         sidebarSelectHeaderInitiativeId(id) {
             this.sidebar_selected_initiative_id = id;
-            // this.getInitiativeData();
         },
         async getInitiativeData() {
             if (this.sidebar_selected_initiative_id) {

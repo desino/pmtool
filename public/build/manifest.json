@@ -13,7 +13,11 @@
     "isEntry": true
   },
   "resources/js/app.js": {
+<<<<<<< HEAD
     "file": "assets/app-D294jeto.js",
+=======
+    "file": "assets/app-BbbGbATT.js",
+>>>>>>> origin/development
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
