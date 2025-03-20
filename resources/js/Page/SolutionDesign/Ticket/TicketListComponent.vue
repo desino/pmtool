@@ -190,10 +190,14 @@
                                     <input class="form-check-input" type="checkbox" :id="'chk_ticket_' + task.id"
                                         v-model="task.isChecked" @click.stop @change="handleSelectTasks(task)">
                                 </div>
-                                <div class="col-auto" style="width: calc(100% - 40px)" data-bs-toggle="tooltip"
-                                    data-bs-html="true" data-bs-placement="bottom"
-                                    :title="tooltipContentForTicketName(task)">
-                                    {{ task.composed_name }}
+                                <div class="col-auto" style="width: calc(100% - 40px)" 
+                                    data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" :title="tooltipContentForTicketName(task)">
+                                    <div class="w-100">
+                                        {{ task.composed_name }}
+                                    </div>
+                                    <div class="w-100 fst-italic text-secondary small" v-if="task?.functionality?.display_name">
+                                        ({{ task?.functionality?.display_name }})
+                                    </div>
                                 </div>
                             </div>
                         </div>
