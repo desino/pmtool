@@ -43,6 +43,12 @@ class AllTicketsWithoutInitiativeController extends Controller
             DB::RAW('IF(macro_status = ' . Ticket::MACRO_STATUS_DONE . ', true,false) as is_ticket_done'),
         )
             ->with([
+                'functionality' => function ($q) {
+                    $q->select(
+                        'id',
+                        'display_name',
+                    );
+                },
                 'currentAction' => function ($query) {
                     $query->select('id', 'ticket_id', 'action', 'status', 'user_id');
                 },

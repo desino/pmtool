@@ -67,11 +67,10 @@
                                     </div>
                                 </div>
                                 <div class="col-auto" style="width: calc(100% - 40px)">
-                                    <div class="w-100"
-                                        data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" :title="tooltipContentForTicketName(ticket)">
+                                    <div class="w-100" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" :title="tooltipContentForTicketName(ticket)">
                                         {{ ticket.composed_name }}
                                     </div>
-                                    <div class="w-100 fst-italic text-secondary" v-if="ticket?.functionality?.display_name">
+                                    <div class="w-100 fst-italic text-secondary small" v-if="ticket?.functionality?.display_name">
                                         ({{ ticket?.functionality?.display_name }})
                                     </div>
                                 </div>

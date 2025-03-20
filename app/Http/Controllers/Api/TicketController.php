@@ -299,6 +299,7 @@ class TicketController extends Controller
                 'functionality' => function ($q) {
                     $q->select(
                         'id',
+                        'display_name',
                         'section_id',
                     );
                     $q->with(['section' => function ($q) {
