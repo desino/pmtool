@@ -107,6 +107,11 @@
                                 }}</span>
                         </div>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">{{ $t('create_ticket_modal_description') }}
+                        </label>
+                        <TinyMceEditor v-model="formData.description" :init="{ height: 350, }" />
+                    </div>
                     <div class="card mb-3">
                         <div class="card-header">
                             <h6 class="mb-0">{{ $t('create_ticket_modal_card_header_task_actions_text') }}</h6>
@@ -185,12 +190,14 @@ import TicketService from '../../../services/TicketService';
 import Multiselect from 'vue-multiselect';
 import showToast from '../../../utils/toasts';
 import eventBus from '../../../eventBus';
+import TinyMceEditor from "../../../components/TinyMceEditor.vue";
 export default {
     name: 'EditTicketModalComponent',
     mixins: [globalMixin],
     components: {
         GlobalMessage,
-        Multiselect
+        Multiselect,
+        TinyMceEditor
     },
     data() {
         return {
@@ -203,7 +210,8 @@ export default {
                 type: "",
                 initial_estimation_development_time: "",
                 auto_wait_for_client_approval: false,
-                ticket_actions: []
+                ticket_actions: [],
+                description: ''
             },
             ticketTypes: [],
             sectionsFunctionalitiesList: [],
@@ -249,6 +257,7 @@ export default {
                 type: ticket.type,
                 functionality_id: ticket.functionality,
                 initial_estimation_development_time: ticket.initial_estimation_development_time,
+                description: ticket.description,
                 project_id: ticket.project_id,
                 auto_wait_for_client_approval: ticket.auto_wait_for_client_approval == 1 ?? false,
                 is_priority: ticket.is_priority == 1 ?? false,
@@ -267,6 +276,7 @@ export default {
                 type: "",
                 project_id: "",
                 initial_estimation_development_time: "",
+                description: '',
                 auto_wait_for_client_approval: false,
                 ticket_actions: []
             };

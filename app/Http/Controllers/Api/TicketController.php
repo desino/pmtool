@@ -112,7 +112,7 @@ class TicketController extends Controller
         if ($task['error_status']) {
             return ApiHelper::response($status, __('messages.asana.create_ticket.store_error'), '', 500);
         }
-        $validateData['asana_task_id'] = $task['data']['data']['gid'];
+        $validateData['asana_task_id'] = $task['data']['data']['gid'] ?? '';
 
         $status = true;
         $message = __('messages.create_ticket.store_success');
@@ -127,7 +127,7 @@ class TicketController extends Controller
             }
             $retData = [
                 'ticket' => $ticket,
-                'asanaTaskData' => $task['data']['data'],
+                'asanaTaskData' => $task['data']['data'] ?? '',
             ];
             DB::commit();
         } catch (Exception $e) {

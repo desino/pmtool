@@ -112,6 +112,11 @@
                                 }}</span>
                         </div>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">{{ $t('create_ticket_modal_description') }}
+                        </label>
+                        <TinyMceEditor v-model="formData.description" :init="{ height: 350, }" />
+                    </div>
                     <div class="card mb-3">
                         <div class="card-header">
                             <h6 class="mb-0">{{ $t('create_ticket_modal_card_header_task_actions_text') }}</h6>
@@ -203,12 +208,14 @@ import showToast from '../../../utils/toasts';
 import Multiselect from 'vue-multiselect';
 import { mapActions } from "vuex";
 import eventBus from "@/eventBus.js";
+import TinyMceEditor from "../../../components/TinyMceEditor.vue";
 
 export default {
     name: 'CreateTicketModalComponent',
     components: {
         GlobalMessage,
-        Multiselect
+        Multiselect,
+        TinyMceEditor,
     },
     props: {
         selected_initiative_id: Number,
@@ -228,7 +235,8 @@ export default {
                 is_priority: false,
                 is_visible: false,
                 auto_wait_for_client_approval: false,
-                ticket_actions: []
+                ticket_actions: [],
+                description: ''
             },
             ticketTypes: [],
             initiativeProjects: [],
@@ -284,7 +292,7 @@ export default {
                     }
                 }
                 await this.setLoading(false);
-                if ((this.submitButtonClicked === 'create_close' || this.submitButtonClicked === 'create_new') && (this.user?.is_admin || this.currentInitiative?.functional_owner_id === this.user?.id || this.currentInitiative?.technical_owner_id === this.user?.id)) {
+                if ((this.submitButtonClicked === 'create_new') && (this.user?.is_admin || this.currentInitiative?.functional_owner_id === this.user?.id || this.currentInitiative?.technical_owner_id === this.user?.id)) {
                     const ticketDetailRoute = this.$router.resolve({ name: 'task.detail', params: { initiative_id: response.content.ticket?.initiative_id, ticket_id: response.content.ticket?.id } });
                     window.open(ticketDetailRoute.href, '_blank');
                 }
@@ -343,7 +351,8 @@ export default {
                 project_id: "",
                 initial_estimation_development_time: "",
                 auto_wait_for_client_approval: false,
-                ticket_actions: []
+                ticket_actions: [],
+                description: ''
             };
             this.errors = {};
             if (this.submitButtonClicked === 'create_new' || this.submitButtonClicked === 'create_detail') {
