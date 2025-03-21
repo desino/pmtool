@@ -19,45 +19,47 @@
         </div>
 
         <div class="w-100 mb-3">
-            <ul class="list-group list-group-flush mb-3 mt-2">
-                <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item px-1 border-0 border-5 border-bottom border-desino fw-bold">
                     <div class="row g-1 align-items-center">
-                        <div class="col-lg-5 col-md-6 col-6 fw-bold small">
+                        <div class="col-lg-7 col-md-7 col-5">
                             {{ $t('project.list.name_th_text') }}
                         </div>
-                        <div class="col-lg-3 col-md-6 col-6 fw-bold small">
+                        <div class="col-lg-2 col-md-2 col-3">
                             {{ $t('project.list.project_status_th_text') }}
                         </div>
-                        <div class="col-lg-3 col-md-6 col-6 fw-bold small">
+                        <div class="col-lg-2 col-md-2 col-3">
                             {{ $t('project.list.tickets_th_text') }}
                         </div>
-                        <div class="col-lg-1 col-md-6 col-6 fw-bold small text-end">
-                            {{ $t('project.list.actions_th_text') }}
-                        </div>
+                        <div class="col-lg-1 col-md-1 col-1 text-end"></div>
                     </div>
                 </li>
-                <li class="list-group-item p-1 list-group-item-action" v-if="projects.length > 0"
-                    v-for="project in projects">
+                <li class="list-group-item p-1 list-group-item-action" v-if="projects.length > 0" v-for="project in projects">
                     <div class="row g-1 align-items-center" style="min-height: 48px;">
-                        <div class="col-lg-5 col-md-6 col-6">
+                        <div class="col-lg-7 col-md-7 col-5">
                             {{ project.name }}
                         </div>
-                        <div class="col-lg-3 col-md-6 col-6">
+                        <div class="col-lg-2 col-md-2 col-3">
                             <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" role="switch"
                                     id="flexSwitchCheckChecked" v-model="project.status"
                                     @change="showConfirmation('handleCheckboxChange', handleCheckboxChange, project)">
                             </div>
                         </div>
-                        <div class="col-lg-3 col-md-6 col-6">
+                        <div class="col-lg-2 col-md-2 col-3">
                             {{ project.tickets_count }}
                         </div>
-                        <div class="col-lg-1 col-md-6 col-6 text-end">
-                            <a data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                :title="$t('project.list.actions_edit_tooltip')" class="link-desino" href="javascript:"
-                                @click="editProject(project)">
-                                <i class="bi bi-pencil-square"></i>
-                            </a>
+                        <div class="col-lg-1 col-md-1 col-1 text-end">
+                            <div class="dropdown">
+                                <button class="btn btn-secondary border-0 btn-sm dropdown-toggle dropdown-toggle-split" type="button" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                                <ul class="dropdown-menu shadow border-0 p-2">
+                                    <li class="small">
+                                        <a role="button" class="btn btn-sm btn-desino w-100 small" href="javascript:" @click="editProject(project)" >
+                                            {{ $t('project.list.actions_edit_project') }}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </li>

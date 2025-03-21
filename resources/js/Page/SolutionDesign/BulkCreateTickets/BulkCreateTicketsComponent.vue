@@ -2,16 +2,16 @@
     <GlobalMessage v-if="showMessage" />
     <div class="app-content my-3">
         <form>
-            <ul class="list-group list-group-flush mb-3 mt-2">
-                <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item px-1 border-0 border-5 border-bottom border-desino fw-bold">
                     <div class="row g-1 align-items-center">
-                        <div class="col-md-4 fw-bold small">
+                        <div class="col-md-4">
                             {{ $t('bulk_create_tickets.functionalities_text') }}
                         </div>
-                        <div class="col-md-4 fw-bold small">
+                        <div class="col-md-4">
                             {{ $t('bulk_create_tickets.hours_text') }}
                         </div>
-                        <div class="col-md-4 fw-bold small">
+                        <div class="col-md-4">
                             {{ $t('bulk_create_tickets.clarify_and_estimation_text') }}
                         </div>
                     </div>

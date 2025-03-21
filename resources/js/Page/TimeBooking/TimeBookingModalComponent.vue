@@ -76,8 +76,8 @@
                         </button>
                     </div>
                     <div class="w-100">
-                        <ul class="list-group list-group-flush mb-3 mt-2">
-                            <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item px-1 border-0 border-5 border-bottom border-desino fw-bold">
                                 <div class="row g-1 align-items-center">
                                     <div class="col-3">
                                         <div class="row g-0 h-100 align-items-center">
@@ -85,15 +85,15 @@
                                                 <input class="form-check-input" type="checkbox"
                                                        v-model="isChkAllTimeBookings" @change="handleSelectAllTimeBookings">
                                             </div>
-                                            <div class="col-auto fw-bold small" style="width: calc(100% - 40px)">
+                                            <div class="col-auto" style="width: calc(100% - 40px)">
                                                 {{ $t('time_booking.modal.list_table.hours') }}
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-7 fw-bold small">
+                                    <div class="col-7">
                                         {{ $t('time_booking.modal.list_table.comments') }}
                                     </div>
-                                    <div class="col-2 fw-bold small text-end">
+                                    <div class="col-2 text-end">
                                         {{ $t('time_booking.modal.list_table.action') }}
                                     </div>
                                 </div>

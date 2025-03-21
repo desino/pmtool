@@ -54,22 +54,22 @@
             </div>
         </div>
         <div class="w-100 mb-3">
-            <ul class="list-group list-group-flush mb-3 mt-2">
-                <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item px-1 border-0 border-5 border-bottom border-desino fw-bold">
                     <div class="row g-1 align-items-center">
-                        <div class="col-lg-4 col-md-6 col-8 fw-bold small ">
+                        <div class="col-lg-4 col-md-6 col-8">
                             {{ $t('activity_logs_list.name_text') }}
                         </div>
-                        <div class="col-lg-2 col-md-3 d-none d-md-block fw-bold small ">
+                        <div class="col-lg-2 col-md-3 d-none d-md-block">
                             {{ $t('activity_logs_list.activity_type_text') }}
                         </div>
-                        <div class="col-lg-2 col-md-3 d-none d-md-block fw-bold small ">
+                        <div class="col-lg-2 col-md-3 d-none d-md-block">
                             {{ $t('activity_logs_list.activity_detail_text') }}
                         </div>
-                        <div class="col-lg-2 col-md-2 d-none d-lg-block fw-bold small text-end text-lg-start">
+                        <div class="col-lg-2 col-md-2 d-none d-lg-block text-end text-lg-start">
                             {{ $t('activity_logs_list.user_text') }}
                         </div>
-                        <div class="col-lg-2 d-none d-lg-block fw-bold small text-end">
+                        <div class="col-lg-2 d-none d-lg-block text-end">
                             {{ $t('activity_logs_list.date_time_text') }}
                         </div>
                     </div>

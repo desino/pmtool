@@ -56,27 +56,27 @@
             </div>
         </div>
         <div class="w-100 mb-3">
-            <ul class="list-group list-group-flush mb-3 mt-2">
-                <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item px-1 border-0 border-5 border-bottom border-desino fw-bold">
                     <div class="row g-1 align-items-center">
-                        <div class="col-lg-2 col-md-6 col-6 fw-bold small">
+                        <div class="col-lg-2 col-md-6 col-6">
                             <input class="form-check-input mx-1" type="checkbox" v-model="isChkAllTimeBookings"
                                 @change="handleSelectAllTimeBookings">
                             {{ $t('time_mapping.list_table.date') }}
                         </div>
-                        <div class="col-lg-2 col-md-6 col-6 fw-bold small">
+                        <div class="col-lg-2 col-md-6 col-6">
                             {{ $t('time_mapping.list_table.user') }}
                         </div>
-                        <div class="col-lg-2 col-md-6 col-6 fw-bold small">
+                        <div class="col-lg-2 col-md-6 col-6">
                             {{ $t('time_mapping.list_table.time') }}
                         </div>
-                        <div class="col-lg-2 col-md-6 col-6 fw-bold small">
+                        <div class="col-lg-2 col-md-6 col-6">
                             {{ $t('time_mapping.list_table.initiative_name') }}
                         </div>
-                        <div class="col-lg-2 col-md-6 col-6 fw-bold small">
+                        <div class="col-lg-2 col-md-6 col-6">
                             {{ $t('time_mapping.list_table.project_name') }}
                         </div>
-                        <div class="col-lg-2 col-md-6 col-6 fw-bold small">
+                        <div class="col-lg-2 col-md-6 col-6">
                             {{ $t('time_mapping.list_table.description') }}
                         </div>
                     </div>
