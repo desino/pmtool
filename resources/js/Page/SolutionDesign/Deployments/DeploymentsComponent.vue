@@ -27,25 +27,25 @@
             </div>
         </div>
         <div class="w-100 mb-3">
-            <ul class="list-group list-group-flush mb-3 mt-2">
-                <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item px-1 border-0 border-5 border-bottom border-desino fw-bold">
                     <div class="row g-1 align-items-center">
-                        <div class="col-lg-2 col-md-6 col-6 fw-bold small">
+                        <div class="col-lg-2 col-md-6 col-6">
                             {{ $t('deployments.list.column_request_date') }}
                         </div>
-                        <div class="col-lg-2 col-md-6 col-6 fw-bold small">
+                        <div class="col-lg-2 col-md-6 col-6">
                             {{ $t('deployments.list.column_deployment_date') }}
                         </div>
-                        <div class="col-lg-2 col-md-6 col-6 fw-bold small">
+                        <div class="col-lg-2 col-md-6 col-6">
                             {{ $t('deployments.list.column_name') }}
                         </div>
-                        <div class="col-lg-2 col-md-6 col-6 fw-bold small">
+                        <div class="col-lg-2 col-md-6 col-6">
                             {{ $t('deployments.list.column_tickets_included') }}
                         </div>
-                        <div class="col-lg-2 col-md-6 col-6 fw-bold small">
+                        <div class="col-lg-2 col-md-6 col-6">
                             {{ $t('deployments.list.column_status') }}
                         </div>
-                        <div class="col-lg-2 col-md-6 col-6 fw-bold small text-end">
+                        <div class="col-lg-2 col-md-6 col-6 text-end">
                             {{ $t('deployments.list.column_actions') }}
                         </div>
                     </div>
@@ -69,21 +69,28 @@
                             <i v-if="deployment?.status" class="bi bi-check-circle-fill text-success"></i>
                         </div>
                         <div class="col-lg-2 col-md-6 col-6 text-end">
-                            <router-link v-if="user?.is_admin"
-                                :to="{ name: 'tasks', params: { id: deployment?.initiative_id }, query: { deployment_id: deployment?.id } }"
-                                class="text-success me-2">
-                                <i class="bi bi-box-arrow-up-right fw-bold"></i>
-                            </router-link>
-                            <a href="javascript:" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                :title="$t('deployments.list.column.action.download_release_note_text')"
-                                @click="downloadReleaseNotes(deployment)" class="text-info me-2">
-                                <i class="bi bi-file-pdf"></i>
-                            </a>
-                            <a href="javascript:" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                :title="$t('deployments.list.column.action.download_test_results_text')"
-                                @click="downloadTestResults(deployment)" class="text-secondary">
-                                <i class="bi bi-file-pdf"></i>
-                            </a>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary border-0 btn-sm dropdown-toggle dropdown-toggle-split" type="button" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                                <ul class="dropdown-menu shadow border-0 p-2">
+                                    <li class="small pb-1" v-if="user?.is_admin">
+                                        <router-link v-if="user?.is_admin" target="_blank"
+                                            :to="{ name: 'tasks', params: { id: deployment?.initiative_id }, query: { deployment_id: deployment?.id } }"
+                                            class="btn btn-sm btn-desino w-100 small">
+                                            {{ $t('deployments.list.column.action.view_deployment_tickets') }}
+                                        </router-link>
+                                    </li>
+                                    <li class="small pb-1">
+                                        <a role="button" class="btn btn-sm btn-desino w-100 small" href="javascript:" @click="downloadReleaseNotes(deployment)">
+                                            {{ $t('deployments.list.column.action.download_release_note_text') }}
+                                        </a>
+                                    </li>
+                                    <li class="small pb-1">
+                                        <a role="button" class="btn btn-sm btn-warning w-100 small" href="javascript:" @click="downloadTestResults(deployment)" >
+                                            {{ $t('deployments.list.column.action.download_test_results_text') }}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </li>

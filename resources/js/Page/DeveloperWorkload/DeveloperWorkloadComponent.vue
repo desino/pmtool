@@ -2,19 +2,19 @@
     <GlobalMessage v-if="showMessage" />
     <div class="app-content">
         <div class="w-100 mb-3">
-            <ul class="list-group list-group-flush mb-3 mt-2">
-                <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item px-1 border-0 border-5 border-bottom border-desino fw-bold">
                     <div class="row g-1 align-items-center">
-                        <div class="col-3 fw-bold small">
+                        <div class="col-3">
                             {{ $t('developer_workload_table.resource_th_text') }}
                         </div>
-                        <div class="col-3 fw-bold small">
+                        <div class="col-3">
                             {{ $t('developer_workload_table.visible_tickets_th_text') }}
                         </div>
-                        <div class="col-3 fw-bold small">
+                        <div class="col-3">
                             {{ $t('developer_workload_table.invisible_tickets_th_text') }}
                         </div>
-                        <div class="col-3 fw-bold small text-end">
+                        <div class="col-3 text-end">
                             {{ $t('developer_workload_table.total_workload_th_text') }}
                         </div>
                     </div>

@@ -46,52 +46,55 @@
             </div>
         </div>
         <div class="w-100 mb-3">
-            <ul class="list-group list-group-flush mb-3 mt-2">
-                <li class="list-group-item bg-desino text-white border-0 rounded-top px-1 py-3">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item px-1 border-0 border-5 border-bottom border-desino fw-bold">
                     <div class="row g-1 align-items-center">
-                        <div class="col-xl-4 col-lg-4 col-md-4 col-5 fw-bold small">
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-5">
                             {{ $t('opportunity_list_table.client_th_text') }}
                         </div>
-                        <div class="col-xl-3 col-lg-2 col-md-2 col-5 fw-bold small">
+                        <div class="col-xl-3 col-lg-2 col-md-2 col-5">
                             {{ $t('opportunity_list_table.initiative_name_th_text') }}
                         </div>
-                        <div class="col-xl-3 col-lg-2 col-md-2 col-2 fw-bold small">
+                        <div class="col-xl-3 col-lg-2 col-md-2 col-2">
                             {{ $t('opportunity_list_table.ballpark_development_hours_th_text') }}
                         </div>
-                        <div class="col-xl-1 col-lg-2 col-md-2 col-6 fw-bold small d-none d-md-block">
+                        <div class="col-xl-1 col-lg-2 col-md-2 col-6 d-none d-md-block">
                             {{ $t('opportunity_list_table.creation_date_th_text') }}
                         </div>
-                        <div class="col-xl-1 col-lg-2 col-md-2 col-6 text-end fw-bold small d-none d-md-block">
+                        <div class="col-xl-1 col-lg-2 col-md-2 col-6 text-end d-none d-md-block">
                             {{ $t('opportunity_list_table.actions_th_text') }}
                         </div>
                     </div>
                 </li>
                 <li class="list-group-item p-1 list-group-item-action"
-                    v-for="opportunity in opportunities" v-if="opportunities.length > 0" :key="opportunity.id"
-                    role="button" @click="redirectSolutionDesignPage(opportunity)">
+                    v-for="opportunity in opportunities" v-if="opportunities.length > 0" :key="opportunity.id" role="button">
                     <div class="row g-1 align-items-center" style="min-height: 48px;">
-                        <div class="col-xl-4 col-lg-4 col-md-4 col-5">{{ opportunity.client.name }}</div>
-                        <div class="col-xl-3 col-lg-3 col-md-3 col-5">{{ opportunity.name }}</div>
-                        <div class="col-xl-3 col-lg-2 col-md-2 col-2 text-end text-md-start">
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-5" @click="redirectSolutionDesignPage(opportunity)">{{ opportunity.client.name }}</div>
+                        <div class="col-xl-3 col-lg-3 col-md-3 col-5" @click="redirectSolutionDesignPage(opportunity)">{{ opportunity.name }}</div>
+                        <div class="col-xl-3 col-lg-2 col-md-2 col-2 text-end text-md-start" @click="redirectSolutionDesignPage(opportunity)">
                             <span class="badge rounded-3 bg-success-subtle text-success mb-0">
                                 {{ opportunity.ballpark_development_hours }} hrs
                             </span>
                         </div>
-                        <div class="col-xl-1 col-lg-2 col-md-2 col-2 text-end text-md-start">
+                        <div class="col-xl-1 col-lg-2 col-md-2 col-2 text-end text-md-start" @click="redirectSolutionDesignPage(opportunity)">
                             {{ opportunity.creation_date }}
                         </div>
                         <div class="col-xl-1 col-lg-2 col-md-2 col-12 text-start text-md-end">
-                            <a data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                :title="$t('opportunity_list_table.actions_edit_tooltip')" class="text-desino me-2"
-                                href="javascript:" @click.stop="editOpportunity(opportunity)">
-                                <i class="bi bi-pencil-square"></i>
-                            </a>
-                            <a data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                :title="$t('opportunity_list_table.actions_lost_status_tooltip')"
-                                class="text-warning me-2" href="javascript:"
-                                @click.stop="showConfirmation('updateStatusLost', updateStatusLost, opportunity.id)">
-                                <i class="bi bi-hand-thumbs-down"></i>
-                            </a>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary border-0 btn-sm dropdown-toggle dropdown-toggle-split" type="button" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                                <ul class="dropdown-menu shadow border-0 p-2">
+                                    <li class="small pb-1">
+                                        <a role="button" class="btn btn-sm btn-desino w-100 small" href="javascript:" @click="editOpportunity(opportunity)">
+                                            {{ $t('opportunity_list_table.actions_edit_btn_text') }}
+                                        </a>
+                                    </li>
+                                    <li class="small">
+                                        <a role="button" class="btn btn-sm btn-desino w-100 small" href="javascript:" @click="showConfirmation('updateStatusLost', updateStatusLost, opportunity.id)">
+                                            {{ $t('opportunity_list_table.actions_lost_status_btn_text') }}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </li>
