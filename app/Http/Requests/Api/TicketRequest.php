@@ -44,6 +44,7 @@ class TicketRequest extends FormRequest
             'ticket_actions.*.status' => 'nullable',
             'ticket_actions.*.is_checked' => 'nullable',
             'ticket_actions.*.is_disabled' => 'nullable',
+            'description' => 'nullable',
         ];
     }
 
