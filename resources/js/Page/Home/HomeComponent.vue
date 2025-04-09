@@ -49,7 +49,7 @@ export default {
         messageService.clearMessage();
         this.showPermissionMessage();
         const setHeaderData = {
-            page_title: this.$t('home.page_title')
+            page_title: ''
         }
         store.commit("setHeaderData", setHeaderData);
     }

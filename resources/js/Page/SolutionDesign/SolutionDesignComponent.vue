@@ -5,13 +5,11 @@
         <div class="col-md-4 border-end">
             <div class="input-group my-3">
                 <input v-model="solutionDesignFilters.name" type="text" class="form-control" placeholder="Search"
-                    aria-label="Recipient's username" aria-describedby="basic-addon2"
-                    @keyup="getSectionsWithFunctionalities">
+                    aria-label="Recipient's username" aria-describedby="basic-addon2" @keyup="getSectionsWithFunctionalities">
                 <span class="input-group-text" id="basic-addon2"><i class="bi bi-search"></i></span>
             </div>
-            <draggable v-model="sectionsWithFunctionalities" :move="checkMoveSection"
-                class="list-group list-group-flush border border-start-0 border-end-0" handle=".handle-section"
-                item-key="id" @end="sectionOnDragEnd">
+            <draggable v-model="sectionsWithFunctionalities" :move="checkMoveSection" class="list-group list-group-flush border border-start-0 border-end-0" 
+                handle=".handle-section" item-key="id" @end="sectionOnDragEnd">
                 <template #item="{ element: section, index }">
                     <div class="list-group-item section-functionality-container px-0 border-0">
                         <div class="section-container">
@@ -111,40 +109,34 @@
                     </div>
                 </template>
             </draggable>
-            <AddNewSectionComponent v-if="user?.is_admin" class="mb-3" :initiativeData="initiativeData"
-                @sectionAdded="handleSectionAdded" />
+            <AddNewSectionComponent v-if="user?.is_admin" class="mb-3" :initiativeData="initiativeData" @sectionAdded="handleSectionAdded" />
         </div>
-        <div class="col-md-8 border-bottom p-3">
+        <div class="col-md-8">
             <form @submit.prevent="storeUpdateFunctionality" v-if="functionalityFormData.section_id && user?.is_admin">
                 <input type="hidden" v-model="functionalityFormData.functionality_id">
-                <div class="row w-100">
-                    <div class="col-md-6">
+                <div class="row">
+                    <div class="col-12 col-md-6 mb-3">
                         <div class="mb-3">
-                            <label class="form-label fw-bold">{{
-                                $t('solution_design.functionality_form.name')
-                            }} <strong class="text-danger">*</strong>
+                            <label class="form-label fw-bold">
+                                {{ $t('solution_design.functionality_form.name') }} <strong class="text-danger">*</strong>
                             </label>
-                            <input v-model="functionalityFormData.name" :class="{ 'is-invalid': errors.name }"
-                                class="form-control" placeholder="Enter value" type="text">
+                            <input v-model="functionalityFormData.name" :class="{ 'is-invalid': errors.name }" class="form-control" placeholder="Enter value" type="text">
                             <div v-if="errors.name" class="invalid-feedback">
                                 <span v-for="(error, index) in errors.name" :key="index">{{ error }}</span>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-12 col-md-6">
                         <div class="mb-3">
-                            <label class="form-label fw-bold">{{
-                                $t('solution_design.functionality_form.section_name_select_box')
-                            }} <strong class="text-danger">*</strong>
+                            <label class="form-label fw-bold">
+                                {{ $t('solution_design.functionality_form.section_name_select_box') }} <strong class="text-danger">*</strong>
                             </label>
                             <select v-model="functionalityFormData.section_id" aria-label="Default select example"
                                 class="form-select" :class="{ 'is-invalid': errors.section_id }">
-                                <option value="">{{
-                                    $t('solution_design.functionality_form.section_name_select_box_placeholder')
-                                }}
+                                <option value="">
+                                    {{ $t('solution_design.functionality_form.section_name_select_box_placeholder') }}
                                 </option>
-                                <option v-for="section in sectionsWithFunctionalities" :key="section.id"
-                                    :value="section.id">
+                                <option v-for="section in sectionsWithFunctionalities" :key="section.id" :value="section.id">
                                     {{ section.name }}
                                 </option>
                             </select>
@@ -153,46 +145,49 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label fw-bold">{{
-                        $t('solution_design.functionality_form.description')
-                    }}</label>
-                    <TinyMceEditor v-model="functionalityFormData.description" />
-                </div>
-                <div class="mb-3">
-                    <div class="form-check">
-                        <input class="form-check-input" :class="{ 'is-invalid': errors.include_in_solution_design }"
-                            v-model="functionalityFormData.include_in_solution_design" type="checkbox"
-                            id="include_in_solution_design">
-                        <label class="form-check-label fw-bold" for="include_in_solution_design">
-                            {{ $t('solution_design.functionality_form.include_in_solution_design_text') }}
-                        </label>
-                        <div v-if="errors.include_in_solution_design" class="invalid-feedback">
-                            <span v-for="(error, index) in errors.include_in_solution_design" :key="index">{{ error
-                                }}</span>
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">
+                                {{ $t('solution_design.functionality_form.description') }}
+                            </label>
+                            <TinyMceEditor v-model="functionalityFormData.description" />
                         </div>
                     </div>
-                </div>
-                <div class="mb-3 d-flex gap-3" v-if="!functionalityFormData.functionality_id">
-                    <button class="btn btn-desino w-50" type="submit"
-                        @click="handleFunctionalitySubmitButtonClick('create')">{{
-                            $t('solution_design.functionality_form.submit_create_but_text') }}
-                    </button>
-                    <button class="btn btn-desino w-50" type="submit"
-                        @click="handleFunctionalitySubmitButtonClick('create_and_add_new')">{{
-                            $t('solution_design.functionality_form.submit_create_and_add_new_but_text') }}
-                    </button>
-                </div>
-                <div class="mb-3 d-flex gap-3" v-if="functionalityFormData.functionality_id">
-                    <button class="btn btn-desino w-50" type="submit"
-                        @click="handleFunctionalitySubmitButtonClick('update')">{{
-                            $t('solution_design.functionality_form.submit_update_but_text') }}
-                    </button>
-                    <button class="btn btn-desino w-50" type="submit"
-                        @click="handleFunctionalitySubmitButtonClick('update_and_add_new')">{{
-                            $t('solution_design.functionality_form.submit_update_and_add_new_but_text') }}
-                    </button>
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" :class="{ 'is-invalid': errors.include_in_solution_design }"
+                                    v-model="functionalityFormData.include_in_solution_design" type="checkbox" id="include_in_solution_design">
+                                <label class="form-check-label fw-bold" for="include_in_solution_design">
+                                    {{ $t('solution_design.functionality_form.include_in_solution_design_text') }}
+                                </label>
+                                <div v-if="errors.include_in_solution_design" class="invalid-feedback">
+                                    <span v-for="(error, index) in errors.include_in_solution_design" :key="index">{{ error }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">&nbsp;</div>
+                    <div class="col-12 col-md-6" v-if="!functionalityFormData.functionality_id">
+                        <button class="btn btn-desino w-100" type="submit" @click="handleFunctionalitySubmitButtonClick('create')">
+                            {{ $t('solution_design.functionality_form.submit_create_but_text') }}
+                        </button>
+                    </div>
+                    <div class="col-12 col-md-6" v-if="!functionalityFormData.functionality_id">
+                        <button class="btn btn-desino w-100" type="submit" @click="handleFunctionalitySubmitButtonClick('create_and_add_new')">
+                            {{ $t('solution_design.functionality_form.submit_create_and_add_new_but_text') }}
+                        </button>
+                    </div>
+                    <div class="col-12 col-md-6" v-if="functionalityFormData.functionality_id">
+                        <button class="btn btn-desino w-100" type="submit" @click="handleFunctionalitySubmitButtonClick('update')">
+                            {{ $t('solution_design.functionality_form.submit_update_but_text') }}
+                        </button>
+                    </div>
+                    <div class="col-12 col-md-6" v-if="functionalityFormData.functionality_id">
+                        <button class="btn btn-desino w-100" type="submit" @click="handleFunctionalitySubmitButtonClick('update_and_add_new')">
+                            {{  $t('solution_design.functionality_form.submit_update_and_add_new_but_text') }}
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>

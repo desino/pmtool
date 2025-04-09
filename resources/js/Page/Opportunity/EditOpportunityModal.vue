@@ -142,8 +142,17 @@
                     </div>
 
                     <div class="card mb-3">
-                        <div class="card-header">
-                            <h6 class="mb-0">{{ $t('edit_opportunity_modal_card_header_servers_text') }}</h6>
+                        <div class="card-header py-2">
+                            <div class="row align-items-center">
+                                <div class="col-11">
+                                    <h6 class="mb-0">{{ $t('edit_opportunity_modal_card_header_servers_text') }}</h6>
+                                </div>
+                                <div class="col-1 text-end">
+                                    <button type="button" class="btn btn-desino border-0 w-100" @click="addEnvironment()">
+                                        <i class="bi bi-plus-lg"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         <div class="card-body p-1">
                             <div class="w-100">
@@ -219,11 +228,6 @@
                                     </li>
                                 </ul>
                             </div>
-                        </div>
-                        <div class="card-footer">
-                            <button type="button" class="btn btn-desino border-0 w-100" @click="addEnvironment()">
-                                {{ $t('edit_opportunity_modal_input_add') }}
-                            </button>
                         </div>
                     </div>
                 </div>
