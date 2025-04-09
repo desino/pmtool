@@ -1,20 +1,18 @@
 <template>
     <GlobalMessage v-if="showMessage" />
     <div class="app-content row position-relative">
-        <div class="col-md-4 border-end border-bottom sticky top-0 d-none d-lg-block">
-            <div class="input-group sticky-top pt-3 pb-1 bg-white">
+        <div class="col-md-4 sticky top-0 d-none d-md-block" id="soldesign_index" :class="{ 'border-end': isSolDesignIndexBigger }">
+            <div class="input-group sticky-top pb-1 bg-white">
                 <input v-model="solutionDesignFilters.name" aria-label="Search" class="form-control"
                     placeholder="Search" type="text" @keyup="getSectionsWithFunctionalities">
                 <span class="input-group-text"><i class="bi bi-search"></i></span>
             </div>
-            <hr>
-            <div v-for="section in sectionsWithFunctionalities" :key="section.id">
-                <div class="section-functionality-container ps-3">
-                    <div class="mt-3 section-container">
+            <div :class="{'mt-3': $index > 0}"  v-for="(section, $index) in sectionsWithFunctionalities" :key="section.id">
+                <div class="section-functionality-container">
+                    <div class="section-container">
                         <div class="d-flex align-items-center section-container">
                             <div class="fw-bold fs-5">
-                                <i :aria-controls="'collapse_' + section.id"
-                                    :aria-expanded="!collapsedSections[section.id]"
+                                <i :aria-controls="'collapse_' + section.id" :aria-expanded="!collapsedSections[section.id]"
                                     :class="['bi', collapsedSections[section.id] ? 'bi-caret-right-fill' : 'bi-caret-down-fill']"
                                     :data-bs-target="'#collapse_' + section.id" data-bs-toggle="collapse"
                                     @click="collapsedSections[section.id] = !collapsedSections[section.id]"></i>
@@ -27,8 +25,7 @@
                         :class="{ 'show': !collapsedSections[section.id] }" class="list-group collapse">
                         <div v-for="functionality in section.functionalities" :key="functionality.id">
                             <div :class="['list-group-item d-flex list-group-item-action', { 'bg-desino text-light': isSelected(functionality.id) }]"
-                                class="border-0 border-bottom" role="button"
-                                @click="scrollToFunctionality(section.id, functionality.id)">
+                                class="border-0 border-bottom" role="button" @click="scrollToFunctionality(section.id, functionality.id)">
                                 <span>{{ functionality.display_name }}</span>
                             </div>
                         </div>
@@ -36,23 +33,20 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-8 border-start border-bottom optimize-image">
-            <div class="p-3">
-                <div v-for="section in sectionsWithFunctionalities" :key="section.id" :id="'section_' + section.id"
-                    class="mb-4">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-header bg-desino text-white">
-                            <h5 class="mb-0">{{ section.display_name }}</h5>
-                        </div>
-                        <div class="card-body">
-                            <ul v-if="section.functionalities.length > 0" class="list-group list-group-flush">
-                                <li v-for="functionality in section.functionalities" :key="functionality.id"
-                                    :id="'functionality_' + functionality.id" class="list-group-item">
-                                    <h6 class="fw-semibold text-dark">{{ functionality.display_name }}</h6>
-                                    <p class="text-muted text-break mw-100" v-html="functionality.description"></p>
-                                </li>
-                            </ul>
-                        </div>
+        <div class="col-md-8 optimize-image" id="soldesign_content" :class="{ 'border-start': !isSolDesignIndexBigger }">
+            <div v-for="section in sectionsWithFunctionalities" :key="section.id" :id="'section_' + section.id" class="mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-desino text-white">
+                        <h5 class="mb-0">{{ section.display_name }}</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul v-if="section.functionalities.length > 0" class="list-group list-group-flush">
+                            <li v-for="functionality in section.functionalities" :key="functionality.id"
+                                :id="'functionality_' + functionality.id" class="list-group-item">
+                                <h6 class="fw-semibold text-dark">{{ functionality.display_name }}</h6>
+                                <div class="text-muted text-break mw-100 m-0 p-0" v-html="functionality.description"></div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -88,7 +82,14 @@ export default {
                 name: '',
             },
             showMessage: true,
+            solDesignIndexHeight : 0,
+            solDesignContentHeight : 0,
         };
+    },
+    computed: {
+        isSolDesignIndexBigger() {
+            return this.solDesignIndexHeight > this.solDesignContentHeight;
+        }
     },
     methods: {
         ...mapActions(['setLoading', 'currentInitiative']),
@@ -162,14 +163,30 @@ export default {
                 element.scrollIntoView({ behavior: 'smooth' });
             }
         },
+        getSolDesignIndexHeight() {
+            this.solDesignIndexHeight = document.getElementById('soldesign_index').clientHeight;
+        },
+        getSolDesignContentHeight() {
+            this.solDesignContentHeight = document.getElementById('soldesign_content').clientHeight;
+        },
+        handleSolDesignResize() {
+            this.getSolDesignIndexHeight();
+            this.getSolDesignContentHeight();
+        },
     },
     mounted() {
         this.fetchData();
+        this.getSolDesignIndexHeight();
+        this.getSolDesignContentHeight();
+        window.addEventListener('resize', this.handleSolDesignResize);
     },
     beforeRouteUpdate(to, from, next) {
         this.initiativeId = to.params.id;
         this.fetchData();
         next();
     },
+    beforeDestroy() {
+        window.removeEventListener('resize', this.handleSolDesignResize);
+    }
 }
 </script>
