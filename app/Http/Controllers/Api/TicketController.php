@@ -176,7 +176,6 @@ class TicketController extends Controller
             return ApiHelper::response($status, __('messages.create_ticket.action_develop_not_exist'), '', 400);
         }
 
-        // $ticketActionsCollect = collect($validateData['ticket_actions']);
         $ticketActionsCollect = $ticket->actions;
         $filteredDoneActions = $ticketActionsCollect->where('status', TicketAction::getStatusDone())->sortByDesc('action');
         $filteredDoneMaxAction = $filteredDoneActions->first();
@@ -224,15 +223,13 @@ class TicketController extends Controller
         try {
             $ticket->update($validateData);
 
-            if (!empty($validateData['ticket_actions'])) {
-                // TicketService::deleteActions($ticket->id);
+            if (!empty($validateData['ticket_actions']) && $ticket->status != Ticket::getStatusDone() && $ticket->macro_status != Ticket::MACRO_STATUS_DONE) {
                 TicketService::insertTicketActions($ticket->id, $validateData['ticket_actions'], $validateData['auto_wait_for_client_approval']);
                 TicketService::updateTicketStatus($ticket);
                 TicketService::createMacroStatusAndUpdateTicket($ticket, true);
             }
             $retData = [
                 'ticket' => $ticket,
-                // 'asanaTaskData' => $task['data']['data'],
             ];
             DB::commit();
         } catch (Exception $e) {
@@ -361,11 +358,6 @@ class TicketController extends Controller
             ])
             ->where('initiative_id', $initiative_id)
             ->when($deploymentId != '', function ($query) use ($deploymentId) {
-                // $query->whereIn('id', function ($query) use ($deploymentId) {
-                //     $query->select('ticket_id')
-                //         ->from('release_tickets')
-                //         ->where('release_id', $deploymentId);
-                // });
                 $query->whereHas('releaseTickets', function ($query) use ($deploymentId) {
                     $query->where('release_id', $deploymentId);
                 });
@@ -722,16 +714,6 @@ class TicketController extends Controller
             return ApiHelper::response($status, __('messages.ticket.dont_have_permission'), '', 400);
         }
         $requestData = $request->validated();
-
-        // $data = [
-        //     'html_notes' => "<body>" . str_replace(['<p>', '</p>'], '', $requestData['description']) . "</body>",
-        // ];
-
-        // $task = $this->asanaService->updateTask($ticket->asana_task_id, $data);
-        // if ($task['error_status']) {
-        //     return ApiHelper::response($status, __('messages.asana.update_ticket.update_error'), '', 500);
-        // }
-        // $validateData['asana_task_id'] = $task['data']['data']['gid'];
 
         $status = true;
         $code = 200;
@@ -1207,11 +1189,6 @@ class TicketController extends Controller
         if (!$ticket->is_show_delete_btn) {
             return ApiHelper::response($status, __('messages.ticket.delete_ticket_not_allowed_because_time_bookings_exist_or_any_action_already_done_dev_count_not_zero'), '', 400);
         }
-
-        // $task = $this->asanaService->deleteTask($ticket->asana_task_id);
-        // if ($task['error_status']) {
-        //     return ApiHelper::response($status, __('messages.asana.delete_ticket.delete_error'), '', 400);
-        // }
 
         $status = true;
         $message = __('messages.ticket.delete_ticket_success');
